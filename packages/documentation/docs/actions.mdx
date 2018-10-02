@@ -1,0 +1,22 @@
+---
+name: Actions
+route: /actions
+order: 0
+---
+
+import { Playground, PropsTable } from 'docz';
+import { Action } from "../components";
+
+# Actions
+
+<PropsTable of={Action} />
+
+## Basic usage
+
+<Playground>
+  <Action primary>Hello</Action>
+</Playground>
+
+<Playground>
+  <Action>Hello</Action>
+</Playground>
