@@ -1,9 +1,7 @@
-import { README } from "root";
-
 /* eslint global-require: off */
 const pages = [
   // {
-  //   content: README,
+  //   content: require("README.md"),
   //   path: "/",
   //   title: "Welcome"
   // },
