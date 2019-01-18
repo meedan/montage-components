@@ -1,8 +1,8 @@
-import { markdown, ReactSpecimen } from '@catalog/core';
-import { ThemeProvider } from 'styled-components';
-import React from 'react';
+import { markdown, ReactSpecimen } from "@catalog/core";
+import { ThemeProvider } from "styled-components";
+import React from "react";
 
-import { Action, Thm } from '../../src';
+import { Action, Thm } from "src";
 
 export default () => markdown`
 # Working with themes
@@ -17,17 +17,19 @@ ${(
       Primary Action
     </Action>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen span={3} showSource>
-    <ThemeProvider theme={{ ...Thm, color: { action: 'pink', bodyBackg: 'blue' } }}>
+    <ThemeProvider
+      theme={{ ...Thm, color: { action: "pink", bodyBackg: "blue" } }}
+    >
       <Action block primary>
         Primary Action with a custom theme supplied
       </Action>
     </ThemeProvider>
   </ReactSpecimen>
-  )}
+)}
 
 ## Prop overrides (discouraged)
 
@@ -37,14 +39,18 @@ ${(
       Primary Action
     </Action>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen span={3} showSource>
-    <Action block primary theme={{ ...Thm, color: { action: 'pink', bodyBackg: 'blue' } }}>
+    <Action
+      block
+      primary
+      theme={{ ...Thm, color: { action: "pink", bodyBackg: "blue" } }}
+    >
       Primary Action with a custom theme supplied
     </Action>
   </ReactSpecimen>
-  )}
+)}
 
 `;

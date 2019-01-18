@@ -1,7 +1,7 @@
 import React from "react";
 import { markdown, CodeSpecimen } from "@catalog/core";
 
-import {} from "../../src";
+import {} from "src";
 
 export default () => markdown`
   # Helpers

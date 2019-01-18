@@ -1235,7 +1235,7 @@
   dependencies:
     loader-utils "^1.1.0"
 
-"@catalog/markdown-loader@0.0.5":
+"@catalog/markdown-loader@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@catalog/markdown-loader/-/markdown-loader-0.0.5.tgz#b9c6a0fe57b953e35ef27e3d689621db14ee44e8"
   integrity sha512-7YVje4vDVZD8D1czwZrOx9MGI8kjjM1zZw4QSMVoL0o4bey4jF/viDdoujtayGpb7Dw1V0C1noB652m1wurgFQ==

@@ -1,7 +1,15 @@
+const path = require("path");
+
 module.exports = {
   webpack: (catalogWebpackConfig, { paths, dev, framework }) => {
     const modifiedWebpackConfig = {
       ...catalogWebpackConfig,
+      resolve: {
+        alias: {
+          src: path.resolve(__dirname, "src/"),
+          root: path.resolve(__dirname, "/")
+        }
+      },
       module: {
         rules: [
           {
