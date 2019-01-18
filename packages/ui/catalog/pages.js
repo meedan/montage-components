@@ -1,15 +1,15 @@
 /* eslint global-require: off */
 const pages = [
-  // {
-  //   content: require("README.md"),
-  //   path: "/",
-  //   title: "Welcome"
-  // },
-  // {
-  //   content: require("../CHANGELOG.md"),
-  //   path: "/changelog",
-  //   title: "Changelog"
-  // },
+  {
+    content: require("../README.md"),
+    path: "/",
+    title: "Welcome"
+  },
+  {
+    content: require("../CHANGELOG.md"),
+    path: "/changelog",
+    title: "Changelog"
+  },
   {
     content: require("./pages/helpers.js"),
     path: "/helpers",
