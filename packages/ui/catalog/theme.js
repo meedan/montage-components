@@ -9,7 +9,7 @@ export default {
 
   // NavigationBar background color, but also sometimes used as a foreground
   // or border color.
-  lightColor: Thm.color.base300,
+  lightColor: "#eeeeee",
 
   // Used in PageHeader
   pageHeadingBackground: "#ff5000",
@@ -31,7 +31,7 @@ export default {
   sidebarColorActive: "#ff6000",
   sidebarColorText: "#5d5d5d",
   sidebarColorTextActive: "#ff6000",
-  sidebarColorLine: Thm.color.bodyDecor,
+  sidebarColorLine: "#f0f1f3",
   sidebarColorHeading: "#5d5d5d",
 
   // Used in the html, react, and image specimens.
