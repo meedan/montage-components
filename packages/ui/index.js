@@ -1,3 +1,2 @@
+export * from "@material-ui";
 export * from "./src";
-
-export { default as README } from "./README.md";
