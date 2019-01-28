@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player';
 
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 
+import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -29,10 +30,14 @@ import PlaceIcon from '@material-ui/icons/Place';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import StarIcon from '@material-ui/icons/Star';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
+import LabelIcon from '@material-ui/icons/Label';
+import CommentIcon from '@material-ui/icons/Comment';
 
 
 import IconButton from '@material-ui/core/IconButton';
-// import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -44,7 +49,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import Popover from '@material-ui/core/Popover';
 
+import Slider from 'rc-slider';
 
+
+import 'rc-slider/assets/index.css';
 import './App.css';
 
 
@@ -60,40 +68,18 @@ const theme = createMuiTheme({
 const styles = theme => ({
   popover: {
     pointerEvents: 'none',
-    // zIndex: 10000,
   },
   card: {
-    // display: 'flex',
     backgroundColor: '#636363',
   },
-  details: {
-    // display: 'flex',
-    // flexDirection: 'column',
-  },
-  content: {
-    // flex: '0 1 auto',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
+  playerWrapper: {
+    // position: 'relative',
+    // paddingTop: '56.25%',
   },
   player: {
-    flex: '1 0 auto',
-  },
-  card2: {
-    flex: '0 1 auto',
-  },
-  desc: {
-    overflow: 'scroll',
-  },
-  controls: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-  },
-  playIcon: {
-    height: 38,
-    width: 38,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
   },
 });
 
@@ -102,6 +88,7 @@ class App extends Component {
   state = {
     anchorEl: null,
     anchorEl2: null,
+    anchorEl3: null,
   };
 
   handleClick = event => {
@@ -120,19 +107,44 @@ class App extends Component {
     this.setState({ anchorEl2: null });
   };
 
+  handlePopoverOpen2 = event => {
+    this.setState({ anchorEl3: event.currentTarget });
+  };
+
+  handlePopoverClose2 = () => {
+    this.setState({ anchorEl3: null });
+  };
+
   render() {
     const { classes } = this.props;
-    const { anchorEl, anchorEl2 } = this.state;
+    const { anchorEl, anchorEl2, anchorEl3 } = this.state;
     const open = Boolean(anchorEl);
     const open2 = Boolean(anchorEl2);
+    const open3 = Boolean(anchorEl3);
+
+    const createSliderWithTooltip = Slider.createSliderWithTooltip;
+    const Range = createSliderWithTooltip(Slider.Range);
 
     return (
       <MuiThemeProvider theme={theme}>
       <Paper>
         <Card className={classes.card}>
-          <div className={classes.details}>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="center"
+            spacing={0}
+          >
             <CardContent className={classes.content}>
-              <div>
+            <Grid
+              container
+              direction="row"
+              justify="center"
+              alignItems="stretch"
+              spacing={0}
+            >
+              <Grid item xs={0}>
                 <IconButton
                   onMouseEnter={this.handlePopoverOpen}
                   onMouseLeave={this.handlePopoverClose}
@@ -166,97 +178,161 @@ class App extends Component {
                       />
                       <CardContent>
                         <Typography component="p" variant="body2">
-                          {DATA.ytVideoData.snippet.description}
+                          Previous video description
+                          { /* DATA.ytVideoData.snippet.description */ }
                         </Typography>
                       </CardContent>
                     </CardActionArea>
                   </Card>
                 </Popover>
-              </div>
-              <ReactPlayer className={classes.player} url={`https://www.youtube.com/watch?v=${DATA.ytVideoData.id}`} />
-              <Card className={classes.card2}>
-                <CardHeader
-                  action={
-                    <>
-                    <IconButton>
-                      <StarIcon />
-                    </IconButton>
-                    <IconButton>
-                      <ArchiveIcon />
-                    </IconButton>
-                    <IconButton onClick={this.handleClick}>
-                      <MoreVertIcon />
-                    </IconButton>
-                    </>
-                  }
-                  title={DATA.ytVideoData.snippet.channelTitle}
-                  subheader={
-                    <List disablePadding>
-                      <ListItem>
-                        <ListItemIcon>
-                          <VisibilityIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={`${DATA.ytVideoData.statistics.viewCount} views`} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <PublishIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={`Published ${DATA.ytVideoData.snippet.publishedAt}`} />
-                      </ListItem>
-                      <ListItem button>
-                        <ListItemIcon>
-                          <CameraAltIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Set a recorded Date" />
-                      </ListItem>
-                    </List>
-                  }
+              </Grid>
+
+              <Grid item xs={7} className={classes.playerWrapper}>
+                <ReactPlayer
+                  className={classes.player} url={`https://www.youtube.com/watch?v=${DATA.ytVideoData.id}`}
+                  controls
+                  width='100%'
+                  height='100%'
                 />
-                <Menu
-                  id="long-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={this.handleClose}
+              </Grid>
+
+              <Grid item xs>
+                <Card className={classes.card2}>
+                  <CardHeader
+                    action={
+                      <>
+                      <IconButton>
+                        <StarIcon />
+                      </IconButton>
+                      <IconButton>
+                        <ArchiveIcon />
+                      </IconButton>
+                      <IconButton onClick={this.handleClick}>
+                        <MoreVertIcon />
+                      </IconButton>
+                      </>
+                    }
+                    title={DATA.ytVideoData.snippet.channelTitle}
+                  />
+                  <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={this.handleClose}
+                  >
+                    <MenuItem onClick={this.handleClose}>
+                      <ListItemIcon>
+                        <FolderIcon />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Add to" />
+                    </MenuItem>
+                    <MenuItem onClick={this.handleClose}>
+                      <ListItemIcon>
+                        <FolderIcon />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Manage duplicates" />
+                    </MenuItem>
+                    <MenuItem onClick={this.handleClose}>
+                      <ListItemIcon>
+                        <FolderIcon />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Remove" />
+                    </MenuItem>
+
+                  </Menu>
+
+                  <List disablePadding>
+                    <ListItem>
+                      <ListItemIcon>
+                        <VisibilityIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={`${DATA.ytVideoData.statistics.viewCount} views`} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <PublishIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={`Published ${DATA.ytVideoData.snippet.publishedAt}`} />
+                    </ListItem>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <CameraAltIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Set a recorded Date" />
+                    </ListItem>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <VideoCallIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Send this video to Keep" />
+                    </ListItem>
+                  </List>
+
+                  <Divider variant="middle" />
+
+                  <CardContent>
+                    <Typography component="p" variant="body2" className={classes.desc}>
+                      {DATA.ytVideoData.snippet.description}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <PlaceIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Set location" />
+                    </ListItem>
+                  </CardActions>
+                </Card>
+              </Grid>
+
+              <Grid item xs={0}>
+                <IconButton
+                  onMouseEnter={this.handlePopoverOpen2}
+                  onMouseLeave={this.handlePopoverClose2}
                 >
-                  <MenuItem onClick={this.handleClose}>
-                    <ListItemIcon>
-                      <FolderIcon />
-                    </ListItemIcon>
-                    <ListItemText inset primary="Add to" />
-                  </MenuItem>
-                  <MenuItem onClick={this.handleClose}>
-                    <ListItemIcon>
-                      <FolderIcon />
-                    </ListItemIcon>
-                    <ListItemText inset primary="Manage duplicates" />
-                  </MenuItem>
-                  <MenuItem onClick={this.handleClose}>
-                    <ListItemIcon>
-                      <FolderIcon />
-                    </ListItemIcon>
-                    <ListItemText inset primary="Remove" />
-                  </MenuItem>
+                  <KeyboardArrowRightIcon fontSize="large" />
+                </IconButton>
+                <Popover
+                  id="mouse-over-popover2"
+                  className={classes.popover}
+                  anchorOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'right',
+                  }}
+                  open={open3}
+                  anchorEl={anchorEl3}
+                  onClose={this.handlePopoverClose2}
+                  disableRestoreFocus
+                >
+                  <Card>
+                    <CardActionArea>
+                      <CardMedia
+                        style={{
+                          width: DATA.ytVideoData.snippet.thumbnails.medium.width,
+                          height: DATA.ytVideoData.snippet.thumbnails.medium.height,
+                        }}
+                        image={DATA.ytVideoData.snippet.thumbnails.default.url}
+                      />
+                      <CardContent>
+                        <Typography component="p" variant="body2">
+                          Next video description
+                          { /* DATA.ytVideoData.snippet.description */ }
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Popover>
+              </Grid>
 
-                </Menu>
-
-                <Divider variant="middle" />
-
-                <CardContent>
-                  <Typography component="p" variant="body2" className={classes.desc}>
-                    {DATA.ytVideoData.snippet.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <PlaceIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Set location" />
-                  </ListItem>
-                </CardActions>
-              </Card>
+            </Grid>
             </CardContent>
+
+
 
             <div className={classes.controls}>
               <IconButton aria-label="Previous">
@@ -270,8 +346,87 @@ class App extends Component {
               </IconButton>
             </div>
 
-          </div>
+          </Grid>
         </Card>
+
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="flex-start"
+          spacing={0}
+        >
+          <Grid item xs={2}>
+            <IconButton>
+              <LabelIcon />
+            </IconButton>
+            <IconButton>
+              <PlaceIcon />
+            </IconButton>
+            <IconButton>
+              <CommentIcon />
+            </IconButton>
+          </Grid>
+
+          <Grid item xs>
+          </Grid>
+
+        </Grid>
+
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="flex-start"
+          spacing={0}
+        >
+          <Grid item xs={2}>
+          <Button variant="contained" size="small">
+            <LabelIcon />
+            tag1
+          </Button>
+          </Grid>
+
+          <Grid item xs>
+            <Range
+              min={0}
+              max={2000}
+              defaultValue={[30, 123, 863, 1300]}
+              pushable
+              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+              railStyle={{ backgroundColor: 'transparent' }}
+            />
+          </Grid>
+
+        </Grid>
+
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="flex-start"
+          spacing={0}
+        >
+          <Grid item xs={2}>
+          <Button variant="contained" size="small">
+            <LabelIcon />
+            tag2
+          </Button>
+          </Grid>
+
+          <Grid item xs>
+            <Range
+              min={0}
+              max={2000}
+              defaultValue={[90, 143, 363, 600]}
+              pushable
+              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+              railStyle={{ backgroundColor: 'transparent' }}
+            />
+          </Grid>
+
+        </Grid>
+
       </Paper>
     </MuiThemeProvider>
     );
