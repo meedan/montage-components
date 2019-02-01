@@ -124,12 +124,15 @@ module.exports = {
     // https://twitter.com/wSokra/status/969633336732905474
     // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
     splitChunks: {
-      chunks: 'all',
-      name: false,
+      // chunks: 'all',
+      // name: false,
+      cacheGroups: {
+        default: false
+      },
     },
     // Keep the runtime chunk seperated to enable long term caching
     // https://twitter.com/wSokra/status/969679223278505985
-    runtimeChunk: true,
+    runtimeChunk: false,
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -209,7 +212,7 @@ module.exports = {
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
-              name: 'static/media/[name].[hash:8].[ext]',
+              name: 'static/media/[name].[ext]',
             },
           },
           // Process application JS with Babel.
@@ -329,7 +332,7 @@ module.exports = {
             exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
             loader: require.resolve('file-loader'),
             options: {
-              name: 'static/media/[name].[hash:8].[ext]',
+              name: 'static/media/[name].[ext]',
             },
           },
         ],
