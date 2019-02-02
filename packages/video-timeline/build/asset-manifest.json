@@ -3,7 +3,5 @@
   "main.js": "/static/js/main.js",
   "main.js.map": "/static/js/main.js.map",
   "index.html": "/index.html",
-  "precache-manifest.a665164c696018d01e4c0f1e455c54f7.js": "/precache-manifest.a665164c696018d01e4c0f1e455c54f7.js",
-  "service-worker.js": "/service-worker.js",
   "static/css/main.css.map": "/static/css/main.css.map"
 }
