@@ -435,5 +435,5 @@ class App extends Component {
 
 export default withStyles(styles, { withTheme: true })(App);
 
-export const AngularVideoTimeline = react2angular(App, []);
+export const AngularVideoTimeline = react2angular(withStyles(styles, { withTheme: true })(App), []);
 window.AngularVideoTimeline =  AngularVideoTimeline;
