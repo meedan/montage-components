@@ -125,6 +125,9 @@ class App extends Component {
     const createSliderWithTooltip = Slider.createSliderWithTooltip;
     const Range = createSliderWithTooltip(Slider.Range);
 
+    let data = DATA;
+    if (this.props.$scope) data = this.props.$scope.$parent.ctrl;
+
     return (
       <MuiThemeProvider theme={theme}>
       <Paper>
@@ -144,7 +147,7 @@ class App extends Component {
               alignItems="stretch"
               spacing={0}
             >
-              <Grid item xs={0}>
+              <Grid item xs={false}>
                 <IconButton
                   onMouseEnter={this.handlePopoverOpen}
                   onMouseLeave={this.handlePopoverClose}
@@ -171,15 +174,15 @@ class App extends Component {
                     <CardActionArea>
                       <CardMedia
                         style={{
-                          width: DATA.ytVideoData.snippet.thumbnails.medium.width,
-                          height: DATA.ytVideoData.snippet.thumbnails.medium.height,
+                          width: data.ytVideoData.snippet.thumbnails.medium.width,
+                          height: data.ytVideoData.snippet.thumbnails.medium.height,
                         }}
-                        image={DATA.ytVideoData.snippet.thumbnails.default.url}
+                        image={data.ytVideoData.snippet.thumbnails.default.url}
                       />
                       <CardContent>
                         <Typography component="p" variant="body2">
                           Previous video description
-                          { /* DATA.ytVideoData.snippet.description */ }
+                          { /* data.ytVideoData.snippet.description */ }
                         </Typography>
                       </CardContent>
                     </CardActionArea>
@@ -189,7 +192,7 @@ class App extends Component {
 
               <Grid item xs={7} className={classes.playerWrapper}>
                 <ReactPlayer
-                  className={classes.player} url={`https://www.youtube.com/watch?v=${DATA.ytVideoData.id}`}
+                  className={classes.player} url={`https://www.youtube.com/watch?v=${data.ytVideoData.id}`}
                   controls
                   width='100%'
                   height='100%'
@@ -212,7 +215,7 @@ class App extends Component {
                       </IconButton>
                       </>
                     }
-                    title={DATA.ytVideoData.snippet.channelTitle}
+                    title={data.ytVideoData.snippet.channelTitle}
                   />
                   <Menu
                     id="long-menu"
@@ -246,13 +249,13 @@ class App extends Component {
                       <ListItemIcon>
                         <VisibilityIcon />
                       </ListItemIcon>
-                      <ListItemText primary={`${DATA.ytVideoData.statistics.viewCount} views`} />
+                      <ListItemText primary={`${data.ytVideoData.statistics.viewCount} views`} />
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <PublishIcon />
                       </ListItemIcon>
-                      <ListItemText primary={`Published ${DATA.ytVideoData.snippet.publishedAt}`} />
+                      <ListItemText primary={`Published ${data.ytVideoData.snippet.publishedAt}`} />
                     </ListItem>
                     <ListItem button>
                       <ListItemIcon>
@@ -272,7 +275,7 @@ class App extends Component {
 
                   <CardContent>
                     <Typography component="p" variant="body2" className={classes.desc}>
-                      {DATA.ytVideoData.snippet.description}
+                      {data.ytVideoData.snippet.description}
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -286,7 +289,7 @@ class App extends Component {
                 </Card>
               </Grid>
 
-              <Grid item xs={0}>
+              <Grid item xs={false}>
                 <IconButton
                   onMouseEnter={this.handlePopoverOpen2}
                   onMouseLeave={this.handlePopoverClose2}
@@ -313,15 +316,15 @@ class App extends Component {
                     <CardActionArea>
                       <CardMedia
                         style={{
-                          width: DATA.ytVideoData.snippet.thumbnails.medium.width,
-                          height: DATA.ytVideoData.snippet.thumbnails.medium.height,
+                          width: data.ytVideoData.snippet.thumbnails.medium.width,
+                          height: data.ytVideoData.snippet.thumbnails.medium.height,
                         }}
-                        image={DATA.ytVideoData.snippet.thumbnails.default.url}
+                        image={data.ytVideoData.snippet.thumbnails.default.url}
                       />
                       <CardContent>
                         <Typography component="p" variant="body2">
                           Next video description
-                          { /* DATA.ytVideoData.snippet.description */ }
+                          { /* data.ytVideoData.snippet.description */ }
                         </Typography>
                       </CardContent>
                     </CardActionArea>
