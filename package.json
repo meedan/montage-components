@@ -5,6 +5,9 @@
     "type": "git",
     "url": "git+https://github.com/meedan/montage-components.git"
   },
+  "scripts": {
+    "clean": "npx oao clean"
+  },
   "workspaces": [
     "packages/*"
   ]
