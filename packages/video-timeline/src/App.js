@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { react2angular } from 'react2angular';
+import styled from 'styled-components';
 
 import ReactPlayer from 'react-player';
 
@@ -32,12 +33,13 @@ import StarIcon from '@material-ui/icons/Star';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
-import LabelIcon from '@material-ui/icons/Label';
-import CommentIcon from '@material-ui/icons/Comment';
+// import LabelIcon from '@material-ui/icons/Label';
+// import CommentIcon from '@material-ui/icons/Comment';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 
 
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -48,6 +50,14 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Popover from '@material-ui/core/Popover';
+
+import Collapse from '@material-ui/core/Collapse';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import Slider from 'rc-slider';
 
@@ -89,6 +99,8 @@ class App extends Component {
     anchorEl: null,
     anchorEl2: null,
     anchorEl3: null,
+    collapsedRow: true,
+    collapsedRow2: true
   };
 
   handleClick = event => {
@@ -352,89 +364,207 @@ class App extends Component {
           </Grid>
         </Card>
 
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="flex-start"
-          spacing={0}
-        >
-          <Grid item xs={2}>
-            <IconButton>
-              <LabelIcon />
-            </IconButton>
-            <IconButton>
-              <PlaceIcon />
-            </IconButton>
-            <IconButton>
-              <CommentIcon />
-            </IconButton>
-          </Grid>
 
-          <Grid item xs>
-          </Grid>
+        <Table component={styled.table`
+            thead {
+              tr, th, td {
+                padding: 0 !important;
+                height: 0 !important;
+                border: 0;
+              }
+            }
 
-        </Grid>
+            tbody {
+              tr {
+                th, td {
+                  border-bottom: none;
+                }
+                &:first-child {
+                  th, td {
+                    border-top: 1px solid blue;
+                  }
+                }
+              }
+              td:nth-child(2), td:nth-child(3) {
+                padding: 0;
+                border-left: 1px solid blue;
+              }
+            }
 
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="flex-start"
-          spacing={0}
-        >
-          <Grid item xs={2}>
-          <Button variant="contained" size="small">
-            <LabelIcon />
-            tag1
-          </Button>
-          </Grid>
+            thead + tbody, tbody + tbody.Detail  {
+              tr:first-child {
+                th, td {
+                  border-top: none;
+                }
+              }
+            }
+          `}>
+          <TableHead >
+            <TableRow>
+              <TableCell component="th" scope="row"></TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[90]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'transparent' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                  handleStyle={{
+                    borderColor: 'orange',
+                    backgroundColor: 'orange',
+                  }}
+                />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableHead>
 
-          <Grid item xs>
-            <Range
-              min={0}
-              max={2000}
-              defaultValue={[30, 123, 863, 1300]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </Grid>
+          <TableBody>
+            <TableRow>
+              <TableCell component="th" scope="row"
+                hover
+                style={{cursor: 'pointer'}}
+                onClick={() => this.setState({collapsedRow: !this.state.collapsedRow} )}
+              >
+                Tag Group
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[90, 143, 363, 600]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <IconButton disableRipple>
+                  <DragHandleIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          </TableBody>
 
-        </Grid>
+          { this.state.collapsedRow ? null :
+          <TableBody className="Detail">
+            <TableRow>
+              <TableCell component="th" scope="row" >
+                Tag1
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[93, 123, 393, 400]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row">
+                Tag2
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[363, 390]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableBody>
+          }
 
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="flex-start"
-          spacing={0}
-        >
-          <Grid item xs={2}>
-          <Button variant="contained" size="small">
-            <LabelIcon />
-            tag2
-          </Button>
-          </Grid>
 
-          <Grid item xs>
-            <Range
-              min={0}
-              max={2000}
-              defaultValue={[90, 143, 363, 600]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </Grid>
 
-        </Grid>
+          <TableBody>
+            <TableRow>
+              <TableCell component="th" scope="row"
+                hover
+                style={{cursor: 'pointer'}}
+                onClick={() => this.setState({collapsedRow2: !this.state.collapsedRow2} )}
+              >
+                Tag Group X
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[90, 143, 363, 600]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right">
+                <IconButton disableRipple>
+                  <DragHandleIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+
+          { this.state.collapsedRow2 ? null :
+          <TableBody className="Detail">
+            <TableRow>
+              <TableCell component="th" scope="row" >
+                TagA
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[93, 123, 393, 400]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row">
+                TagB
+              </TableCell>
+              <TableCell align="right" style={{ width: '100%' }}>
+                <Range
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={2000}
+                  defaultValue={[363, 390]}
+                  pushable
+                  trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+                  railStyle={{ backgroundColor: 'transparent' }}
+                />
+              </TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableBody>
+          }
+
+        </Table>
 
       </Paper>
     </MuiThemeProvider>
     );
   }
 }
+
 
 export default withStyles(styles, { withTheme: true })(App);
 

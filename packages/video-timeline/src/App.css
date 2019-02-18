@@ -1,0 +1,12 @@
+thead .rc-slider-handle {
+  position: relative;
+}
+
+thead .rc-slider-handle::before {
+  content: ' ';
+  position: absolute;
+  background-color: orange;
+  left: 5px;
+  width: 1px;
+  min-height: 100vh;
+}
