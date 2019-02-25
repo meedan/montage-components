@@ -32,7 +32,21 @@ class App extends Component {
   state = {
     anchorElPrev: null,
     anchorElNext: null,
+    currentTime: 0,
+    playing: false,
+    duration: DATA.gdVideoData.duration,
+    data: DATA, // sample data
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.$scope) {
+      const data = props.$scope.$parent.ctrl;
+      return {
+        data,
+        duration: data.gdVideoData.duration,
+      };
+    }
+  }
 
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
@@ -50,14 +64,38 @@ class App extends Component {
     this.setState({ anchorElNext: null });
   };
 
+  setPlayer = player => {
+    this.player = player;
+  }
+
+  playPause = () => {
+    this.setState({ playing: !this.state.playing })
+  }
+
+  stop = () => {
+    this.setState({ playing: false })
+  }
+
+  onDuration = duration => {
+    this.setState({ duration });
+  };
+
+  onProgress = progress => {
+    this.setState({ currentTime: progress.playedSeconds });
+  };
+
+  onPlay = () => {
+    this.setState({ playing: true });
+  }
+
+  onPause = () => {
+    this.setState({ playing: false });
+  }
+
   render() {
-    const { anchorElPrev, anchorElNext } = this.state;
+    const { data, currentTime, duration, anchorElPrev, anchorElNext } = this.state;
     const openPrev = Boolean(anchorElPrev);
     const openNext = Boolean(anchorElNext);
-
-
-    let data = DATA;
-    if (this.props.$scope) data = this.props.$scope.$parent.ctrl;
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -95,7 +133,7 @@ class App extends Component {
                   </Grid>
 
                   <Grid item xs={7}>
-                    <Player data={data}/>
+                    <Player data={data} onProgress={this.onProgress} onDuration={this.onDuration} setPlayer={this.setPlayer} playing={this.state.playing} onPlay={() => this.onPlay()} onPause={() => this.onPause()} />
                   </Grid>
 
                   <Grid item xs>
@@ -132,12 +170,12 @@ class App extends Component {
                 </Grid>
               </CardContent>
 
-              <Transport />
+              <Transport playing={this.state.playing} currentTime={currentTime} duration={duration} player={this.player} playPause={() => this.playPause() } />
 
             </Grid>
           </Card>
 
-          <Timeline />
+          <Timeline currentTime={currentTime} duration={duration} player={this.player} />
 
         </Paper>
       </MuiThemeProvider>

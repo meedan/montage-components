@@ -27,6 +27,8 @@ const Timeline = props => {
   const [collapsedRow, setCollapsedRow] = useState(true);
   const [collapsedRow2, setCollapsedRow2] = useState(true);
 
+  const { currentTime, duration, player } = props;
+
   return (
     <Table component={styled.table`
         thead {
@@ -82,8 +84,8 @@ const Timeline = props => {
             <Range
               style={{ width: '100%' }}
               min={0}
-              max={2000}
-              defaultValue={[90]}
+              max={duration}
+              defaultValue={[currentTime]}
               pushable
               trackStyle={[{ backgroundColor: 'transparent' }]}
               railStyle={{ backgroundColor: 'transparent' }}
@@ -91,6 +93,7 @@ const Timeline = props => {
                 borderColor: 'orange',
                 backgroundColor: 'orange',
               }}
+              onChange={([t]) => player.seekTo(t)}
             />
           </TableCell>
           <TableCell align="right"></TableCell>
