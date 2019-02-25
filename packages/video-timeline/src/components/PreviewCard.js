@@ -12,21 +12,23 @@ import Typography from '@material-ui/core/Typography';
 
 const PreviewCard = props => {
   const { data } = props;
+  console.log(data);
 
   return (
     <Card>
       <CardActionArea>
         <CardMedia
           style={{
-            width: data.ytVideoData.snippet.thumbnails.medium.width,
-            height: data.ytVideoData.snippet.thumbnails.medium.height,
+            width: 400,
+            height: 200,
           }}
-          image={data.ytVideoData.snippet.thumbnails.default.url}
+          image={`http:${data.c_thumbnail_url}`}
         />
         <CardContent>
           <Typography component="p" variant="body2">
-            Previous video description
-            { /* data.ytVideoData.snippet.description */ }
+            { data.name }
+            <br />
+            { `by ${data.channel_name}` }
           </Typography>
         </CardContent>
       </CardActionArea>
