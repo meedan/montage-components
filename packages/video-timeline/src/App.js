@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { react2angular } from 'react2angular';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
@@ -68,28 +68,30 @@ class App extends Component {
               <CardContent>
                 <Grid container direction="row" justify="center" alignItems="stretch" spacing={0}>
                   <Grid item xs={false}>
-                    <IconButton
-                      onMouseEnter={this.handlePopoverPrevOpen}
-                      onMouseLeave={this.handlePopoverPrevClose}
-                    >
-                      <KeyboardArrowLeftIcon fontSize="large" />
-                    </IconButton>
-                    <Popover className="popover"
-                      anchorOrigin={{
-                        vertical: 'center',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'center',
-                        horizontal: 'left',
-                      }}
-                      open={openPrev}
-                      anchorEl={anchorElPrev}
-                      onClose={this.handlePopoverPrevClose}
-                      disableRestoreFocus
-                    >
-                      <PreviewCard data={data} />
-                    </Popover>
+                    { data.prevVideo ? <>
+                      <IconButton
+                        onMouseEnter={this.handlePopoverPrevOpen}
+                        onMouseLeave={this.handlePopoverPrevClose}
+                      >
+                        <KeyboardArrowLeftIcon fontSize="large" />
+                      </IconButton>
+                      <Popover className="popover"
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left',
+                        }}
+                        open={openPrev}
+                        anchorEl={anchorElPrev}
+                        onClose={this.handlePopoverPrevClose}
+                        disableRestoreFocus
+                      >
+                        <PreviewCard data={data.prevVideo} />
+                      </Popover>
+                    </> : null }
                   </Grid>
 
                   <Grid item xs={7}>
@@ -101,28 +103,30 @@ class App extends Component {
                   </Grid>
 
                   <Grid item xs={false}>
-                    <IconButton
-                      onMouseEnter={this.handlePopoverNextOpen}
-                      onMouseLeave={this.handlePopoverNextClose}
-                    >
-                      <KeyboardArrowRightIcon fontSize="large" />
-                    </IconButton>
-                    <Popover className="popover"
-                      anchorOrigin={{
-                        vertical: 'center',
-                        horizontal: 'left',
-                      }}
-                      transformOrigin={{
-                        vertical: 'center',
-                        horizontal: 'right',
-                      }}
-                      open={openNext}
-                      anchorEl={anchorElNext}
-                      onClose={this.handlePopoverNextClose}
-                      disableRestoreFocus
-                    >
-                      <PreviewCard data={data} />
-                    </Popover>
+                    { data.nextVideo ? <>
+                      <IconButton
+                        onMouseEnter={this.handlePopoverNextOpen}
+                        onMouseLeave={this.handlePopoverNextClose}
+                      >
+                        <KeyboardArrowRightIcon fontSize="large" />
+                      </IconButton>
+                      <Popover className="popover"
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                          vertical: 'center',
+                          horizontal: 'right',
+                        }}
+                        open={openNext}
+                        anchorEl={anchorElNext}
+                        onClose={this.handlePopoverNextClose}
+                        disableRestoreFocus
+                      >
+                        <PreviewCard data={data.nextVideo} />
+                      </Popover>
+                    </> : null }
                   </Grid>
 
                 </Grid>
