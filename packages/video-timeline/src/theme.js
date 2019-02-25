@@ -6,11 +6,11 @@ const theme = createMuiTheme({
     useNextVariants: true,
   },
   overrides: {
-    MuiPopover: {
-      paper: {
-        pointerEvents: 'none',
-      },
-    },
+    // MuiPopover: {
+    //   paper: {
+    //     pointerEvents: 'none',
+    //   },
+    // },
   },
 });
 

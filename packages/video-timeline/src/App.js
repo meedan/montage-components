@@ -30,30 +30,30 @@ console.log(DATA);
 
 class App extends Component {
   state = {
-    anchorEl2: null,
-    anchorEl3: null,
+    anchorElPrev: null,
+    anchorElNext: null,
   };
 
-  handlePopoverOpen = event => {
-    this.setState({ anchorEl2: event.currentTarget });
+  handlePopoverPrevOpen = event => {
+    this.setState({ anchorElPrev: event.currentTarget });
   };
 
-  handlePopoverClose = () => {
-    this.setState({ anchorEl2: null });
+  handlePopoverPrevClose = () => {
+    this.setState({ anchorElPrev: null });
   };
 
-  handlePopoverOpen2 = event => {
-    this.setState({ anchorEl3: event.currentTarget });
+  handlePopoverNextOpen = event => {
+    this.setState({ anchorElNext: event.currentTarget });
   };
 
-  handlePopoverClose2 = () => {
-    this.setState({ anchorEl3: null });
+  handlePopoverNextClose = () => {
+    this.setState({ anchorElNext: null });
   };
 
   render() {
-    const { anchorEl2, anchorEl3 } = this.state;
-    const open2 = Boolean(anchorEl2);
-    const open3 = Boolean(anchorEl3);
+    const { anchorElPrev, anchorElNext } = this.state;
+    const openPrev = Boolean(anchorElPrev);
+    const openNext = Boolean(anchorElNext);
 
 
     let data = DATA;
@@ -61,95 +61,82 @@ class App extends Component {
 
     return (
       <MuiThemeProvider theme={theme}>
-      <Paper>
-        <Card>
-          <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="center"
-            spacing={0}
-          >
-            <CardContent>
-              <Grid
-                container
-                direction="row"
-                justify="center"
-                alignItems="stretch"
-                spacing={0}
-              >
-                <Grid item xs={false} component={styled.div` .popover { pointer-events: none; } `}>
-                  <IconButton
-                    onMouseEnter={this.handlePopoverOpen}
-                    onMouseLeave={this.handlePopoverClose}
-                  >
-                    <KeyboardArrowLeftIcon fontSize="large" />
-                  </IconButton>
-                  <Popover
-                    className="popover"
-                    anchorOrigin={{
-                      vertical: 'center',
-                      horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                      vertical: 'center',
-                      horizontal: 'left',
-                    }}
-                    open={open2}
-                    anchorEl={anchorEl2}
-                    onClose={this.handlePopoverClose}
-                    disableRestoreFocus
-                  >
-                    <PreviewCard data={data} />
-                  </Popover>
+        <Paper>
+          <style scoped>{'.popover { pointer-events: none; }'}</style>
+          <Card>
+            <Grid container direction="column" justify="flex-start" alignItems="center" spacing={0}>
+              <CardContent>
+                <Grid container direction="row" justify="center" alignItems="stretch" spacing={0}>
+                  <Grid item xs={false}>
+                    <IconButton
+                      onMouseEnter={this.handlePopoverPrevOpen}
+                      onMouseLeave={this.handlePopoverPrevClose}
+                    >
+                      <KeyboardArrowLeftIcon fontSize="large" />
+                    </IconButton>
+                    <Popover className="popover"
+                      anchorOrigin={{
+                        vertical: 'center',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'center',
+                        horizontal: 'left',
+                      }}
+                      open={openPrev}
+                      anchorEl={anchorElPrev}
+                      onClose={this.handlePopoverPrevClose}
+                      disableRestoreFocus
+                    >
+                      <PreviewCard data={data} />
+                    </Popover>
+                  </Grid>
+
+                  <Grid item xs={7}>
+                    <Player data={data}/>
+                  </Grid>
+
+                  <Grid item xs>
+                    <InfoCard data={data} />
+                  </Grid>
+
+                  <Grid item xs={false}>
+                    <IconButton
+                      onMouseEnter={this.handlePopoverNextOpen}
+                      onMouseLeave={this.handlePopoverNextClose}
+                    >
+                      <KeyboardArrowRightIcon fontSize="large" />
+                    </IconButton>
+                    <Popover className="popover"
+                      anchorOrigin={{
+                        vertical: 'center',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'center',
+                        horizontal: 'right',
+                      }}
+                      open={openNext}
+                      anchorEl={anchorElNext}
+                      onClose={this.handlePopoverNextClose}
+                      disableRestoreFocus
+                    >
+                      <PreviewCard data={data} />
+                    </Popover>
+                  </Grid>
+
                 </Grid>
+              </CardContent>
 
-                <Grid item xs={7}>
-                  <Player data={data}/>
-                </Grid>
+              <Transport />
 
-                <Grid item xs>
-                  <InfoCard data={data} />
-                </Grid>
+            </Grid>
+          </Card>
 
-                <Grid item xs={false} component={styled.div` .popover { pointer-events: none; } `}>
-                  <IconButton
-                    onMouseEnter={this.handlePopoverOpen2}
-                    onMouseLeave={this.handlePopoverClose2}
-                  >
-                    <KeyboardArrowRightIcon fontSize="large" />
-                  </IconButton>
-                  <Popover
-                    className="popover"
-                    anchorOrigin={{
-                      vertical: 'center',
-                      horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                      vertical: 'center',
-                      horizontal: 'right',
-                    }}
-                    open={open3}
-                    anchorEl={anchorEl3}
-                    onClose={this.handlePopoverClose2}
-                    disableRestoreFocus
-                  >
-                    <PreviewCard data={data} />
-                  </Popover>
-                </Grid>
+          <Timeline />
 
-              </Grid>
-            </CardContent>
-
-            <Transport />
-
-          </Grid>
-        </Card>
-
-        <Timeline />
-
-      </Paper>
-    </MuiThemeProvider>
+        </Paper>
+      </MuiThemeProvider>
     );
   }
 }
