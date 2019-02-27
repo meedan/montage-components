@@ -43,15 +43,15 @@ const InfoCard = props => {
       <CardHeader
         action={
           <>
-          <IconButton>
-            <StarIcon />
-          </IconButton>
-          <IconButton>
-            <ArchiveIcon />
-          </IconButton>
-          <IconButton onClick={handleClick}>
-            <MoreVertIcon />
-          </IconButton>
+            <IconButton>
+              <StarIcon />
+            </IconButton>
+            <IconButton>
+              <ArchiveIcon />
+            </IconButton>
+            <IconButton onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
           </>
         }
         title={data.ytVideoData.snippet.channelTitle}
@@ -80,7 +80,6 @@ const InfoCard = props => {
           </ListItemIcon>
           <ListItemText inset primary="Remove" />
         </MenuItem>
-
       </Menu>
 
       <List disablePadding>
@@ -88,13 +87,17 @@ const InfoCard = props => {
           <ListItemIcon>
             <VisibilityIcon />
           </ListItemIcon>
-          <ListItemText primary={`${data.ytVideoData.statistics.viewCount} views`} />
+          <ListItemText
+            primary={`${data.ytVideoData.statistics.viewCount} views`}
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <PublishIcon />
           </ListItemIcon>
-          <ListItemText primary={`Published ${data.ytVideoData.snippet.publishedAt}`} />
+          <ListItemText
+            primary={`Published ${data.ytVideoData.snippet.publishedAt}`}
+          />
         </ListItem>
         <ListItem button>
           <ListItemIcon>
@@ -128,6 +131,5 @@ const InfoCard = props => {
     </Card>
   );
 };
-
 
 export default withTheme()(InfoCard);

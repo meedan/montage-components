@@ -8,8 +8,6 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 
 import Typography from '@material-ui/core/Typography';
 
-
-
 const PreviewCard = props => {
   const { data } = props;
   console.log(data);
@@ -26,15 +24,14 @@ const PreviewCard = props => {
         />
         <CardContent>
           <Typography component="p" variant="body2">
-            { data.name }
+            {data.name}
             <br />
-            { `by ${data.channel_name}` }
+            {`by ${data.channel_name}`}
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
   );
 };
-
 
 export default withTheme()(PreviewCard);

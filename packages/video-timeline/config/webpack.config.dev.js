@@ -176,9 +176,9 @@ module.exports = {
       PnpWebpackPlugin.moduleLoader(module),
     ],
     modules: [
-      "node_modules",
-      path.resolve(__dirname, "./../../node_modules")
-    ]
+      'node_modules',
+      path.resolve(__dirname, './../../node_modules'),
+    ],
   },
   module: {
     strictExportPresence: true,
@@ -225,13 +225,13 @@ module.exports = {
             test: /\.m?js$/,
             exclude: /(node_modules)/,
             use: {
-              loader: "babel-loader",
+              loader: 'babel-loader',
               options: {
               cacheDirectory: true,
-              presets: ["@babel/preset-env", "@babel/preset-react"],
+              presets: ['@babel/preset-env', '@babel/preset-react'],
               plugins: [
-                  "transform-class-properties",
-                  // "transform-object-rest-spread"
+                  'transform-class-properties',
+                  // 'transform-object-rest-spread'
                 ]
               }
             }
