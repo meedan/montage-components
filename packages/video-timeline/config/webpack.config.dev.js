@@ -175,6 +175,10 @@ module.exports = {
       // from the current package.
       PnpWebpackPlugin.moduleLoader(module),
     ],
+    modules: [
+      "node_modules",
+      path.resolve(__dirname, "./../../node_modules")
+    ]
   },
   module: {
     strictExportPresence: true,
@@ -192,7 +196,7 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -225,7 +229,7 @@ module.exports = {
               customize: require.resolve(
                 'babel-preset-react-app/webpack-overrides'
               ),
-              
+              presets: ["@babel/preset-env", "@babel/preset-react"],
               plugins: [
                 [
                   require.resolve('babel-plugin-named-asset-import'),
@@ -265,7 +269,7 @@ module.exports = {
               cacheDirectory: true,
               // Don't waste time on Gzipping the cache
               cacheCompression: false,
-              
+
               // If an error happens in a package, it's possible to be
               // because it was compiled. Thus, we don't want the browser
               // debugger to show the original code. Instead, the code
