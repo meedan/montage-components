@@ -1,25 +1,12 @@
 {
   "name": "video-timeline",
   "description": "montage video-timeline",
-  "main": [
-    "build/static/js/main.js",
-    "build/static/css/main.css"
-  ],
+  "main": ["build/static/js/main.js", "build/static/css/main.css"],
   "dependencies": {
     "angular-component.js": "0.1.3"
   },
-  "moduleType": [
-    "amd",
-    "globals",
-    "node"
-  ],
+  "moduleType": ["amd", "globals", "node"],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "private": true
 }

@@ -5,7 +5,7 @@ import { react2angular } from 'react2angular';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 
-import { Container } from "@montage/ui";
+import { Container } from '@montage/ui';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -25,10 +25,8 @@ import InfoCard from './components/InfoCard';
 import Transport from './components/Transport';
 import Timeline from './components/Timeline';
 
-
 import DATA from './data/VideoPageCtrl';
 console.log(DATA);
-
 
 class App extends Component {
   state = {
@@ -68,15 +66,15 @@ class App extends Component {
 
   setPlayer = player => {
     this.player = player;
-  }
+  };
 
   playPause = () => {
-    this.setState({ playing: !this.state.playing })
-  }
+    this.setState({ playing: !this.state.playing });
+  };
 
   stop = () => {
-    this.setState({ playing: false })
-  }
+    this.setState({ playing: false });
+  };
 
   onDuration = duration => {
     this.setState({ duration });
@@ -88,14 +86,20 @@ class App extends Component {
 
   onPlay = () => {
     this.setState({ playing: true });
-  }
+  };
 
   onPause = () => {
     this.setState({ playing: false });
-  }
+  };
 
   render() {
-    const { data, currentTime, duration, anchorElPrev, anchorElNext } = this.state;
+    const {
+      data,
+      currentTime,
+      duration,
+      anchorElPrev,
+      anchorElNext,
+    } = this.state;
     const openPrev = Boolean(anchorElPrev);
     const openNext = Boolean(anchorElNext);
 
@@ -104,38 +108,61 @@ class App extends Component {
         <Paper>
           <style scoped>{'.popover { pointer-events: none; }'}</style>
           <Card>
-            <Grid container direction="column" justify="flex-start" alignItems="center" spacing={0}>
+            <Grid
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="center"
+              spacing={0}
+            >
               <CardContent>
-                <Grid container direction="row" justify="center" alignItems="stretch" spacing={0}>
+                <Grid
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="stretch"
+                  spacing={0}
+                >
                   <Grid item xs={false}>
-                    { data.prevVideo ? <>
-                      <IconButton
-                        onMouseEnter={this.handlePopoverPrevOpen}
-                        onMouseLeave={this.handlePopoverPrevClose}
-                      >
-                        <KeyboardArrowLeftIcon fontSize="large" />
-                      </IconButton>
-                      <Popover className="popover"
-                        anchorOrigin={{
-                          vertical: 'center',
-                          horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                          vertical: 'center',
-                          horizontal: 'left',
-                        }}
-                        open={openPrev}
-                        anchorEl={anchorElPrev}
-                        onClose={this.handlePopoverPrevClose}
-                        disableRestoreFocus
-                      >
-                        <PreviewCard data={data.prevVideo} />
-                      </Popover>
-                    </> : null }
+                    {data.prevVideo ? (
+                      <>
+                        <IconButton
+                          onMouseEnter={this.handlePopoverPrevOpen}
+                          onMouseLeave={this.handlePopoverPrevClose}
+                        >
+                          <KeyboardArrowLeftIcon fontSize="large" />
+                        </IconButton>
+                        <Popover
+                          className="popover"
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'right',
+                          }}
+                          transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left',
+                          }}
+                          open={openPrev}
+                          anchorEl={anchorElPrev}
+                          onClose={this.handlePopoverPrevClose}
+                          disableRestoreFocus
+                        >
+                          <PreviewCard data={data.prevVideo} />
+                        </Popover>
+                      </>
+                    ) : null}
                   </Grid>
 
                   <Grid item xs={7}>
-                    <Player data={data} onProgress={this.onProgress} onDuration={this.onDuration} setPlayer={this.setPlayer} playing={this.state.playing} onPlay={() => this.onPlay()} onPause={() => this.onPause()} />
+                    <Player
+                      data={data}
+                      onProgress={this.onProgress}
+                      onDuration={this.onDuration}
+                      setPlayer={this.setPlayer}
+                      playing={this.state.playing}
+                      onPlay={() => this.onPlay()}
+                      onPause={() => this.onPause()}
+                    />
                   </Grid>
 
                   <Grid item xs>
@@ -143,52 +170,65 @@ class App extends Component {
                   </Grid>
 
                   <Grid item xs={false}>
-                    { data.nextVideo ? <>
-                      <IconButton
-                        onMouseEnter={this.handlePopoverNextOpen}
-                        onMouseLeave={this.handlePopoverNextClose}
-                      >
-                        <KeyboardArrowRightIcon fontSize="large" />
-                      </IconButton>
-                      <Popover className="popover"
-                        anchorOrigin={{
-                          vertical: 'center',
-                          horizontal: 'left',
-                        }}
-                        transformOrigin={{
-                          vertical: 'center',
-                          horizontal: 'right',
-                        }}
-                        open={openNext}
-                        anchorEl={anchorElNext}
-                        onClose={this.handlePopoverNextClose}
-                        disableRestoreFocus
-                      >
-                        <PreviewCard data={data.nextVideo} />
-                      </Popover>
-                    </> : null }
+                    {data.nextVideo ? (
+                      <>
+                        <IconButton
+                          onMouseEnter={this.handlePopoverNextOpen}
+                          onMouseLeave={this.handlePopoverNextClose}
+                        >
+                          <KeyboardArrowRightIcon fontSize="large" />
+                        </IconButton>
+                        <Popover
+                          className="popover"
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left',
+                          }}
+                          transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'right',
+                          }}
+                          open={openNext}
+                          anchorEl={anchorElNext}
+                          onClose={this.handlePopoverNextClose}
+                          disableRestoreFocus
+                        >
+                          <PreviewCard data={data.nextVideo} />
+                        </Popover>
+                      </>
+                    ) : null}
                   </Grid>
-
                 </Grid>
               </CardContent>
 
-              <Transport playing={this.state.playing} currentTime={currentTime} duration={duration} player={this.player} playPause={() => this.playPause() } />
-
+              <Transport
+                playing={this.state.playing}
+                currentTime={currentTime}
+                duration={duration}
+                player={this.player}
+                playPause={() => this.playPause()}
+              />
             </Grid>
           </Card>
 
           <Container>DOES IT?!</Container>
 
-          <Timeline currentTime={currentTime} duration={duration} player={this.player} />
-
+          <Timeline
+            currentTime={currentTime}
+            duration={duration}
+            player={this.player}
+          />
         </Paper>
       </MuiThemeProvider>
     );
   }
 }
 
-
 export default App;
 
-export const AngularVideoTimeline = react2angular(App, ['foo'], ['$scope', '$http'] );
-window.AngularVideoTimeline =  AngularVideoTimeline;
+export const AngularVideoTimeline = react2angular(
+  App,
+  ['foo'],
+  ['$scope', '$http']
+);
+window.AngularVideoTimeline = AngularVideoTimeline;

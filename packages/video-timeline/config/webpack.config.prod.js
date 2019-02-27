@@ -249,6 +249,10 @@ module.exports = {
       // from the current package.
       PnpWebpackPlugin.moduleLoader(module),
     ],
+    modules: [
+      "node_modules",
+      path.resolve(__dirname, "./../../node_modules")
+    ],
   },
   module: {
     strictExportPresence: true,
@@ -289,34 +293,21 @@ module.exports = {
             },
           },
           // Process application JS with Babel.
-          // The preset includes JSX, Flow, TypeScript and some ESnext features.
+          // The preset includes JSX, Flow, and some ESnext features.
           {
-            test: /\.(js|mjs|jsx|ts|tsx)$/,
-            include: paths.appSrc,
-
-            loader: require.resolve('babel-loader'),
-            options: {
-              customize: require.resolve(
-                'babel-preset-react-app/webpack-overrides'
-              ),
-              
-              plugins: [
-                [
-                  require.resolve('babel-plugin-named-asset-import'),
-                  {
-                    loaderMap: {
-                      svg: {
-                        ReactComponent: '@svgr/webpack?-prettier,-svgo![path]',
-                      },
-                    },
-                  },
-                ],
-              ],
+            test: /\.m?js$/,
+            exclude: /(node_modules)/,
+            use: {
+              loader: 'babel-loader',
+              options: {
               cacheDirectory: true,
-              // Save disk space when time isn't as important
-              cacheCompression: true,
-              compact: true,
-            },
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+              plugins: [
+                  'transform-class-properties',
+                  // 'transform-object-rest-spread'
+                ]
+              }
+            }
           },
           // Process any JS outside of the app with Babel.
           // Unlike the application JS, we only compile the standard ES features.

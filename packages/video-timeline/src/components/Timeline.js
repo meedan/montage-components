@@ -8,7 +8,6 @@ import styled from 'styled-components';
 // import CommentIcon from '@material-ui/icons/Comment';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 
-
 import IconButton from '@material-ui/core/IconButton';
 
 import Table from '@material-ui/core/Table';
@@ -30,9 +29,12 @@ const Timeline = props => {
   const { currentTime, duration, player } = props;
 
   return (
-    <Table component={styled.table`
+    <Table
+      component={styled.table`
         thead {
-          tr, th, td {
+          tr,
+          th,
+          td {
             padding: 0 !important;
             height: 0 !important;
             border: 0;
@@ -41,24 +43,29 @@ const Timeline = props => {
 
         tbody {
           tr {
-            th, td {
+            th,
+            td {
               border-bottom: none;
             }
             &:first-child {
-              th, td {
+              th,
+              td {
                 border-top: 1px solid blue;
               }
             }
           }
-          td:nth-child(2), td:nth-child(3) {
+          td:nth-child(2),
+          td:nth-child(3) {
             padding: 0;
             border-left: 1px solid blue;
           }
         }
 
-        thead + tbody, tbody + tbody.Detail  {
+        thead + tbody,
+        tbody + tbody.Detail {
           tr:first-child {
-            th, td {
+            th,
+            td {
               border-top: none;
             }
           }
@@ -76,10 +83,11 @@ const Timeline = props => {
           width: 1px;
           min-height: 100vh;
         }
-      `}>
-      <TableHead >
+      `}
+    >
+      <TableHead>
         <TableRow>
-          <TableCell component="th" scope="row"></TableCell>
+          <TableCell component="th" scope="row" />
           <TableCell align="right" style={{ width: '100%' }}>
             <Range
               style={{ width: '100%' }}
@@ -96,15 +104,17 @@ const Timeline = props => {
               onChange={([t]) => player.seekTo(t)}
             />
           </TableCell>
-          <TableCell align="right"></TableCell>
+          <TableCell align="right" />
         </TableRow>
       </TableHead>
 
       <TableBody>
         <TableRow>
-          <TableCell component="th" scope="row"
+          <TableCell
+            component="th"
+            scope="row"
             hover
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => setCollapsedRow(!collapsedRow)}
           >
             Tag Group
@@ -116,7 +126,11 @@ const Timeline = props => {
               max={2000}
               defaultValue={[90, 143, 363, 600]}
               pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+              trackStyle={[
+                { backgroundColor: 'darkgrey' },
+                { backgroundColor: 'transparent' },
+                { backgroundColor: 'darkgrey' },
+              ]}
               railStyle={{ backgroundColor: 'transparent' }}
             />
           </TableCell>
@@ -128,52 +142,60 @@ const Timeline = props => {
         </TableRow>
       </TableBody>
 
-      { collapsedRow ? null :
-      <TableBody className="Detail">
-        <TableRow>
-          <TableCell component="th" scope="row" >
-            Tag1
-          </TableCell>
-          <TableCell align="right" style={{ width: '100%' }}>
-            <Range
-              style={{ width: '100%' }}
-              min={0}
-              max={2000}
-              defaultValue={[93, 123, 393, 400]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell component="th" scope="row">
-            Tag2
-          </TableCell>
-          <TableCell align="right" style={{ width: '100%' }}>
-            <Range
-              style={{ width: '100%' }}
-              min={0}
-              max={2000}
-              defaultValue={[363, 390]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-      </TableBody>
-      }
-
-
+      {collapsedRow ? null : (
+        <TableBody className="Detail">
+          <TableRow>
+            <TableCell component="th" scope="row">
+              Tag1
+            </TableCell>
+            <TableCell align="right" style={{ width: '100%' }}>
+              <Range
+                style={{ width: '100%' }}
+                min={0}
+                max={2000}
+                defaultValue={[93, 123, 393, 400]}
+                pushable
+                trackStyle={[
+                  { backgroundColor: 'darkgrey' },
+                  { backgroundColor: 'transparent' },
+                  { backgroundColor: 'darkgrey' },
+                ]}
+                railStyle={{ backgroundColor: 'transparent' }}
+              />
+            </TableCell>
+            <TableCell align="right" />
+          </TableRow>
+          <TableRow>
+            <TableCell component="th" scope="row">
+              Tag2
+            </TableCell>
+            <TableCell align="right" style={{ width: '100%' }}>
+              <Range
+                style={{ width: '100%' }}
+                min={0}
+                max={2000}
+                defaultValue={[363, 390]}
+                pushable
+                trackStyle={[
+                  { backgroundColor: 'darkgrey' },
+                  { backgroundColor: 'transparent' },
+                  { backgroundColor: 'darkgrey' },
+                ]}
+                railStyle={{ backgroundColor: 'transparent' }}
+              />
+            </TableCell>
+            <TableCell align="right" />
+          </TableRow>
+        </TableBody>
+      )}
 
       <TableBody>
         <TableRow>
-          <TableCell component="th" scope="row"
+          <TableCell
+            component="th"
+            scope="row"
             hover
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => setCollapsedRow2(!collapsedRow2)}
           >
             Tag Group X
@@ -185,7 +207,11 @@ const Timeline = props => {
               max={2000}
               defaultValue={[90, 143, 363, 600]}
               pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
+              trackStyle={[
+                { backgroundColor: 'darkgrey' },
+                { backgroundColor: 'transparent' },
+                { backgroundColor: 'darkgrey' },
+              ]}
               railStyle={{ backgroundColor: 'transparent' }}
             />
           </TableCell>
@@ -197,45 +223,52 @@ const Timeline = props => {
         </TableRow>
       </TableBody>
 
-      { collapsedRow2 ? null :
-      <TableBody className="Detail">
-        <TableRow>
-          <TableCell component="th" scope="row" >
-            TagA
-          </TableCell>
-          <TableCell align="right" style={{ width: '100%' }}>
-            <Range
-              style={{ width: '100%' }}
-              min={0}
-              max={2000}
-              defaultValue={[93, 123, 393, 400]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell component="th" scope="row">
-            TagB
-          </TableCell>
-          <TableCell align="right" style={{ width: '100%' }}>
-            <Range
-              style={{ width: '100%' }}
-              min={0}
-              max={2000}
-              defaultValue={[363, 390]}
-              pushable
-              trackStyle={[{ backgroundColor: 'darkgrey' }, { backgroundColor: 'transparent' }, { backgroundColor: 'darkgrey' }]}
-              railStyle={{ backgroundColor: 'transparent' }}
-            />
-          </TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-      </TableBody>
-      }
-
+      {collapsedRow2 ? null : (
+        <TableBody className="Detail">
+          <TableRow>
+            <TableCell component="th" scope="row">
+              TagA
+            </TableCell>
+            <TableCell align="right" style={{ width: '100%' }}>
+              <Range
+                style={{ width: '100%' }}
+                min={0}
+                max={2000}
+                defaultValue={[93, 123, 393, 400]}
+                pushable
+                trackStyle={[
+                  { backgroundColor: 'darkgrey' },
+                  { backgroundColor: 'transparent' },
+                  { backgroundColor: 'darkgrey' },
+                ]}
+                railStyle={{ backgroundColor: 'transparent' }}
+              />
+            </TableCell>
+            <TableCell align="right" />
+          </TableRow>
+          <TableRow>
+            <TableCell component="th" scope="row">
+              TagB
+            </TableCell>
+            <TableCell align="right" style={{ width: '100%' }}>
+              <Range
+                style={{ width: '100%' }}
+                min={0}
+                max={2000}
+                defaultValue={[363, 390]}
+                pushable
+                trackStyle={[
+                  { backgroundColor: 'darkgrey' },
+                  { backgroundColor: 'transparent' },
+                  { backgroundColor: 'darkgrey' },
+                ]}
+                railStyle={{ backgroundColor: 'transparent' }}
+              />
+            </TableCell>
+            <TableCell align="right" />
+          </TableRow>
+        </TableBody>
+      )}
     </Table>
   );
 };
