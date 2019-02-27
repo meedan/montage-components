@@ -5,6 +5,8 @@ import { react2angular } from 'react2angular';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 
+import { Container } from "@montage/ui";
+
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
@@ -174,6 +176,8 @@ class App extends Component {
 
             </Grid>
           </Card>
+
+          <Container>DOES IT?!</Container>
 
           <Timeline currentTime={currentTime} duration={duration} player={this.player} />
 
