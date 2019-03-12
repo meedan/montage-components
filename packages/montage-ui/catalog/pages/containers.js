@@ -1,7 +1,7 @@
-import React from 'react';
-import { markdown, ReactSpecimen } from '@catalog/core';
+import React from "react";
+import { markdown, ReactSpecimen } from "@catalog/core";
 
-import { Container } from '../../src';
+import { Container } from "@montage/ui";
 
 export default () => markdown`
 
@@ -11,27 +11,27 @@ export default () => markdown`
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container style={{ height: '400px' }} flexDirection="column">
-      <Container style={{ background: 'magenta' }}>Hd</Container>
-      <Container style={{ background: 'yellow' }} flexGrow={1}>
+    <Container style={{ height: "400px" }} flexDirection="column">
+      <Container style={{ background: "magenta" }}>Hd</Container>
+      <Container style={{ background: "yellow" }} flexGrow={1}>
         Bd
       </Container>
-      <Container style={{ background: 'cyan' }}>Ft</Container>
+      <Container style={{ background: "cyan" }}>Ft</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container style={{ height: '400px' }} flexDirection="row">
-      <Container style={{ background: 'magenta' }}>Hd</Container>
-      <Container style={{ background: 'yellow' }} flexGrow={1}>
+    <Container style={{ height: "400px" }} flexDirection="row">
+      <Container style={{ background: "magenta" }}>Hd</Container>
+      <Container style={{ background: "yellow" }} flexGrow={1}>
         Bd
       </Container>
-      <Container style={{ background: 'cyan' }}>Ft</Container>
+      <Container style={{ background: "cyan" }}>Ft</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ## Semantic usage
 
@@ -39,74 +39,74 @@ You may use **as** (i.e. **as="header"**) prop to change html output tag of the 
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container style={{ height: '400px' }} as="main">
-      <Container style={{ background: 'magenta' }} as="header">
+    <Container style={{ height: "400px" }} as="main">
+      <Container style={{ background: "magenta" }} as="header">
         Hd
       </Container>
-      <Container style={{ background: 'yellow' }} as="article">
+      <Container style={{ background: "yellow" }} as="article">
         Bd
       </Container>
-      <Container style={{ background: 'cyan' }} as="footer">
+      <Container style={{ background: "cyan" }} as="footer">
         Ft
       </Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
     <Container
-      style={{ height: '400px' }}
+      style={{ height: "400px" }}
       as="main"
       ft={(
-        <Container as="footer" style={{ background: 'cyan' }}>
+        <Container as="footer" style={{ background: "cyan" }}>
           Ft
         </Container>
 )}
       hd={(
-        <Container as="header" style={{ background: 'magenta' }}>
+        <Container as="header" style={{ background: "magenta" }}>
           Hd
         </Container>
 )}
     >
-      <Container style={{ background: 'yellow' }} as="article">
+      <Container style={{ background: "yellow" }} as="article">
         Bd
       </Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container style={{ height: '400px' }} as="main" flexDirection="column">
-      <Container style={{ background: 'magenta' }} as="header">
+    <Container style={{ height: "400px" }} as="main" flexDirection="column">
+      <Container style={{ background: "magenta" }} as="header">
         Hd
       </Container>
-      <Container style={{ background: 'yellow' }} as="section">
+      <Container style={{ background: "yellow" }} as="section">
         Bd
       </Container>
-      <Container style={{ background: 'cyan' }} as="footer">
+      <Container style={{ background: "cyan" }} as="footer">
         Ft
       </Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container style={{ height: '400px' }} as="main" flexDirection="row">
-      <Container style={{ background: 'magenta' }} as="header">
+    <Container style={{ height: "400px" }} as="main" flexDirection="row">
+      <Container style={{ background: "magenta" }} as="header">
         Hd
       </Container>
-      <Container style={{ background: 'yellow' }} as="section">
+      <Container style={{ background: "yellow" }} as="section">
         Bd
       </Container>
-      <Container style={{ background: 'cyan' }} as="footer">
+      <Container style={{ background: "cyan" }} as="footer">
         Ft
       </Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ## Hd and Ft as props
 
@@ -116,27 +116,27 @@ ${(
   <ReactSpecimen showSource span={3}>
     <Container
       flexDirection="column"
-      ft={<Container style={{ background: 'cyan' }}>Ft</Container>}
-      hd={<Container style={{ background: 'magenta' }}>Hd</Container>}
-      style={{ height: '400px' }}
+      ft={<Container style={{ background: "cyan" }}>Ft</Container>}
+      hd={<Container style={{ background: "magenta" }}>Hd</Container>}
+      style={{ height: "400px" }}
     >
-      <Container style={{ background: 'yellow' }}>Bd</Container>
+      <Container style={{ background: "yellow" }}>Bd</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
     <Container
       flexDirection="row"
-      ft={<Container style={{ background: 'cyan' }}>Ft</Container>}
-      hd={<Container style={{ background: 'magenta' }}>Hd</Container>}
-      style={{ height: '400px' }}
+      ft={<Container style={{ background: "cyan" }}>Ft</Container>}
+      hd={<Container style={{ background: "magenta" }}>Hd</Container>}
+      style={{ height: "400px" }}
     >
-      <Container style={{ background: 'yellow' }}>Bd</Container>
+      <Container style={{ background: "yellow" }}>Bd</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ## Cover variation
 
@@ -147,26 +147,26 @@ ${(
     <Container
       cover
       flexDirection="column"
-      ft={<Container style={{ background: 'cyan' }}>Ft</Container>}
-      hd={<Container style={{ background: 'magenta' }}>Hd</Container>}
+      ft={<Container style={{ background: "cyan" }}>Ft</Container>}
+      hd={<Container style={{ background: "magenta" }}>Hd</Container>}
     >
-      <Container style={{ background: 'yellow' }}>Bd</Container>
+      <Container style={{ background: "yellow" }}>Bd</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
     <Container
       cover
       flexDirection="row"
-      ft={<Container style={{ background: 'cyan' }}>Ft</Container>}
-      hd={<Container style={{ background: 'magenta' }}>Hd</Container>}
+      ft={<Container style={{ background: "cyan" }}>Ft</Container>}
+      hd={<Container style={{ background: "magenta" }}>Hd</Container>}
     >
-      <Container style={{ background: 'yellow' }}>Bd</Container>
+      <Container style={{ background: "yellow" }}>Bd</Container>
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ## Spaces
 
@@ -181,34 +181,36 @@ Supplying *hasSpace* as prop (string or array of strings) to a container will ad
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container hasSpace="mal" style={{ background: 'cyan' }}>
+    <Container hasSpace="mal" style={{ background: "cyan" }}>
       Container with `l` (large) margin on all sides
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container hasSpace="pas" style={{ background: 'cyan' }}>
+    <Container hasSpace="pas" style={{ background: "cyan" }}>
       Container with `s` (small) padding on all sides
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container hasSpace={['phh', 'mvm']} style={{ background: 'cyan' }}>
-      Container with `h` (huge) horizontal padding and `m` (medium) vertical margin
+    <Container hasSpace={["phh", "mvm"]} style={{ background: "cyan" }}>
+      Container with `h` (huge) horizontal padding and `m` (medium) vertical
+      margin
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 ${(
   <ReactSpecimen showSource span={3}>
-    <Container hasSpace={['phh', 'mvm']} style={{ background: 'cyan' }}>
-      Container with `h` (huge) horizontal padding and `m` (medium) vertical margin
+    <Container hasSpace={["phh", "mvm"]} style={{ background: "cyan" }}>
+      Container with `h` (huge) horizontal padding and `m` (medium) vertical
+      margin
     </Container>
   </ReactSpecimen>
-  )}
+)}
 
 `;
