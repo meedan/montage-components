@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const CSSReset = createGlobalStyle`
   html, body, div, span, applet, object, iframe,

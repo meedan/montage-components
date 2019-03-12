@@ -1,3 +1,4 @@
-export * from './setSize';
-export * from './setSpace';
-export * from './setType';
+export * from "./setPaint";
+export * from "./setSize";
+export * from "./setSpace";
+export * from "./setType";

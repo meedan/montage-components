@@ -1,21 +1,19 @@
 const path = require("path");
 
 module.exports = {
-  webpack: (catalogWebpackConfig, { paths, dev, framework }) => {
+  webpack: catalogWebpackConfig => {
     const modifiedWebpackConfig = {
       ...catalogWebpackConfig,
       resolveLoader: {
-        modules: [".", "node_modules"]
-      },
-      resolve: {
-        alias: {
-          src: path.resolve(__dirname, "src/")
-        }
+        modules: [
+          "node_modules",
+          path.resolve(__dirname, "./../../node_modules")
+        ]
       },
       module: {
         rules: [
           {
-            test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+            test: /\.(png|woff|woff2|eot|ttf|svg|ico)$/,
             loader: "url-loader?limit=100000"
           },
           {
@@ -32,11 +30,7 @@ module.exports = {
             use: {
               loader: "babel-loader",
               options: {
-                presets: ["@babel/preset-env", "@babel/preset-react"],
-                plugins: [
-                  "@babel/plugin-proposal-class-properties",
-                  "@babel/plugin-proposal-export-default-from"
-                ]
+                presets: ["@babel/preset-env", "@babel/preset-react"]
               }
             }
           }

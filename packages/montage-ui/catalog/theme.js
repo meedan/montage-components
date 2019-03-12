@@ -1,5 +1,3 @@
-import { Thm } from "..";
-
 export default {
   // Colors
   background: "white",
@@ -55,8 +53,8 @@ export default {
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAAAAACoWZBhAAAAFklEQVQI12NQBQF2EGAghQkmwXxSmADZJQiZ2ZZ46gAAAABJRU5ErkJggg==",
 
   // Fonts
-  fontFamily: Thm.fstack.primary,
-  fontHeading: Thm.fstack.primary,
+  fontFamily: '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  fontHeading: '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif',
   fontMono: "'Roboto Mono', monospace",
 
   // Base font size in pixels.
