@@ -39,7 +39,7 @@ const InfoCard = props => {
   const handleClose = () => setAnchorEl(null);
 
   return (
-    <Card>
+    <Card square elevation={0}>
       <CardHeader
         action={
           <>
