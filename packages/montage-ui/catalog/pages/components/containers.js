@@ -5,7 +5,7 @@ import { Container } from "@montage/ui";
 
 export default () => markdown`
 
-# Container
+# Containers
 
 ## Basic usage
 

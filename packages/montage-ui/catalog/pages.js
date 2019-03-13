@@ -1,7 +1,7 @@
 /* eslint global-require: off */
 const pages = [
   {
-    content: require("../README.md"),
+    content: require("../WELCOME.md"),
     path: "/",
     title: "Welcome"
   },
@@ -11,10 +11,20 @@ const pages = [
     title: "Changelog"
   },
   {
-    content: require("./pages/containers.js"),
-    path: "/containers",
-    title: "Containers"
+    content: require("./pages/helpers.js"),
+    path: "/helpers",
+    title: "Helpers"
   }
+  // {
+  //   title: "Components",
+  //   pages: [
+  //     {
+  //       content: require("./pages/components/containers.js"),
+  //       path: "/components/containers",
+  //       title: "Containers"
+  //     }
+  //   ]
+  // }
 ];
 
 export default pages;
