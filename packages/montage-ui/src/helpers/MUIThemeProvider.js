@@ -1,5 +1,5 @@
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { oneOfType, array, obj, node, string } from "prop-types";
+import { array, node, oneOfType, object, string } from "prop-types";
 import grey from "@material-ui/core/colors/grey";
 import React from "react";
 
@@ -14,6 +14,11 @@ const theme = createMuiTheme({
         // fontSize: theme.typography.pxToRem(10)
         // lineHeight: "".concat(theme.typography.round(14 / 10), "em")
       }
+    },
+    MuiPopover: {
+      //   paper: {
+      //     borderRadius: 0,
+      //   }
     }
   },
   palette: {
@@ -44,7 +49,7 @@ const CustomMUIThemeProvider = ({ children }) => {
 };
 
 CustomMUIThemeProvider.propTypes = {
-  children: oneOfType([array, obj, node, string]).isRequired
+  children: oneOfType([array, node, object, string]).isRequired
 };
 
 export default CustomMUIThemeProvider;
