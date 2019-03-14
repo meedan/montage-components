@@ -153,7 +153,7 @@ class App extends Component {
                   ) : null}
                 </Grid>
                 <Grid item sm={12}>
-                  <Paper>
+                  <Paper square>
                     <Grid
                       container
                       justify="center"
