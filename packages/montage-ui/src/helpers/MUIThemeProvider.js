@@ -6,19 +6,54 @@ import React from "react";
 import { color } from "@montage/ui/src/config";
 
 const theme = createMuiTheme({
+  props: {
+    MuiButtonBase: {
+      disableRipple: true
+    }
+  },
   overrides: {
     MuiTooltip: {
       tooltip: {
-        backgroundColor: grey[900]
-        // padding: '4px 8px',
-        // fontSize: theme.typography.pxToRem(10)
+        backgroundColor: grey[900],
+        fontSize: 13
         // lineHeight: "".concat(theme.typography.round(14 / 10), "em")
       }
     },
-    MuiPopover: {
-      //   paper: {
-      //     borderRadius: 0,
-      //   }
+    MuiIconButton: {
+      root: {
+        padding: 8,
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      },
+      colorPrimary: {
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      },
+      colorSecondary: {
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      }
     }
   },
   palette: {
