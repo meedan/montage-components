@@ -1,11 +1,24 @@
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { array, node, oneOfType, object, string } from "prop-types";
 import grey from "@material-ui/core/colors/grey";
 import React from "react";
 
 import { color } from "@montage/ui/src/config";
 
-const theme = createMuiTheme({
+const theme = createMuiTheme();
+
+const customTheme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+    // Use the system font instead of the default Roboto font.
+    fontWeightMedium: 500,
+    body2: {
+      fontSize: 13
+    },
+    h6: {
+      fontWeight: 400
+    }
+  },
   props: {
     MuiButtonBase: {
       disableRipple: true
@@ -15,13 +28,29 @@ const theme = createMuiTheme({
     MuiTooltip: {
       tooltip: {
         backgroundColor: grey[900],
-        fontSize: 13
-        // lineHeight: "".concat(theme.typography.round(14 / 10), "em")
+        fontSize: theme.typography.pxToRem(13)
+      }
+    },
+    // MuiListItem: {
+    //   button: {
+    //     "&:focus": {
+    //       backgroundColor: "transparent"
+    //     }
+    //   }
+    // },
+    MuiListItemIcon: {
+      root: {
+        marginRight: 6
+      }
+    },
+    MuiListItemText: {
+      root: {
+        padding: "0 6px"
       }
     },
     MuiIconButton: {
       root: {
-        padding: 8,
+        padding: 6,
         "&:hover": {
           backgroundColor: "transparent",
           "@media (hover: none)": {
@@ -73,14 +102,13 @@ const theme = createMuiTheme({
       dark: color.black,
       contrastText: color.white
     }
-  },
-  typography: {
-    useNextVariants: true
   }
 });
 
 const CustomMUIThemeProvider = ({ children }) => {
-  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+  console.log("IMHERE");
+  console.log(customTheme);
+  return <MuiThemeProvider theme={customTheme}>{children}</MuiThemeProvider>;
 };
 
 CustomMUIThemeProvider.propTypes = {
