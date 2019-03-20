@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { setSpace } from '@montage/ui';
-
 import { withTheme } from '@material-ui/core/styles';
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
@@ -12,6 +10,8 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Tooltip from '@material-ui/core/Tooltip';
+
+import { setSpace } from '@montage/ui';
 
 const PlaybackControls = styled.div`
   ${setSpace('pvm')};

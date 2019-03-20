@@ -1,5 +1,7 @@
 import { react2angular } from 'react2angular';
 import styled from 'styled-components';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
 
 import { MUIThemeProvider } from '@montage/ui';
@@ -28,7 +30,7 @@ console.log(DATA);
 console.groupEnd();
 
 const Top = styled.div`
-  background-color: ${grey[700]};
+  background-color: ${grey[600]};
   & > * {
     margin-left: auto;
     margin-right: auto;
@@ -55,6 +57,7 @@ class App extends Component {
         duration: data.gdVideoData.duration,
       };
     }
+    return {};
   }
 
   handlePopoverPrevOpen = event => {
@@ -114,11 +117,12 @@ class App extends Component {
 
     return (
       <>
-        <CssBaseline />
-        <MUIThemeProvider>
-          <style scoped>{'.popover { pointer-events: none; }'}</style>
-          <Top>
-            <div>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <CssBaseline />
+          <MUIThemeProvider>
+            <style scoped>{'.popover { pointer-events: none; }'}</style>
+
+            <Top>
               <Grid
                 alignItems="center"
                 alignContent="space-between"
@@ -131,9 +135,9 @@ class App extends Component {
                   {data.prevVideo ? (
                     <>
                       <IconButton
+                        color="secondary"
                         onMouseEnter={this.handlePopoverPrevOpen}
                         onMouseLeave={this.handlePopoverPrevClose}
-                        color="secondary"
                       >
                         <KeyboardArrowLeftIcon fontSize="large" />
                       </IconButton>
@@ -187,9 +191,9 @@ class App extends Component {
                   {data.nextVideo ? (
                     <>
                       <IconButton
+                        color="secondary"
                         onMouseEnter={this.handlePopoverNextOpen}
                         onMouseLeave={this.handlePopoverNextClose}
-                        color="secondary"
                       >
                         <KeyboardArrowRightIcon fontSize="large" />
                       </IconButton>
@@ -214,25 +218,23 @@ class App extends Component {
                   ) : null}
                 </Grid>
               </Grid>
-            </div>
-            <div>
               <Transport
-                playing={this.state.playing}
                 currentTime={currentTime}
                 duration={duration}
                 player={this.player}
+                playing={this.state.playing}
                 playPause={() => this.playPause()}
               />
-            </div>
-          </Top>
-          <Bottom>
-            <Timeline
-              currentTime={currentTime}
-              duration={duration}
-              player={this.player}
-            />
-          </Bottom>
-        </MUIThemeProvider>
+            </Top>
+            <Bottom>
+              <Timeline
+                currentTime={currentTime}
+                duration={duration}
+                player={this.player}
+              />
+            </Bottom>
+          </MUIThemeProvider>
+        </MuiPickersUtilsProvider>
       </>
     );
   }
