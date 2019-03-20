@@ -4,7 +4,7 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 const KeepIcon = props => {
   return (
     <SvgIcon {...props}>
-      <path d="M8.5455 14.014h-.056v7.8881H2V2.0979h6.4615v7.3007h.056l5.2867-7.3007h7.8322l-7.4406 9.063L22 21.902h-8.1678z" />
+      <path d="M9.5818 13.3413h-.0391v5.5216H5V5h4.523v5.1105h.0392L13.263 5h5.4826l-5.2084 6.344L19 18.863h-5.7175z" />
     </SvgIcon>
   );
 };
