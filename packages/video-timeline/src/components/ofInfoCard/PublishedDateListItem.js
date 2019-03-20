@@ -1,6 +1,7 @@
 import React from 'react';
 import { parseISO, format } from 'date-fns';
 
+import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -13,13 +14,16 @@ const PublishedDateListItem = props => {
       <ListItemIcon>
         <PublishIcon />
       </ListItemIcon>
-      <ListItemText
-        primary={`Published ${format(
-          parseISO(data.ytVideoData.snippet.publishedAt),
-          'd MMMM YYYY',
-          { awareOfUnicodeTokens: true }
-        )}`}
-      />
+      <ListItemText>
+        <Typography>
+          Published{' '}
+          {format(
+            parseISO(data.ytVideoData.snippet.publishedAt),
+            'd MMMM YYYY',
+            { awareOfUnicodeTokens: true }
+          )}
+        </Typography>
+      </ListItemText>
     </ListItem>
   );
 };
