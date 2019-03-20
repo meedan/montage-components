@@ -1,11 +1,32 @@
 const newData = {
   keep: {
-    services:
-     [
-      { name: "Archive.org", isActive: true, fileUrl: "https://archive.org/x/keep/y/z.mp4" },
-      { name: "Archive.is", isActive: false, fileUrl: null },
-      { name: "Internet Archive", isActive: false, fileUrl: "https://archive.org/x/keep/y/z.mp4" },
-    ]
+    settings: {
+      serviceIds: ["archiveOrg", "archiveIs"],
+      services: [
+        {
+          id: "archiveOrg",
+          name: "Archive.Org",
+          isActive: true
+        },
+        {
+          id: "archiveIs",
+          name: "Archive.Is",
+          isActive: false
+        },
+      ]
+    },
+    backups: {
+      mediaIds: [11340],
+      media: [
+        {
+          id: 11340,
+          locations: [
+            { serviceId: "archiveIs", url: "https://archive.is/…/media/…/x/y/z.mp4"},
+            { serviceId: "archiveOrg", url: "https://archive.org/…/media/…/x/y/z.mp4"},
+          ]
+        }
+      ]
+    }
   }
 };
 
