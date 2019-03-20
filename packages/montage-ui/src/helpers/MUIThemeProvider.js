@@ -106,8 +106,6 @@ const customTheme = createMuiTheme({
 });
 
 const CustomMUIThemeProvider = ({ children }) => {
-  console.log("IMHERE");
-  console.log(customTheme);
   return <MuiThemeProvider theme={customTheme}>{children}</MuiThemeProvider>;
 };
 

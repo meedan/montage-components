@@ -1,8 +1,9 @@
-import { react2angular } from 'react2angular';
-import styled from 'styled-components';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import { react2angular } from 'react2angular';
+import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
+import styled from 'styled-components';
 
 import { MUIThemeProvider } from '@montage/ui';
 
@@ -117,124 +118,126 @@ class App extends Component {
 
     return (
       <>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <CssBaseline />
-          <MUIThemeProvider>
-            <style scoped>{'.popover { pointer-events: none; }'}</style>
+        <SnackbarProvider maxSnack={3}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <CssBaseline />
+            <MUIThemeProvider>
+              <style scoped>{'.popover { pointer-events: none; }'}</style>
 
-            <Top>
-              <Grid
-                alignItems="center"
-                alignContent="space-between"
-                container
-                justify="center"
-                spacing={0}
-                wrap="nowrap"
-              >
-                <Grid item sm={'auto'}>
-                  {data.prevVideo ? (
-                    <>
-                      <IconButton
-                        color="secondary"
-                        onMouseEnter={this.handlePopoverPrevOpen}
-                        onMouseLeave={this.handlePopoverPrevClose}
+              <Top>
+                <Grid
+                  alignItems="center"
+                  alignContent="space-between"
+                  container
+                  justify="center"
+                  spacing={0}
+                  wrap="nowrap"
+                >
+                  <Grid item sm={'auto'}>
+                    {data.prevVideo ? (
+                      <>
+                        <IconButton
+                          color="secondary"
+                          onMouseEnter={this.handlePopoverPrevOpen}
+                          onMouseLeave={this.handlePopoverPrevClose}
+                        >
+                          <KeyboardArrowLeftIcon fontSize="large" />
+                        </IconButton>
+                        <Popover
+                          className="popover"
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'right',
+                          }}
+                          transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left',
+                          }}
+                          open={openPrev}
+                          anchorEl={anchorElPrev}
+                          onClose={this.handlePopoverPrevClose}
+                          disableRestoreFocus
+                        >
+                          <PreviewCard data={data.prevVideo} />
+                        </Popover>
+                      </>
+                    ) : null}
+                  </Grid>
+                  <Grid item sm={12}>
+                    <Paper square>
+                      <Grid
+                        container
+                        justify="center"
+                        alignItems="stretch"
+                        spacing={0}
+                        direction="row-reverse"
                       >
-                        <KeyboardArrowLeftIcon fontSize="large" />
-                      </IconButton>
-                      <Popover
-                        className="popover"
-                        anchorOrigin={{
-                          vertical: 'center',
-                          horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                          vertical: 'center',
-                          horizontal: 'left',
-                        }}
-                        open={openPrev}
-                        anchorEl={anchorElPrev}
-                        onClose={this.handlePopoverPrevClose}
-                        disableRestoreFocus
-                      >
-                        <PreviewCard data={data.prevVideo} />
-                      </Popover>
-                    </>
-                  ) : null}
-                </Grid>
-                <Grid item sm={12}>
-                  <Paper square>
-                    <Grid
-                      container
-                      justify="center"
-                      alignItems="stretch"
-                      spacing={0}
-                      direction="row-reverse"
-                    >
-                      <Grid item sm={4}>
-                        <InfoCard data={data} />
+                        <Grid item sm={4}>
+                          <InfoCard data={data} />
+                        </Grid>
+                        <Grid item sm={8}>
+                          <Player
+                            data={data}
+                            onProgress={this.onProgress}
+                            onDuration={this.onDuration}
+                            setPlayer={this.setPlayer}
+                            playing={this.state.playing}
+                            onPlay={() => this.onPlay()}
+                            onPause={() => this.onPause()}
+                          />
+                        </Grid>
                       </Grid>
-                      <Grid item sm={8}>
-                        <Player
-                          data={data}
-                          onProgress={this.onProgress}
-                          onDuration={this.onDuration}
-                          setPlayer={this.setPlayer}
-                          playing={this.state.playing}
-                          onPlay={() => this.onPlay()}
-                          onPause={() => this.onPause()}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Paper>
+                    </Paper>
+                  </Grid>
+                  <Grid item sm={'auto'}>
+                    {data.nextVideo ? (
+                      <>
+                        <IconButton
+                          color="secondary"
+                          onMouseEnter={this.handlePopoverNextOpen}
+                          onMouseLeave={this.handlePopoverNextClose}
+                        >
+                          <KeyboardArrowRightIcon fontSize="large" />
+                        </IconButton>
+                        <Popover
+                          className="popover"
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left',
+                          }}
+                          transformOrigin={{
+                            vertical: 'center',
+                            horizontal: 'right',
+                          }}
+                          open={openNext}
+                          anchorEl={anchorElNext}
+                          onClose={this.handlePopoverNextClose}
+                          disableRestoreFocus
+                        >
+                          <PreviewCard data={data.nextVideo} />
+                        </Popover>
+                      </>
+                    ) : null}
+                  </Grid>
                 </Grid>
-                <Grid item sm={'auto'}>
-                  {data.nextVideo ? (
-                    <>
-                      <IconButton
-                        color="secondary"
-                        onMouseEnter={this.handlePopoverNextOpen}
-                        onMouseLeave={this.handlePopoverNextClose}
-                      >
-                        <KeyboardArrowRightIcon fontSize="large" />
-                      </IconButton>
-                      <Popover
-                        className="popover"
-                        anchorOrigin={{
-                          vertical: 'center',
-                          horizontal: 'left',
-                        }}
-                        transformOrigin={{
-                          vertical: 'center',
-                          horizontal: 'right',
-                        }}
-                        open={openNext}
-                        anchorEl={anchorElNext}
-                        onClose={this.handlePopoverNextClose}
-                        disableRestoreFocus
-                      >
-                        <PreviewCard data={data.nextVideo} />
-                      </Popover>
-                    </>
-                  ) : null}
-                </Grid>
-              </Grid>
-              <Transport
-                currentTime={currentTime}
-                duration={duration}
-                player={this.player}
-                playing={this.state.playing}
-                playPause={() => this.playPause()}
-              />
-            </Top>
-            <Bottom>
-              <Timeline
-                currentTime={currentTime}
-                duration={duration}
-                player={this.player}
-              />
-            </Bottom>
-          </MUIThemeProvider>
-        </MuiPickersUtilsProvider>
+                <Transport
+                  currentTime={currentTime}
+                  duration={duration}
+                  player={this.player}
+                  playing={this.state.playing}
+                  playPause={() => this.playPause()}
+                />
+              </Top>
+              <Bottom>
+                <Timeline
+                  currentTime={currentTime}
+                  duration={duration}
+                  player={this.player}
+                />
+              </Bottom>
+            </MUIThemeProvider>
+          </MuiPickersUtilsProvider>
+        </SnackbarProvider>
       </>
     );
   }
