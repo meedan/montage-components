@@ -2,6 +2,7 @@ import { InlineDatePicker } from 'material-ui-pickers';
 import { parseISO, format } from 'date-fns';
 import React, { useState, useCallback, useRef } from 'react';
 
+import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -25,30 +26,31 @@ const RecordedDateListItem = props => {
         <ListItemIcon>
           <VideocamIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={
-            data.gdVideoData.recorded_date_overridden
-              ? `Recorded ${format(
-                  parseISO(data.gdVideoData.recorded_date),
-                  'd MMMM YYYY',
-                  { awareOfUnicodeTokens: true }
-                )}`
-              : 'Set a recorded Date'
-          }
-          primaryTypographyProps={{
-            variant: 'button',
-            color: 'primary',
-          }}
-          secondary={
-            <InlineDatePicker
-              clearable
-              disableFuture
-              onChange={handleDateChange}
-              value={selectedDate}
-              ref={datepickerRef}
-              TextFieldComponent="span"
-            />
-          }
+        <ListItemText>
+          {data.gdVideoData.recorded_date_overridden ? (
+            <Typography>
+              Recorded{' '}
+              {format(parseISO(data.gdVideoData.recorded_date), 'd MMMM YYYY', {
+                awareOfUnicodeTokens: true,
+              })}{' '}
+              — 
+              <Typography inline color="primary">
+                Change?
+              </Typography>
+            </Typography>
+          ) : (
+            <Typography inline color="primary">
+              Set a recorded Date
+            </Typography>
+          )}
+        </ListItemText>
+        <InlineDatePicker
+          clearable
+          disableFuture
+          onChange={handleDateChange}
+          value={selectedDate}
+          ref={datepickerRef}
+          TextFieldComponent="span"
         />
       </>
     </ListItem>
