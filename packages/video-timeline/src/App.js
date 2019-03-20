@@ -19,8 +19,13 @@ import InfoCard from './components/InfoCard';
 import Transport from './components/Transport';
 import Timeline from './components/Timeline';
 
-import DATA from './data/VideoPageCtrl';
+import oldData from './data/VideoPageCtrl';
+import newData from './data/newData';
+const DATA = { ...oldData, newData };
+
+console.group('Data:');
 console.log(DATA);
+console.groupEnd();
 
 const Top = styled.div`
   background-color: ${grey[700]};
@@ -39,7 +44,7 @@ class App extends Component {
     currentTime: 0,
     playing: false,
     duration: DATA.gdVideoData.duration,
-    data: DATA, // sample data
+    data: { ...oldData, newData }, // sample data
   };
 
   static getDerivedStateFromProps(props, state) {
