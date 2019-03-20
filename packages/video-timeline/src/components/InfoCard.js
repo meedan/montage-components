@@ -1,43 +1,38 @@
-import React, { useState } from 'react';
 import { withTheme } from '@material-ui/core/styles';
-import { format } from 'date-fns';
+import React, { useState } from 'react';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Divider from '@material-ui/core/Divider';
-
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import FolderIcon from '@material-ui/icons/Folder';
-import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import PublishIcon from '@material-ui/icons/Publish';
-import PlaceIcon from '@material-ui/icons/Place';
 import ArchiveIcon from '@material-ui/icons/Archive';
-import StarIcon from '@material-ui/icons/Star';
-import Tooltip from '@material-ui/core/Tooltip';
-
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import Divider from '@material-ui/core/Divider';
+import FolderIcon from '@material-ui/icons/Folder';
 import IconButton from '@material-ui/core/IconButton';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PlaceIcon from '@material-ui/icons/Place';
+import StarIcon from '@material-ui/icons/Star';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import KeepIcon from '@montage/ui/src/components/icons/KeepIcon';
+import KeepListItem from './ofInfoCard/KeepListItem';
+import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
+import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
 const InfoCard = props => {
   const { data } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  console.log(data.gdVideoData.publish_date);
 
   const handleClick = event => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -49,22 +44,26 @@ const InfoCard = props => {
           <>
             <IconButton>
               <Tooltip title="Add to Favorites" aria-label="Add to Favorites">
-                <StarIcon fontSize="small" />
+                <StarIcon />
               </Tooltip>
             </IconButton>
             <IconButton>
               <Tooltip title="Archive video" aria-label="Archive video">
-                <ArchiveIcon fontSize="small" />
+                <ArchiveIcon />
               </Tooltip>
             </IconButton>
             <IconButton onClick={handleClick}>
               <Tooltip title="More options…" aria-label="More options…">
-                <MoreVertIcon fontSize="small" />
+                <MoreVertIcon />
               </Tooltip>
             </IconButton>
           </>
         }
-        title={data.ytVideoData.snippet.channelTitle}
+        title={
+          <Typography noWrap variant="h6">
+            {data.ytVideoData.snippet.channelTitle}
+          </Typography>
+        }
       />
       <Menu
         id="long-menu"
@@ -74,19 +73,19 @@ const InfoCard = props => {
       >
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <FolderIcon fontSize="small" />
+            <FolderIcon />
           </ListItemIcon>
           <ListItemText inset primary="Add to" />
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <FolderIcon fontSize="small" />
+            <FolderIcon />
           </ListItemIcon>
           <ListItemText inset primary="Manage duplicates" />
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <FolderIcon fontSize="small" />
+            <FolderIcon />
           </ListItemIcon>
           <ListItemText inset primary="Remove" />
         </MenuItem>
@@ -96,35 +95,15 @@ const InfoCard = props => {
         <List dense disablePadding>
           <ListItem>
             <ListItemIcon>
-              <VisibilityIcon fontSize="small" />
+              <VisibilityIcon />
             </ListItemIcon>
             <ListItemText
               primary={`${data.ytVideoData.statistics.viewCount} views`}
             />
           </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <PublishIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText
-              primary={`Published ${format(
-                data.ytVideoData.snippet.publishedAt,
-                'D MMMM YYYY'
-              )}`}
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <CameraAltIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary={<Link>Set a recorded Date</Link>} />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <KeepIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary={<Link>Send this video to Keep</Link>} />
-          </ListItem>
+          <PublishedDateListItem {...props} />
+          <RecordedDateListItem {...props} />
+          <KeepListItem {...props} />
         </List>
       </CardContent>
 
@@ -138,7 +117,7 @@ const InfoCard = props => {
       <CardActions>
         <ListItem button>
           <ListItemIcon>
-            <PlaceIcon fontSize="small" />
+            <PlaceIcon />
           </ListItemIcon>
           <ListItemText primary="Set location" />
         </ListItem>
