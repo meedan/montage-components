@@ -9114,6 +9114,14 @@ normalize-url@^3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-3.3.0.tgz#b2e1c4dc4f7c6d57743df733a4f5978d18650559"
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
+notistack@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.5.1.tgz#a8b62586afdfbe4c2080d67ea034bf784711f520"
+  integrity sha512-Pym0iWYCDFsC3imDL+zx4lWjkeEu6s/mlIDq6m+VRpHPPNFJErNcHCqo+xakvkkpOOR3fz4Y802GtMk8GDFVIA==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.6.2"
+
 npm-bundled@^1.0.1:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.6.tgz#e7ba9aadcef962bb61248f91721cd932b3fe6bdd"

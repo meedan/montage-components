@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Tooltip from '@material-ui/core/Tooltip';
@@ -25,6 +26,10 @@ const KeepListItem = props => {
   const open = Boolean(anchorEl);
   const handleShowDetails = event => setAnchorEl(event.currentTarget);
   const handleHideDetails = () => setAnchorEl(null);
+  const handleClipboardCopy = () => {
+    handleHideDetails();
+    props.enqueueSnackbar('Copied to clipboard!');
+  };
 
   const triggerSave = () => {
     setStatus('processing');
@@ -91,7 +96,7 @@ const KeepListItem = props => {
                   <CopyToClipboard
                     text={location.url}
                     key={url}
-                    onCopy={() => handleHideDetails()}
+                    onCopy={handleClipboardCopy}
                   >
                     <ListItem button={url !== null || undefined}>
                       <ListItemIcon>
@@ -128,4 +133,4 @@ const KeepListItem = props => {
   }
 };
 
-export default KeepListItem;
+export default withSnackbar(KeepListItem);
