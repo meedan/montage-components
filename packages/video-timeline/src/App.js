@@ -9,18 +9,14 @@ import { MUIThemeProvider } from '@montage/ui';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Paper from '@material-ui/core/Paper';
-import Popover from '@material-ui/core/Popover';
 import grey from '@material-ui/core/colors/grey';
 
-import PreviewCard from './components/PreviewCard';
-import Player from './components/Player';
 import InfoCard from './components/InfoCard';
-import Transport from './components/Transport';
+import Player from './components/Player';
+import Preview from './components/Preview';
 import Timeline from './components/Timeline';
+import Transport from './components/Transport';
 
 import oldData from './data/VideoPageCtrl';
 import newData from './data/newData';
@@ -135,32 +131,7 @@ class App extends Component {
                 >
                   <Grid item sm={'auto'}>
                     {data.prevVideo ? (
-                      <>
-                        <IconButton
-                          color="secondary"
-                          onMouseEnter={this.handlePopoverPrevOpen}
-                          onMouseLeave={this.handlePopoverPrevClose}
-                        >
-                          <KeyboardArrowLeftIcon fontSize="large" />
-                        </IconButton>
-                        <Popover
-                          className="popover"
-                          anchorOrigin={{
-                            vertical: 'center',
-                            horizontal: 'right',
-                          }}
-                          transformOrigin={{
-                            vertical: 'center',
-                            horizontal: 'left',
-                          }}
-                          open={openPrev}
-                          anchorEl={anchorElPrev}
-                          onClose={this.handlePopoverPrevClose}
-                          disableRestoreFocus
-                        >
-                          <PreviewCard data={data.prevVideo} />
-                        </Popover>
-                      </>
+                      <Preview data={data.prevVideo} isPrev />
                     ) : null}
                   </Grid>
                   <Grid item sm={12}>
@@ -190,33 +161,8 @@ class App extends Component {
                     </Paper>
                   </Grid>
                   <Grid item sm={'auto'}>
-                    {data.nextVideo ? (
-                      <>
-                        <IconButton
-                          color="secondary"
-                          onMouseEnter={this.handlePopoverNextOpen}
-                          onMouseLeave={this.handlePopoverNextClose}
-                        >
-                          <KeyboardArrowRightIcon fontSize="large" />
-                        </IconButton>
-                        <Popover
-                          className="popover"
-                          anchorOrigin={{
-                            vertical: 'center',
-                            horizontal: 'left',
-                          }}
-                          transformOrigin={{
-                            vertical: 'center',
-                            horizontal: 'right',
-                          }}
-                          open={openNext}
-                          anchorEl={anchorElNext}
-                          onClose={this.handlePopoverNextClose}
-                          disableRestoreFocus
-                        >
-                          <PreviewCard data={data.nextVideo} />
-                        </Popover>
-                      </>
+                    {data.prevVideo ? (
+                      <Preview data={data.nextVideo} isNext />
                     ) : null}
                   </Grid>
                 </Grid>
