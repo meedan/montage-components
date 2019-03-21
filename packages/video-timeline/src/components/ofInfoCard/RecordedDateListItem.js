@@ -1,17 +1,22 @@
-import { InlineDatePicker } from 'material-ui-pickers';
-import { parseISO, format } from 'date-fns';
-import React, { useState, useCallback, useRef } from 'react';
+import { DatePicker } from 'material-ui-pickers';
+import { format } from 'date-fns';
+import { withSnackbar } from 'notistack';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import VideocamIcon from '@material-ui/icons/Videocam';
 
 function RecordedDateListItem(props) {
   const { data } = props;
+  const { archived_at } = data.gdVideoData;
+  // const isArchived = true;
+  const isArchived = archived_at !== null && archived_at !== undefined;
+
   const datepickerRef = useRef(null);
-  const [selectedDate, handleDateChange] = useState(new Date());
   const openDatepicker = useCallback(
     e => {
       if (datepickerRef.current) {
@@ -20,41 +25,64 @@ function RecordedDateListItem(props) {
     },
     [datepickerRef.current]
   );
+
+  const [recordedDate, setRecordedDate] = useState(null);
+
+  const displayDate = recordedDate
+    ? format(recordedDate, 'd MMMM YYYY', {
+        awareOfUnicodeTokens: true,
+      })
+    : null;
+
+  useEffect(() => {
+    props.enqueueSnackbar('Recorded date changed');
+  }, [recordedDate]);
+
+  const displayRecordedDate = () => {
+    if (!isArchived) {
+      return displayDate /* allows Change | Revert */ ? (
+        <Tooltip title="Overridden by a Montage user">
+          <Typography>Recorded {displayDate}</Typography>
+        </Tooltip>
+      ) : (
+        <Typography inline color="primary">
+          Set a recorded Date
+        </Typography>
+      );
+    } else {
+      return displayDate ? (
+        <Tooltip title="Overridden by a Montage user">
+          <Typography>Recorded {displayDate}</Typography>
+        </Tooltip>
+      ) : (
+        <Typography>No recorded date set</Typography>
+      );
+    }
+  };
+
   return (
     <>
-      <ListItem button onClick={openDatepicker}>
+      <ListItem
+        button={!isArchived}
+        onClick={!isArchived ? openDatepicker : null}
+      >
         <ListItemIcon>
           <VideocamIcon />
         </ListItemIcon>
-        <ListItemText>
-          {data.gdVideoData.recorded_date_overridden ? (
-            <Typography>
-              Recorded{' '}
-              {format(parseISO(data.gdVideoData.recorded_date), 'd MMMM YYYY', {
-                awareOfUnicodeTokens: true,
-              })}{' '}
-              — 
-              <Typography inline color="primary">
-                Change?
-              </Typography>
-            </Typography>
-          ) : (
-            <Typography inline color="primary">
-              Set a recorded Date
-            </Typography>
-          )}
-        </ListItemText>
+        <ListItemText>{displayRecordedDate()}</ListItemText>
       </ListItem>
-      <InlineDatePicker
+      <DatePicker
+        autoOk
         clearable
+        clearLabel={isArchived ? 'Revert' : 'Clear'}
         disableFuture
-        onChange={handleDateChange}
-        value={selectedDate}
+        onChange={e => setRecordedDate(e)}
         ref={datepickerRef}
         TextFieldComponent="span"
+        value={recordedDate}
       />
     </>
   );
 }
 
-export default RecordedDateListItem;
+export default withSnackbar(RecordedDateListItem);
