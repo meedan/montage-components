@@ -25,19 +25,17 @@ const customTheme = createMuiTheme({
     }
   },
   overrides: {
+    MuiMenuItem: {
+      root: {
+        fontSize: theme.typography.pxToRem(14)
+      }
+    },
     MuiTooltip: {
       tooltip: {
         backgroundColor: grey[900],
         fontSize: theme.typography.pxToRem(13)
       }
     },
-    // MuiListItem: {
-    //   button: {
-    //     "&:focus": {
-    //       backgroundColor: "transparent"
-    //     }
-    //   }
-    // },
     MuiListItemIcon: {
       root: {
         marginRight: 6
@@ -45,7 +43,11 @@ const customTheme = createMuiTheme({
     },
     MuiListItemText: {
       root: {
+        fontSize: theme.typography.pxToRem(14),
         padding: "0 6px"
+      },
+      dense: {
+        fontSize: theme.typography.pxToRem(14)
       }
     },
     MuiIconButton: {
