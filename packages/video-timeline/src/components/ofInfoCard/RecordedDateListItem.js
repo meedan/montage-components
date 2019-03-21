@@ -2,13 +2,13 @@ import { InlineDatePicker } from 'material-ui-pickers';
 import { parseISO, format } from 'date-fns';
 import React, { useState, useCallback, useRef } from 'react';
 
-import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import VideocamIcon from '@material-ui/icons/Videocam';
 
-const RecordedDateListItem = props => {
+function RecordedDateListItem(props) {
   const { data } = props;
   const datepickerRef = useRef(null);
   const [selectedDate, handleDateChange] = useState(new Date());
@@ -21,8 +21,8 @@ const RecordedDateListItem = props => {
     [datepickerRef.current]
   );
   return (
-    <ListItem button onClick={openDatepicker}>
-      <>
+    <>
+      <ListItem button onClick={openDatepicker}>
         <ListItemIcon>
           <VideocamIcon />
         </ListItemIcon>
@@ -44,17 +44,17 @@ const RecordedDateListItem = props => {
             </Typography>
           )}
         </ListItemText>
-        <InlineDatePicker
-          clearable
-          disableFuture
-          onChange={handleDateChange}
-          value={selectedDate}
-          ref={datepickerRef}
-          TextFieldComponent="span"
-        />
-      </>
-    </ListItem>
+      </ListItem>
+      <InlineDatePicker
+        clearable
+        disableFuture
+        onChange={handleDateChange}
+        value={selectedDate}
+        ref={datepickerRef}
+        TextFieldComponent="span"
+      />
+    </>
   );
-};
+}
 
 export default RecordedDateListItem;
