@@ -47,9 +47,17 @@ function Preview(props) {
     popupId: 'PreviewPopover',
   });
 
+  const changeTheatre = () => {
+    console.log(`Navigate to the video: ${data.theatre_url}`); // TODO: Wire routing
+  };
+
   return (
     <>
-      <IconButton color="secondary" {...bindHover(popupState)}>
+      <IconButton
+        color="secondary"
+        {...bindHover(popupState)}
+        onClick={changeTheatre}
+      >
         {isPrev ? (
           <KeyboardArrowLeftIcon fontSize="large" />
         ) : (
@@ -69,7 +77,7 @@ function Preview(props) {
         disableRestoreFocus
       >
         <Card square style={{ maxWidth: 240 }}>
-          <CardActionArea onClick={console.log('TODO: Navigate to the video')}>
+          <CardActionArea onClick={changeTheatre}>
             <CardMedia
               style={{
                 width: 240,
