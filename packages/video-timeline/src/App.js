@@ -102,15 +102,7 @@ class App extends Component {
   };
 
   render() {
-    const {
-      data,
-      currentTime,
-      duration,
-      anchorElPrev,
-      anchorElNext,
-    } = this.state;
-    const openPrev = Boolean(anchorElPrev);
-    const openNext = Boolean(anchorElNext);
+    const { data, currentTime, duration } = this.state;
 
     return (
       <>
