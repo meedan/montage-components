@@ -28,7 +28,7 @@ const KeepListItem = props => {
   const handleHideDetails = () => setAnchorEl(null);
   const handleClipboardCopy = () => {
     handleHideDetails();
-    props.enqueueSnackbar('Copied to clipboard!');
+    props.enqueueSnackbar('URL copied to clipboard');
   };
 
   const triggerSave = () => {
