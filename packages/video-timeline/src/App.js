@@ -20,7 +20,44 @@ import Transport from './components/Transport';
 
 import oldData from './data/VideoPageCtrl';
 import newData from './data/newData';
-const DATA = { ...oldData, newData };
+const DATA = {
+  ...oldData,
+
+  // Extend with more data missing from Laurian’s export
+  gdVideoData: {
+    ...oldData.gdVideoData,
+    in_collections: [81, 82],
+  },
+  project: {
+    ...oldData.project,
+    collections: [
+      {
+        created: '2019-02-27T14:09:55+00:00',
+        id: 81,
+        modified: '2019-02-27T14:09:55+00:00',
+        name: 'A collection',
+        project_id: 1161,
+      },
+      {
+        created: '2019-02-27T14:10:57+00:00',
+        id: 82,
+        modified: '2019-02-27T14:10:57+00:00',
+        name: 'Another one',
+        project_id: 1161,
+      },
+      {
+        created: '2019-02-27T14:15:05+00:00',
+        id: 83,
+        modified: '2019-02-27T14:15:05+00:00',
+        name: 'Hello',
+        project_id: 1161,
+      },
+    ],
+  },
+
+  // Extend with new data missing in the API
+  newData,
+};
 
 console.group('Data:');
 console.log(DATA);
@@ -43,7 +80,7 @@ class App extends Component {
     currentTime: 0,
     playing: false,
     duration: DATA.gdVideoData.duration,
-    data: { ...oldData, newData }, // sample data
+    data: DATA, // sample data
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -111,7 +148,6 @@ class App extends Component {
             <CssBaseline />
             <MUIThemeProvider>
               <style scoped>{'.popover { pointer-events: none; }'}</style>
-
               <Top>
                 <Grid
                   alignItems="center"
