@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { withSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import {
+  usePopupState,
+  bindTrigger,
+  bindPopover,
+} from 'material-ui-popup-state/hooks';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import List from '@material-ui/core/List';
@@ -13,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import KeepIcon from '@montage/ui/src/components/icons/KeepIcon';
 import CopyToClipboardIcon from '@montage/ui/src/components/icons/CopyToClipboardIcon';
 
-const KeepListItem = props => {
+function KeepListItem(props) {
   const { data } = props;
   const { id } = data.gdVideoData;
   const { services, serviceIds } = data.newData.keep.settings;
@@ -21,13 +26,14 @@ const KeepListItem = props => {
   const currentMedia = media[mediaIds.indexOf(id)];
 
   const [status, setStatus] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const open = Boolean(anchorEl);
-  const handleShowDetails = event => setAnchorEl(event.currentTarget);
-  const handleHideDetails = () => setAnchorEl(null);
+  const popupState = usePopupState({
+    variant: 'popover',
+    popupId: 'KeepLocationsPopup',
+  });
+
   const handleClipboardCopy = () => {
-    handleHideDetails();
+    popupState.close();
     props.enqueueSnackbar('URL copied to clipboard');
   };
 
@@ -66,7 +72,7 @@ const KeepListItem = props => {
   } else if (status === 'success') {
     return (
       <>
-        <ListItem button onClick={handleShowDetails}>
+        <ListItem button {...bindTrigger(popupState)}>
           <ListItemIcon>
             <KeepIcon />
           </ListItemIcon>
@@ -75,10 +81,7 @@ const KeepListItem = props => {
           </ListItemText>
         </ListItem>
         <Popover
-          anchorEl={anchorEl}
-          id="KeepLocationsPopover"
-          onClose={handleHideDetails}
-          open={open}
+          {...bindPopover(popupState)}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'center',
@@ -131,6 +134,6 @@ const KeepListItem = props => {
       </ListItem>
     );
   }
-};
+}
 
 export default withSnackbar(KeepListItem);
