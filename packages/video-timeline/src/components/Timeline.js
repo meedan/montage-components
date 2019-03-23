@@ -135,7 +135,7 @@ const Timeline = props => {
             />
           </TableCell>
           <TableCell align="right">
-            <IconButton disableRipple>
+            <IconButton>
               <DragHandleIcon />
             </IconButton>
           </TableCell>
@@ -216,7 +216,7 @@ const Timeline = props => {
             />
           </TableCell>
           <TableCell align="right">
-            <IconButton disableRipple>
+            <IconButton>
               <DragHandleIcon />
             </IconButton>
           </TableCell>
