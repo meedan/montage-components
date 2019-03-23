@@ -41,7 +41,7 @@ function InfoCard(props) {
                 <ArchiveIcon />
               </Tooltip>
             </IconButton>
-            <MoreMenu />
+            <MoreMenu {...props} />
           </>
         }
         title={

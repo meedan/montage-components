@@ -1,14 +1,19 @@
 import {
+  usePopupState,
+  bindTrigger,
   bindHover,
   bindMenu,
-  bindTrigger,
-  usePopupState,
 } from 'material-ui-popup-state/hooks';
 import * as React from 'react';
+import { includes } from 'lodash';
 
+import AddIcon from '@material-ui/icons/Add';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from 'material-ui-popup-state/HoverMenu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,7 +23,24 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 const ParentPopupState = React.createContext(null);
 
-const MoreMenu = () => {
+const MoreMenu = props => {
+  const { id } = props.data.gdVideoData;
+  const { collections } = props.data.project;
+  const { in_collections } = props.data.gdVideoData;
+
+  const addToCollection = collectionId => {
+    console.group('addToCollection()'); // TODO: make the API call here
+    console.log(`mediaId: ${id}`);
+    console.log(`collectionId: ${collectionId}`);
+    console.groupEnd();
+  };
+  const removeFromCollection = collectionId => {
+    console.group('removeFromCollection()'); // TODO: make the API call here
+    console.log(`mediaId: ${id}`);
+    console.log(`collectionId: ${collectionId}`);
+    console.groupEnd();
+  };
+
   const popupState = usePopupState({ popupId: 'MoreMenu', variant: 'popover' });
   return (
     <>
@@ -30,13 +52,43 @@ const MoreMenu = () => {
       <ParentPopupState.Provider value={popupState}>
         <Menu
           {...bindMenu(popupState)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           getContentAnchorEl={null}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <Submenu popupId="CollectionOptions" title="Add to collection">
-            <MenuItem onClick={popupState.close}>Cheesecake</MenuItem>
-            <MenuItem onClick={popupState.close}>Cheesedeath</MenuItem>
+          <Submenu popupId="CollectionOptions" title="Add to collection" dense>
+            {collections.map(collection => {
+              const { name, id } = collection;
+              const belongsToCollection = includes(in_collections, id);
+              return (
+                <MenuItem
+                  onClick={() =>
+                    belongsToCollection
+                      ? removeFromCollection(id)
+                      : addToCollection(id)
+                  }
+                  key={id}
+                >
+                  <ListItemIcon>
+                    {belongsToCollection ? (
+                      <CheckBoxIcon />
+                    ) : (
+                      <CheckBoxOutlineBlankIcon />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText>{name}</ListItemText>
+                </MenuItem>
+              );
+            })}
+            <Divider />
+            <MenuItem
+            // onClick={popupState.close}
+            >
+              <ListItemIcon>
+                <AddIcon />
+              </ListItemIcon>
+              <ListItemText>New collection…</ListItemText>
+            </MenuItem>
           </Submenu>
           <MenuItem onClick={popupState.close}>Manage duplicates</MenuItem>
           <Divider />
@@ -81,6 +133,7 @@ const Submenu = withStyles(submenuStyles)(
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'left' }}
           getContentAnchorEl={null}
+          MenuListProps={{ dense: true }}
           {...props}
         >
           {children}
