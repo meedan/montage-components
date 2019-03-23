@@ -4,6 +4,7 @@ import {
   bindHover,
   bindMenu,
 } from 'material-ui-popup-state/hooks';
+import { withSnackbar } from 'notistack';
 import * as React from 'react';
 import { includes } from 'lodash';
 
@@ -28,17 +29,19 @@ const MoreMenu = props => {
   const { collections } = props.data.project;
   const { in_collections } = props.data.gdVideoData;
 
-  const addToCollection = collectionId => {
+  const addToCollection = (collectionId, collectionName) => {
     console.group('addToCollection()'); // TODO: make the API call here
     console.log(`mediaId: ${id}`);
     console.log(`collectionId: ${collectionId}`);
     console.groupEnd();
+    props.enqueueSnackbar(`Video added to ${collectionName}`);
   };
-  const removeFromCollection = collectionId => {
+  const removeFromCollection = (collectionId, collectionName) => {
     console.group('removeFromCollection()'); // TODO: make the API call here
     console.log(`mediaId: ${id}`);
     console.log(`collectionId: ${collectionId}`);
     console.groupEnd();
+    props.enqueueSnackbar(`Video removed from ${collectionName}`);
   };
 
   const popupState = usePopupState({ popupId: 'MoreMenu', variant: 'popover' });
@@ -64,8 +67,8 @@ const MoreMenu = props => {
                 <MenuItem
                   onClick={() =>
                     belongsToCollection
-                      ? removeFromCollection(id)
-                      : addToCollection(id)
+                      ? removeFromCollection(id, name)
+                      : addToCollection(id, name)
                   }
                   key={id}
                 >
@@ -99,7 +102,7 @@ const MoreMenu = props => {
   );
 };
 
-export default MoreMenu;
+export default withSnackbar(MoreMenu);
 
 const submenuStyles = theme => ({
   menu: {
