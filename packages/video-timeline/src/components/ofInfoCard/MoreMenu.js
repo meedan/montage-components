@@ -5,20 +5,22 @@ import {
   bindMenu,
 } from 'material-ui-popup-state/hooks';
 import { withSnackbar } from 'notistack';
-import * as React from 'react';
+import React, { useState } from 'react';
 import { includes } from 'lodash';
 
-import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from 'material-ui-popup-state/HoverMenu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import withStyles from '@material-ui/core/styles/withStyles';
 
@@ -28,6 +30,20 @@ const MoreMenu = props => {
   const { id } = props.data.gdVideoData;
   const { collections } = props.data.project;
   const { in_collections } = props.data.gdVideoData;
+
+  const [isAddingCollection, addCollection] = useState(false);
+  const [newCollectionName, changeNewCollectionName] = useState('');
+
+  const handleCollectionDrop = () => {
+    addCollection(false);
+  };
+  const handleCreateCollection = () => {
+    addCollection(false);
+    console.group('handleCreateCollection()'); // TODO: make the API call here
+    console.log(`collectionName: ${newCollectionName}`);
+    console.groupEnd();
+    props.enqueueSnackbar(`${newCollectionName} created`);
+  };
 
   const addToCollection = (collectionId, collectionName) => {
     console.group('addToCollection()'); // TODO: make the API call here
@@ -56,6 +72,7 @@ const MoreMenu = props => {
         <Menu
           {...bindMenu(popupState)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          disableAutoFocusItem
           getContentAnchorEl={null}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
@@ -74,9 +91,9 @@ const MoreMenu = props => {
                 >
                   <ListItemIcon>
                     {belongsToCollection ? (
-                      <CheckBoxIcon />
+                      <CheckBoxIcon fontSize="small" />
                     ) : (
-                      <CheckBoxOutlineBlankIcon />
+                      <CheckBoxOutlineBlankIcon fontSize="small" />
                     )}
                   </ListItemIcon>
                   <ListItemText>{name}</ListItemText>
@@ -85,12 +102,55 @@ const MoreMenu = props => {
             })}
             <Divider />
             <MenuItem
-            // onClick={popupState.close}
+              onClick={!isAddingCollection ? addCollection : null}
+              style={{ height: 'auto' }}
             >
-              <ListItemIcon>
-                <AddIcon />
-              </ListItemIcon>
-              <ListItemText>New collection…</ListItemText>
+              <ListItemText>
+                {isAddingCollection ? (
+                  <Grid container direction="column" spacing={8} wrap="nowrap">
+                    <Grid item>
+                      <TextField
+                        id="newCollectionName"
+                        autoFocus
+                        fullWidth
+                        type="text"
+                        label="New collection…"
+                        placeholder="Enter name"
+                        required
+                        onChange={e =>
+                          changeNewCollectionName(e.currentTarget.value)
+                        }
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Grid
+                        container
+                        direction="row-reverse"
+                        justify="space-between"
+                      >
+                        <Button
+                          color="primary"
+                          disabled={newCollectionName.length === 0}
+                          mini
+                          onClick={handleCreateCollection}
+                          size="small"
+                        >
+                          Create
+                        </Button>
+                        <Button
+                          mini
+                          onClick={handleCollectionDrop}
+                          size="small"
+                        >
+                          Cancel
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  'New collection…'
+                )}
+              </ListItemText>
             </MenuItem>
           </Submenu>
           <MenuItem onClick={popupState.close}>Manage duplicates</MenuItem>
@@ -132,12 +192,13 @@ const Submenu = withStyles(submenuStyles)(
         </MenuItem>
         <Menu
           {...bindMenu(popupState)}
-          className={classes.menu}
+          {...props}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          className={classes.menu}
+          disableAutoFocusItem
           getContentAnchorEl={null}
           MenuListProps={{ dense: true }}
-          {...props}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         >
           {children}
         </Menu>

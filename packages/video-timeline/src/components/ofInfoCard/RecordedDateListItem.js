@@ -1,7 +1,7 @@
 import { DatePicker } from 'material-ui-pickers';
 import { format } from 'date-fns';
 import { withSnackbar } from 'notistack';
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -28,15 +28,21 @@ function RecordedDateListItem(props) {
 
   const [recordedDate, setRecordedDate] = useState(null);
 
+  const handleRecordedDateSet = date => {
+    setRecordedDate(date);
+    console.group('handleRecordedDateSet()'); // TODO: one can change the date or clear a manually set recorded date — API calls should reflect that
+    console.log(`new date: ${date}`);
+    console.groupEnd();
+    props.enqueueSnackbar(
+      date === null ? 'Recorded date unset' : 'Recorded date changed'
+    );
+  };
+
   const displayDate = recordedDate
     ? format(recordedDate, 'd MMMM YYYY', {
         awareOfUnicodeTokens: true,
       })
     : null;
-
-  useEffect(() => {
-    props.enqueueSnackbar('Recorded date changed');
-  }, [recordedDate]);
 
   const displayRecordedDate = () => {
     if (!isArchived) {
@@ -76,7 +82,7 @@ function RecordedDateListItem(props) {
         clearable
         clearLabel={isArchived ? 'Revert' : 'Clear'}
         disableFuture
-        onChange={e => setRecordedDate(e)}
+        onChange={date => handleRecordedDateSet(date)}
         ref={datepickerRef}
         TextFieldComponent="span"
         value={recordedDate}
