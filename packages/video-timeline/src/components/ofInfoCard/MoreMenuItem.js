@@ -26,7 +26,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 const ParentPopupState = React.createContext(null);
 
-const MoreMenu = props => {
+const MoreMenuItem = props => {
   const { id } = props.data.gdVideoData;
   const { collections } = props.data.project;
   const { in_collections } = props.data.gdVideoData;
@@ -60,7 +60,10 @@ const MoreMenu = props => {
     props.enqueueSnackbar(`Video removed from ${collectionName}`);
   };
 
-  const popupState = usePopupState({ popupId: 'MoreMenu', variant: 'popover' });
+  const popupState = usePopupState({
+    popupId: 'MoreMenuItem',
+    variant: 'popover',
+  });
   return (
     <>
       <IconButton {...bindTrigger(popupState)}>
@@ -162,7 +165,7 @@ const MoreMenu = props => {
   );
 };
 
-export default withSnackbar(MoreMenu);
+export default withSnackbar(MoreMenuItem);
 
 const submenuStyles = theme => ({
   menu: {

@@ -13,13 +13,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import PlaceIcon from '@material-ui/icons/Place';
-import StarIcon from '@material-ui/icons/Star';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import KeepListItem from './ofInfoCard/KeepListItem';
-import MoreMenu from './ofInfoCard/MoreMenu';
+import FavMenuItem from './ofInfoCard/FavMenuItem';
+import MoreMenuItem from './ofInfoCard/MoreMenuItem';
 import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
@@ -31,17 +31,14 @@ function InfoCard(props) {
       <CardHeader
         action={
           <>
-            <IconButton>
-              <Tooltip title="Add to Favorites" aria-label="Add to Favorites">
-                <StarIcon />
-              </Tooltip>
-            </IconButton>
+            <FavMenuItem {...props} />
+
             <IconButton>
               <Tooltip title="Archive video" aria-label="Archive video">
                 <ArchiveIcon />
               </Tooltip>
             </IconButton>
-            <MoreMenu {...props} />
+            <MoreMenuItem {...props} />
           </>
         }
         title={
