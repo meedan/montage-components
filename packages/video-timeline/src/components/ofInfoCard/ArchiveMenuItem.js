@@ -19,8 +19,7 @@ const styles = theme => ({
 });
 
 const ArchiveMenuItem = props => {
-  const { archive_at } = props.data.gdVideoData;
-  // const archive_at = '2019-03-24T16:22:59+00:00';
+  const { archived_at } = props.data.gdVideoData;
 
   const { classes } = props;
   const [isProcessing, setProcessingStatus] = useState(false);
@@ -28,19 +27,19 @@ const ArchiveMenuItem = props => {
   const handleArchiveStatusChange = () => {
     setProcessingStatus(true);
     console.group('handleArchiveStatusChange()');
-    console.log(`new archive status: ${!archive_at}`); // TODO: wire in API callbacks
+    console.log(`new archive status: ${!archived_at}`); // TODO: wire in API callbacks
     console.groupEnd();
     setTimeout(() => setProcessingStatus(false), 1000);
   };
 
   return (
     <Tooltip
-      title={archive_at ? 'Unarchive' : 'Archive'}
-      aria-label={archive_at ? 'Unarchive' : 'Archive'}
+      title={archived_at ? 'Unarchive' : 'Archive'}
+      aria-label={archived_at ? 'Unarchive' : 'Archive'}
     >
       <IconicButton onClick={handleArchiveStatusChange}>
         <Fade in={!isProcessing}>
-          {archive_at ? <UnarchiveIcon color="primary" /> : <ArchiveIcon />}
+          {archived_at ? <UnarchiveIcon color="primary" /> : <ArchiveIcon />}
         </Fade>
         {isProcessing && (
           <CircularProgress size={22} className={classes.buttonProgress} />

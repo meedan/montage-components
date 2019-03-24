@@ -27,6 +27,7 @@ const ParentPopupState = React.createContext(null);
 
 const MoreMenuItem = props => {
   const { id } = props.data.gdVideoData;
+  const { archived_at } = props.data.gdVideoData;
   const { collections } = props.data.project;
   const { in_collections } = props.data.gdVideoData;
 
@@ -82,102 +83,113 @@ const MoreMenuItem = props => {
           open={isAddingCollection ? true : popupState.isOpen}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          <Submenu
-            dense
-            popupId="CollectionOptions"
-            title="Add to collection"
-            open={isAddingCollection ? true : popupState._childPopupState}
-          >
-            {collections.map(collection => {
-              const { name, id } = collection;
-              const belongsToCollection = includes(in_collections, id);
-              return (
-                <MenuItem
-                  onClick={() =>
-                    belongsToCollection
-                      ? removeFromCollection(id, name)
-                      : addToCollection(id, name)
+          {!archived_at ? (
+            <>
+              <Submenu
+                dense
+                popupId="CollectionOptions"
+                title="Add to collection"
+                open={isAddingCollection ? true : popupState._childPopupState}
+              >
+                {collections.map(collection => {
+                  const { name, id } = collection;
+                  const belongsToCollection = includes(in_collections, id);
+                  return (
+                    <MenuItem
+                      onClick={() =>
+                        belongsToCollection
+                          ? removeFromCollection(id, name)
+                          : addToCollection(id, name)
+                      }
+                      key={id}
+                    >
+                      <ListItemIcon>
+                        {belongsToCollection ? (
+                          <CheckBoxIcon fontSize="small" />
+                        ) : (
+                          <CheckBoxOutlineBlankIcon fontSize="small" />
+                        )}
+                      </ListItemIcon>
+                      <ListItemText>{name}</ListItemText>
+                    </MenuItem>
+                  );
+                })}
+                <Divider />
+                <ListItem
+                  button={!isAddingCollection}
+                  onClick={
+                    !isAddingCollection
+                      ? () => setIsAddingCollection(true)
+                      : null
                   }
-                  key={id}
+                  style={{ height: 'auto' }}
                 >
-                  <ListItemIcon>
-                    {belongsToCollection ? (
-                      <CheckBoxIcon fontSize="small" />
-                    ) : (
-                      <CheckBoxOutlineBlankIcon fontSize="small" />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText>{name}</ListItemText>
-                </MenuItem>
-              );
-            })}
-            <Divider />
-            <ListItem
-              button={!isAddingCollection}
-              onClick={
-                !isAddingCollection ? () => setIsAddingCollection(true) : null
-              }
-              style={{ height: 'auto' }}
-            >
-              <ListItemText>
-                {isAddingCollection ? (
-                  <Grid container direction="column" spacing={8} wrap="nowrap">
-                    <Grid item>
-                      <TextField
-                        autoFocus
-                        fullWidth
-                        id="newCollectionName"
-                        inputProps={{
-                          autoComplete: 'off',
-                        }}
-                        label="New collection…"
-                        placeholder="Enter name"
-                        required
-                        type="text"
-                        onChange={e =>
-                          setNewCollectionName(e.currentTarget.value)
-                        }
-                      />
-                    </Grid>
-                    <Grid item>
+                  <ListItemText>
+                    {isAddingCollection ? (
                       <Grid
                         container
-                        direction="row-reverse"
-                        justify="space-between"
+                        direction="column"
+                        spacing={8}
                         wrap="nowrap"
                       >
                         <Grid item>
-                          <Button
-                            color="primary"
-                            disabled={newCollectionName.length === 0}
-                            mini
-                            onClick={createCollection}
-                            size="small"
-                          >
-                            Create
-                          </Button>
+                          <TextField
+                            autoFocus
+                            fullWidth
+                            id="newCollectionName"
+                            inputProps={{
+                              autoComplete: 'off',
+                            }}
+                            label="New collection…"
+                            placeholder="Enter name"
+                            required
+                            type="text"
+                            onChange={e =>
+                              setNewCollectionName(e.currentTarget.value)
+                            }
+                          />
                         </Grid>
                         <Grid item>
-                          <Button
-                            mini
-                            onClick={cancelCreateCollection}
-                            size="small"
+                          <Grid
+                            container
+                            direction="row-reverse"
+                            justify="space-between"
+                            wrap="nowrap"
                           >
-                            Cancel
-                          </Button>
+                            <Grid item>
+                              <Button
+                                color="primary"
+                                disabled={newCollectionName.length === 0}
+                                mini
+                                onClick={createCollection}
+                                size="small"
+                              >
+                                Create
+                              </Button>
+                            </Grid>
+                            <Grid item>
+                              <Button
+                                mini
+                                onClick={cancelCreateCollection}
+                                size="small"
+                              >
+                                Cancel
+                              </Button>
+                            </Grid>
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                  </Grid>
-                ) : (
-                  'New collection…'
-                )}
-              </ListItemText>
-            </ListItem>
-          </Submenu>
-          <MenuItem onClick={openDuplicatesModal} divider>
-            Manage duplicates
-          </MenuItem>
+                    ) : (
+                      'New collection…'
+                    )}
+                  </ListItemText>
+                </ListItem>
+              </Submenu>
+              <MenuItem onClick={openDuplicatesModal} divider>
+                Manage duplicates
+              </MenuItem>
+            </>
+          ) : null}
           <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
         </Menu>
       </ParentPopupState.Provider>
