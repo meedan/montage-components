@@ -7,6 +7,7 @@ import {
 import { withSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { includes } from 'lodash';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import Button from '@material-ui/core/Button';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -66,101 +67,112 @@ const MoreMenuItem = props => {
   });
   return (
     <>
-      <IconButton {...bindTrigger(popupState)}>
-        <Tooltip title="More options…" aria-label="More options…">
-          <MoreVertIcon />
-        </Tooltip>
-      </IconButton>
-      <ParentPopupState.Provider value={popupState}>
-        <Menu
-          {...bindMenu(popupState)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          disableAutoFocusItem
-          getContentAnchorEl={null}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Submenu popupId="CollectionOptions" title="Add to collection" dense>
-            {collections.map(collection => {
-              const { name, id } = collection;
-              const belongsToCollection = includes(in_collections, id);
-              return (
-                <MenuItem
-                  onClick={() =>
-                    belongsToCollection
-                      ? removeFromCollection(id, name)
-                      : addToCollection(id, name)
-                  }
-                  key={id}
-                >
-                  <ListItemIcon>
-                    {belongsToCollection ? (
-                      <CheckBoxIcon fontSize="small" />
-                    ) : (
-                      <CheckBoxOutlineBlankIcon fontSize="small" />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText>{name}</ListItemText>
-                </MenuItem>
-              );
-            })}
-            <Divider />
-            <MenuItem
-              onClick={!isAddingCollection ? addCollection : null}
-              style={{ height: 'auto' }}
+      <ClickAwayListener onClickAway={popupState.close}>
+        <IconButton {...bindTrigger(popupState)}>
+          <Tooltip title="More options…" aria-label="More options…">
+            <MoreVertIcon />
+          </Tooltip>
+        </IconButton>
+        <ParentPopupState.Provider value={popupState}>
+          <Menu
+            {...bindMenu(popupState)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            disableAutoFocusItem
+            getContentAnchorEl={null}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Submenu
+              popupId="CollectionOptions"
+              title="Add to collection"
+              dense
             >
-              <ListItemText>
-                {isAddingCollection ? (
-                  <Grid container direction="column" spacing={8} wrap="nowrap">
-                    <Grid item>
-                      <TextField
-                        id="newCollectionName"
-                        autoFocus
-                        fullWidth
-                        type="text"
-                        label="New collection…"
-                        placeholder="Enter name"
-                        required
-                        onChange={e =>
-                          changeNewCollectionName(e.currentTarget.value)
-                        }
-                      />
-                    </Grid>
-                    <Grid item>
-                      <Grid
-                        container
-                        direction="row-reverse"
-                        justify="space-between"
-                      >
-                        <Button
-                          color="primary"
-                          disabled={newCollectionName.length === 0}
-                          mini
-                          onClick={handleCreateCollection}
-                          size="small"
+              {collections.map(collection => {
+                const { name, id } = collection;
+                const belongsToCollection = includes(in_collections, id);
+                return (
+                  <MenuItem
+                    onClick={() =>
+                      belongsToCollection
+                        ? removeFromCollection(id, name)
+                        : addToCollection(id, name)
+                    }
+                    key={id}
+                  >
+                    <ListItemIcon>
+                      {belongsToCollection ? (
+                        <CheckBoxIcon fontSize="small" />
+                      ) : (
+                        <CheckBoxOutlineBlankIcon fontSize="small" />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText>{name}</ListItemText>
+                  </MenuItem>
+                );
+              })}
+              <Divider />
+              <MenuItem
+                onClick={!isAddingCollection ? addCollection : null}
+                style={{ height: 'auto' }}
+              >
+                <ListItemText>
+                  {isAddingCollection ? (
+                    <Grid
+                      container
+                      direction="column"
+                      spacing={8}
+                      wrap="nowrap"
+                    >
+                      <Grid item>
+                        <TextField
+                          id="newCollectionName"
+                          autoFocus
+                          fullWidth
+                          type="text"
+                          label="New collection…"
+                          placeholder="Enter name"
+                          required
+                          onChange={e =>
+                            changeNewCollectionName(e.currentTarget.value)
+                          }
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Grid
+                          container
+                          direction="row-reverse"
+                          justify="space-between"
                         >
-                          Create
-                        </Button>
-                        <Button
-                          mini
-                          onClick={handleCollectionDrop}
-                          size="small"
-                        >
-                          Cancel
-                        </Button>
+                          <Button
+                            color="primary"
+                            disabled={newCollectionName.length === 0}
+                            mini
+                            onClick={handleCreateCollection}
+                            size="small"
+                          >
+                            Create
+                          </Button>
+                          <Button
+                            mini
+                            onClick={handleCollectionDrop}
+                            size="small"
+                          >
+                            Cancel
+                          </Button>
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                ) : (
-                  'New collection…'
-                )}
-              </ListItemText>
-            </MenuItem>
-          </Submenu>
-          <MenuItem onClick={popupState.close}>Manage duplicates</MenuItem>
-          <Divider />
-          <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
-        </Menu>
-      </ParentPopupState.Provider>
+                  ) : (
+                    'New collection…'
+                  )}
+                </ListItemText>
+              </MenuItem>
+            </Submenu>
+            <MenuItem onClick={popupState.close}>Manage duplicates</MenuItem>
+            <Divider />
+            <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
+          </Menu>
+        </ParentPopupState.Provider>
+      </ClickAwayListener>
     </>
   );
 };
