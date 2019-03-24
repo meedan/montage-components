@@ -128,7 +128,7 @@ const MoreMenuItem = props => {
                         fullWidth
                         id="newCollectionName"
                         inputProps={{
-                          autocomplete: 'off',
+                          autoComplete: 'off',
                         }}
                         label="New collection…"
                         placeholder="Enter name"
@@ -144,23 +144,28 @@ const MoreMenuItem = props => {
                         container
                         direction="row-reverse"
                         justify="space-between"
+                        wrap="nowrap"
                       >
-                        <Button
-                          color="primary"
-                          disabled={newCollectionName.length === 0}
-                          mini
-                          onClick={createCollection}
-                          size="small"
-                        >
-                          Create
-                        </Button>
-                        <Button
-                          mini
-                          onClick={cancelCreateCollection}
-                          size="small"
-                        >
-                          Cancel
-                        </Button>
+                        <Grid item>
+                          <Button
+                            color="primary"
+                            disabled={newCollectionName.length === 0}
+                            mini
+                            onClick={createCollection}
+                            size="small"
+                          >
+                            Create
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            mini
+                            onClick={cancelCreateCollection}
+                            size="small"
+                          >
+                            Cancel
+                          </Button>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
