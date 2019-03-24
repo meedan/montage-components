@@ -1,29 +1,21 @@
 import React from 'react';
+
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
 import Modal from '@material-ui/core/Modal';
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   paper: {
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
     left: '50%',
     outline: 'none',
-    padding: theme.spacing.unit * 4,
     position: 'absolute',
     top: '50%',
-    transform: 'transition(-50%, -50%)',
+    transform: 'translate(-50%, -50%)',
     width: theme.spacing.unit * 50,
   },
 });
@@ -37,13 +29,36 @@ function SimpleModal(props) {
       open
       onClose={() => props.handleClose}
     >
-      <div style={getModalStyle()} className={classes.paper}>
-        <Typography variant="h6" id="modal-title">
-          Remove video
-        </Typography>
-        <Typography variant="subtitle1" id="simple-modal-description">
-          Are sure you wish to remove this video from the Library?
-        </Typography>
+      <div className={classes.paper}>
+        <Card elevation="12">
+          <CardContent>
+            <Typography component="h2" variant="h5" gutterBottom>
+              Remove video
+            </Typography>
+            <Typography component="p" variant="body1" gutterBottom>
+              Are sure you wish to remove this video from the Library?
+            </Typography>
+          </CardContent>
+
+          <CardActions>
+            <Grid container justify="space-between">
+              <Grid item>
+                <Button size="large" onClick={props.handleClose}>
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  size="large"
+                  color="primary"
+                  onClick={props.handleRemove}
+                >
+                  Remove
+                </Button>
+              </Grid>
+            </Grid>
+          </CardActions>
+        </Card>
       </div>
     </Modal>
   );
