@@ -73,11 +73,11 @@ const MoreMenuItem = props => {
       <ParentPopupState.Provider value={popupState}>
         <Menu
           {...bindMenu(popupState)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           disableAutoFocusItem
           getContentAnchorEl={null}
           open={isAddingCollection ? true : popupState.isOpen}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
           <Submenu
             dense
