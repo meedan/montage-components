@@ -17,8 +17,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import KeepListItem from './ofInfoCard/KeepListItem';
+import ArchiveMenuItem from './ofInfoCard/ArchiveMenuItem';
 import FavMenuItem from './ofInfoCard/FavMenuItem';
+import KeepListItem from './ofInfoCard/KeepListItem';
 import MoreMenuItem from './ofInfoCard/MoreMenuItem';
 import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
@@ -32,11 +33,7 @@ function InfoCard(props) {
         action={
           <>
             <FavMenuItem {...props} />
-            <Tooltip title="Archive video" aria-label="Archive video">
-              <IconButton>
-                <ArchiveIcon />
-              </IconButton>
-            </Tooltip>
+            <ArchiveMenuItem {...props} />
             <MoreMenuItem {...props} />
           </>
         }

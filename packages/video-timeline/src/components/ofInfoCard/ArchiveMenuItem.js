@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import ArchiveIcon from '@material-ui/icons/Archive';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import IconicButton from '@material-ui/core/IconButton';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import StarIcon from '@material-ui/icons/Star';
 import Tooltip from '@material-ui/core/Tooltip';
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
 
 const styles = theme => ({
   buttonProgress: {
@@ -18,27 +18,29 @@ const styles = theme => ({
   },
 });
 
-const FavMenuItem = props => {
-  const { favourited } = props.data.gdVideoData;
+const ArchiveMenuItem = props => {
+  const { archive_at } = props.data.gdVideoData;
+  // const archive_at = '2019-03-24T16:22:59+00:00';
+
   const { classes } = props;
   const [isProcessing, setProcessingStatus] = useState(false);
 
-  const handleFavStatusChange = () => {
+  const handleArchiveStatusChange = () => {
     setProcessingStatus(true);
-    console.group('handleFavStatusChange()');
-    console.log(`new fav status: ${!favourited}`); // TODO: wire in API callbacks
+    console.group('handleArchiveStatusChange()');
+    console.log(`new archive status: ${!archive_at}`); // TODO: wire in API callbacks
     console.groupEnd();
     setTimeout(() => setProcessingStatus(false), 1000);
   };
 
   return (
     <Tooltip
-      title={favourited ? 'Remove from favorites' : 'Add to favorites'}
-      aria-label={favourited ? 'Remove from favorites' : 'Add to favorites'}
+      title={archive_at ? 'Unarchive' : 'Archive'}
+      aria-label={archive_at ? 'Unarchive' : 'Archive'}
     >
-      <IconicButton onClick={handleFavStatusChange}>
+      <IconicButton onClick={handleArchiveStatusChange}>
         <Fade in={!isProcessing}>
-          {favourited ? <StarIcon color="primary" /> : <StarBorderIcon />}
+          {archive_at ? <UnarchiveIcon color="primary" /> : <ArchiveIcon />}
         </Fade>
         {isProcessing && (
           <CircularProgress size={22} className={classes.buttonProgress} />
@@ -48,4 +50,4 @@ const FavMenuItem = props => {
   );
 };
 
-export default withStyles(styles)(FavMenuItem);
+export default withStyles(styles)(ArchiveMenuItem);
