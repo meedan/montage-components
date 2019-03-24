@@ -21,7 +21,6 @@ import Menu from 'material-ui-popup-state/HoverMenu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const ParentPopupState = React.createContext(null);
@@ -39,17 +38,16 @@ const MoreMenuItem = props => {
     variant: 'popover',
   });
 
-  const handleCollectionDrop = () => {
+  const createCollection = () => {
     setIsAddingCollection(false);
-  };
-  const handleCreateCollection = () => {
-    setIsAddingCollection(false);
-    console.group('handleCreateCollection()'); // TODO: make the API call here
+    console.group('createCollection()'); // TODO: make the API call here
     console.log(`collectionName: ${newCollectionName}`);
     console.groupEnd();
     props.enqueueSnackbar(`${newCollectionName} collection created`);
   };
-
+  const cancelCreateCollection = () => {
+    setIsAddingCollection(false);
+  };
   const addToCollection = (collectionId, collectionName) => {
     console.group('addToCollection()'); // TODO: make the API call here
     console.log(`mediaId: ${id}`);
@@ -63,6 +61,11 @@ const MoreMenuItem = props => {
     console.log(`collectionId: ${collectionId}`);
     console.groupEnd();
     props.enqueueSnackbar(`Video removed from ${collectionName}`);
+  };
+  const openDuplicatesModal = () => {
+    popupState.close();
+    console.group('openDuplicatesModal()'); // TODO: wire duplicates modal trigger here
+    console.groupEnd();
   };
 
   return (
@@ -146,14 +149,14 @@ const MoreMenuItem = props => {
                           color="primary"
                           disabled={newCollectionName.length === 0}
                           mini
-                          onClick={handleCreateCollection}
+                          onClick={createCollection}
                           size="small"
                         >
                           Create
                         </Button>
                         <Button
                           mini
-                          onClick={handleCollectionDrop}
+                          onClick={cancelCreateCollection}
                           size="small"
                         >
                           Cancel
@@ -167,7 +170,7 @@ const MoreMenuItem = props => {
               </ListItemText>
             </ListItem>
           </Submenu>
-          <MenuItem onClick={popupState.close}>Manage duplicates</MenuItem>
+          <MenuItem onClick={openDuplicatesModal}>Manage duplicates</MenuItem>
           <Divider />
           <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
         </Menu>
@@ -215,8 +218,6 @@ const Submenu = withStyles(submenuStyles)(
           MenuListProps={{ dense: true }}
           transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         >
-          {console.log('— FURTHER DOWN —')}
-          {console.log({ popupState })}
           {children}
         </Menu>
       </ParentPopupState.Provider>
