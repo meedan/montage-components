@@ -36,6 +36,12 @@ const customTheme = createMuiTheme({
         fontSize: theme.typography.pxToRem(13)
       }
     },
+    MuiListItem: {
+      gutters: {
+        paddingLeft: 6,
+        paddingRight: 6
+      }
+    },
     MuiListItemIcon: {
       root: {
         marginRight: 6
