@@ -23,6 +23,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TextField from '@material-ui/core/TextField';
 import withStyles from '@material-ui/core/styles/withStyles';
 
+import RemoveModal from './ofMoreMenuItem/RemoveModal';
+
 const ParentPopupState = React.createContext(null);
 
 const MoreMenuItem = props => {
@@ -32,6 +34,7 @@ const MoreMenuItem = props => {
   const { in_collections } = props.data.gdVideoData;
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
+  const [isRemovingVideo, setIsRemovingVideo] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
 
   const popupState = usePopupState({
@@ -62,6 +65,11 @@ const MoreMenuItem = props => {
     console.log(`collectionId: ${collectionId}`);
     console.groupEnd();
     props.enqueueSnackbar(`Video removed from ${collectionName}`);
+  };
+  const removeFromMontage = () => {
+    console.group('removeFromMontage()'); // TODO: trigger
+    console.log(`mediaId: ${id}`);
+    console.groupEnd();
   };
   const openDuplicatesModal = () => {
     popupState.close();
@@ -190,9 +198,14 @@ const MoreMenuItem = props => {
               </MenuItem>
             </>
           ) : null}
-          <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
+          <MenuItem onClick={() => setIsRemovingVideo(true)}>
+            Remove from Montage
+          </MenuItem>
         </Menu>
       </ParentPopupState.Provider>
+      {isRemovingVideo ? (
+        <RemoveModal handleClose={() => setIsRemovingVideo(false)} />
+      ) : null}
     </>
   );
 };
