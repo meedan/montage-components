@@ -21,6 +21,7 @@ import CopyToClipboardIcon from '@montage/ui/src/components/icons/CopyToClipboar
 function KeepListItem(props) {
   const { data } = props;
   const { id } = data.gdVideoData;
+  const { archived_at } = data.gdVideoData;
   const { services, serviceIds } = data.newData.keep.settings;
   const { media, mediaIds } = data.newData.keep.backups;
   const currentMedia = media[mediaIds.indexOf(id)];
@@ -55,16 +56,22 @@ function KeepListItem(props) {
     );
   } else if (status === 'error') {
     return (
-      <ListItem button onClick={() => setStatus('success')} dense>
+      <ListItem
+        button={!archived_at ? true : false}
+        onClick={!archived_at ? () => setStatus('success') : null}
+        dense
+      >
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
         <ListItemText>
           <Typography>
             Sending to Keep failed.{' '}
-            <Typography inline color="primary">
-              Retry?
-            </Typography>
+            {!archived_at ? (
+              <Typography inline color="primary">
+                Retry?
+              </Typography>
+            ) : null}
           </Typography>
         </ListItemText>
       </ListItem>
@@ -124,13 +131,19 @@ function KeepListItem(props) {
     );
   } else {
     return (
-      <ListItem button onClick={triggerSave} dense>
+      <ListItem
+        button={!archived_at ? true : false}
+        onClick={!archived_at ? triggerSave : null}
+        dense
+      >
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
         <ListItemText>
-          <Typography inline color="primary">
-            Save video to Keep locations
+          <Typography inline color={!archived_at ? 'primary' : 'default'}>
+            {!archived_at
+              ? 'Save video to Keep locations'
+              : 'This video has not been saved to Keep'}
           </Typography>
         </ListItemText>
       </ListItem>

@@ -34,6 +34,7 @@ const styles = theme => ({
 function InfoCard(props) {
   const { data } = props;
   const { classes } = props;
+  const { archived_at } = data.gdVideoData;
 
   console.log({ classes });
 
@@ -43,7 +44,7 @@ function InfoCard(props) {
         className={classes.title}
         action={
           <div className={classes.headerAction}>
-            <FavMenuItem {...props} />
+            {!archived_at ? <FavMenuItem {...props} /> : null}
             <ArchiveMenuItem {...props} />
             <MoreMenuItem {...props} />
           </div>
