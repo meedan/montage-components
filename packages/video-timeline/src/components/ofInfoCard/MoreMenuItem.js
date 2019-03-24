@@ -66,10 +66,12 @@ const MoreMenuItem = props => {
     console.groupEnd();
     props.enqueueSnackbar(`Video removed from ${collectionName}`);
   };
-  const removeFromMontage = () => {
-    console.group('removeFromMontage()'); // TODO: trigger
+  const removeFromLibrary = () => {
+    console.group('removeFromLibrary()'); // TODO: make the API call here and probably do re-routing
     console.log(`mediaId: ${id}`);
     console.groupEnd();
+    setIsRemovingVideo(false);
+    props.enqueueSnackbar('Video removed from the Library');
   };
   const openDuplicatesModal = () => {
     popupState.close();
@@ -199,12 +201,15 @@ const MoreMenuItem = props => {
             </>
           ) : null}
           <MenuItem onClick={() => setIsRemovingVideo(true)}>
-            Remove from Montage
+            Remove from Library
           </MenuItem>
         </Menu>
       </ParentPopupState.Provider>
       {isRemovingVideo ? (
-        <RemoveModal handleClose={() => setIsRemovingVideo(false)} />
+        <RemoveModal
+          handleClose={() => setIsRemovingVideo(false)}
+          handleRemove={removeFromLibrary}
+        />
       ) : null}
     </>
   );
