@@ -175,8 +175,9 @@ const MoreMenuItem = props => {
               </ListItemText>
             </ListItem>
           </Submenu>
-          <MenuItem onClick={openDuplicatesModal}>Manage duplicates</MenuItem>
-          <Divider />
+          <MenuItem onClick={openDuplicatesModal} divider>
+            Manage duplicates
+          </MenuItem>
           <MenuItem onClick={popupState.close}>Remove from Montage</MenuItem>
         </Menu>
       </ParentPopupState.Provider>

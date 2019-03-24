@@ -38,8 +38,8 @@ const customTheme = createMuiTheme({
     },
     MuiListItem: {
       gutters: {
-        paddingLeft: 6,
-        paddingRight: 6
+        paddingTop: 8,
+        paddingBottom: 8
       }
     },
     MuiListItemIcon: {

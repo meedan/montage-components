@@ -44,7 +44,7 @@ function KeepListItem(props) {
 
   if (status === 'processing') {
     return (
-      <ListItem>
+      <ListItem dense>
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
@@ -55,7 +55,7 @@ function KeepListItem(props) {
     );
   } else if (status === 'error') {
     return (
-      <ListItem button onClick={() => setStatus('success')}>
+      <ListItem button onClick={() => setStatus('success')} dense>
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
@@ -72,7 +72,7 @@ function KeepListItem(props) {
   } else if (status === 'success') {
     return (
       <>
-        <ListItem button {...bindTrigger(popupState)}>
+        <ListItem button {...bindTrigger(popupState)} dense>
           <ListItemIcon>
             <KeepIcon />
           </ListItemIcon>
@@ -124,7 +124,7 @@ function KeepListItem(props) {
     );
   } else {
     return (
-      <ListItem button onClick={triggerSave}>
+      <ListItem button onClick={triggerSave} dense>
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
