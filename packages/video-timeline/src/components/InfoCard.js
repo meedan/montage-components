@@ -1,19 +1,16 @@
-import { withTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-import ArchiveIcon from '@material-ui/icons/Archive';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import PlaceIcon from '@material-ui/icons/Place';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
@@ -24,18 +21,32 @@ import MoreMenuItem from './ofInfoCard/MoreMenuItem';
 import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
+const styles = theme => ({
+  title: {
+    paddingBottom: 0,
+  },
+  headerAction: {
+    position: 'relative',
+    top: '8px',
+  },
+});
+
 function InfoCard(props) {
   const { data } = props;
+  const { classes } = props;
+
+  console.log({ classes });
 
   return (
     <Card square elevation={0}>
       <CardHeader
+        className={classes.title}
         action={
-          <>
+          <div className={classes.headerAction}>
             <FavMenuItem {...props} />
             <ArchiveMenuItem {...props} />
             <MoreMenuItem {...props} />
-          </>
+          </div>
         }
         title={
           <Typography noWrap variant="h6">
@@ -46,7 +57,7 @@ function InfoCard(props) {
 
       <CardContent>
         <List dense disablePadding component="div">
-          <ListItem component="div">
+          <ListItem component="div" dense>
             <ListItemIcon>
               <VisibilityIcon />
             </ListItemIcon>
@@ -79,4 +90,4 @@ function InfoCard(props) {
   );
 }
 
-export default withTheme()(InfoCard);
+export default withStyles(styles)(InfoCard);

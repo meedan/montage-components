@@ -70,6 +70,7 @@ function RecordedDateListItem(props) {
     <>
       <ListItem
         button={!isArchived}
+        dense
         onClick={!isArchived ? openDatepicker : null}
       >
         <ListItemIcon>
@@ -79,11 +80,11 @@ function RecordedDateListItem(props) {
       </ListItem>
       <DatePicker
         autoOk
-        clearable
         clearLabel={isArchived ? 'Revert' : 'Clear'}
         disableFuture
         onChange={date => handleRecordedDateSet(date)}
         ref={datepickerRef}
+        style={{ height: '1px', width: '1px', overflow: 'hidden' }}
         TextFieldComponent="span"
         value={recordedDate}
       />

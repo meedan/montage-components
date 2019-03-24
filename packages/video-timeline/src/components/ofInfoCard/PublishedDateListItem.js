@@ -10,7 +10,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 const PublishedDateListItem = props => {
   const { data } = props;
   return (
-    <ListItem component="div">
+    <ListItem component="div" dense>
       <ListItemIcon>
         <PublishIcon />
       </ListItemIcon>
