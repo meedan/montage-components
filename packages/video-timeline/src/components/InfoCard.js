@@ -48,8 +48,8 @@ function InfoCard(props) {
       />
 
       <CardContent>
-        <List dense disablePadding>
-          <ListItem>
+        <List dense disablePadding component="div">
+          <ListItem component="div">
             <ListItemIcon>
               <VisibilityIcon />
             </ListItemIcon>
