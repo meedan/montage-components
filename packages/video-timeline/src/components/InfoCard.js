@@ -32,12 +32,11 @@ function InfoCard(props) {
         action={
           <>
             <FavMenuItem {...props} />
-
-            <IconButton>
-              <Tooltip title="Archive video" aria-label="Archive video">
+            <Tooltip title="Archive video" aria-label="Archive video">
+              <IconButton>
                 <ArchiveIcon />
-              </Tooltip>
-            </IconButton>
+              </IconButton>
+            </Tooltip>
             <MoreMenuItem {...props} />
           </>
         }

@@ -77,7 +77,9 @@ function KeepListItem(props) {
             <KeepIcon />
           </ListItemIcon>
           <ListItemText>
-            Safely stored in {currentMedia.locations.length} Keep locations
+            <Typography>
+              Safely stored in {currentMedia.locations.length} Keep locations
+            </Typography>
           </ListItemText>
         </ListItem>
         <Popover

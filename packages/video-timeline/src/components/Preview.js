@@ -54,8 +54,8 @@ function Preview(props) {
   return (
     <>
       <IconButton
-        color="secondary"
         {...bindHover(popupState)}
+        color="secondary"
         onClick={changeTheatre}
       >
         {isPrev ? (

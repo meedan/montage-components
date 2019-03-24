@@ -25,26 +25,42 @@ const Transport = props => {
     return (
       <PlaybackControls>
         <Tooltip disableFocusListener title="Jump backward 5 seconds">
-          <IconButton color="secondary">
-            <FastRewindIcon onClick={() => player.seekTo(currentTime - 5)} />
+          <IconButton
+            color="secondary"
+            onClick={() => player.seekTo(currentTime - 5)}
+          >
+            <FastRewindIcon />
           </IconButton>
         </Tooltip>
         <Tooltip disableFocusListener title="Jump backward 1 second">
-          <IconButton color="secondary">
-            <SkipPreviousIcon onClick={() => player.seekTo(currentTime - 1)} />
+          <IconButton
+            color="secondary"
+            onClick={() => player.seekTo(currentTime - 1)}
+          >
+            <SkipPreviousIcon />
           </IconButton>
         </Tooltip>
-        <IconButton key="playPause" color="secondary">
-          <PauseIcon onClick={() => props.playPause()} />
+        <IconButton
+          color="secondary"
+          key="playPause"
+          onClick={() => props.playPause()}
+        >
+          <PauseIcon />
         </IconButton>
         <Tooltip disableFocusListener title="Jump forward 1 second">
-          <IconButton color="secondary">
-            <SkipNextIcon onClick={() => player.seekTo(currentTime + 1)} />
+          <IconButton
+            color="secondary"
+            onClick={() => player.seekTo(currentTime + 1)}
+          >
+            <SkipNextIcon />
           </IconButton>
         </Tooltip>
         <Tooltip disableFocusListener title="Jump forward 5 seconds">
-          <IconButton color="secondary">
-            <FastForwardIcon onClick={() => player.seekTo(currentTime + 5)} />
+          <IconButton
+            color="secondary"
+            onClick={() => player.seekTo(currentTime + 5)}
+          >
+            <FastForwardIcon />
           </IconButton>
         </Tooltip>
       </PlaybackControls>
@@ -53,20 +69,26 @@ const Transport = props => {
   return (
     <PlaybackControls>
       <Tooltip disableFocusListener title="Jump backward 1 second">
-        <IconButton color="secondary">
-          <SkipPreviousIcon
-            onClick={() => player.seekTo(currentTime - 1 / frameRate)}
-          />
+        <IconButton
+          color="secondary"
+          onClick={() => player.seekTo(currentTime - 1 / frameRate)}
+        >
+          <SkipPreviousIcon />
         </IconButton>
       </Tooltip>
-      <IconButton key="playPause" color="secondary">
-        <PlayArrowIcon onClick={() => props.playPause()} />
+      <IconButton
+        key="playPause"
+        color="secondary"
+        onClick={() => props.playPause()}
+      >
+        <PlayArrowIcon />
       </IconButton>
       <Tooltip disableFocusListener title="Jump forward 1 second">
-        <IconButton color="secondary">
-          <SkipNextIcon
-            onClick={() => player.seekTo(currentTime + 1 / frameRate)}
-          />
+        <IconButton
+          color="secondary"
+          onClick={() => player.seekTo(currentTime + 1 / frameRate)}
+        >
+          <SkipNextIcon />
         </IconButton>
       </Tooltip>
     </PlaybackControls>
