@@ -26,7 +26,7 @@ const DATA = {
   // Extend with more data missing from Laurian’s export
   gdVideoData: {
     ...oldData.gdVideoData,
-    archived_at: '2019-03-24T16:22:59+00:00',
+    // archived_at: '2019-03-24T16:22:59+00:00',
     in_collections: [81, 82],
   },
   project: {

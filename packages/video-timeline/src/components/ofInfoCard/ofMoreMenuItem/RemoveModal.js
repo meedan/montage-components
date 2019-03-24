@@ -30,13 +30,19 @@ function SimpleModal(props) {
       onClose={() => props.handleClose}
     >
       <div className={classes.paper}>
-        <Card elevation="12">
+        <Card elevation="16">
           <CardContent>
             <Typography component="h2" variant="h5" gutterBottom>
               Remove video
             </Typography>
-            <Typography component="p" variant="body1" gutterBottom>
-              Are sure you wish to remove this video from the Library?
+            <Typography
+              component="p"
+              variant="body1"
+              gutterBottom
+              color="textSecondary"
+            >
+              Do you with to remove this video from the Library? All related
+              information, including tags, will be lost.
             </Typography>
           </CardContent>
 
