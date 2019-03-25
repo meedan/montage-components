@@ -25,6 +25,7 @@ function KeepListItem(props) {
   const { services, serviceIds } = data.newData.keep.settings;
   const { media, mediaIds } = data.newData.keep.backups;
   const currentMedia = media[mediaIds.indexOf(id)];
+  const isArchived = archived_at !== null && archived_at !== undefined;
 
   const [status, setStatus] = useState(null);
 
@@ -57,8 +58,8 @@ function KeepListItem(props) {
   } else if (status === 'error') {
     return (
       <ListItem
-        button={!archived_at ? true : false}
-        onClick={!archived_at ? () => setStatus('success') : null}
+        button={!isArchived ? true : false}
+        onClick={!isArchived ? () => setStatus('success') : null}
         dense
       >
         <ListItemIcon>
@@ -67,7 +68,7 @@ function KeepListItem(props) {
         <ListItemText>
           <Typography>
             Sending to Keep failed.{' '}
-            {!archived_at ? (
+            {!isArchived ? (
               <Typography inline color="primary">
                 Retry?
               </Typography>
@@ -132,16 +133,16 @@ function KeepListItem(props) {
   } else {
     return (
       <ListItem
-        button={!archived_at ? true : false}
-        onClick={!archived_at ? triggerSave : null}
+        button={!isArchived ? true : false}
+        onClick={!isArchived ? triggerSave : null}
         dense
       >
         <ListItemIcon>
           <KeepIcon />
         </ListItemIcon>
         <ListItemText>
-          <Typography inline color={!archived_at ? 'primary' : 'default'}>
-            {!archived_at
+          <Typography inline color={!isArchived ? 'primary' : 'default'}>
+            {!isArchived
               ? 'Save video to Keep locations'
               : 'This video has not been saved to Keep'}
           </Typography>

@@ -13,7 +13,6 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 function RecordedDateListItem(props) {
   const { data } = props;
   const { archived_at } = data.gdVideoData;
-  // const isArchived = true;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
   const datepickerRef = useRef(null);

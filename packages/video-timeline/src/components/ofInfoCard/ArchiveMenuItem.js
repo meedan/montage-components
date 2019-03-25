@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import ArchiveIcon from '@material-ui/icons/Archive';
+import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import IconicButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import UnarchiveIcon from '@material-ui/icons/Unarchive';
 
 const styles = theme => ({
   buttonProgress: {
@@ -20,6 +20,7 @@ const styles = theme => ({
 
 const ArchiveMenuItem = props => {
   const { archived_at } = props.data.gdVideoData;
+  const isArchived = archived_at !== null && archived_at !== undefined;
 
   const { classes } = props;
   const [isProcessing, setProcessingStatus] = useState(false);
@@ -34,12 +35,16 @@ const ArchiveMenuItem = props => {
 
   return (
     <Tooltip
-      title={archived_at ? 'Unarchive' : 'Archive'}
-      aria-label={archived_at ? 'Unarchive' : 'Archive'}
+      title={isArchived ? 'Unarchive' : 'Archive'}
+      aria-label={isArchived ? 'Unarchive' : 'Archive'}
     >
       <IconicButton onClick={handleArchiveStatusChange}>
         <Fade in={!isProcessing}>
-          {archived_at ? <UnarchiveIcon color="primary" /> : <ArchiveIcon />}
+          {isArchived ? (
+            <ArchiveIcon color="primary" />
+          ) : (
+            <ArchiveOutlinedIcon />
+          )}
         </Fade>
         {isProcessing && (
           <CircularProgress size={22} className={classes.buttonProgress} />
