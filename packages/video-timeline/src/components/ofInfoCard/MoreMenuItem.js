@@ -87,12 +87,12 @@ const MoreMenuItem = props => {
       </IconButton>
       <ParentPopupState.Provider value={popupState}>
         <Menu
-          {...bindMenu(popupState)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           disableAutoFocusItem
           getContentAnchorEl={null}
           open={isAddingCollection ? true : popupState.isOpen}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+          {...bindMenu(popupState)}
         >
           {!isArchived ? (
             <>
@@ -246,7 +246,6 @@ const Submenu = withStyles(submenuStyles)(
           <ChevronRight className={classes.moreArrow} />
         </MenuItem>
         <Menu
-          {...bindMenu(popupState)}
           {...props}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           className={classes.menu}
@@ -254,6 +253,7 @@ const Submenu = withStyles(submenuStyles)(
           getContentAnchorEl={null}
           MenuListProps={{ dense: true }}
           transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          {...bindMenu(popupState)}
         >
           {children}
         </Menu>

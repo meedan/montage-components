@@ -1,8 +1,9 @@
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
+import styled from 'styled-components';
 
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
@@ -13,6 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PlaceIcon from '@material-ui/icons/Place';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import grey from '@material-ui/core/colors/grey';
 
 import ArchiveMenuItem from './ofInfoCard/ArchiveMenuItem';
 import FavMenuItem from './ofInfoCard/FavMenuItem';
@@ -21,6 +23,20 @@ import MoreMenuItem from './ofInfoCard/MoreMenuItem';
 import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
+const MediaDescription = styled(Typography)`
+  max-height: 50px;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: ${grey[400]};
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+`;
+
 const styles = theme => ({
   title: {
     paddingBottom: 0,
@@ -28,6 +44,12 @@ const styles = theme => ({
   headerAction: {
     position: 'relative',
     top: '8px',
+  },
+  locationButton: {
+    borderRadius: 0,
+    boxShadow: 'none',
+    paddingTop: 16,
+    paddingBottom: 16,
   },
 });
 
@@ -70,22 +92,20 @@ function InfoCard(props) {
           <KeepListItem {...props} />
         </List>
       </CardContent>
-
       <Divider variant="middle" />
-
       <CardContent>
-        <Typography component="p" variant="body2">
+        <MediaDescription color="textSecondary" component="div" variant="body2">
           {data.ytVideoData.snippet.description}
-        </Typography>
+        </MediaDescription>
       </CardContent>
-      <CardActions>
-        <ListItem button>
-          <ListItemIcon>
-            <PlaceIcon />
-          </ListItemIcon>
-          <ListItemText primary="Set location" />
-        </ListItem>
-      </CardActions>
+      <Button
+        className={classes.locationButton}
+        fullWidth
+        secondary
+        variant="contained"
+      >
+        <PlaceIcon fontSize="small" /> Set location
+      </Button>
     </Card>
   );
 }
