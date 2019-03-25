@@ -26,6 +26,9 @@ const customTheme = createMuiTheme({
   },
   overrides: {
     MuiTableCell: {
+      root: {
+        borderColor: grey[200]
+      },
       paddingDense: {
         paddingRight: 12,
         paddingLeft: 12
