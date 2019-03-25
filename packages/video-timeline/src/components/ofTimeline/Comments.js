@@ -1,19 +1,23 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import grey from '@material-ui/core/colors/grey';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   timelineComments: {
     height: 10,
+  },
+  timelineHdColumn: {
+    borderRight: `1px solid ${grey[300]}`,
+    width: '216px',
   },
 });
 
@@ -22,7 +26,7 @@ function TimelineComments(props) {
   return (
     <TableHead className={classes.timelineComments}>
       <TableRow>
-        <TableCell>
+        <TableCell className={classes.timelineHdColumn}>
           <Grid
             container
             alignItems="center"
@@ -42,7 +46,6 @@ function TimelineComments(props) {
           </Grid>
         </TableCell>
         <TableCell>Content</TableCell>
-        <TableCell />
       </TableRow>
     </TableHead>
   );
