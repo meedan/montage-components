@@ -2,7 +2,6 @@ import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
-import grey from '@material-ui/core/colors/grey';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -17,7 +16,6 @@ const styles = theme => ({
     height: 10,
   },
   timelineHdColumn: {
-    borderRight: `1px solid ${grey[300]}`,
     width: '216px',
   },
 });
@@ -51,7 +49,7 @@ function TimelineTags(props) {
             </Grid>
           </Grid>
         </TableCell>
-        <TableCell>Content</TableCell>
+        <TableCell padding="none">Content</TableCell>
       </TableRow>
     </TableBody>
   );

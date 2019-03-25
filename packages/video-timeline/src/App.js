@@ -40,7 +40,27 @@ const Top = styled.div`
     max-width: 1150px;
   }
 `;
-const Bottom = styled.div``;
+const Bottom = styled.div`
+  border-left: 1px solid ${grey[300]};
+  border-right: 1px solid ${grey[300]};
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1500px;
+  min-height: 800px;
+  position: relative;
+  &:before {
+    border-left: 1px solid ${grey[300]};
+    content: ' ';
+    display: block;
+    height: 100%;
+    left: 224px;
+    min-height: 800px;
+    pointer-events: none;
+    position: absolute;
+    width: 1px;
+    z-index: 1;
+  }
+`;
 
 class App extends Component {
   state = {
@@ -96,7 +116,9 @@ class App extends Component {
   };
 
   onProgress = progress => {
-    this.setState({ currentTime: progress.playedSeconds });
+    this.setState({
+      currentTime: progress.playedSeconds,
+    });
   };
 
   onPlay = () => {
@@ -175,6 +197,7 @@ class App extends Component {
                 <Timeline
                   currentTime={currentTime}
                   duration={duration}
+                  onPlay={() => this.onPlay()}
                   player={this.player}
                 />
               </Bottom>
