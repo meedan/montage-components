@@ -7,6 +7,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
+import { color } from '@montage/ui';
+
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
@@ -14,14 +16,13 @@ const styles = theme => ({
   timelinePlayhead: {
     height: 10,
     left: 0,
-    pointerEvents: 'none',
+    // pointerEvents: 'none',
     position: 'absolute',
     top: '0',
     width: '100%',
     zIndex: 10,
   },
   timelineHdColumn: {
-    borderRight: '1px solid transparent',
     minWidth: '224px',
     width: '15%',
   },
@@ -31,8 +32,19 @@ const styles = theme => ({
 });
 
 function TimelinePlayhead(props) {
-  const { currentTime, duration, player } = props;
+  const { currentTime, duration, player, onPlay } = props;
+  console.log('— HERE —');
+  console.log({ currentTime });
+  console.log({ player });
   const { classes } = props;
+
+  const seekTo = t => {
+    if (!player.isPlaying) {
+      onPlay();
+    }
+    player.seekTo(t);
+  };
+
   return (
     <TableBody className={classes.timelinePlayhead}>
       <TableRow>
@@ -41,20 +53,31 @@ function TimelinePlayhead(props) {
           component="th"
           scope="row"
         />
-        <TableCell className={classes.timelinePlayheadControls} component="th">
+        <TableCell
+          className={classes.timelinePlayheadControls}
+          component="th"
+          padding="none"
+        >
           <Range
-            style={{ width: '100%' }}
+            style={{ width: '100%', minHeight: '800px', height: '100%' }}
             min={0}
             max={duration}
             defaultValue={[currentTime]}
+            value={[currentTime]}
             pushable
             trackStyle={[{ backgroundColor: 'transparent' }]}
             railStyle={{ backgroundColor: 'transparent' }}
             handleStyle={{
-              borderColor: 'orange',
-              backgroundColor: 'orange',
+              backgroundColor: color.brand,
+              borderColor: color.brand,
+              height: '10px',
+              marginLeft: '-5px',
+              marginTop: '-5px',
+              width: '10px',
+              top: '0',
             }}
-            onChange={([t]) => player.seekTo(t)}
+            onChange={([t]) => seekTo(t)}
+            onClick={e => console.log(e)}
           />
         </TableCell>
       </TableRow>
