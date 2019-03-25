@@ -30,11 +30,19 @@ const TimelinePlayhead = styled(({ offset, ...props }) => <div {...props} />)`
 const TimelineSliderThumb = styled(({ offset, ...props }) => (
   <div {...props} />
 ))`
-  background: ${color.brand};
-  border-radius: 100%;
   display: block;
-  height: 9px !important;
-  width: 9px !important;
+  &:before {
+    background: ${color.brand};
+    border-radius: 100%;
+    content: ' ';
+    display: block;
+    height: 9px;
+    left: 50%;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, -50%);
+    width: 9px;
+  }
   &:after {
     border-left: 1px solid ${color.brand};
     content: ' ';
@@ -64,10 +72,7 @@ const styles = theme => ({
   thumbWrapper: {
     height: '100%',
   },
-  thumbIconWrapper: {
-    alignContent: 'flex-start',
-    verticalAlign: 'top',
-  },
+  thumbIconWrapper: {},
   thumb: {
     height: '100%',
     transform: 'translateX(-50%)',
