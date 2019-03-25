@@ -19,9 +19,11 @@ import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
 import oldData from './data/VideoPageCtrl';
+import oldTimelineData from './data/VideoTimeline';
 import newData from './data/newData';
 const DATA = {
   ...oldData,
+  timelineData: oldTimelineData,
 
   // Extend with more data missing from Laurian’s export
   gdVideoData: {
