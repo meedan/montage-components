@@ -47,7 +47,7 @@ const Bottom = styled.div`
   border-right: 1px solid ${grey[300]};
   margin-left: auto;
   margin-right: auto;
-  max-width: 1500px;
+  max-width: 1600px;
   min-height: 800px;
   position: relative;
   &:before {
