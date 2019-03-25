@@ -14,7 +14,7 @@ import TimelineTags from './ofTimeline/Tags';
 import { color } from '@montage/ui';
 
 const TimelinePlayheadWrapper = styled.div`
-  ${'' /* position: relative; */}
+  position: relative;
 `;
 
 const TimelinePlayhead = styled(({ offset, ...props }) => <div {...props} />)`
@@ -42,7 +42,7 @@ const TimelineSliderThumb = styled(({ offset, ...props }) => (
     height: 100%;
     left: 50%;
     position: absolute;
-    top: 0;
+    top: 50%;
     transform: translateX(-50%);
     width: 1px;
   }
@@ -64,13 +64,8 @@ const styles = theme => ({
   thumbWrapper: {
     height: '100%',
   },
-  thumbIconWrapper: {
-    alignContent: 'flex-start',
-    verticalAlign: 'top',
-  },
   thumb: {
     height: '100%',
-    transform: 'translateX(-50%)',
   },
 });
 
@@ -104,10 +99,7 @@ const Timeline = props => {
   };
 
   return (
-    <TimelinePlayheadWrapper
-      onClick={e => handleClick(e)}
-      onDragStart={console.log()}
-    >
+    <TimelinePlayheadWrapper onClick={e => handleClick(e)}>
       <TimelinePlayhead offset={offset}>
         <Slider
           value={[currentTime]}
@@ -118,7 +110,6 @@ const Timeline = props => {
             container: classes.container,
             root: classes.root,
             thumb: classes.thumb,
-            thumbIconWrapper: classes.thumbIconWrapper,
             thumbWrapper: classes.thumbWrapper,
             trackAfter: classes.trackAfter,
             trackBefore: classes.trackBefore,
