@@ -16,7 +16,7 @@ const styles = theme => ({
   timelinePlayhead: {
     height: 10,
     left: 0,
-    // pointerEvents: 'none',
+    pointerEvents: 'none',
     position: 'absolute',
     top: '0',
     width: '100%',
@@ -32,15 +32,8 @@ const styles = theme => ({
 });
 
 function TimelinePlayhead(props) {
-  const { currentTime, duration, player, onPlay } = props;
+  const { currentTime, duration } = props;
   const { classes } = props;
-
-  const seekTo = t => {
-    if (!player.isPlaying) {
-      onPlay();
-    }
-    player.seekTo(t);
-  };
 
   return (
     <TableBody className={classes.timelinePlayhead}>
@@ -73,8 +66,6 @@ function TimelinePlayhead(props) {
               width: '10px',
               top: '0',
             }}
-            onChange={([t]) => seekTo(t)}
-            onClick={e => console.log(e)}
           />
         </TableCell>
       </TableRow>
