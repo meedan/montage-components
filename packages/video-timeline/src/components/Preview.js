@@ -65,6 +65,7 @@ function Preview(props) {
         )}
       </IconButton>
       <Popover
+        PaperProps={{ square: true }}
         {...bindPopover(popupState)}
         anchorOrigin={{
           vertical: 'center',
