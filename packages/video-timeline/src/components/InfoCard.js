@@ -35,8 +35,7 @@ function InfoCard(props) {
   const { data } = props;
   const { classes } = props;
   const { archived_at } = data.gdVideoData;
-
-  console.log({ classes });
+  const isArchived = archived_at !== null && archived_at !== undefined;
 
   return (
     <Card square elevation={0}>
@@ -44,7 +43,7 @@ function InfoCard(props) {
         className={classes.title}
         action={
           <div className={classes.headerAction}>
-            {!archived_at ? <FavMenuItem {...props} /> : null}
+            {!isArchived ? <FavMenuItem {...props} /> : null}
             <ArchiveMenuItem {...props} />
             <MoreMenuItem {...props} />
           </div>

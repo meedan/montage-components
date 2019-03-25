@@ -32,6 +32,7 @@ const MoreMenuItem = props => {
   const { archived_at } = props.data.gdVideoData;
   const { collections } = props.data.project;
   const { in_collections } = props.data.gdVideoData;
+  const isArchived = archived_at !== null && archived_at !== undefined;
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
   const [isRemovingVideo, setIsRemovingVideo] = useState(false);
@@ -93,7 +94,7 @@ const MoreMenuItem = props => {
           open={isAddingCollection ? true : popupState.isOpen}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          {!archived_at ? (
+          {!isArchived ? (
             <>
               <Submenu
                 dense
