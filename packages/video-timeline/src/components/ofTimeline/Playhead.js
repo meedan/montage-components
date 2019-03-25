@@ -33,9 +33,6 @@ const styles = theme => ({
 
 function TimelinePlayhead(props) {
   const { currentTime, duration, player, onPlay } = props;
-  console.log('— HERE —');
-  console.log({ currentTime });
-  console.log({ player });
   const { classes } = props;
 
   const seekTo = t => {
