@@ -25,6 +25,7 @@ import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
 const MediaDescription = styled(Typography)`
   max-height: 50px;
+  overflow-x: hidden;
   overflow-y: scroll;
   ::-webkit-scrollbar {
     -webkit-appearance: none;
