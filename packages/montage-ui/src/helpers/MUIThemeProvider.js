@@ -25,6 +25,12 @@ const customTheme = createMuiTheme({
     }
   },
   overrides: {
+    MuiTableCell: {
+      paddingDense: {
+        paddingRight: 12,
+        paddingLeft: 12
+      }
+    },
     MuiMenuItem: {
       root: {
         fontSize: theme.typography.pxToRem(14)
