@@ -69,7 +69,7 @@ function KeepListItem(props) {
           <Typography>
             Sending to Keep failed.{' '}
             {!isArchived ? (
-              <Typography inline color="primary">
+              <Typography component="span" inline color="primary">
                 Retry?
               </Typography>
             ) : null}

@@ -1,11 +1,13 @@
 import 'rc-slider/assets/index.css';
-import React from 'react';
+import React, { useState } from 'react';
 // import Slider from 'rc-slider';
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/lab/Slider';
 import Table from '@material-ui/core/Table';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import TimelineClips from './ofTimeline/Clips';
 import TimelineComments from './ofTimeline/Comments';
 import TimelinePlaces from './ofTimeline/Places';
@@ -31,6 +33,14 @@ const TimelineSliderThumb = styled(({ offset, ...props }) => (
   <div {...props} />
 ))`
   display: block;
+  height: 100% !important;
+  width: 7px !important;
+  background: black;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   &:before {
     background: ${color.brand};
     border-radius: 100%;
@@ -78,13 +88,7 @@ const styles = theme => ({
     transform: 'translateX(-50%)',
     cursor: 'ew-resize',
     pointerEvents: 'all',
-    '&$focused, &:hover, &:active': {
-      boxShadow: 'none',
-    },
-    '&$activated': {
-      boxShadow: 'none',
-    },
-    '&$jumped': {
+    '&:hover, &:active': {
       boxShadow: 'none',
     },
   },
@@ -92,6 +96,9 @@ const styles = theme => ({
 
 const Timeline = props => {
   const { currentTime, duration, player, onPlay, classes } = props;
+
+  const [time, setTime] = useState(currentTime);
+
   const offset = 224;
 
   const handleClick = e => {
@@ -102,8 +109,6 @@ const Timeline = props => {
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - offset);
-
-    // console.log('— HERE —');
     // console.log({ rect });
     // console.log({ startPos });
     // console.log({ endPos });
@@ -119,6 +124,18 @@ const Timeline = props => {
     }
   };
 
+  console.log('— HERE —');
+  console.log({ time });
+
+  const movePlayhead = (event, value) => {
+    setTime({ value }, () => {
+      if (!player.isPlaying) {
+        onPlay();
+      }
+      player.seekTo({ value });
+    });
+  };
+
   return (
     <TimelinePlayheadWrapper
       onClick={e => handleClick(e)}
@@ -126,7 +143,7 @@ const Timeline = props => {
     >
       <TimelinePlayhead offset={offset}>
         <Slider
-          value={[currentTime]}
+          value={time}
           aria-labelledby="label"
           min={0}
           max={duration}
@@ -139,8 +156,12 @@ const Timeline = props => {
             trackAfter: classes.trackAfter,
             trackBefore: classes.trackBefore,
           }}
-          thumb={<TimelineSliderThumb />}
-          // onChange={this.handleChange}
+          thumb={
+            <Tooltip title="HELLO" placement="top">
+              <TimelineSliderThumb />
+            </Tooltip>
+          }
+          onChange={movePlayhead}
         />
       </TimelinePlayhead>
       <Table padding="dense">
