@@ -18,6 +18,8 @@ import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
+import Map from './components/Map';
+
 import baseData from './data/baseData';
 import timelineData from './data/timelineData';
 import moreData from './data/moreData';
@@ -165,7 +167,8 @@ class App extends Component {
                         direction="row-reverse"
                       >
                         <Grid item sm={4}>
-                          <InfoCard data={data} />
+                          {/* <InfoCard data={data} /> */}
+                          <Map />
                         </Grid>
                         <Grid item sm={8}>
                           <Player
