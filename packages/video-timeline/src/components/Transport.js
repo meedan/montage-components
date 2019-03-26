@@ -11,10 +11,9 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { setSpace } from '@montage/ui';
-
 const PlaybackControls = styled.div`
-  ${setSpace('pvm')};
+  padding-bottom: 16px;
+  padding-top: 16px;
   text-align: center;
 `;
 
