@@ -9,7 +9,7 @@ import TableBlock from './TableBlock';
 function TableSection(props) {
   const { actions, firstRowContent, children, title } = props;
   return (
-    <TableBody style={{ width: '100%' }}>
+    <TableBody style={{ width: '100%', position: 'relative', zIndex: '20' }}>
       <TableBlock
         leftColContent={
           <Grid

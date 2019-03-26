@@ -4,13 +4,12 @@ import React from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
-import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import TableSection from './TableSection';
+import CommentThread from './CommentThread';
 
 const SliderWrapper = styled.div`
   .rc-slider-disabled,
@@ -24,21 +23,8 @@ const SliderWrapper = styled.div`
   }
 `;
 
-const styles = {
-  avatar: {
-    marginTop: -27,
-    height: 32,
-    width: 32,
-  },
-  bigAvatar: {
-    margin: 10,
-    width: 60,
-    height: 60,
-  },
-};
-
 function TimelineComments(props) {
-  const { classes, data, duration } = props;
+  const { data, duration } = props;
   const { commentThreads } = data;
 
   const arr = commentThreads.map(thread => {
@@ -48,14 +34,7 @@ function TimelineComments(props) {
     arr,
     function(object, param) {
       const pos = (100 * param.start_seconds) / duration;
-      object[pos] = (
-        <Avatar
-          alt={`${param.user.first_name} ${param.user.last_name}`}
-          className={classes.avatar}
-          onClick={e => console.log(e)}
-          src={param.user.profile_img_url}
-        />
-      );
+      object[pos] = <CommentThread commentData={param} />;
       return object;
     },
     {}
@@ -86,4 +65,4 @@ function TimelineComments(props) {
   );
 }
 
-export default withStyles(styles)(TimelineComments);
+export default TimelineComments;
