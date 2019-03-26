@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -24,4 +23,4 @@ function TimelineComments(props) {
   );
 }
 
-export default withStyles()(TimelineComments);
+export default TimelineComments;

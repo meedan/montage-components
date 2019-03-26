@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import IconButton from '@material-ui/core/IconButton';
@@ -32,4 +31,4 @@ function TimelineClips(props) {
   );
 }
 
-export default withStyles()(TimelineClips);
+export default TimelineClips;
