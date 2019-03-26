@@ -79,6 +79,7 @@ function RecordedDateListItem(props) {
       </ListItem>
       <DatePicker
         autoOk
+        clearable={recordedDate ? true : false}
         clearLabel={isArchived ? 'Revert' : 'Clear'}
         disableFuture
         onChange={date => handleRecordedDateSet(date)}
