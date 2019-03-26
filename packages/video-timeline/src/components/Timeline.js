@@ -76,6 +76,17 @@ const styles = theme => ({
   thumb: {
     height: '100%',
     transform: 'translateX(-50%)',
+    cursor: 'ew-resize',
+    pointerEvents: 'all',
+    '&$focused, &:hover, &:active': {
+      boxShadow: 'none',
+    },
+    '&$activated': {
+      boxShadow: 'none',
+    },
+    '&$jumped': {
+      boxShadow: 'none',
+    },
   },
 });
 
