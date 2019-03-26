@@ -19,9 +19,7 @@ function TimelinePlaces(props) {
           </Tooltip>
         </>
       }
-    >
-      Content
-    </TableSection>
+    />
   );
 }
 

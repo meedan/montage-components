@@ -198,6 +198,7 @@ class App extends Component {
               <Bottom>
                 <Timeline
                   currentTime={currentTime}
+                  data={data}
                   duration={duration}
                   onPlay={() => this.onPlay()}
                   player={this.player}

@@ -25,9 +25,7 @@ function TimelineTags(props) {
           </Tooltip>
         </>
       }
-    >
-      Content
-    </TableSection>
+    />
   );
 }
 

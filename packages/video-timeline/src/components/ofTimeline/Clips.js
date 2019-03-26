@@ -25,9 +25,7 @@ function TimelineClips(props) {
           </Tooltip>
         </>
       }
-    >
-      Content
-    </TableSection>
+    />
   );
 }
 
