@@ -94,7 +94,7 @@ const styles = theme => ({
   thumb: {
     height: '100%',
     transform: 'translateX(-50%)',
-    cursor: 'ew-resize',
+    cursor: 'col-resize',
     pointerEvents: 'all',
     '&:hover, &:active': {
       boxShadow: 'none',
