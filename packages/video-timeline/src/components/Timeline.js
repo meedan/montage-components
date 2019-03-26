@@ -128,7 +128,7 @@ const Timeline = props => {
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
-    setTime(newTime);
+    if (e.clientX > startPos) setTime(newTime);
   };
   const onThumbDrag = (e, val) => {
     setTime(val);
