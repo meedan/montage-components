@@ -1,6 +1,5 @@
 import 'rc-slider/assets/index.css';
-import React, { useState } from 'react';
-// import Slider from 'rc-slider';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -15,13 +14,23 @@ import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
-const TimelinePlayheadWrapper = styled.div`
-  ${'' /* position: relative; */}
-`;
+const TimelinePlayheadWrapper = styled.div``;
 
-const TimelinePlayhead = styled(({ offset, ...props }) => <div {...props} />)`
+function formatTime(timeInSeconds) {
+  var pad = function(num, size) {
+      return ('000' + num).slice(size * -1);
+    },
+    time = parseFloat(timeInSeconds).toFixed(3),
+    hours = Math.floor(time / 60 / 60),
+    minutes = Math.floor(time / 60) % 60,
+    seconds = Math.floor(time - minutes * 60);
+
+  return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+}
+
+const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   bottom: 0;
-  left: ${({ offset }) => offset + 'px'};
+  left: ${({ pxOffset }) => pxOffset + 'px'};
   pointer-events: none;
   position: absolute;
   right: 0;
@@ -29,18 +38,17 @@ const TimelinePlayhead = styled(({ offset, ...props }) => <div {...props} />)`
   z-index: 10;
 `;
 
-const TimelineSliderThumb = styled(({ offset, ...props }) => (
+const TimelineSliderThumb = styled(({ pxOffset, ...props }) => (
   <div {...props} />
 ))`
+  bottom: 0;
   display: block;
   height: 100% !important;
-  width: 7px !important;
-  background: black;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100% !important;
   &:before {
     background: ${color.brand};
     border-radius: 100%;
@@ -95,56 +103,44 @@ const styles = theme => ({
 });
 
 const Timeline = props => {
+  const pxOffset = 224;
   const { currentTime, duration, player, onPlay, classes } = props;
 
-  const [time, setTime] = useState(currentTime);
+  const [time, setTime] = useState(0);
 
-  const offset = 224;
+  useEffect(() => {
+    if (player) {
+      if (player.player.isPlaying) setTime(currentTime);
+    }
+  }, [currentTime]);
 
-  const handleClick = e => {
+  useEffect(() => {
+    if (player) {
+      if (!player.player.isPlaying) onPlay();
+      player.seekTo(time);
+    }
+  }, [time]);
+
+  const onTrackClick = e => {
     const rect = e.currentTarget.getBoundingClientRect();
-
-    const startPos = rect.left + offset;
+    const startPos = rect.left + pxOffset;
     const endPos = rect.width;
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
-    const newTime = (duration * newPosFlat) / (endPos - offset);
-    // console.log({ rect });
-    // console.log({ startPos });
-    // console.log({ endPos });
-    // console.log({ newPos });
-    // console.log({ newPosFlat });
-    // console.log({ newTime });
-
-    if (newPosFlat > 0) {
-      if (!player.isPlaying) {
-        onPlay();
-      }
-      player.seekTo(newTime);
-    }
+    const newTime = (duration * newPosFlat) / (endPos - pxOffset);
+    setTime(newTime);
   };
-
-  console.log('— HERE —');
-  console.log({ time });
-
-  const movePlayhead = (event, value) => {
-    setTime({ value }, () => {
-      if (!player.isPlaying) {
-        onPlay();
-      }
-      player.seekTo({ value });
-    });
+  const onThumbDrag = (e, val) => {
+    setTime(val);
   };
 
   return (
-    <TimelinePlayheadWrapper
-      onClick={e => handleClick(e)}
-      onDragStart={console.log()}
-    >
-      <TimelinePlayhead offset={offset}>
+    <TimelinePlayheadWrapper onClick={e => onTrackClick(e)}>
+      <TimelinePlayhead pxOffset={pxOffset}>
         <Slider
+          defaultValue={currentTime}
           value={time}
-          aria-labelledby="label"
+          aria-labelledby="Playback progress"
           min={0}
           max={duration}
           classes={{
@@ -157,11 +153,11 @@ const Timeline = props => {
             trackBefore: classes.trackBefore,
           }}
           thumb={
-            <Tooltip title="HELLO" placement="top">
+            <Tooltip title={formatTime(time)} placement="top">
               <TimelineSliderThumb />
             </Tooltip>
           }
-          onChange={movePlayhead}
+          onChange={(e, val) => onThumbDrag(e, val)}
         />
       </TimelinePlayhead>
       <Table padding="dense">

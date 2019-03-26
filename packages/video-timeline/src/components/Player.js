@@ -13,13 +13,13 @@ class Player extends Component {
   }
 
   onDuration = duration => {
-    console.log('onDuration', duration);
+    // console.log('onDuration', duration);
     this.setState({ duration });
     this.props.onDuration(duration);
   };
 
   onProgress = state => {
-    console.log('onProgress', state);
+    // console.log('onProgress', state);
     if (!this.state.seeking) {
       this.setState(state);
       this.props.onProgress(state);
@@ -27,13 +27,13 @@ class Player extends Component {
   };
 
   onPlay = () => {
-    console.log('onPlay');
+    // console.log('onPlay');
     this.setState({ playing: true });
     this.props.onPlay();
   };
 
   onPause = () => {
-    console.log('onPause');
+    // console.log('onPause');
     this.setState({ playing: false });
     this.props.onPause();
   };
