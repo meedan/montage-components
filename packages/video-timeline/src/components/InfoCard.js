@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
@@ -22,6 +22,8 @@ import MoreMenuItem from './ofInfoCard/MoreMenuItem';
 import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
+import Map from './Map';
+
 import { color } from '@montage/ui';
 
 const MediaDescription = styled(Typography)`
@@ -40,9 +42,13 @@ const MediaDescription = styled(Typography)`
 `;
 
 function InfoCard(props) {
+  const [map, setMap] = useState(0);
+
   const { data } = props;
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
+
+  if (map) return <Map />;
 
   return (
     <Card square elevation={0}>
@@ -97,6 +103,7 @@ function InfoCard(props) {
           paddingTop: 16,
           paddingBottom: 16,
         }}
+        onClick={() => setMap(true)}
       >
         <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} />{' '}
         <span style={{ color: color.brand }}>Set location</span>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
+// import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import SearchIcon from '@material-ui/icons/Search';
@@ -12,7 +12,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 
-import { GoogleMap, LoadScript, DrawingManager, Marker, Polygon } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 
 const classes = {
   root: {
