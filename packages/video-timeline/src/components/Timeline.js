@@ -35,7 +35,7 @@ const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 10;
+  z-index: 50;
   .rc-slider {
     height: 100%;
     padding: 0;
