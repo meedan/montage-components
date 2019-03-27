@@ -9,11 +9,11 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import formatTime from './formatTime';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
-const createSliderWithTooltip = Slider.createSliderWithTooltip;
-const Range = createSliderWithTooltip(Slider.Range);
+const Range = Slider.Range;
 const Handle = Slider.Handle;
 
 const SliderWrapper = styled.div`
@@ -25,52 +25,42 @@ const SliderWrapper = styled.div`
     background: transparent;
   }
   .rc-slider-track {
-    background: #b6cbe2;
-    border-radius: 2px;
+    background: rgba(71, 123, 181, 0.4);
+    border-radius: 0;
     height: 28px;
     position: absolute;
     top: 0;
   }
   .rc-slider-handle {
-    transition: background 0.1s;
-    border-radius: 2px;
+    background: rgba(71, 123, 181, 1);
+    border-radius: 1px;
     border: none;
-    margin: 0;
-    background: #b6cbe2;
     height: 28px;
-    width: 6px;
+    margin: 0;
     position: absolute;
     top: 0;
+    transform: translateX(-2px);
+    transition: background 0.1s;
+    width: 4px;
   }
   .rc-slider:hover .rc-slider-handle {
-    background: #204b8d;
+    background: rgba(71, 123, 181, 1);
   }
   .rc-slider:hover .rc-slider-handle,
   .rc-slider-handle:focus {
-    &:after {
-      background: rgba(255, 255, 255, 0.33);
-      bottom: 4px;
-      content: ' ';
-      display: block;
-      left: 50%;
-      position: absolute;
-      top: 4px;
-      transform: translateX(-50%);
-      width: 1px;
-    }
+    box-shadow: none;
+  }
+  .rc-slider-mark-text {
+  }
+  .rc-slider-mark-text:hover {
+    z-index: 50;
   }
 `;
 
 const handle = props => {
-  const { value, dragging, index, ...restProps } = props;
+  const { value, index, ...restProps } = props;
   return (
-    <Tooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={value}
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
+    <Tooltip key={index} placement="top" title={formatTime(value)}>
       <Handle value={value} {...restProps} />
     </Tooltip>
   );
@@ -125,7 +115,13 @@ function TimelineTags(props) {
                 }
                 rightColContent={
                   <SliderWrapper>
-                    <Range min={0} max={duration} defaultValue={arr} pushable />
+                    <Range
+                      defaultValue={arr}
+                      handle={handle}
+                      max={duration}
+                      min={0}
+                      pushable
+                    />
                   </SliderWrapper>
                 }
               />
