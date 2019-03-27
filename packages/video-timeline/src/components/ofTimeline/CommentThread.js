@@ -14,6 +14,7 @@ const styles = {
   avatar: {
     height: 32,
     width: 32,
+    border: '1px solid white',
   },
 };
 
