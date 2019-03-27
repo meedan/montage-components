@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import formatTime from './ofTimeline/formatTime';
 import TimelineClips from './ofTimeline/Clips';
 import TimelineComments from './ofTimeline/Comments';
 import TimelinePlaces from './ofTimeline/Places';
@@ -16,17 +17,16 @@ import { color } from '@montage/ui';
 
 const TimelinePlayheadWrapper = styled.div``;
 
-function formatTime(timeInSeconds) {
-  var pad = function(num, size) {
-      return ('000' + num).slice(size * -1);
-    },
-    time = parseFloat(timeInSeconds).toFixed(3),
-    hours = Math.floor(time / 60 / 60),
-    minutes = Math.floor(time / 60) % 60,
-    seconds = Math.floor(time - minutes * 60);
-
-  return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
-}
+// function formatTime(timeInSeconds) {
+//   var pad = function(num, size) {
+//       return ('000' + num).slice(size * -1);
+//     },
+//     time = parseFloat(timeInSeconds).toFixed(3),
+//     hours = Math.floor(time / 60 / 60),
+//     minutes = Math.floor(time / 60) % 60,
+//     seconds = Math.floor(time - minutes * 60);
+//   return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+// }
 
 const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   bottom: 0;
