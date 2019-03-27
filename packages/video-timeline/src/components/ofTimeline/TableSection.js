@@ -11,10 +11,11 @@ function TableSection(props) {
   return (
     <TableBody style={{ width: '100%', position: 'relative', zIndex: '20' }}>
       <TableBlock
+        plain={props.plain}
         leftColContent={
           <Grid
-            container
             alignItems="center"
+            container
             justify="space-between"
             style={{ width: '200px' }}
           >
