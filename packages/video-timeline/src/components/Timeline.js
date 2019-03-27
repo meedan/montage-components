@@ -1,9 +1,9 @@
 import 'rc-slider/assets/index.css';
 import React, { useState, useEffect } from 'react';
+import Slider from 'rc-slider';
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
-import Slider from '@material-ui/lab/Slider';
 import Table from '@material-ui/core/Table';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -36,19 +36,35 @@ const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   right: 0;
   top: 0;
   z-index: 10;
+  .rc-slider {
+    height: 100%;
+    padding: 0;
+  }
+  .rc-slider,
+  .rc-slider-track,
+  .rc-slider-rail {
+    background: transparent;
+  }
+  .rc-slider-disabled {
+    .rc-slider-mark-text {
+      cursor: pointer !important;
+    }
+  }
 `;
 
-const TimelineSliderThumb = styled(({ pxOffset, ...props }) => (
+const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
   <div {...props} />
 ))`
-  bottom: 0;
-  display: block;
-  height: 100% !important;
-  left: 0;
+  background: rgba(0, 0, 0, 0.033);
+  cursor: -webkit-grab;
+  cursor: grab;
+  cursor: pointer;
+  height: 100%;
+  pointer-events: all;
   position: absolute;
-  right: 0;
-  top: 0;
-  width: 100% !important;
+  touch-action: pan-x;
+  transform: translateX(-50%);
+  width: 13px;
   &:before {
     background: ${color.brand};
     border-radius: 100%;
@@ -74,37 +90,11 @@ const TimelineSliderThumb = styled(({ pxOffset, ...props }) => (
   }
 `;
 
-const styles = theme => ({
-  root: {
-    height: '100%',
-  },
-  container: {
-    height: '100%',
-  },
-  trackBefore: {
-    backgroundColor: 'transparent',
-  },
-  trackAfter: {
-    backgroundColor: 'transparent',
-  },
-  thumbWrapper: {
-    height: '100%',
-  },
-  thumbIconWrapper: {},
-  thumb: {
-    height: '100%',
-    transform: 'translateX(-50%)',
-    cursor: 'col-resize',
-    pointerEvents: 'all',
-    '&:hover, &:active': {
-      boxShadow: 'none',
-    },
-  },
-});
+const styles = theme => ({});
 
 const Timeline = props => {
   const pxOffset = 224;
-  const { currentTime, duration, player, onPlay, classes } = props;
+  const { currentTime, duration, player, onPlay } = props;
 
   const [time, setTime] = useState(0);
 
@@ -130,34 +120,21 @@ const Timeline = props => {
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
     if (e.clientX > startPos) setTime(newTime);
   };
-  const onThumbDrag = (e, val) => {
-    setTime(val);
-  };
 
   return (
     <TimelinePlayheadWrapper onClick={e => onTrackClick(e)}>
       <TimelinePlayhead pxOffset={pxOffset}>
         <Slider
-          defaultValue={currentTime}
-          value={time}
-          aria-labelledby="Playback progress"
-          min={0}
-          max={duration}
-          classes={{
-            container: classes.container,
-            root: classes.root,
-            thumb: classes.thumb,
-            thumbIconWrapper: classes.thumbIconWrapper,
-            thumbWrapper: classes.thumbWrapper,
-            trackAfter: classes.trackAfter,
-            trackBefore: classes.trackBefore,
-          }}
-          thumb={
+          defaultValue={0}
+          handle={props => (
             <Tooltip title={formatTime(time)} placement="top">
-              <TimelineSliderThumb />
+              <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
             </Tooltip>
-          }
-          onChange={(e, val) => onThumbDrag(e, val)}
+          )}
+          max={duration}
+          min={0}
+          onChange={val => setTime(val)}
+          value={time}
         />
       </TimelinePlayhead>
       <Table padding="dense">
