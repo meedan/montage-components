@@ -5,11 +5,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
+  className: {},
   leftCol: {
     width: '224px',
   },
   rightCol: {
     width: '100%',
+  },
+  plain: {
+    border: 'none',
   },
 });
 
@@ -17,8 +21,15 @@ function TableBlock(props) {
   const { classes, leftColContent, rightColContent } = props;
   return (
     <TableRow>
-      <TableCell className={classes.leftCol}>{leftColContent}</TableCell>
-      <TableCell className={classes.rightCol} padding="none">
+      <TableCell
+        className={`${classes.leftCol} ${props.plain ? classes.plain : null}`}
+      >
+        {leftColContent}
+      </TableCell>
+      <TableCell
+        className={`${classes.rightCol} ${props.plain ? classes.plain : null}`}
+        padding="none"
+      >
         {rightColContent}
       </TableCell>
     </TableRow>

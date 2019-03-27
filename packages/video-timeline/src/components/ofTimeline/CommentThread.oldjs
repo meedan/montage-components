@@ -1,14 +1,15 @@
+import 'rc-slider/assets/index.css';
 import React from 'react';
-
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Popover from 'material-ui-popup-state/HoverPopover';
-import Avatar from '@material-ui/core/Avatar';
 import {
   usePopupState,
   bindHover,
   bindPopover,
 } from 'material-ui-popup-state/hooks';
+import styled from 'styled-components';
+
+import { withStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import Popover from '@material-ui/core/Popover';
 
 const styles = {
   avatar: {
@@ -17,15 +18,18 @@ const styles = {
   },
 };
 
-const CommentThread = props => {
+const ThreadAnchor = styled.div``;
+
+function TimelineComment(props) {
   const { classes, commentData } = props;
 
   const popupState = usePopupState({
     variant: 'popover',
-    popupId: 'commentThreadPopup',
+    popupId: 'CommentPopup',
   });
+
   return (
-    <div>
+    <ThreadAnchor>
       <Avatar
         {...bindHover(popupState)}
         alt={`${commentData.user.first_name} ${commentData.user.last_name}`}
@@ -35,21 +39,19 @@ const CommentThread = props => {
       <Popover
         {...bindPopover(popupState)}
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'bottom',
           horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'center',
         }}
         disableRestoreFocus
       >
-        <Typography style={{ margin: 10 }}>
-          The content of the Popover.
-        </Typography>
+        <div>Hello</div>
       </Popover>
-    </div>
+    </ThreadAnchor>
   );
-};
+}
 
-export default withStyles(styles)(CommentThread);
+export default withStyles(styles)(TimelineComment);
