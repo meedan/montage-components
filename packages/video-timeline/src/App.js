@@ -203,6 +203,7 @@ class App extends Component {
                   currentTime={currentTime}
                   data={data}
                   duration={duration}
+                  onPause={() => this.onPause()}
                   onPlay={() => this.onPlay()}
                   player={this.player}
                 />

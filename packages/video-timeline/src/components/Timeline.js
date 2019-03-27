@@ -56,9 +56,9 @@ const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
   <div {...props} />
 ))`
   background: rgba(0, 0, 0, 0.033);
+  cursor: col-resize;
   cursor: -webkit-grab;
   cursor: grab;
-  cursor: pointer;
   height: 100%;
   pointer-events: all;
   position: absolute;
@@ -94,22 +94,14 @@ const styles = theme => ({});
 
 const Timeline = props => {
   const pxOffset = 224;
-  const { currentTime, duration, player, onPlay } = props;
+  const { currentTime, duration, onPause, onPlay, player } = props;
 
   const [time, setTime] = useState(0);
+  const [skipState, setSkipState] = useState(false);
 
   useEffect(() => {
-    if (player) {
-      if (player.player.isPlaying) setTime(currentTime);
-    }
+    if (skipState) setSkipState(false);
   }, [currentTime]);
-
-  useEffect(() => {
-    if (player) {
-      if (!player.player.isPlaying) onPlay();
-      player.seekTo(time);
-    }
-  }, [time]);
 
   const onTrackClick = e => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -118,7 +110,36 @@ const Timeline = props => {
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
-    if (e.clientX > startPos) setTime(newTime);
+    if (player && e.clientX > startPos) {
+      setTime(Math.floor(newTime));
+      setSkipState(true);
+      if (!player.isPlaying) onPlay();
+      if (player) player.seekTo(newTime);
+    }
+    return null;
+  };
+
+  const onDragStart = val => {
+    setSkipState(true);
+    setTime(roundTime(val));
+    if (player) onPause();
+  };
+  const onDrag = val => {
+    setSkipState(true);
+    setTime(roundTime(val));
+  };
+  const onDragEnd = val => {
+    setTime(roundTime(val));
+    if (player) {
+      if (player) onPlay();
+      player.seekTo(roundTime(val));
+    }
+  };
+  const getPreciseTime = () => {
+    return skipState ? time : currentTime;
+  };
+  const roundTime = time => {
+    return Math.floor(time);
   };
 
   return (
@@ -127,14 +148,16 @@ const Timeline = props => {
         <Slider
           defaultValue={0}
           handle={props => (
-            <Tooltip title={formatTime(time)} placement="top">
+            <Tooltip title={formatTime(getPreciseTime())} placement="top">
               <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
             </Tooltip>
           )}
           max={duration}
           min={0}
-          onChange={val => setTime(val)}
-          value={time}
+          onAfterChange={onDragEnd}
+          onBeforeChange={onDragStart}
+          onChange={onDrag}
+          value={getPreciseTime()}
         />
       </TimelinePlayhead>
       <Table padding="dense">
