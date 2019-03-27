@@ -97,7 +97,13 @@ class Map extends Component {
   handlePlaceSelect = (e) => {
     const place = this.autocomplete.getPlace();
     console.log(place);
-    if (place && place.geometry) this.setState({ center: place.geometry.location });
+    if (place && place.geometry) {
+      this.map.fitBounds(place.geometry.viewport);
+      this.setState({
+        dropPin: true,
+        marker: place.geometry.location,
+      });
+    }
   }
 
   onLoad = autocomplete => {
@@ -201,6 +207,7 @@ class Map extends Component {
             zoom={2.5}
             center={this.state.center ? this.state.center : this.state.markers[0]}
             onClick={this.handleMapClick}
+            onLoad={(map) => this.map = map}
 
             options={{
               draggableCursor: this.state.dropPin || this.state.drawPolygon ? 'crosshair' : 'grab',
