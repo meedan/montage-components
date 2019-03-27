@@ -21,6 +21,11 @@ const SliderWrapper = styled.div`
       cursor: pointer !important;
     }
   }
+  .rc-slider-mark-text {
+    height: 32px;
+    width: 32px;
+    transform: translate(-50%, -27px) !important;
+  }
 `;
 
 function TimelineComments(props) {

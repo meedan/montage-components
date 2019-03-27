@@ -30,8 +30,10 @@ const customTheme = createMuiTheme({
         borderColor: grey[200]
       },
       paddingDense: {
+        paddingBottom: 6,
+        paddingLeft: 12,
         paddingRight: 12,
-        paddingLeft: 12
+        paddingTop: 6
       }
     },
     MuiMenuItem: {
