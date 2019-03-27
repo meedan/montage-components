@@ -26,6 +26,9 @@ const SliderWrapper = styled.div`
     width: 32px;
     transform: translate(-50%, -27px) !important;
   }
+  .rc-slider-mark-text:hover {
+    z-index: 50;
+  }
 `;
 
 function TimelineComments(props) {
