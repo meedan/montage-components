@@ -87,7 +87,14 @@ function InfoCard(props) {
   });
 
   if (map)
-    return <Map data={mapData} currentTime={0} onSave={d => console.log(d)} />;
+    return (
+      <Map
+        key="map"
+        data={mapData}
+        currentTime={0}
+        onSave={d => console.log(d)}
+      />
+    );
 
   return (
     <Card square elevation={0}>

@@ -13,6 +13,8 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 
+import equal from 'fast-deep-equal';
+
 const classes = {
   root: {
     padding: '2px 4px',
@@ -46,6 +48,14 @@ class Map extends Component {
     };
 
     this.searchRef = React.createRef();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // if (this.props.currentTime !== nextProps.currentTime) {
+    //   return true;
+    // }
+
+    return !equal(this.state, nextState);
   }
 
   onScriptLoad = () => {
@@ -182,24 +192,25 @@ class Map extends Component {
   // handleMarkerClick = e => {
   //   // e.stopPropagation();
   // };
-  //
-  // handleMarkerUpdate = () => {
-  //   setTimeout(() => {
-  //     console.log(this.marker.getPosition());
-  //   }, 0);
-  //   // console.log(this.marker);
-  //   // this.map.panTo(this.maker.position);
-  //   // const { lat, lng } = this.marker.getPosition();
-  //   // this.setState({
-  //   //   saved: false,
-  //   //   marker: {
-  //   //     lat: lat(),
-  //   //     lng: lng(),
-  //   //     type: 'marker',
-  //   //     time: this.props.currentTime,
-  //   //   },
-  //   // });
-  // };
+
+  handleMarkerUpdate = () => {
+    setTimeout(() => {
+      const { lat, lng } = this.marker.getPosition();
+      const lt = lat();
+      const lg = lng();
+
+      if (lt !== this.state.marker.lat && lg !== this.state.marker.lng) {
+        this.setState({
+          marker: {
+            lat: lat(),
+            lng: lng(),
+            type: 'marker',
+            time: this.state.marker.currentTime,
+          },
+        });
+      }
+    }, 0);
+  };
 
   render() {
     console.log(this.state);
@@ -309,6 +320,7 @@ class Map extends Component {
             {this.state.marker.type === 'polygon' &&
             this.state.marker.polygon.length > 0 ? (
               <Polygon
+                key="poly"
                 editable={this.state.drawPolygon}
                 path={this.state.marker.polygon}
                 onLoad={polygon => (this.polygon = polygon)}
@@ -316,6 +328,7 @@ class Map extends Component {
             ) : null}
             {this.state.marker.type === 'marker' ? (
               <Marker
+                key="marker"
                 draggable={this.state.dropPin}
                 animation={window.google && window.google.maps.Animation.DROP}
                 position={{
@@ -323,12 +336,14 @@ class Map extends Component {
                   lng: this.state.marker.lng,
                 }}
                 onLoad={marker => (this.marker = marker)}
+                onPositionChanged={this.handleMarkerUpdate}
               />
             ) : null}
             {this.props.data
               .filter(d => d.type === 'marker')
-              .map(({ lat, lng }) => (
+              .map(({ lat, lng }, i) => (
                 <Marker
+                  key={`m-${i}`}
                   draggable
                   animation={window.google && window.google.maps.Animation.DROP}
                   position={{ lat, lng }}
@@ -336,8 +351,9 @@ class Map extends Component {
               ))}
             {this.props.data
               .filter(d => d.type === 'polygon')
-              .map(polygon => (
+              .map((polygon, i) => (
                 <Polygon
+                  key={`p-${i}`}
                   onLoad={polygon => {
                     console.log('polygon: ', polygon);
                   }}
