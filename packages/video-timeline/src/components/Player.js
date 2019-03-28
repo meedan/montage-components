@@ -4,7 +4,11 @@ import { withTheme } from '@material-ui/core/styles';
 import ReactPlayer from 'react-player';
 
 class Player extends Component {
-  state = {};
+  state = {
+    seeking: false,
+    playing: false,
+    progress: {},
+  };
 
   static getDerivedStateFromProps(props, state) {
     return {
@@ -18,17 +22,17 @@ class Player extends Component {
     this.props.onDuration(duration);
   };
 
-  onProgress = state => {
-    // console.log('onProgress', state);
-    if (!this.state.seeking) {
-      this.setState(state);
-      this.props.onProgress(state);
+  onProgress = progress => {
+    // console.log('onProgress', progress);
+    this.setState({ progress });
+    if (!this.state.seeking && !this.state.buffering) {
+      this.props.onProgress(progress);
     }
   };
 
   onPlay = () => {
     // console.log('onPlay');
-    this.setState({ playing: true });
+    this.setState({ playing: true, seeking: false, buffering: false });
     this.props.onPlay();
   };
 
@@ -36,6 +40,16 @@ class Player extends Component {
     // console.log('onPause');
     this.setState({ playing: false });
     this.props.onPause();
+  };
+
+  onSeek = () => {
+    // console.log('onSeek');
+    this.setState({ seeking: true });
+  };
+
+  onBuffer = () => {
+    // console.log('onBuffer');
+    this.setState({ buffering: true });
   };
 
   render() {
@@ -50,6 +64,8 @@ class Player extends Component {
         height="100%"
         onDuration={this.onDuration}
         onProgress={this.onProgress}
+        onSeek={this.onSeek}
+        onBuffer={this.onBuffer}
         onPlay={this.onPlay}
         onPause={this.onPause}
         playing={this.state.playing}
