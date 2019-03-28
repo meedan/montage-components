@@ -99,12 +99,8 @@ const Timeline = props => {
   const [time, setTime] = useState(0);
   const [skipState, setSkipState] = useState(false);
 
-  // useEffect(() => {
-  //   // if (skipState) setSkipState(false);
-  //   setSkipState(skipState);
-  // }, [currentTime]);
-
   const onTrackClick = e => {
+    if (skipState) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const startPos = rect.left + pxOffset;
     const endPos = rect.width;
@@ -134,7 +130,7 @@ const Timeline = props => {
 
   const onDragEnd = val => {
     // setTime(roundTime(val));
-    setSkipState(false);
+    setTimeout(() => setSkipState(false), 200);
     // if (player) player.seekTo(roundTime(val));
   };
 
