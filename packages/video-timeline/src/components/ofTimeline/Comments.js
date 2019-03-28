@@ -24,10 +24,13 @@ const SliderWrapper = styled.div`
   .rc-slider-mark-text {
     height: 32px;
     width: 32px;
-    transform: translate(-50%, -27px) !important;
+    transform: translateY(-27px) !important;
   }
   .rc-slider-mark-text:hover {
     z-index: 50;
+  }
+  .rc-slider-dot {
+    visibility: hidden;
   }
 `;
 
@@ -41,7 +44,7 @@ function TimelineComments(props) {
   const marks = reduce(
     arr,
     function(object, param) {
-      const pos = (100 * param.start_seconds) / duration;
+      const pos = param.start_seconds;
       object[pos] = <CommentThread commentData={param} />;
       return object;
     },
@@ -65,7 +68,9 @@ function TimelineComments(props) {
             disabled
             included={false}
             marks={marks}
-            min={-10}
+            max={duration}
+            min={0}
+            value={null}
           />
         </SliderWrapper>
       }
