@@ -29,6 +29,15 @@ const styles = {
 
 const CommentThread = props => {
   const { classes, commentData } = props;
+  const {
+    c_pretty_created_date,
+    replies,
+    start_seconds,
+    text,
+    user,
+  } = commentData;
+
+  console.log({ commentData });
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -38,12 +47,9 @@ const CommentThread = props => {
     <div>
       <Avatar
         {...bindHover(popupState)}
-        alt={`${commentData.user.first_name} ${commentData.user.last_name}`}
+        alt={`${user.first_name} ${user.last_name}`}
         className={classes.avatar}
-        src={commentData.user.profile_img_url}
-        style={{
-          transform: 'translateX(50%)',
-        }}
+        src={user.profile_img_url}
       />
       <Popover
         {...bindPopover(popupState)}
@@ -65,7 +71,7 @@ const CommentThread = props => {
               <>
                 <ListSubheader component="div" disableSticky>
                   <Typography color="textSecondary" variant="overline">
-                    {formatTime(commentData.start_seconds)}
+                    {formatTime(start_seconds)}
                   </Typography>
                 </ListSubheader>
                 <Divider />
@@ -75,27 +81,48 @@ const CommentThread = props => {
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar
-                  alt={`${commentData.user.first_name} ${
-                    commentData.user.last_name
-                  }`}
-                  src={commentData.user.profile_img_url}
+                  alt={`${user.first_name} ${user.last_name}`}
+                  src={user.profile_img_url}
                   className={classes.avatar}
                 />
               </ListItemAvatar>
               <ListItemText>
                 <Typography variant="body2">
-                  {`${commentData.user.first_name} ${
-                    commentData.user.last_name
-                  }`}
+                  {`${user.first_name} ${user.last_name}`}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {commentData.c_pretty_created_date}
+                  {c_pretty_created_date}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {commentData.text}
+                  {text}
                 </Typography>
               </ListItemText>
             </ListItem>
+            {replies.map(reply => {
+              console.log({ reply });
+              return (
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={`${reply.user.first_name} ${reply.user.last_name}`}
+                      src={reply.user.profile_img_url}
+                      className={classes.avatar}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText>
+                    <Typography variant="body2">
+                      {`${reply.user.first_name} ${reply.user.last_name}`}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {reply.c_pretty_created_date}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {reply.text}
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+              );
+            })}
           </List>
         </Card>
       </Popover>
