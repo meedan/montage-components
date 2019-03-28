@@ -24,7 +24,7 @@ const SliderWrapper = styled.div`
   .rc-slider-mark-text {
     height: 32px;
     width: 32px;
-    transform: translate(-50%, -27px) !important;
+    transform: translateY(-27px) !important;
   }
   .rc-slider-mark-text:hover {
     z-index: 50;
