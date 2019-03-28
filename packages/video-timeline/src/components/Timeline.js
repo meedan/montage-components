@@ -99,9 +99,10 @@ const Timeline = props => {
   const [time, setTime] = useState(0);
   const [skipState, setSkipState] = useState(false);
 
-  useEffect(() => {
-    if (skipState) setSkipState(false);
-  }, [currentTime]);
+  // useEffect(() => {
+  //   // if (skipState) setSkipState(false);
+  //   setSkipState(skipState);
+  // }, [currentTime]);
 
   const onTrackClick = e => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -111,7 +112,8 @@ const Timeline = props => {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
     if (player && e.clientX > startPos) {
-      setTime(Math.floor(newTime));
+      // setTime(Math.floor(newTime));
+      setTime(newTime);
       setSkipState(true);
       if (!player.isPlaying) onPlay();
       if (player) player.seekTo(newTime);
@@ -120,25 +122,31 @@ const Timeline = props => {
   };
 
   const onDragStart = val => {
+    // setTime(roundTime(val));
     setSkipState(true);
-    setTime(roundTime(val));
   };
+
   const onDrag = val => {
-    setSkipState(true);
     setTime(roundTime(val));
     if (player) player.seekTo(roundTime(val));
+    setSkipState(true);
   };
+
   const onDragEnd = val => {
-    setTime(roundTime(val));
-    if (player) {
-      player.seekTo(roundTime(val));
-    }
+    // setTime(roundTime(val));
+    setSkipState(false);
+    // if (player) player.seekTo(roundTime(val));
   };
+
   const getPreciseTime = () => {
-    return skipState ? time : currentTime;
+    if (skipState) return time;
+    // if (Math.abs(time - currentTime) > duration / 100) return time;
+    return currentTime;
   };
+
   const roundTime = time => {
-    return Math.floor(time);
+    return time;
+    // return Math.floor(time);
   };
 
   return (
