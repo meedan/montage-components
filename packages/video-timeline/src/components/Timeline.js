@@ -94,7 +94,7 @@ const styles = theme => ({});
 
 const Timeline = props => {
   const pxOffset = 224;
-  const { currentTime, duration, onPause, onPlay, player } = props;
+  const { currentTime, duration, onPlay, player } = props;
 
   const [time, setTime] = useState(0);
   const [skipState, setSkipState] = useState(false);
