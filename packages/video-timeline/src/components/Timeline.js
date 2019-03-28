@@ -127,6 +127,7 @@ const Timeline = props => {
   const onDrag = val => {
     setSkipState(true);
     setTime(roundTime(val));
+    if (player) player.seekTo(roundTime(val));
   };
   const onDragEnd = val => {
     setTime(roundTime(val));
