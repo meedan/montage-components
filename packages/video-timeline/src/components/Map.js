@@ -11,8 +11,9 @@ import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 import CheckIcon from '@material-ui/icons/Check';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
-
 import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
+
+import equal from 'fast-deep-equal';
 
 const classes = {
   root: {
@@ -42,74 +43,47 @@ class Map extends Component {
     this.state = {
       dropPin: false,
       drawPolygon: false,
-      isClosed: false,
-      marker: null,
-      polyMarkers: [],
-      markers: [
-        {lat: -31.563910, lng: 147.154312},
-        {lat: -33.718234, lng: 150.363181},
-        {lat: -33.727111, lng: 150.371124},
-        {lat: -33.848588, lng: 151.209834},
-        {lat: -33.851702, lng: 151.216968},
-        {lat: -34.671264, lng: 150.863657},
-        {lat: -35.304724, lng: 148.662905},
-        {lat: -36.817685, lng: 175.699196},
-        {lat: -36.828611, lng: 175.790222},
-        {lat: -37.750000, lng: 145.116667},
-        {lat: -37.759859, lng: 145.128708},
-        {lat: -37.765015, lng: 145.133858},
-        {lat: -37.770104, lng: 145.143299},
-        {lat: -37.773700, lng: 145.145187},
-        {lat: -37.774785, lng: 145.137978},
-        {lat: -37.819616, lng: 144.968119},
-        {lat: -38.330766, lng: 144.695692},
-        {lat: -39.927193, lng: 175.053218},
-        {lat: -41.330162, lng: 174.865694},
-        {lat: -42.734358, lng: 147.439506},
-        {lat: -42.734358, lng: 147.501315},
-        {lat: -42.735258, lng: 147.438000},
-        {lat: -43.999792, lng: 170.463352},
-      ],
-      polygons: [[
-          { lat: -33.858, lng: 151.213 },
-          { lat: -33.859, lng: 151.222 },
-          { lat: -33.866, lng: 151.215 },
-        ]],
+      saved: true,
+      marker: this.props.marker || {},
     };
 
     this.searchRef = React.createRef();
   }
 
-  static getDerivedStateFromProps(props, state) {
-    return {
-    };
+  shouldComponentUpdate(nextProps, nextState) {
+    // if (this.props.currentTime !== nextProps.currentTime) {
+    //   return true;
+    // }
+
+    return !equal(this.state, nextState);
   }
 
   onScriptLoad = () => {
-    const options = { /* types: ['(cities)'] */ };
-
-    // Initialize Google Autocomplete
-    this.autocomplete = new window.google.maps.places.Autocomplete(this.searchRef.current, options);
-    // Fire Event when a suggested name is selected
+    this.autocomplete = new window.google.maps.places.Autocomplete(
+      this.searchRef.current,
+      {}
+    );
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
-  }
+  };
 
-  handlePlaceSelect = (e) => {
+  handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
     console.log(place);
     if (place && place.geometry) {
       this.map.fitBounds(place.geometry.viewport);
+
+      const { lat, lng } = place.geometry.location;
       this.setState({
         dropPin: true,
-        marker: place.geometry.location,
+        marker: { lat, lng, type: 'marker', time: this.props.currentTime || 0 },
       });
     }
-  }
+  };
 
   onLoad = autocomplete => {
     console.log('autocomplete: ', autocomplete);
     this.autocomplete = autocomplete;
-  }
+  };
 
   onPlaceChanged = () => {
     if (this.autocomplete !== null) {
@@ -117,44 +91,132 @@ class Map extends Component {
     } else {
       console.log('Autocomplete is not loaded yet!');
     }
-  }
+  };
 
   toggleDropPin = () => {
-    this.setState({ dropPin: !this.state.dropPin });
-  }
+    this.setState({ dropPin: !this.state.dropPin, drawPolygon: false });
+  };
 
   toggleDrawPolygon = () => {
-    this.setState({ drawPolygon: !this.state.drawPolygon });
-  }
+    this.setState({ dropPin: false, drawPolygon: !this.state.drawPolygon });
+  };
 
   saveCurrent = () => {
-    this.setState({ drawPolygon: false, dropPin: false });
-    // TODO save
-  }
+    let marker = null;
+
+    if (this.state.marker.type === 'marker' && this.marker) {
+      const { lat, lng } = this.marker.getPosition();
+
+      marker = {
+        lat: lat(),
+        lng: lng(),
+        type: 'marker',
+        time: this.state.marker.currentTime,
+      };
+
+      this.setState({
+        drawPolygon: false,
+        dropPin: false,
+        saved: true,
+        marker,
+      });
+    } else if (this.state.marker.type === 'polygon' && this.polygon) {
+      const polygon = [];
+      this.polygon
+        .getPath()
+        .forEach(({ lat, lng }) => polygon.push({ lat: lat(), lng: lng() }));
+
+      marker = {
+        polygon: polygon,
+        type: 'polygon',
+        time: this.state.marker.currentTime,
+      };
+
+      this.setState({
+        drawPolygon: false,
+        dropPin: false,
+        saved: true,
+        marker,
+      });
+    } else {
+      this.setState({
+        drawPolygon: false,
+        dropPin: false,
+        saved: true,
+      });
+    }
+
+    this.props.onSave(marker);
+  };
 
   deleteCurrent = () => {
-    this.setState({ drawPolygon: false, dropPin: false, marker: null, polyMarkers: [] });
-  }
+    this.setState({
+      drawPolygon: false,
+      dropPin: false,
+      marker: {},
+      saved: true,
+    });
+  };
 
-  handleMapClick = (e) => {
+  handleMapClick = e => {
     if (this.state.dropPin) {
+      const { lat, lng } = e.latLng;
+      console.log(lat, lng);
       this.setState({
-        // dropPin: !this.state.dropPin,
-        marker: e.latLng,
+        saved: false,
+        marker: {
+          lat: lat(),
+          lng: lng(),
+          type: 'marker',
+          time: this.props.currentTime,
+        },
       });
     }
 
-    if (this.state.drawPolygon && !this.state.isClosed) {
+    if (this.state.drawPolygon) {
+      const { lat, lng } = e.latLng;
       this.setState({
-        polyMarkers: [ ...this.state.polyMarkers, e.latLng ],
+        saved: false,
+        marker: {
+          polygon: [
+            ...(this.state.marker.polygon || []),
+            { lat: lat(), lng: lng() },
+          ],
+          type: 'polygon',
+          currentTime: this.props.currentTime || 0,
+        },
       });
     }
-  }
+  };
+
+  // handleMarkerClick = e => {
+  //   // e.stopPropagation();
+  // };
+
+  handleMarkerUpdate = () => {
+    setTimeout(() => {
+      const { lat, lng } = this.marker.getPosition();
+      const lt = lat();
+      const lg = lng();
+
+      if (lt !== this.state.marker.lat && lg !== this.state.marker.lng) {
+        this.setState({
+          marker: {
+            lat: lat(),
+            lng: lng(),
+            type: 'marker',
+            time: this.state.marker.currentTime,
+          },
+        });
+      }
+    }, 0);
+  };
 
   render() {
+    console.log(this.state);
     const polygonOptions = {
       fillColor: 'lightblue',
-      fillOpacity: .5,
+      fillOpacity: 0.5,
       strokeColor: 'red',
       strokeOpacity: 1,
       strokeWeight: 2,
@@ -162,10 +224,20 @@ class Map extends Component {
       draggable: false,
       editable: false,
       geodesic: true,
-      // paths: TEST,
       zIndex: 1,
     };
 
+    const center = this.props.data
+      .reduce(
+        (acc, d) => {
+          const coords =
+            d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
+          return [...coords, ...acc];
+        },
+        [{ lat: 0, lng: 0 }]
+      )
+      .reverse()
+      .pop();
 
     return (
       <>
@@ -173,21 +245,45 @@ class Map extends Component {
           <IconButton className={classes.iconButton}>
             <KeyboardBackspaceIcon />
           </IconButton>
-          <InputBase inputRef={this.searchRef} className={classes.input} placeholder="Search Google Maps" />
+          <InputBase
+            inputRef={this.searchRef}
+            className={classes.input}
+            placeholder="Search Google Maps"
+          />
           <IconButton className={classes.iconButton}>
             <SearchIcon />
           </IconButton>
-          { /* <Divider className={classes.divider} /> */ }
-          <IconButton color={this.state.dropPin ? 'primary' : 'secondary'} className={classes.iconButton} onClick={this.toggleDropPin}>
+          {/* <Divider className={classes.divider} /> */}
+          <IconButton
+            color={this.state.dropPin ? 'primary' : 'secondary'}
+            className={classes.iconButton}
+            onClick={this.toggleDropPin}
+          >
             <AddLocationIcon />
           </IconButton>
-          <IconButton color={this.state.drawPolygon ? 'primary' : 'secondary'} className={classes.iconButton} onClick={this.toggleDrawPolygon}>
+          <IconButton
+            color={this.state.drawPolygon ? 'primary' : 'secondary'}
+            className={classes.iconButton}
+            onClick={this.toggleDrawPolygon}
+          >
             <FormatShapesIcon />
           </IconButton>
-          <IconButton color={this.state.marker || this.state.polyMarkers.length > 0 ? 'primary' : 'secondary'} className={classes.iconButton} onClick={this.deleteCurrent}>
+          <IconButton
+            color={
+              this.state.marker && this.state.marker.type && !this.state.saved
+                ? 'primary'
+                : 'secondary'
+            }
+            className={classes.iconButton}
+            onClick={this.deleteCurrent}
+          >
             <DeleteOutlineIcon />
           </IconButton>
-          <IconButton color={this.state.marker || this.state.polyMarkers.length ? 'primary' : 'secondary'} className={classes.iconButton} onClick={this.saveCurrent}>
+          <IconButton
+            color={!this.state.saved ? 'primary' : 'secondary'}
+            className={classes.iconButton}
+            onClick={this.saveCurrent}
+          >
             <CheckIcon />
           </IconButton>
         </Paper>
@@ -202,40 +298,69 @@ class Map extends Component {
             mapContainerStyle={{
               height: '400px',
               width: '100%',
-              // cursor: this.state.dropPin ? 'crosshair' : 'grab',
             }}
             zoom={2.5}
-            center={this.state.center ? this.state.center : this.state.markers[0]}
+            center={center}
             onClick={this.handleMapClick}
-            onLoad={(map) => this.map = map}
-
+            onLoad={map => (this.map = map)}
             options={{
-              draggableCursor: this.state.dropPin || this.state.drawPolygon ? 'crosshair' : 'grab',
+              draggableCursor:
+                this.state.dropPin || this.state.drawPolygon
+                  ? 'crosshair'
+                  : 'grab',
               mapTypeControl: false,
               streetViewControl: true,
               streetViewControlOptions: {
-                position: window.google && window.google.maps.ControlPosition.LEFT_BOTTOM,
+                position:
+                  window.google &&
+                  window.google.maps.ControlPosition.LEFT_BOTTOM,
               },
             }}
           >
-          {
-            this.state.polyMarkers.length > 0 ? <Polygon editable={this.state.drawPolygon} path={this.state.polyMarkers} /> : null
-          }
-          {
-            this.state.marker ? <Marker draggable={this.state.dropPin} animation={window.google && window.google.maps.Animation.DROP} position={this.state.marker} /> : null
-          }
-          {
-            this.state.markers.map(position => <Marker draggable animation={window.google && window.google.maps.Animation.DROP} position={position} />)
-          }
-          {
-            this.state.polygons.map(path => <Polygon
-              onLoad={polygon => {
-                console.log('polygon: ', polygon)
-              }}
-              path={path}
-              options={polygonOptions}
-            />)
-          }
+            {this.state.marker.type === 'polygon' &&
+            this.state.marker.polygon.length > 0 ? (
+              <Polygon
+                key="poly"
+                editable={this.state.drawPolygon}
+                path={this.state.marker.polygon}
+                onLoad={polygon => (this.polygon = polygon)}
+              />
+            ) : null}
+            {this.state.marker.type === 'marker' ? (
+              <Marker
+                key="marker"
+                draggable={this.state.dropPin}
+                animation={window.google && window.google.maps.Animation.DROP}
+                position={{
+                  lat: this.state.marker.lat,
+                  lng: this.state.marker.lng,
+                }}
+                onLoad={marker => (this.marker = marker)}
+                onPositionChanged={this.handleMarkerUpdate}
+              />
+            ) : null}
+            {this.props.data
+              .filter(d => d.type === 'marker')
+              .map(({ lat, lng }, i) => (
+                <Marker
+                  key={`m-${i}`}
+                  draggable
+                  animation={window.google && window.google.maps.Animation.DROP}
+                  position={{ lat, lng }}
+                />
+              ))}
+            {this.props.data
+              .filter(d => d.type === 'polygon')
+              .map((polygon, i) => (
+                <Polygon
+                  key={`p-${i}`}
+                  onLoad={polygon => {
+                    console.log('polygon: ', polygon);
+                  }}
+                  path={polygon.polygon}
+                  options={polygonOptions}
+                />
+              ))}
           </GoogleMap>
         </LoadScript>
       </>
