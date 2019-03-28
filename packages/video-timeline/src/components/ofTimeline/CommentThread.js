@@ -37,12 +37,34 @@ const CommentThread = props => {
     user,
   } = commentData;
 
-  console.log({ commentData });
-
   const popupState = usePopupState({
     variant: 'popover',
     popupId: 'commentThreadPopup',
   });
+
+  const displayComment = (fname, lname, avatar, date, text) => {
+    return (
+      <ListItem alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar
+            alt={`${fname} ${lname}`}
+            src={avatar}
+            className={classes.avatar}
+          />
+        </ListItemAvatar>
+        <ListItemText>
+          <Typography variant="body2">{`${fname} ${lname}`}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            {date}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            {text}
+          </Typography>
+        </ListItemText>
+      </ListItem>
+    );
+  };
+
   return (
     <div>
       <Avatar
@@ -78,49 +100,20 @@ const CommentThread = props => {
               </>
             }
           >
-            <ListItem alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar
-                  alt={`${user.first_name} ${user.last_name}`}
-                  src={user.profile_img_url}
-                  className={classes.avatar}
-                />
-              </ListItemAvatar>
-              <ListItemText>
-                <Typography variant="body2">
-                  {`${user.first_name} ${user.last_name}`}
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {c_pretty_created_date}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {text}
-                </Typography>
-              </ListItemText>
-            </ListItem>
+            {displayComment(
+              user.first_name,
+              user.last_name,
+              user.profile_img_url,
+              c_pretty_created_date,
+              text
+            )}
             {replies.map(reply => {
-              console.log({ reply });
-              return (
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={`${reply.user.first_name} ${reply.user.last_name}`}
-                      src={reply.user.profile_img_url}
-                      className={classes.avatar}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText>
-                    <Typography variant="body2">
-                      {`${reply.user.first_name} ${reply.user.last_name}`}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {reply.c_pretty_created_date}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {reply.text}
-                    </Typography>
-                  </ListItemText>
-                </ListItem>
+              return displayComment(
+                reply.user.first_name,
+                reply.user.last_name,
+                reply.user.profile_img_url,
+                reply.c_pretty_created_date,
+                reply.text
               );
             })}
           </List>
