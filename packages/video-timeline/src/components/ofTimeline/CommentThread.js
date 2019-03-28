@@ -5,10 +5,8 @@ import {
   bindPopover,
 } from 'material-ui-popup-state/hooks';
 import Popover from 'material-ui-popup-state/HoverPopover';
-import { format, parseISO } from 'date-fns';
 
 import { withStyles } from '@material-ui/core/styles';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
@@ -31,8 +29,6 @@ const styles = {
 
 const CommentThread = props => {
   const { classes, commentData } = props;
-  console.log({ commentData });
-  console.log(commentData.start_seconds);
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -45,6 +41,9 @@ const CommentThread = props => {
         alt={`${commentData.user.first_name} ${commentData.user.last_name}`}
         className={classes.avatar}
         src={commentData.user.profile_img_url}
+        style={{
+          transform: 'translateX(50%)',
+        }}
       />
       <Popover
         {...bindPopover(popupState)}

@@ -29,6 +29,9 @@ const SliderWrapper = styled.div`
   .rc-slider-mark-text:hover {
     z-index: 50;
   }
+  .rc-slider-dot {
+    visibility: hidden;
+  }
 `;
 
 function TimelineComments(props) {
@@ -47,8 +50,6 @@ function TimelineComments(props) {
     },
     {}
   );
-
-  console.log({ duration });
 
   return (
     <TableSection
