@@ -1,5 +1,5 @@
 import 'rc-slider/assets/index.css';
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
@@ -15,18 +15,8 @@ import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
-const TimelinePlayheadWrapper = styled.div``;
 
-// function formatTime(timeInSeconds) {
-//   var pad = function(num, size) {
-//       return ('000' + num).slice(size * -1);
-//     },
-//     time = parseFloat(timeInSeconds).toFixed(3),
-//     hours = Math.floor(time / 60 / 60),
-//     minutes = Math.floor(time / 60) % 60,
-//     seconds = Math.floor(time - minutes * 60);
-//   return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
-// }
+const TimelinePlayheadWrapper = styled.div``;
 
 const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   bottom: 0;
@@ -92,85 +82,98 @@ const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
 
 const styles = theme => ({});
 
-const Timeline = props => {
-  const pxOffset = 224;
-  const { currentTime, duration, onPlay, player } = props;
+const pxOffset = 224;
 
-  const [time, setTime] = useState(0);
-  const [skipState, setSkipState] = useState(false);
+class Timeline extends Component {
+  state = {
+    ffTime: 0,
+    time: 0,
+    skip: false,
+    disjoint: false,
+  }
 
-  const onTrackClick = e => {
-    if (skipState) return;
+  static getDerivedStateFromProps(props, state) {
+    const { currentTime } = props;
+    let { time, events, skip, disjoint } = state;
+    
+    disjoint = disjoint && Math.floor(time / 5) !== Math.floor(currentTime / 5);
+    time = disjoint ? time : currentTime;
+
+    return { time, events, skip, disjoint };
+  }
+
+  onTrackClick = e => {
+    if (this.state.skip) return;
+    const { player, duration, onPlay } = this.props;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const startPos = rect.left + pxOffset;
     const endPos = rect.width;
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
+
     if (player && e.clientX > startPos) {
-      // setTime(Math.floor(newTime));
-      setTime(newTime);
-      setSkipState(true);
+      this.setState({ time: newTime, skip: false, disjoint: true });
+      
+      player.seekTo(newTime);
       if (!player.isPlaying) onPlay();
-      if (player) player.seekTo(newTime);
     }
+
     return null;
   };
 
-  const onDragStart = val => {
-    // setTime(roundTime(val));
-    setSkipState(true);
+  onDragStart = val => {
+    this.setState({ skip: true, ffTime: val, disjoint: true });
   };
 
-  const onDrag = val => {
-    setTime(roundTime(val));
-    if (player) player.seekTo(roundTime(val));
-    setSkipState(true);
+  onDrag = val => {
+    const { player } = this.props;
+
+    this.setState({ time: val, skip: true, disjoint: true });
+    if (player) player.seekTo(val);
   };
 
-  const onDragEnd = val => {
-    // setTime(roundTime(val));
-    setTimeout(() => setSkipState(false), 200);
-    // if (player) player.seekTo(roundTime(val));
+  onDragEnd = val => {
+    setTimeout(() => this.setState({ skip: false }), 200);
   };
 
-  const getPreciseTime = () => {
-    if (skipState) return time;
-    // if (Math.abs(time - currentTime) > duration / 100) return time;
-    return currentTime;
-  };
+  render() {
+    const { time, skip, ffTime } = this.state;
+    const { duration } = this.props;
 
-  const roundTime = time => {
-    return time;
-    // return Math.floor(time);
-  };
+    const props = Object.keys(this.props).reduce((acc, k) => {
+      if (!acc[k]) acc[k] = this.props[k];
+      return acc;
+    }, { currentTime: skip ? ffTime : time });
 
-  return (
-    <TimelinePlayheadWrapper onClick={e => onTrackClick(e)}>
-      <TimelinePlayhead pxOffset={pxOffset}>
-        <Slider
-          defaultValue={0}
-          handle={props => (
-            <Tooltip title={formatTime(getPreciseTime())} placement="top">
-              <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
-            </Tooltip>
-          )}
-          max={duration}
-          min={0}
-          onAfterChange={onDragEnd}
-          onBeforeChange={onDragStart}
-          onChange={onDrag}
-          value={getPreciseTime()}
-        />
-      </TimelinePlayhead>
-      <Table padding="dense">
-        <TimelineComments {...props} />
-        <TimelineClips {...props} />
-        <TimelineTags {...props} />
-        <TimelinePlaces {...props} />
-      </Table>
-    </TimelinePlayheadWrapper>
-  );
+    return (
+      <TimelinePlayheadWrapper onClick={e => this.onTrackClick(e)}>
+        <TimelinePlayhead pxOffset={pxOffset}>
+          <Slider
+            defaultValue={0}
+            handle={props => (
+              <Tooltip title={formatTime(time)} placement="top">
+                <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
+              </Tooltip>
+            )}
+            max={duration}
+            min={0}
+            onAfterChange={this.onDragEnd}
+            onBeforeChange={this.onDragStart}
+            onChange={this.onDrag}
+            value={this.state.time}
+          />
+        </TimelinePlayhead>
+        <Table padding="dense">
+          <TimelineComments {...props} />
+          <TimelineClips {...props} />
+          <TimelineTags {...props} />
+          <TimelinePlaces {...props} />
+        </Table>
+      </TimelinePlayheadWrapper>
+    );
+  }
 };
 
 export default withStyles(styles)(Timeline);
