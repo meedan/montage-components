@@ -29,4 +29,5 @@ function TimelineClips(props) {
   );
 }
 
-export default TimelineClips;
+
+export default React.memo((props) => TimelineClips(props));
