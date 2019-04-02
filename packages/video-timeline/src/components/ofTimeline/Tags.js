@@ -132,4 +132,5 @@ function TimelineTags(props) {
   );
 }
 
-export default TimelineTags;
+
+export default React.memo((props) => TimelineTags(props));
