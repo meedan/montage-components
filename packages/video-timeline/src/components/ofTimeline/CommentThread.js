@@ -37,9 +37,10 @@ function CommentThread(props) {
     start_seconds,
     text,
     user,
+    id,
   } = commentData;
 
-  const [editMode, toggleEditMode] = useState(false);
+  // const [editMode, toggleEditMode] = useState(false);
 
   const readPopupState = usePopupState({
     variant: 'popover',
@@ -52,12 +53,12 @@ function CommentThread(props) {
 
   const toggleEditPopup = () => {
     readPopupState.close();
-    editPopupState.open();
+    // editPopupState.open();
   };
 
-  const displayComment = (fname, lname, avatar, date, text) => {
+  const displayComment = (id, fname, lname, avatar, date, text) => {
     return (
-      <ListItem alignItems="flex-start">
+      <ListItem key={id} alignItems="flex-start">
         <ListItemAvatar>
           <Avatar
             alt={`${fname} ${lname}`}
@@ -116,14 +117,16 @@ function CommentThread(props) {
             }
           >
             {displayComment(
+              id,
               user.first_name,
               user.last_name,
               user.profile_img_url,
               c_pretty_created_date,
               text
             )}
-            {replies.map(reply => {
+            {replies.map((reply, i) => {
               return displayComment(
+                i,
                 reply.user.first_name,
                 reply.user.last_name,
                 reply.user.profile_img_url,

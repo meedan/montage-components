@@ -23,4 +23,5 @@ function TimelinePlaces(props) {
   );
 }
 
-export default TimelinePlaces;
+
+export default React.memo((props) => TimelinePlaces(props));

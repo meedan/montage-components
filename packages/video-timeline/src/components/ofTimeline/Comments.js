@@ -41,11 +41,12 @@ function TimelineComments(props) {
   const arr = commentThreads.map(thread => {
     return thread;
   });
+
   const marks = reduce(
     arr,
-    function(object, param) {
+    (object, param) => {
       const pos = param.start_seconds;
-      object[pos] = <CommentThread commentData={param} />;
+      object[pos] = <CommentThread key={param.id} commentData={param} />;
       return object;
     },
     {}
@@ -78,4 +79,4 @@ function TimelineComments(props) {
   );
 }
 
-export default TimelineComments;
+export default React.memo((props) => TimelineComments(props));
