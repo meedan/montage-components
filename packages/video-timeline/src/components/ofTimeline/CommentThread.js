@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   usePopupState,
   bindHover,
+  bindTrigger,
   bindPopover,
 } from 'material-ui-popup-state/hooks';
-import Popover from 'material-ui-popup-state/HoverPopover';
+import HoverPopover from 'material-ui-popup-state/HoverPopover';
 
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -15,6 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import TriggerPopover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
 import formatTime from './formatTime';
@@ -27,7 +29,7 @@ const styles = {
   },
 };
 
-const CommentThread = props => {
+function CommentThread(props) {
   const { classes, commentData } = props;
   const {
     c_pretty_created_date,
@@ -37,10 +39,21 @@ const CommentThread = props => {
     user,
   } = commentData;
 
-  const popupState = usePopupState({
+  const [editMode, toggleEditMode] = useState(false);
+
+  const readPopupState = usePopupState({
     variant: 'popover',
-    popupId: 'commentThreadPopup',
+    popupId: 'readCommentThreadPopup',
   });
+  const editPopupState = usePopupState({
+    variant: 'popover',
+    popupId: 'editCommentThreadPopup',
+  });
+
+  const toggleEditPopup = () => {
+    readPopupState.close();
+    editPopupState.open();
+  };
 
   const displayComment = (fname, lname, avatar, date, text) => {
     return (
@@ -68,13 +81,15 @@ const CommentThread = props => {
   return (
     <div>
       <Avatar
-        {...bindHover(popupState)}
+        {...bindHover(readPopupState)}
+        {...bindTrigger(editPopupState)}
         alt={`${user.first_name} ${user.last_name}`}
         className={classes.avatar}
+        onClick={toggleEditPopup}
         src={user.profile_img_url}
       />
-      <Popover
-        {...bindPopover(popupState)}
+      <HoverPopover
+        {...bindPopover(readPopupState)}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'center',
@@ -118,9 +133,55 @@ const CommentThread = props => {
             })}
           </List>
         </Card>
-      </Popover>
+      </HoverPopover>
+      <TriggerPopover
+        {...bindPopover(editPopupState)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        disableRestoreFocus
+        onClick={e => e.stopPropagation()}
+      >
+        <Card>
+          <List
+            dense
+            subheader={
+              <>
+                <ListSubheader component="div" disableSticky>
+                  <Typography color="textSecondary" variant="overline">
+                    {formatTime(start_seconds)}
+                  </Typography>
+                </ListSubheader>
+                <Divider />
+              </>
+            }
+          >
+            {displayComment(
+              user.first_name,
+              user.last_name,
+              user.profile_img_url,
+              c_pretty_created_date,
+              text
+            )}
+            {replies.map(reply => {
+              return displayComment(
+                reply.user.first_name,
+                reply.user.last_name,
+                reply.user.profile_img_url,
+                reply.c_pretty_created_date,
+                reply.text
+              );
+            })}
+          </List>
+        </Card>
+      </TriggerPopover>
     </div>
   );
-};
+}
 
 export default withStyles(styles)(CommentThread);
