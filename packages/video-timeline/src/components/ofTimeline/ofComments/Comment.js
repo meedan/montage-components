@@ -40,6 +40,14 @@ function Comment(props) {
     setComment(text);
     setEditMode(false);
   };
+  const handleCommentChange = () => {
+    // TODO: wire this up to save changes to the comment
+    setEditMode(false);
+    console.group('handleCommentChange()');
+    console.log({ id });
+    console.log({ comment });
+    console.groupEnd();
+  };
 
   return (
     <ListItem alignItems="flex-start" key={id} className={classes.ListItem}>
@@ -86,7 +94,7 @@ function Comment(props) {
                     color="primary"
                     disabled={comment.length === 0}
                     mini
-                    // onClick={createCollection}
+                    onClick={handleCommentChange}
                     size="small"
                   >
                     Save
