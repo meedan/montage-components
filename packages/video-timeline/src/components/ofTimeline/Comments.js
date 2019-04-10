@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import TableSection from './TableSection';
-import CommentThread from './CommentThread';
+import CommentThread from './ofComments/CommentThread';
 
 const SliderWrapper = styled.div`
   .rc-slider-disabled,
@@ -79,4 +79,4 @@ function TimelineComments(props) {
   );
 }
 
-export default React.memo((props) => TimelineComments(props));
+export default React.memo(props => TimelineComments(props));
