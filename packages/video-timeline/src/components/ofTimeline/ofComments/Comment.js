@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
+import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import EditIcon from '@material-ui/icons/Edit';
+import CommentForm from './CommentForm';
 
 const styles = {
   avatar: {
-    height: 28,
-    width: 28,
+    height: 24,
+    width: 24,
   },
   ListItem: {
     width: '220px',
@@ -34,18 +31,16 @@ function Comment(props) {
   const { isActionable, classes, id, fname, lname, avatar, date, text } = props;
 
   const [editMode, setEditMode] = useState(false);
-  const [comment, setComment] = useState(text);
 
-  const abbandonCommentEdit = () => {
-    setComment(text);
+  const closeCommentForm = () => {
     setEditMode(false);
   };
-  const handleCommentChange = () => {
+  const handleCommentChange = (text, id) => {
     // TODO: wire this up to save changes to the comment
     setEditMode(false);
     console.group('handleCommentChange()');
     console.log({ id });
-    console.log({ comment });
+    console.log({ text });
     console.groupEnd();
   };
 
@@ -64,50 +59,12 @@ function Comment(props) {
           {date}
         </Typography>
         {editMode ? (
-          <Grid container direction="column" spacing={8} wrap="nowrap">
-            <Grid item>
-              <TextField
-                autoFocus
-                defaultValue={comment}
-                fullWidth
-                id="comment"
-                inputProps={{
-                  autoComplete: 'off',
-                  style: { fontSize: '13px' },
-                }}
-                placeholder="Enter comment"
-                required
-                type="text"
-                onChange={e => setComment(e.currentTarget.value)}
-                className={classes.commentInput}
-              />
-            </Grid>
-            <Grid item>
-              <Grid
-                container
-                direction="row-reverse"
-                justify="space-between"
-                wrap="nowrap"
-              >
-                <Grid item>
-                  <Button
-                    color="primary"
-                    disabled={comment.length === 0}
-                    mini
-                    onClick={handleCommentChange}
-                    size="small"
-                  >
-                    Save
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button mini onClick={abbandonCommentEdit} size="small">
-                    Cancel
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+          <CommentForm
+            handleCancel={closeCommentForm}
+            handleSubmit={text => handleCommentChange(text, id)}
+            value={text}
+            isEditing
+          />
         ) : (
           <Typography variant="body2" color="textSecondary">
             {text}

@@ -2,10 +2,13 @@ import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Typography from '@material-ui/core/Typography';
 
 import Comment from './Comment';
+import CommentForm from './CommentForm';
 
 import formatTime from '../formatTime';
 
@@ -19,6 +22,15 @@ function CommentThread(props) {
     user,
     id,
   } = commentData;
+
+  const onReply = comment => {
+    console.log('onReply');
+    console.log(comment);
+  };
+  const onCancel = () => {
+    console.log('onCancel');
+    props.onClose();
+  };
 
   return (
     <List
@@ -56,6 +68,13 @@ function CommentThread(props) {
           />
         );
       })}
+      {isActionable ? (
+        <ListItem>
+          <ListItemText>
+            <CommentForm handleCancel={onCancel} handleSubmit={onReply} />
+          </ListItemText>
+        </ListItem>
+      ) : null}
     </List>
   );
 }
