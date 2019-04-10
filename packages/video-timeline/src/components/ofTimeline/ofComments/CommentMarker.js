@@ -42,7 +42,6 @@ function CommentPopover(props) {
         {...bindTrigger(editPopupState)}
         alt={`${user.first_name} ${user.last_name}`}
         className={classes.avatar}
-        // onClick={toggleEditPopup}
         src={user.profile_img_url}
       />
       <HoverPopover
@@ -76,7 +75,11 @@ function CommentPopover(props) {
         onClick={e => e.stopPropagation()}
       >
         <Card>
-          <CommentThread commentData={commentData} isActionable />
+          <CommentThread
+            commentData={commentData}
+            isActionable
+            onClose={editPopupState.close}
+          />
         </Card>
       </TriggerPopover>
     </div>
