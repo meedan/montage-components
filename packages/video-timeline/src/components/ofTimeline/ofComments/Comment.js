@@ -9,7 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
-import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 const styles = {
   avatar: {
@@ -40,13 +40,13 @@ function Comment(props) {
           {text}
         </Typography>
       </ListItemText>
-      {isActionable ? (
-        <ListItemSecondaryAction>
-          <IconButton aria-label="Delete">
-            <DeleteIcon />
+      <ListItemSecondaryAction>
+        {isActionable ? (
+          <IconButton aria-label="Edit">
+            <EditIcon />
           </IconButton>
-        </ListItemSecondaryAction>
-      ) : null}
+        ) : null}
+      </ListItemSecondaryAction>
     </ListItem>
   );
 }

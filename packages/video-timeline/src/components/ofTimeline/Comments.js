@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import TableSection from './TableSection';
-import CommentThread from './ofComments/CommentThread';
+import CommentPopover from './ofComments/CommentPopover';
 
 const SliderWrapper = styled.div`
   .rc-slider-disabled,
@@ -46,7 +46,7 @@ function TimelineComments(props) {
     arr,
     (object, param) => {
       const pos = param.start_seconds;
-      object[pos] = <CommentThread key={param.id} commentData={param} />;
+      object[pos] = <CommentPopover key={param.id} commentData={param} />;
       return object;
     },
     {}
