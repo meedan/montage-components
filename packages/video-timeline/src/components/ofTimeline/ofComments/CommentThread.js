@@ -1,6 +1,11 @@
 import React from 'react';
 
+import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+import grey from '@material-ui/core/colors/grey';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,8 +17,14 @@ import CommentForm from './CommentForm';
 
 import formatTime from '../formatTime';
 
+const styles = {
+  ListSubheader: {
+    background: grey[200],
+  },
+};
+
 function CommentThread(props) {
-  const { commentData, closePopup, isActionable } = props;
+  const { classes, commentData, closePopup, isActionable } = props;
   const {
     c_pretty_created_date,
     replies,
@@ -35,10 +46,25 @@ function CommentThread(props) {
       dense
       subheader={
         <>
-          <ListSubheader component="div" disableSticky>
-            <Typography color="textSecondary" variant="overline">
-              {formatTime(start_seconds)}
-            </Typography>
+          <ListSubheader
+            component="div"
+            disableSticky
+            className={classes.ListSubheader}
+          >
+            <Grid container justify="space-between" alignItems="center">
+              <Grid item>
+                <Typography color="textSecondary" variant="overline">
+                  {formatTime(start_seconds)}
+                </Typography>
+              </Grid>
+              <Grid item>
+                {isActionable ? (
+                  <IconButton>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                ) : null}
+              </Grid>
+            </Grid>
           </ListSubheader>
           <Divider />
         </>
@@ -67,14 +93,17 @@ function CommentThread(props) {
         );
       })}
       {isActionable ? (
-        <ListItem>
-          <ListItemText>
-            <CommentForm onCancel={closePopup} onSubmit={handleReply} />
-          </ListItemText>
-        </ListItem>
+        <>
+          <Divider />
+          <ListItem>
+            <ListItemText>
+              <CommentForm onCancel={closePopup} onSubmit={handleReply} />
+            </ListItemText>
+          </ListItem>
+        </>
       ) : null}
     </List>
   );
 }
 
-export default CommentThread;
+export default withStyles(styles)(CommentThread);
