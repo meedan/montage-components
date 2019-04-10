@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-const styles = {};
-
 function CommentForm(props) {
-  const { handleSubmit, handleCancel, isEditing, classes, value } = props;
+  const { isEditing, value } = props;
 
   const [comment, setComment] = useState(value);
 
   const onCancel = () => {
     setComment(value);
-    handleCancel();
-  };
-  const onSave = () => {
-    handleSubmit(comment);
+    props.onCancel();
   };
 
   return (
@@ -25,7 +19,6 @@ function CommentForm(props) {
       <Grid item>
         <TextField
           autoFocus
-          className={classes.commentInput}
           defaultValue={comment}
           fullWidth
           id="comment"
@@ -51,7 +44,7 @@ function CommentForm(props) {
               color="primary"
               disabled={!comment || comment.length === 0}
               mini
-              onClick={onSave}
+              onClick={() => props.onSubmit(comment)}
               size="small"
             >
               {isEditing ? 'Save' : 'Reply'}
@@ -68,4 +61,4 @@ function CommentForm(props) {
   );
 }
 
-export default withStyles(styles)(CommentForm);
+export default CommentForm;

@@ -13,7 +13,7 @@ import CommentForm from './CommentForm';
 import formatTime from '../formatTime';
 
 function CommentThread(props) {
-  const { commentData, isActionable } = props;
+  const { commentData, closePopup, isActionable } = props;
   const {
     c_pretty_created_date,
     replies,
@@ -23,13 +23,11 @@ function CommentThread(props) {
     id,
   } = commentData;
 
-  const onReply = comment => {
-    console.log('onReply');
-    console.log(comment);
-  };
-  const onCancel = () => {
-    console.log('onCancel');
-    props.onClose();
+  const handleReply = comment => {
+    // TODO: wire adding new comments here, also log user data
+    console.group('handleReply()');
+    console.log({ comment });
+    console.groupEnd();
   };
 
   return (
@@ -71,7 +69,7 @@ function CommentThread(props) {
       {isActionable ? (
         <ListItem>
           <ListItemText>
-            <CommentForm handleCancel={onCancel} handleSubmit={onReply} />
+            <CommentForm onCancel={closePopup} onSubmit={handleReply} />
           </ListItemText>
         </ListItem>
       ) : null}

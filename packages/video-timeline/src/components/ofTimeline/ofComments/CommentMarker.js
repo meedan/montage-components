@@ -76,9 +76,9 @@ function CommentPopover(props) {
       >
         <Card>
           <CommentThread
+            closePopup={editPopupState.close}
             commentData={commentData}
             isActionable
-            onClose={editPopupState.close}
           />
         </Card>
       </TriggerPopover>
