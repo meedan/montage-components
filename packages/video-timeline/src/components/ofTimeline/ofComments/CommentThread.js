@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   usePopupState,
   bindHover,
@@ -12,14 +12,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import TriggerPopover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
-import formatTime from './formatTime';
+import Comment from './Comment';
+
+import formatTime from '../formatTime';
 
 const styles = {
   avatar: {
@@ -40,8 +39,6 @@ function CommentThread(props) {
     id,
   } = commentData;
 
-  // const [editMode, toggleEditMode] = useState(false);
-
   const readPopupState = usePopupState({
     variant: 'popover',
     popupId: 'readCommentThreadPopup',
@@ -51,34 +48,6 @@ function CommentThread(props) {
     popupId: 'editCommentThreadPopup',
   });
 
-  const toggleEditPopup = () => {
-    readPopupState.close();
-    // editPopupState.open();
-  };
-
-  const displayComment = (id, fname, lname, avatar, date, text) => {
-    return (
-      <ListItem key={id} alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar
-            alt={`${fname} ${lname}`}
-            src={avatar}
-            className={classes.avatar}
-          />
-        </ListItemAvatar>
-        <ListItemText>
-          <Typography variant="body2">{`${fname} ${lname}`}</Typography>
-          <Typography variant="caption" color="textSecondary">
-            {date}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            {text}
-          </Typography>
-        </ListItemText>
-      </ListItem>
-    );
-  };
-
   return (
     <div>
       <Avatar
@@ -86,7 +55,7 @@ function CommentThread(props) {
         {...bindTrigger(editPopupState)}
         alt={`${user.first_name} ${user.last_name}`}
         className={classes.avatar}
-        onClick={toggleEditPopup}
+        // onClick={toggleEditPopup}
         src={user.profile_img_url}
       />
       <HoverPopover
@@ -116,22 +85,24 @@ function CommentThread(props) {
               </>
             }
           >
-            {displayComment(
-              id,
-              user.first_name,
-              user.last_name,
-              user.profile_img_url,
-              c_pretty_created_date,
-              text
-            )}
+            <Comment
+              id={id}
+              fname={user.first_name}
+              lname={user.last_name}
+              avatar={user.profile_img_url}
+              date={c_pretty_created_date}
+              text={text}
+            />
             {replies.map((reply, i) => {
-              return displayComment(
-                i,
-                reply.user.first_name,
-                reply.user.last_name,
-                reply.user.profile_img_url,
-                reply.c_pretty_created_date,
-                reply.text
+              return (
+                <Comment
+                  id={i}
+                  fname={reply.user.first_name}
+                  lname={reply.user.last_name}
+                  avatar={reply.user.profile_img_url}
+                  date={reply.c_pretty_created_date}
+                  text={reply.text}
+                />
               );
             })}
           </List>
@@ -150,38 +121,7 @@ function CommentThread(props) {
         disableRestoreFocus
         onClick={e => e.stopPropagation()}
       >
-        <Card>
-          <List
-            dense
-            subheader={
-              <>
-                <ListSubheader component="div" disableSticky>
-                  <Typography color="textSecondary" variant="overline">
-                    {formatTime(start_seconds)}
-                  </Typography>
-                </ListSubheader>
-                <Divider />
-              </>
-            }
-          >
-            {displayComment(
-              user.first_name,
-              user.last_name,
-              user.profile_img_url,
-              c_pretty_created_date,
-              text
-            )}
-            {replies.map(reply => {
-              return displayComment(
-                reply.user.first_name,
-                reply.user.last_name,
-                reply.user.profile_img_url,
-                reply.c_pretty_created_date,
-                reply.text
-              );
-            })}
-          </List>
-        </Card>
+        <Card>Please, do show up</Card>
       </TriggerPopover>
     </div>
   );
