@@ -33,16 +33,18 @@ function CommentThread(props) {
     id,
   } = commentData;
 
-  const handleReply = comment => {
+  const threadId = id;
+
+  const handleThreadReply = comment => {
     // TODO: wire adding new comments here, also log user data
-    console.group('handleReply()');
+    console.group('handleThreadReply()');
     console.log({ comment });
     console.groupEnd();
   };
-  const handleDelete = comment => {
+  const handleThreadDelete = comment => {
     // TODO: wire deleting comment thread here
-    console.group('handleDelete()');
-    console.log({ id });
+    console.group('handleThreadDelete()');
+    console.log({ threadId });
     console.groupEnd();
     closePopup();
   };
@@ -61,7 +63,10 @@ function CommentThread(props) {
             </ListItemText>
             <ListItemSecondaryAction>
               {isActionable ? (
-                <IconButton aria-label="Delete thread" onClick={handleDelete}>
+                <IconButton
+                  aria-label="Delete thread"
+                  onClick={handleThreadDelete}
+                >
                   <Tooltip title="Delete thread">
                     <DeleteIcon fontSize="small" />
                   </Tooltip>
@@ -76,11 +81,11 @@ function CommentThread(props) {
         avatar={user.profile_img_url}
         date={c_pretty_created_date}
         fname={user.first_name}
-        id={id}
+        id={threadId}
         isActionable={isActionable}
+        isRoot
         lname={user.last_name}
         text={text}
-        isRoot
       />
       {replies.map((reply, i) => {
         return (
@@ -88,10 +93,11 @@ function CommentThread(props) {
             avatar={reply.user.profile_img_url}
             date={reply.c_pretty_created_date}
             fname={reply.user.first_name}
-            id={i}
+            id={reply.id}
             isActionable={isActionable}
             lname={reply.user.last_name}
             text={reply.text}
+            threadId={reply.thread_id}
           />
         );
       })}
@@ -99,7 +105,7 @@ function CommentThread(props) {
         <>
           <ListItem>
             <ListItemText>
-              <CommentForm onCancel={closePopup} onSubmit={handleReply} />
+              <CommentForm onCancel={closePopup} onSubmit={handleThreadReply} />
             </ListItemText>
           </ListItem>
         </>

@@ -46,7 +46,9 @@ function TimelineComments(props) {
     arr,
     (object, param) => {
       const pos = param.start_seconds;
-      object[pos] = <CommentMarker key={param.id} commentData={param} />;
+      object[pos] = (
+        <CommentMarker {...props} key={param.id} commentData={param} />
+      );
       return object;
     },
     {}

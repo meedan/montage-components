@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -34,6 +35,7 @@ function Comment(props) {
     isActionable,
     classes,
     id,
+    threadId,
     fname,
     lname,
     avatar,
@@ -46,12 +48,23 @@ function Comment(props) {
   const closeCommentForm = () => {
     setEditMode(false);
   };
-  const handleCommentChange = (text, id) => {
+  const handleCommentChange = text => {
     // TODO: wire this up to save changes to the comment
+    // the first comment will have `isRoot` prop set
+    // the first comment can be accessed with `id`
+    // subsequent comments have also threadId (which is first comment’s id)
     setEditMode(false);
     console.group('handleCommentChange()');
-    console.log({ id });
+    console.log(isRoot ? { id } : `${id} > ${threadId}`);
     console.log({ text });
+    console.groupEnd();
+  };
+  const handleCommentDelete = () => {
+    // TODO: wire this up to delete comment
+    setEditMode(false);
+    console.group('handleCommentDelete()');
+    console.log({ threadId });
+    console.log({ id });
     console.groupEnd();
   };
 
@@ -69,12 +82,12 @@ function Comment(props) {
         </IconButton>
       ) : (
         <IconButton
-          aria-label="More"
+          aria-label="Delete"
           className={classes.editToggle}
-          // onClick={() => setEditMode(true)}
+          onClick={handleCommentDelete}
         >
-          <Tooltip title="More">
-            <MoreVertIcon fontSize="small" />
+          <Tooltip title="Delete">
+            <DeleteIcon fontSize="small" />
           </Tooltip>
         </IconButton>
       );
