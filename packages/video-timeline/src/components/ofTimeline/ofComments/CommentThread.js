@@ -1,15 +1,14 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
+import DeleteIcon from '@material-ui/icons/Delete';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import Comment from './Comment';
@@ -40,33 +39,36 @@ function CommentThread(props) {
     console.log({ comment });
     console.groupEnd();
   };
+  const handleDelete = comment => {
+    // TODO: wire deleting comment thread here
+    console.group('handleDelete()');
+    console.log({ id });
+    console.groupEnd();
+    closePopup();
+  };
 
   return (
     <List
       dense
+      component="div"
       subheader={
         <>
-          <ListSubheader
-            component="div"
-            disableSticky
-            className={classes.ListSubheader}
-          >
-            <Grid container justify="space-between" alignItems="center">
-              <Grid item>
-                <Typography color="textSecondary" variant="overline">
-                  {formatTime(start_seconds)}
-                </Typography>
-              </Grid>
-              <Grid item>
-                {isActionable ? (
-                  <IconButton>
+          <ListItem component="div" className={classes.ListSubheader}>
+            <ListItemText>
+              <Typography color="textSecondary" variant="overline">
+                {formatTime(start_seconds)}
+              </Typography>
+            </ListItemText>
+            <ListItemSecondaryAction>
+              {isActionable ? (
+                <IconButton aria-label="Delete thread" onClick={handleDelete}>
+                  <Tooltip title="Delete thread">
                     <DeleteIcon fontSize="small" />
-                  </IconButton>
-                ) : null}
-              </Grid>
-            </Grid>
-          </ListSubheader>
-          <Divider />
+                  </Tooltip>
+                </IconButton>
+              ) : null}
+            </ListItemSecondaryAction>
+          </ListItem>
         </>
       }
     >
@@ -78,6 +80,7 @@ function CommentThread(props) {
         isActionable={isActionable}
         lname={user.last_name}
         text={text}
+        isRoot
       />
       {replies.map((reply, i) => {
         return (
@@ -94,7 +97,6 @@ function CommentThread(props) {
       })}
       {isActionable ? (
         <>
-          <Divider />
           <ListItem>
             <ListItemText>
               <CommentForm onCancel={closePopup} onSubmit={handleReply} />

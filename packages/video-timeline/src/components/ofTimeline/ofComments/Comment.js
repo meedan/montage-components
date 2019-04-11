@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
@@ -15,11 +16,11 @@ import CommentForm from './CommentForm';
 
 const styles = {
   avatar: {
-    height: 24,
-    width: 24,
+    height: 28,
+    width: 28,
   },
   ListItem: {
-    width: '220px',
+    width: '240px',
   },
   listItemSecondaryAction: {
     top: 8,
@@ -28,7 +29,17 @@ const styles = {
 };
 
 function Comment(props) {
-  const { isActionable, classes, id, fname, lname, avatar, date, text } = props;
+  const {
+    isRoot,
+    isActionable,
+    classes,
+    id,
+    fname,
+    lname,
+    avatar,
+    date,
+    text,
+  } = props;
 
   const [editMode, setEditMode] = useState(false);
 
@@ -44,8 +55,40 @@ function Comment(props) {
     console.groupEnd();
   };
 
+  const displayActions = () => {
+    if (isActionable) {
+      return isRoot ? (
+        <IconButton
+          aria-label="Edit"
+          className={classes.editToggle}
+          onClick={() => setEditMode(true)}
+        >
+          <Tooltip title="Edit">
+            <EditIcon fontSize="small" />
+          </Tooltip>
+        </IconButton>
+      ) : (
+        <IconButton
+          aria-label="More"
+          className={classes.editToggle}
+          // onClick={() => setEditMode(true)}
+        >
+          <Tooltip title="More">
+            <MoreVertIcon fontSize="small" />
+          </Tooltip>
+        </IconButton>
+      );
+    }
+    return null;
+  };
+
   return (
-    <ListItem alignItems="flex-start" key={id} className={classes.ListItem}>
+    <ListItem
+      alignItems="flex-start"
+      className={classes.ListItem}
+      component="div"
+      key={id}
+    >
       <ListItemAvatar>
         <Avatar
           alt={`${fname} ${lname}`}
@@ -60,10 +103,10 @@ function Comment(props) {
         </Typography>
         {editMode ? (
           <CommentForm
-            handleCancel={closeCommentForm}
-            handleSubmit={text => handleCommentChange(text, id)}
-            value={text}
             isEditing
+            onCancel={closeCommentForm}
+            onSubmit={text => handleCommentChange(text, id)}
+            value={text}
           />
         ) : (
           <Typography variant="body2" color="textSecondary">
@@ -72,17 +115,7 @@ function Comment(props) {
         )}
       </ListItemText>
       <ListItemSecondaryAction className={classes.listItemSecondaryAction}>
-        {isActionable ? (
-          <IconButton
-            aria-label="Edit"
-            className={classes.editToggle}
-            onClick={() => setEditMode(true)}
-          >
-            <Tooltip title="Edit">
-              <EditIcon fontSize="small" />
-            </Tooltip>
-          </IconButton>
-        ) : null}
+        {displayActions()}
       </ListItemSecondaryAction>
     </ListItem>
   );

@@ -27,11 +27,12 @@ function CommentForm(props) {
             style: { fontSize: '13px' },
           }}
           onChange={e => setComment(e.currentTarget.value)}
-          placeholder="Enter comment"
+          placeholder={isEditing ? 'Enter comment' : 'New comment'}
           required
           type="text"
         />
       </Grid>
+
       <Grid item>
         <Grid
           container
