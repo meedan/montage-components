@@ -53,7 +53,7 @@ function CommentForm(props) {
           </Grid>
           <Grid item>
             <Button mini onClick={onCancel} size="small">
-              Cancel
+              Close
             </Button>
           </Grid>
         </Grid>

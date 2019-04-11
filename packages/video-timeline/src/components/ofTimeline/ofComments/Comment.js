@@ -45,16 +45,13 @@ function Comment(props) {
 
   const [editMode, setEditMode] = useState(false);
 
-  const closeCommentForm = () => {
-    setEditMode(false);
-  };
-  const handleCommentChange = text => {
+  const handleCommentEdit = text => {
     // TODO: wire this up to save changes to the comment
     // the first comment will have `isRoot` prop set
     // the first comment can be accessed with `id`
     // subsequent comments have also threadId (which is first comment’s id)
     setEditMode(false);
-    console.group('handleCommentChange()');
+    console.group('handleCommentEdit()');
     console.log(isRoot ? { id } : `${id} > ${threadId}`);
     console.log({ text });
     console.groupEnd();
@@ -117,8 +114,8 @@ function Comment(props) {
         {editMode ? (
           <CommentForm
             isEditing
-            onCancel={closeCommentForm}
-            onSubmit={text => handleCommentChange(text, id)}
+            onCancel={() => setEditMode(false)}
+            onSubmit={text => handleCommentEdit(text, id)}
             value={text}
           />
         ) : (
