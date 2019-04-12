@@ -15,7 +15,6 @@ import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
-
 const TimelinePlayheadWrapper = styled.div``;
 
 const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
@@ -90,12 +89,12 @@ class Timeline extends Component {
     time: 0,
     skip: false,
     disjoint: false,
-  }
+  };
 
   static getDerivedStateFromProps(props, state) {
     const { currentTime } = props;
     let { time, events, skip, disjoint } = state;
-    
+
     disjoint = disjoint && Math.floor(time / 5) !== Math.floor(currentTime / 5);
     time = disjoint ? time : currentTime;
 
@@ -115,7 +114,7 @@ class Timeline extends Component {
 
     if (player && e.clientX > startPos) {
       this.setState({ time: newTime, skip: false, disjoint: true });
-      
+
       player.seekTo(newTime);
       if (!player.isPlaying) onPlay();
     }
@@ -142,10 +141,13 @@ class Timeline extends Component {
     const { time, skip, ffTime } = this.state;
     const { duration } = this.props;
 
-    const props = Object.keys(this.props).reduce((acc, k) => {
-      if (!acc[k]) acc[k] = this.props[k];
-      return acc;
-    }, { currentTime: skip ? ffTime : time });
+    const props = Object.keys(this.props).reduce(
+      (acc, k) => {
+        if (!acc[k]) acc[k] = this.props[k];
+        return acc;
+      },
+      { currentTime: skip ? ffTime : time }
+    );
 
     return (
       <TimelinePlayheadWrapper onClick={e => this.onTrackClick(e)}>
@@ -174,6 +176,6 @@ class Timeline extends Component {
       </TimelinePlayheadWrapper>
     );
   }
-};
+}
 
 export default withStyles(styles)(Timeline);
