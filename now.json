@@ -1,0 +1,14 @@
+{
+  "name": "Montage",
+  "alias": ["montage-timeline.badidea.tech"],
+  "public": true,
+  "builds": [
+    {
+      "src": "packages/video-timeline/package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [{ "src": "/(.*)", "dest": "/packages/video-timeline/$1" }],
+  "version": 2
+}
