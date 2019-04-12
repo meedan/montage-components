@@ -44,7 +44,7 @@ const MediaDescription = styled(Typography)`
 function InfoCard(props) {
   const [map, setMap] = useState(0);
 
-  const { data } = props;
+  const { data, currentTime, player } = props;
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
@@ -82,7 +82,8 @@ function InfoCard(props) {
       ],
     },
   ].map((d, i) => {
-    d.time = i * 1e4;
+    d.time = i * 10;
+    d.duration = 5;
     return d;
   });
 
@@ -91,7 +92,8 @@ function InfoCard(props) {
       <Map
         key="map"
         data={mapData}
-        currentTime={0}
+        currentTime={currentTime}
+        player={player}
         onSave={d => console.log(d)}
       />
     );

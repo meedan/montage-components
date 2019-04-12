@@ -51,9 +51,13 @@ class Map extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // if (this.props.currentTime !== nextProps.currentTime) {
-    //   return true;
-    // }
+    if (this.props.currentTime !== nextProps.currentTime) {
+      const match = this.props.data.find(({time, duration}) => time <= nextProps.currentTime && nextProps.currentTime < time + duration);
+      if (match && this.map) {
+        const {lat, lng} = match.type === 'marker' ? match : match.polygon[0];
+        this.map.panTo({lat, lng});
+      }
+    }
 
     return !equal(this.state, nextState);
   }
@@ -189,9 +193,9 @@ class Map extends Component {
     }
   };
 
-  // handleMarkerClick = e => {
-  //   // e.stopPropagation();
-  // };
+  handleMarkerClick = time => {
+    if (this.props.player) this.props.player.seekTo(time);
+  };
 
   handleMarkerUpdate = () => {
     setTimeout(() => {
@@ -220,7 +224,7 @@ class Map extends Component {
       strokeColor: 'red',
       strokeOpacity: 1,
       strokeWeight: 2,
-      clickable: false,
+      clickable: true,
       draggable: false,
       editable: false,
       geodesic: true,
@@ -341,12 +345,13 @@ class Map extends Component {
             ) : null}
             {this.props.data
               .filter(d => d.type === 'marker')
-              .map(({ lat, lng }, i) => (
+              .map(({ lat, lng, time }, i) => (
                 <Marker
                   key={`m-${i}`}
                   draggable
                   animation={window.google && window.google.maps.Animation.DROP}
                   position={{ lat, lng }}
+                  onClick={() => this.handleMarkerClick(time)}
                 />
               ))}
             {this.props.data
@@ -359,6 +364,7 @@ class Map extends Component {
                   }}
                   path={polygon.polygon}
                   options={polygonOptions}
+                  onClick={() => this.handleMarkerClick(polygon.time)}
                 />
               ))}
           </GoogleMap>
