@@ -1,5 +1,5 @@
 import 'rc-slider/assets/index.css';
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
@@ -66,29 +66,105 @@ const handle = props => {
   );
 };
 
+const handlePlay = props => {
+  const { data, currentTime, duration } = props;
+  const { videoTags } = data;
+
+  const instances = videoTags
+    .reduce((acc, t) => [...acc, ...t.instances], [])
+    .sort((j, i) => j.start_seconds - i.start_seconds);
+
+  const events = [
+    ...new Set(
+      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+        0,
+        duration,
+      ])
+    ),
+  ].sort((j, i) => j - i);
+  // .filter(e =>
+  //   instances.find(i => i.start_seconds <= e && e < i.end_seconds)
+  // );
+
+  console.log('play', events);
+};
+
 function TimelineTags(props) {
+  const [play, setPlay] = useState(0);
+
   const { data, duration } = props;
   const { videoTags } = data;
 
+  // merge overlapping tag instances
   videoTags.forEach(t => {
-    t.instances = t.instances.sort((j, i) => j.start_seconds - i.start_seconds).reduce((acc = [], i) => {
-      const j = acc.pop();
+    t.instances = t.instances
+      .sort((j, i) => j.start_seconds - i.start_seconds)
+      .reduce((acc = [], i) => {
+        const j = acc.pop();
 
-      if (j) {
-        if (j.start_seconds <= i.start_seconds && i.start_seconds < j.end_seconds) {
+        if (j) {
+          if (
+            j.start_seconds <= i.start_seconds &&
+            i.start_seconds < j.end_seconds
+          ) {
+            j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+            j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+            acc.push(j);
+            return acc;
+          }
 
-          j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
-          j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
           acc.push(j);
-          return acc;
         }
 
-        acc.push(j);
-      }
-
-      return [...acc, i];
-    }, []);
+        return [...acc, i];
+      }, []);
   });
+
+  // all tag instances sorted by start time
+  const instances = videoTags
+    .reduce((acc, t) => [...acc, ...t.instances], [])
+    .sort((j, i) => j.start_seconds - i.start_seconds);
+
+  // all start + end events
+  const events = [
+    ...new Set(
+      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+        0,
+        duration,
+      ])
+    ),
+  ].sort((j, i) => j - i);
+
+  console.log(events);
+
+  // all playable continuous segments
+  const segments = events
+    .reduce(
+      (acc, e, i) => {
+        if (i === 0) return acc;
+        console.log(
+          i,
+          events[i],
+          events[i - 1],
+          events[i - 1] + (events[i] - events[i - 1]) / 2
+        );
+        return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+      },
+      [0]
+    )
+    .reduce(
+      (acc, s, i) =>
+        !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+          ? [...acc, i]
+          : acc,
+      []
+    )
+    .map(i => [i, events[i - 1], events[i]]);
+
+  console.log(segments);
+
+  if (play) {
+  }
 
   return (
     <TableSection
@@ -97,7 +173,7 @@ function TimelineTags(props) {
       actions={
         <>
           <Tooltip title="Play Tags">
-            <IconButton>
+            <IconButton onClick={() => this.setState({ play: true })}>
               <PlayArrowIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -121,7 +197,13 @@ function TimelineTags(props) {
             });
 
             const trackStyle = arr.reduce((acc, j, i) => {
-              return [ ...acc, { backgroundColor: i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent' } ];
+              return [
+                ...acc,
+                {
+                  backgroundColor:
+                    i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent',
+                },
+              ];
             }, []);
 
             return (
@@ -158,5 +240,4 @@ function TimelineTags(props) {
   );
 }
 
-
-export default React.memo((props) => TimelineTags(props));
+export default React.memo(props => TimelineTags(props));
