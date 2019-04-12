@@ -69,7 +69,27 @@ const handle = props => {
 function TimelineTags(props) {
   const { data, duration } = props;
   const { videoTags } = data;
-  // console.log({ videoTags });
+
+  videoTags.forEach(t => {
+    t.instances = t.instances.sort((j, i) => j.start_seconds - i.start_seconds).reduce((acc = [], i) => {
+      const j = acc.pop();
+
+      if (j) {
+        if (j.start_seconds <= i.start_seconds && i.start_seconds < j.end_seconds) {
+
+          j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+          j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+          acc.push(j);
+          return acc;
+        }
+
+        acc.push(j);
+      }
+
+      return [...acc, i];
+    }, []);
+  });
+
   return (
     <TableSection
       plain={videoTags ? videoTags.length > 0 : false}
@@ -93,11 +113,16 @@ function TimelineTags(props) {
         ? videoTags.map((tag, i) => {
             const { project_tag, instances } = tag;
             const arr = [];
+
             instances.map(instance => {
               arr.push(instance.start_seconds);
               arr.push(instance.end_seconds);
               return null;
             });
+
+            const trackStyle = arr.reduce((acc, j, i) => {
+              return [ ...acc, { backgroundColor: i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent' } ];
+            }, []);
 
             return (
               <TableBlock
@@ -120,6 +145,7 @@ function TimelineTags(props) {
                       handle={handle}
                       max={duration}
                       min={0}
+                      trackStyle={trackStyle}
                       pushable
                     />
                   </SliderWrapper>
