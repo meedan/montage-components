@@ -52,10 +52,16 @@ class Map extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.currentTime !== nextProps.currentTime) {
-      const match = this.props.data.find(({time, duration}) => time <= nextProps.currentTime && nextProps.currentTime < time + duration);
+      const match = this.props.data.find(
+        ({ time, duration }) =>
+          time <= nextProps.currentTime &&
+          nextProps.currentTime < time + duration
+      );
       if (match && this.map) {
-        const {lat, lng} = match.type === 'marker' ? match : match.polygon[0];
-        this.map.panTo({lat, lng});
+        const { lat, lng, viewport } =
+          match.type === 'marker' ? match : match.polygon[0];
+        this.map.panTo({ lat, lng });
+        viewport && this.map.fitBounds(viewport);
       }
     }
 
@@ -74,12 +80,18 @@ class Map extends Component {
     const place = this.autocomplete.getPlace();
     console.log(place);
     if (place && place.geometry) {
-      this.map.fitBounds(place.geometry.viewport);
+      this.map.fitBounds(place.geometry.viewport.toJSON());
 
       const { lat, lng } = place.geometry.location;
       this.setState({
         dropPin: true,
-        marker: { lat, lng, type: 'marker', time: this.props.currentTime || 0 },
+        marker: {
+          lat: lat(),
+          lng: lng(),
+          viewport: place.geometry.viewport.toJSON(),
+          type: 'marker',
+          time: this.props.currentTime || 0,
+        },
       });
     }
   };
@@ -115,7 +127,8 @@ class Map extends Component {
         lat: lat(),
         lng: lng(),
         type: 'marker',
-        time: this.state.marker.currentTime,
+        time: this.props.currentTime,
+        viewport: this.state.marker.viewport,
       };
 
       this.setState({
@@ -133,7 +146,8 @@ class Map extends Component {
       marker = {
         polygon: polygon,
         type: 'polygon',
-        time: this.state.marker.currentTime,
+        time: this.props.currentTime,
+        viewport: this.state.marker.viewport,
       };
 
       this.setState({
@@ -172,7 +186,8 @@ class Map extends Component {
           lat: lat(),
           lng: lng(),
           type: 'marker',
-          time: this.props.currentTime,
+          time: this.props.currentTime || 0,
+          viewport: this.map.getBounds().toJSON(),
         },
       });
     }
@@ -188,6 +203,7 @@ class Map extends Component {
           ],
           type: 'polygon',
           currentTime: this.props.currentTime || 0,
+          viewport: this.map.getBounds().toJSON(),
         },
       });
     }
@@ -210,6 +226,7 @@ class Map extends Component {
             lng: lng(),
             type: 'marker',
             time: this.state.marker.currentTime,
+            viewport: this.map.getBounds().toJSON(),
           },
         });
       }

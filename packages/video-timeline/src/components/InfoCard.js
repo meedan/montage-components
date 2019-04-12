@@ -49,6 +49,30 @@ function InfoCard(props) {
   const isArchived = archived_at !== null && archived_at !== undefined;
 
   const mapData = [
+    {
+      lat: -33.86824956555994,
+      lng: 151.20569061108404,
+      type: 'marker',
+      viewport: {
+        south: -33.886505479781086,
+        west: 151.18009868311879,
+        north: -33.829485002290966,
+        east: 151.24590131688115,
+      },
+      time: 0,
+    },
+    {
+      lat: 43.6531254,
+      lng: 11.183055100000047,
+      type: 'marker',
+      viewport: {
+        south: 43.65121689999994,
+        west: 11.181682169708438,
+        north: 43.65506770000007,
+        east: 11.184380130291515,
+      },
+      time: 0,
+    },
     { lat: -31.56391, lng: 147.154312, type: 'marker', time: 0 },
     { lat: -33.718234, lng: 150.363181, type: 'marker', time: 0 },
     { lat: -33.727111, lng: 150.371124, type: 'marker', time: 0 },
