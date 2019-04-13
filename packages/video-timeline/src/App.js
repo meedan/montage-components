@@ -165,7 +165,11 @@ class App extends Component {
                         direction="row-reverse"
                       >
                         <Grid item sm={4}>
-                          <InfoCard data={data} currentTime={currentTime} player={this.player} />
+                          <InfoCard
+                            data={data}
+                            currentTime={currentTime}
+                            player={this.player}
+                          />
                         </Grid>
                         <Grid item sm={8}>
                           <Player
@@ -203,6 +207,8 @@ class App extends Component {
                   onPause={() => this.onPause()}
                   onPlay={() => this.onPlay()}
                   player={this.player}
+                  playing={this.state.playing}
+                  playPause={() => this.playPause()}
                 />
               </Bottom>
             </MUIThemeProvider>

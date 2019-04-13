@@ -1,11 +1,12 @@
 import 'rc-slider/assets/index.css';
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
@@ -57,187 +58,225 @@ const SliderWrapper = styled.div`
   }
 `;
 
-const handle = props => {
-  const { value, index, ...restProps } = props;
-  return (
-    <Tooltip key={index} placement="top" title={formatTime(value)}>
-      <Handle value={value} {...restProps} />
-    </Tooltip>
-  );
-};
+class TimelineTags extends Component {
+  state = {
+    playlist: false,
+  };
 
-const handlePlay = props => {
-  const { data, currentTime, duration } = props;
-  const { videoTags } = data;
+  static getDerivedStateFromProps(props, state) {
+    const { data, duration } = props;
+    const { videoTags } = data;
 
-  const instances = videoTags
-    .reduce((acc, t) => [...acc, ...t.instances], [])
-    .sort((j, i) => j.start_seconds - i.start_seconds);
+    if (state.videoTags && state.segments) return null;
 
-  const events = [
-    ...new Set(
-      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-        0,
-        duration,
-      ])
-    ),
-  ].sort((j, i) => j - i);
-  // .filter(e =>
-  //   instances.find(i => i.start_seconds <= e && e < i.end_seconds)
-  // );
+    // merge overlapping tag instances
+    videoTags.forEach(t => {
+      t.instances = t.instances
+        .sort((j, i) => j.start_seconds - i.start_seconds)
+        .reduce((acc = [], i) => {
+          const j = acc.pop();
 
-  console.log('play', events);
-};
+          if (j) {
+            if (
+              j.start_seconds <= i.start_seconds &&
+              i.start_seconds < j.end_seconds
+            ) {
+              j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+              j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+              acc.push(j);
+              return acc;
+            }
 
-function TimelineTags(props) {
-  const [play, setPlay] = useState(0);
-
-  const { data, duration } = props;
-  const { videoTags } = data;
-
-  // merge overlapping tag instances
-  videoTags.forEach(t => {
-    t.instances = t.instances
-      .sort((j, i) => j.start_seconds - i.start_seconds)
-      .reduce((acc = [], i) => {
-        const j = acc.pop();
-
-        if (j) {
-          if (
-            j.start_seconds <= i.start_seconds &&
-            i.start_seconds < j.end_seconds
-          ) {
-            j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
-            j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
             acc.push(j);
-            return acc;
           }
 
-          acc.push(j);
-        }
+          return [...acc, i];
+        }, []);
+    });
 
-        return [...acc, i];
-      }, []);
-  });
+    // all tag instances sorted by start time
+    const instances = videoTags
+      .reduce((acc, t) => [...acc, ...t.instances], [])
+      .sort((j, i) => j.start_seconds - i.start_seconds);
 
-  // all tag instances sorted by start time
-  const instances = videoTags
-    .reduce((acc, t) => [...acc, ...t.instances], [])
-    .sort((j, i) => j.start_seconds - i.start_seconds);
+    // all start + end events
+    const events = [
+      ...new Set(
+        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+          0,
+          duration,
+        ])
+      ),
+    ].sort((j, i) => j - i);
 
-  // all start + end events
-  const events = [
-    ...new Set(
-      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-        0,
-        duration,
-      ])
-    ),
-  ].sort((j, i) => j - i);
+    console.log(events);
 
-  console.log(events);
+    // all playable continuous segments
+    const segments = events
+      .reduce(
+        (acc, e, i) => {
+          if (i === 0) return acc;
+          console.log(
+            i,
+            events[i],
+            events[i - 1],
+            events[i - 1] + (events[i] - events[i - 1]) / 2
+          );
+          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+        },
+        [0]
+      )
+      .reduce(
+        (acc, s, i) =>
+          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+            ? [...acc, i]
+            : acc,
+        []
+      )
+      .map(i => [i, events[i - 1], events[i]]);
 
-  // all playable continuous segments
-  const segments = events
-    .reduce(
-      (acc, e, i) => {
-        if (i === 0) return acc;
-        console.log(
-          i,
-          events[i],
-          events[i - 1],
-          events[i - 1] + (events[i] - events[i - 1]) / 2
-        );
-        return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-      },
-      [0]
-    )
-    .reduce(
-      (acc, s, i) =>
-        !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-          ? [...acc, i]
-          : acc,
-      []
-    )
-    .map(i => [i, events[i - 1], events[i]]);
+    console.log(segments);
 
-  console.log(segments);
-
-  if (play) {
+    return { videoTags, segments };
   }
 
-  return (
-    <TableSection
-      plain={videoTags ? videoTags.length > 0 : false}
-      title="Tags"
-      actions={
-        <>
-          <Tooltip title="Play Tags">
-            <IconButton onClick={() => this.setState({ play: true })}>
-              <PlayArrowIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="New Tag">
-            <IconButton>
-              <AddIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </>
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      nextProps.currentTime !== this.props.currentTime &&
+      this.state.playlist
+    ) {
+      const segment = this.state.segments.find(
+        ([i, s, e]) => s <= nextProps.currentTime && nextProps.currentTime < e
+      );
+      if (!segment) {
+        const nextSegment = this.state.segments.find(
+          ([i, s]) => nextProps.currentTime < s
+        );
+        if (nextSegment) {
+          this.props.player.seekTo(nextSegment[1]);
+        } else {
+          if (this.props.playing) this.props.playPause();
+          this.setState({ playlist: false });
+        }
       }
-    >
-      {videoTags
-        ? videoTags.map((tag, i) => {
-            const { project_tag, instances } = tag;
-            const arr = [];
+    }
 
-            instances.map(instance => {
-              arr.push(instance.start_seconds);
-              arr.push(instance.end_seconds);
-              return null;
-            });
+    // TODO handle extenal video override, like end of video, buffering, etc
+    // if (
+    //   !nextProps.playing &&
+    //   this.props.playing &&
+    //   this.state.playlist &&
+    //   nextState.playlist
+    // ) {
+    //   this.setState({ playlist: false });
+    // }
 
-            const trackStyle = arr.reduce((acc, j, i) => {
-              return [
-                ...acc,
-                {
-                  backgroundColor:
-                    i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent',
-                },
-              ];
-            }, []);
+    return true;
+  }
 
-            return (
-              <TableBlock
-                key={tag.id}
-                plain={i < videoTags.length - 1}
-                leftColContent={
-                  <Typography
-                    color="textSecondary"
-                    noWrap
-                    style={{ width: '160px' }}
-                    variant="body2"
-                  >
-                    {project_tag.name}
-                  </Typography>
-                }
-                rightColContent={
-                  <SliderWrapper>
-                    <Range
-                      defaultValue={arr}
-                      handle={handle}
-                      max={duration}
-                      min={0}
-                      trackStyle={trackStyle}
-                      pushable
-                    />
-                  </SliderWrapper>
-                }
-              />
-            );
-          })
-        : null}
-    </TableSection>
-  );
+  handlePlayPause = () => {
+    const { playlist } = this.state;
+    console.log(playlist, this.props.playing);
+
+    if (!playlist) {
+      if (!this.props.playing) this.props.playPause();
+      this.setState({ playlist: true });
+    } else {
+      if (this.props.playing) this.props.playPause();
+      this.setState({ playlist: false });
+    }
+  };
+
+  handle = props => {
+    const { value, index, ...restProps } = props;
+    return (
+      <Tooltip key={index} placement="top" title={formatTime(value)}>
+        <Handle value={value} {...restProps} />
+      </Tooltip>
+    );
+  };
+
+  render() {
+    const { duration } = this.props;
+    const { videoTags, playlist } = this.state;
+
+    return (
+      <TableSection
+        plain={videoTags ? videoTags.length > 0 : false}
+        title="Tags"
+        actions={
+          <>
+            <Tooltip title={playlist ? 'Pause Tags' : 'Play Tags'}>
+              <IconButton onClick={this.handlePlayPause}>
+                {playlist ? (
+                  <PauseIcon fontSize="small" />
+                ) : (
+                  <PlayArrowIcon fontSize="small" />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="New Tag">
+              <IconButton>
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        }
+      >
+        {videoTags
+          ? videoTags.map((tag, i) => {
+              const { project_tag, instances } = tag;
+              const arr = [];
+
+              instances.map(instance => {
+                arr.push(instance.start_seconds);
+                arr.push(instance.end_seconds);
+                return null;
+              });
+
+              const trackStyle = arr.reduce((acc, j, i) => {
+                return [
+                  ...acc,
+                  {
+                    backgroundColor:
+                      i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent',
+                  },
+                ];
+              }, []);
+
+              return (
+                <TableBlock
+                  key={tag.id}
+                  plain={i < videoTags.length - 1}
+                  leftColContent={
+                    <Typography
+                      color="textSecondary"
+                      noWrap
+                      style={{ width: '160px' }}
+                      variant="body2"
+                    >
+                      {project_tag.name}
+                    </Typography>
+                  }
+                  rightColContent={
+                    <SliderWrapper>
+                      <Range
+                        defaultValue={arr}
+                        handle={this.handle}
+                        max={duration}
+                        min={0}
+                        trackStyle={trackStyle}
+                        pushable
+                      />
+                    </SliderWrapper>
+                  }
+                />
+              );
+            })
+          : null}
+      </TableSection>
+    );
+  }
 }
 
-export default React.memo(props => TimelineTags(props));
+export default TimelineTags;
