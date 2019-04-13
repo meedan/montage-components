@@ -2,7 +2,6 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
-import produce from 'immer';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -110,8 +109,7 @@ class TimelineTags extends Component {
         ])
       ),
     ].sort((j, i) => j - i);
-
-    console.log(events);
+    // console.log(events);
 
     // all playable continuous segments
     const segments = events
@@ -136,8 +134,7 @@ class TimelineTags extends Component {
         []
       )
       .map(i => [i, events[i - 1], events[i]]);
-
-    console.log(segments);
+    // console.log(segments);
 
     return { videoTags, segments };
   }
