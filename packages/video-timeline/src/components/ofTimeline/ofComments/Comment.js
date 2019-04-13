@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
+import {
+  usePopupState,
+  bindHover,
+  bindPopover,
+} from 'material-ui-popup-state/hooks';
+import Popover from 'material-ui-popup-state/HoverPopover';
 
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import CommentForm from './CommentForm';
@@ -26,6 +32,11 @@ const styles = {
   listItemSecondaryAction: {
     top: 8,
     transform: 'none',
+  },
+  moreMenuIcon: {
+    top: '3px',
+    marginRight: '8px',
+    position: 'relative',
   },
 };
 
@@ -45,6 +56,15 @@ function Comment(props) {
 
   const [editMode, setEditMode] = useState(false);
 
+  const popupState = usePopupState({
+    popupId: 'MoreMenuItem',
+    variant: 'popover',
+  });
+
+  const toggleCommentEdit = () => {
+    setEditMode(true);
+    popupState.close();
+  };
   const handleCommentEdit = text => {
     // TODO: wire this up to save changes to the comment
     // the first comment will have `isRoot` prop set
@@ -59,6 +79,7 @@ function Comment(props) {
   const handleCommentDelete = () => {
     // TODO: wire this up to delete comment
     setEditMode(false);
+    popupState.close();
     console.group('handleCommentDelete()');
     console.log({ threadId });
     console.log({ id });
@@ -67,26 +88,44 @@ function Comment(props) {
 
   const displayActions = () => {
     if (isActionable) {
-      return isRoot ? (
-        <IconButton
-          aria-label="Edit"
-          className={classes.editToggle}
-          onClick={() => setEditMode(true)}
-        >
-          <Tooltip title="Edit">
-            <EditIcon fontSize="small" />
-          </Tooltip>
-        </IconButton>
-      ) : (
-        <IconButton
-          aria-label="Delete"
-          className={classes.editToggle}
-          onClick={handleCommentDelete}
-        >
-          <Tooltip title="Delete">
-            <DeleteIcon fontSize="small" />
-          </Tooltip>
-        </IconButton>
+      return (
+        <>
+          <IconButton {...bindHover(popupState)}>
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            disableRestoreFocus
+          >
+            <List dense>
+              <ListItem button onClick={toggleCommentEdit}>
+                <ListItemText>
+                  <EditIcon fontSize="small" className={classes.moreMenuIcon} />{' '}
+                  Edit
+                </ListItemText>
+              </ListItem>
+              {!isRoot ? (
+                <ListItem button onClick={handleCommentDelete}>
+                  <ListItemText>
+                    <DeleteIcon
+                      fontSize="small"
+                      className={classes.moreMenuIcon}
+                    />{' '}
+                    Delete
+                  </ListItemText>
+                </ListItem>
+              ) : null}
+            </List>
+          </Popover>
+        </>
       );
     }
     return null;
