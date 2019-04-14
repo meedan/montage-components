@@ -18,6 +18,10 @@ import CommentForm from './CommentForm';
 import formatTime from '../formatTime';
 
 const styles = {
+  List: {
+    maxHeight: '300px',
+    overflowY: 'auto',
+  },
   ListSubheader: {
     background: grey[200],
   },
@@ -90,6 +94,7 @@ function CommentThread(props) {
           </ListItem>
         </>
       }
+      className={classes.List}
     >
       <Comment
         avatar={user.profile_img_url}
