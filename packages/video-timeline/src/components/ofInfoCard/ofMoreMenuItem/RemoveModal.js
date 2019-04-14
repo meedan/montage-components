@@ -10,10 +10,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 function RemoveModal(props) {
   return (
     <Dialog
-      aria-labelledby="Remove video"
       aria-describedby="Confirm that you’re sure to remove this video from your Library"
+      aria-labelledby="Remove video"
+      onClose={props.handleClose}
       open
-      onClose={() => props.handleClose}
     >
       <DialogTitle>Remove video</DialogTitle>
       <DialogContent>
