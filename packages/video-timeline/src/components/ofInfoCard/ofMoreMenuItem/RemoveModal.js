@@ -1,78 +1,37 @@
 import React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-const styles = theme => ({
-  paper: {
-    left: '50%',
-    outline: 'none',
-    position: 'absolute',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: theme.spacing.unit * 50,
-  },
-});
-
-function SimpleModal(props) {
-  const { classes } = props;
+function RemoveModal(props) {
   return (
-    <Modal
+    <Dialog
       aria-labelledby="Remove video"
       aria-describedby="Confirm that you’re sure to remove this video from your Library"
       open
       onClose={() => props.handleClose}
     >
-      <div className={classes.paper}>
-        <Card elevation="16">
-          <CardContent>
-            <Typography component="h2" variant="h5" gutterBottom>
-              Remove video
-            </Typography>
-            <Typography
-              component="p"
-              variant="body1"
-              gutterBottom
-              color="textSecondary"
-            >
-              Do you with to remove this video from the Library? All related
-              information, including tags, will be lost.
-            </Typography>
-          </CardContent>
-
-          <CardActions>
-            <Grid container justify="space-between">
-              <Grid item>
-                <Button size="large" onClick={props.handleClose}>
-                  Cancel
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  size="large"
-                  color="primary"
-                  onClick={props.handleRemove}
-                >
-                  Remove
-                </Button>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      </div>
-    </Modal>
+      <DialogTitle>Remove video</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Do you with to remove this video from the Library? All related
+          information, including tags, will be lost.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button size="large" onClick={props.handleClose}>
+          Cancel
+        </Button>
+        <Button size="large" color="primary" onClick={props.handleRemove}>
+          Remove
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
-SimpleModal.propTypes = {};
-
-// We need an intermediary variable for handling the recursive nesting.
-const RemoveMediaModal = withStyles(styles)(SimpleModal);
-
-export default RemoveMediaModal;
+export default RemoveModal;
