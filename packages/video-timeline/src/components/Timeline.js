@@ -161,7 +161,7 @@ class Timeline extends Component {
             )}
             max={duration}
             min={0}
-            onAfterChange={this.onDragEnd}
+            nAfterChange={this.onDragEnd}
             onBeforeChange={this.onDragStart}
             onChange={this.onDrag}
             value={this.state.time}
@@ -170,7 +170,12 @@ class Timeline extends Component {
         <Table padding="dense">
           <TimelineComments {...props} />
           <TimelineClips {...props} />
-          <TimelineTags {...props} />
+          <TimelineTags
+            {...props}
+            onAfterChange={(v) => this.onDragEnd(v)}
+            onBeforeChange={(v) => this.onDragStart(v)}
+            onChange={(v) => this.onDrag(v)}
+          />
           <TimelinePlaces {...props} />
         </Table>
       </TimelinePlayheadWrapper>

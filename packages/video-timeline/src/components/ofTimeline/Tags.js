@@ -61,6 +61,7 @@ const SliderWrapper = styled.div`
 class TimelineTags extends Component {
   state = {
     playlist: false,
+    values: {},
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -108,8 +109,7 @@ class TimelineTags extends Component {
         ])
       ),
     ].sort((j, i) => j - i);
-
-    console.log(events);
+    // console.log(events);
 
     // all playable continuous segments
     const segments = events
@@ -134,8 +134,7 @@ class TimelineTags extends Component {
         []
       )
       .map(i => [i, events[i - 1], events[i]]);
-
-    console.log(segments);
+    // console.log(segments);
 
     return { videoTags, segments };
   }
@@ -194,6 +193,45 @@ class TimelineTags extends Component {
         <Handle value={value} {...restProps} />
       </Tooltip>
     );
+  };
+
+  onAfterChange = (v, id) => {
+    const { values } = this.state;
+    const p = values[id] || [];
+
+    if (p.length === v.length) {
+      const val = v.find((d, i) => p[i] !== d);
+      if (val) this.props.onAfterChange(val);
+    }
+
+    values[id] = v;
+    this.setState({ values });
+  };
+
+  onBeforeChange = (v, id) => {
+    const { values } = this.state;
+    const p = values[id] || [];
+
+    if (p.length === v.length) {
+      const val = v.find((d, i) => p[i] !== d);
+      if (val) this.props.onBeforeChange(val);
+    }
+
+    values[id] = v;
+    this.setState({ values });
+  };
+
+  onChange = (v, id) => {
+    const { values } = this.state;
+    const p = values[id] || [];
+
+    if (p.length === v.length) {
+      const val = v.find((d, i) => p[i] !== d);
+      if (val) this.props.onChange(val);
+    }
+
+    values[id] = v;
+    this.setState({ values });
   };
 
   render() {
@@ -260,13 +298,17 @@ class TimelineTags extends Component {
                   }
                   rightColContent={
                     <SliderWrapper>
-                      <Range
+                      <MemoizedRange
+                        key={tag.id}
                         defaultValue={arr}
                         handle={this.handle}
                         max={duration}
                         min={0}
                         trackStyle={trackStyle}
                         pushable
+                        onAfterChange={v => this.onAfterChange(v, tag.id)}
+                        onBeforeChange={v => this.onBeforeChange(v, tag.id)}
+                        onChange={v => this.onChange(v, tag.id)}
                       />
                     </SliderWrapper>
                   }
@@ -279,4 +321,8 @@ class TimelineTags extends Component {
   }
 }
 
-export default TimelineTags;
+
+const MemoizedRange = React.memo(props => <Range {...props} />);
+
+
+export default React.memo(props => <TimelineTags {...props} />);
