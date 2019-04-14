@@ -5,9 +5,11 @@ import {
   bindPopover,
 } from 'material-ui-popup-state/hooks';
 import Popover from 'material-ui-popup-state/HoverPopover';
+import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,7 +40,21 @@ const styles = {
     marginRight: '8px',
     position: 'relative',
   },
+  savingProgress: {},
 };
+
+const Mask = styled.div`
+  align-items: center;
+  background: rgba(255, 255, 255, 0.66);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+`;
 
 function Comment(props) {
   const {
@@ -55,6 +71,7 @@ function Comment(props) {
   } = props;
 
   const [editMode, setEditMode] = useState(false);
+  const [isProcessing, setProcessingStatus] = useState(false);
 
   const popupState = usePopupState({
     popupId: 'MoreMenuItem',
@@ -70,7 +87,11 @@ function Comment(props) {
     // the first comment will have `isRoot` prop set
     // the first comment can be accessed with `id`
     // subsequent comments have also threadId (which is first comment’s id)
+
+    setProcessingStatus(true);
     setEditMode(false);
+    setTimeout(() => setProcessingStatus(false), 1000); // TODO: make this real
+
     console.group('handleCommentEdit()');
     console.log(isRoot ? { id } : `${id} > ${threadId}`);
     console.log({ text });
@@ -78,7 +99,9 @@ function Comment(props) {
   };
   const handleCommentDelete = () => {
     // TODO: wire this up to delete comment
+    setProcessingStatus(true);
     setEditMode(false);
+    setTimeout(() => setProcessingStatus(false), 1000); // TODO: make this real
     popupState.close();
     console.group('handleCommentDelete()');
     console.log({ threadId });
@@ -166,6 +189,11 @@ function Comment(props) {
       <ListItemSecondaryAction className={classes.listItemSecondaryAction}>
         {displayActions()}
       </ListItemSecondaryAction>
+      {isProcessing && (
+        <Mask>
+          <CircularProgress size={22} className={classes.savingProgress} />
+        </Mask>
+      )}
     </ListItem>
   );
 }
