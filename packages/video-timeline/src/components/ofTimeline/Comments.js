@@ -26,9 +26,6 @@ const SliderWrapper = styled.div`
     width: 32px;
     transform: translateY(-27px) !important;
   }
-  .rc-slider-mark-text:hover {
-    z-index: 50;
-  }
   .rc-slider-dot {
     visibility: hidden;
   }
@@ -47,7 +44,7 @@ function TimelineComments(props) {
     (object, param) => {
       const pos = param.start_seconds;
       object[pos] = (
-        <CommentMarker {...props} key={param.id} commentData={param} />
+        <CommentMarker {...props} commentData={param} key={param.id} />
       );
       return object;
     },
