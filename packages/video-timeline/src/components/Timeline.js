@@ -167,7 +167,7 @@ class Timeline extends Component {
             )}
             max={duration}
             min={0}
-            nAfterChange={this.onDragEnd}
+            onAfterChange={this.onDragEnd}
             onBeforeChange={this.onDragStart}
             onChange={this.onDrag}
             value={this.state.time}
