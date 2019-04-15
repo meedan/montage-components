@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,8 +18,15 @@ import CommentForm from './CommentForm';
 import formatTime from '../formatTime';
 
 const styles = {
+  List: {
+    maxHeight: '300px',
+    overflowY: 'auto',
+  },
   ListSubheader: {
     background: grey[200],
+  },
+  buttonProgress: {
+    marginRight: 8,
   },
 };
 
@@ -32,8 +40,9 @@ function CommentThread(props) {
     user,
     id,
   } = commentData;
-
   const threadId = id;
+
+  const [isProcessing, setProcessingStatus] = useState(false);
 
   const handleThreadReply = comment => {
     // TODO: wire adding new comments here, also log user data
@@ -46,7 +55,9 @@ function CommentThread(props) {
     console.group('handleThreadDelete()');
     console.log({ threadId });
     console.groupEnd();
-    closePopup();
+    setProcessingStatus(true);
+    setTimeout(() => setProcessingStatus(false), 1000);
+    setTimeout(() => closePopup(), 1000);
   };
 
   return (
@@ -63,19 +74,27 @@ function CommentThread(props) {
             </ListItemText>
             <ListItemSecondaryAction>
               {isActionable ? (
-                <IconButton
-                  aria-label="Delete thread"
-                  onClick={handleThreadDelete}
-                >
-                  <Tooltip title="Delete thread">
-                    <DeleteIcon fontSize="small" />
-                  </Tooltip>
-                </IconButton>
+                isProcessing ? (
+                  <CircularProgress
+                    size={16}
+                    className={classes.buttonProgress}
+                  />
+                ) : (
+                  <IconButton
+                    aria-label="Delete thread"
+                    onClick={handleThreadDelete}
+                  >
+                    <Tooltip title="Delete thread">
+                      <DeleteIcon fontSize="small" />
+                    </Tooltip>
+                  </IconButton>
+                )
               ) : null}
             </ListItemSecondaryAction>
           </ListItem>
         </>
       }
+      className={classes.List}
     >
       <Comment
         avatar={user.profile_img_url}
