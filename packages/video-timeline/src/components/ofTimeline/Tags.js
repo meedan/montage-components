@@ -244,7 +244,7 @@ class TimelineTags extends Component {
         title="Tags"
         actions={
           <>
-            <Tooltip title={playlist ? 'Pause Tags' : 'Play Tags'}>
+            <Tooltip title={playlist ? 'Pause tags' : 'Play tags'}>
               <IconButton onClick={this.handlePlayPause}>
                 {playlist ? (
                   <PauseIcon fontSize="small" />
@@ -321,8 +321,6 @@ class TimelineTags extends Component {
   }
 }
 
-
 const MemoizedRange = React.memo(props => <Range {...props} />);
-
 
 export default React.memo(props => <TimelineTags {...props} />);
