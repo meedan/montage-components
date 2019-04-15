@@ -8,6 +8,8 @@ const styles = theme => ({
   className: {},
   leftCol: {
     width: '224px',
+    paddingLeft: 0,
+    paddingRight: 0,
   },
   rightCol: {
     width: '100%',

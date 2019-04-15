@@ -51,6 +51,9 @@ const customTheme = createMuiTheme({
       gutters: {
         paddingTop: 6,
         paddingBottom: 6
+      },
+      dense: {
+        fontSize: theme.typography.pxToRem(13)
       }
     },
     MuiListItemIcon: {
@@ -64,7 +67,7 @@ const customTheme = createMuiTheme({
         padding: "0 6px"
       },
       dense: {
-        fontSize: theme.typography.pxToRem(14)
+        fontSize: theme.typography.pxToRem(13)
       }
     },
     MuiIconButton: {

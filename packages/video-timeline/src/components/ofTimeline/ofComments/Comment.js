@@ -10,8 +10,6 @@ import styled from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -34,11 +32,6 @@ const styles = {
   listItemSecondaryAction: {
     top: 8,
     transform: 'none',
-  },
-  moreMenuIcon: {
-    top: '3px',
-    marginRight: '8px',
-    position: 'relative',
   },
   savingProgress: {},
 };
@@ -130,20 +123,11 @@ function Comment(props) {
           >
             <List dense>
               <ListItem button onClick={toggleCommentEdit}>
-                <ListItemText>
-                  <EditIcon fontSize="small" className={classes.moreMenuIcon} />{' '}
-                  Edit
-                </ListItemText>
+                <ListItemText>Edit</ListItemText>
               </ListItem>
               {!isRoot ? (
                 <ListItem button onClick={handleCommentDelete}>
-                  <ListItemText>
-                    <DeleteIcon
-                      fontSize="small"
-                      className={classes.moreMenuIcon}
-                    />{' '}
-                    Delete
-                  </ListItemText>
+                  <ListItemText>Delete</ListItemText>
                 </ListItem>
               ) : null}
             </List>

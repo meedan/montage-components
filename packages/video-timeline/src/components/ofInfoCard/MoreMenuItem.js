@@ -196,13 +196,13 @@ const MoreMenuItem = props => {
                   </ListItemText>
                 </ListItem>
               </Submenu>
-              <MenuItem onClick={openDuplicatesModal} divider>
-                Manage duplicates
+              <MenuItem onClick={openDuplicatesModal} divider dense>
+                <ListItemText>Manage duplicates</ListItemText>
               </MenuItem>
             </>
           ) : null}
-          <MenuItem onClick={() => setIsRemovingVideo(true)}>
-            Remove from Library
+          <MenuItem onClick={() => setIsRemovingVideo(true)} dense>
+            <ListItemText>Remove from Library</ListItemText>
           </MenuItem>
         </Menu>
       </ParentPopupState.Provider>
