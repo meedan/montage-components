@@ -56,7 +56,6 @@ function CommentThread(props) {
     console.log({ threadId });
     console.groupEnd();
     setProcessingStatus(true);
-    setTimeout(() => setProcessingStatus(false), 1000);
     setTimeout(() => closePopup(), 1000);
   };
 
