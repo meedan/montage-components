@@ -180,9 +180,9 @@ class Timeline extends Component {
           <TimelineClips {...props} />
           <TimelineTags
             {...props}
-            onAfterChange={(v) => this.onDragEnd(v)}
-            onBeforeChange={(v) => this.onDragStart(v)}
-            onChange={(v) => this.onDrag(v)}
+            onAfterChange={v => this.onDragEnd(v)}
+            onBeforeChange={v => this.onDragStart(v)}
+            onChange={v => this.onDrag(v)}
           />
           <TimelinePlaces {...props} />
         </Table>

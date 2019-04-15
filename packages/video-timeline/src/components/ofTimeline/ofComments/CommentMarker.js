@@ -24,7 +24,10 @@ const styles = {
 
 function CommentPopover(props) {
   const { classes, commentData } = props;
-  const { user } = commentData;
+  const { isBeingAdded, user } = commentData;
+
+  let myRef = React.createRef();
+  const open = Boolean(myRef);
 
   const readPopupState = usePopupState({
     variant: 'popover',
@@ -35,8 +38,12 @@ function CommentPopover(props) {
     popupId: 'editCommentPopoverPopup',
   });
 
-  return (
-    <div>
+  if (isBeingAdded) console.log({ myRef });
+  if (isBeingAdded) console.log({ open });
+  if (isBeingAdded) console.log(myRef.current);
+
+  const existingThread = (
+    <>
       <Avatar
         {...bindHover(readPopupState)}
         {...bindTrigger(editPopupState)}
@@ -82,8 +89,37 @@ function CommentPopover(props) {
           />
         </Card>
       </TriggerPopover>
-    </div>
+    </>
   );
+  const newThread = (
+    <>
+      <Avatar
+        {...bindTrigger(editPopupState)}
+        alt={`${user.first_name} ${user.last_name}`}
+        className={classes.avatar}
+        src={user.profile_img_url}
+      />
+      <TriggerPopover
+        {...bindPopover(editPopupState)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={open}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        anchorEl={myRef.current}
+        disableRestoreFocus
+        onClick={e => e.stopPropagation()}
+      >
+        Hello
+      </TriggerPopover>
+    </>
+  );
+
+  return <div ref={myRef}>{isBeingAdded ? newThread : existingThread}</div>;
 }
 
 export default withStyles(styles)(CommentPopover);
