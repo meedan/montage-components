@@ -5,7 +5,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
-  className: {},
   leftCol: {
     width: '224px',
     paddingLeft: 0,

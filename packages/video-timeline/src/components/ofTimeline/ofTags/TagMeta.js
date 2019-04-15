@@ -22,17 +22,20 @@ const styles = {
   TextField: {
     marginBottom: 0,
     marginTop: 0,
-    paddingRight: '12px',
   },
   InputRoot: {
-    border: 'none',
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: '13px',
     paddingLeft: '12px',
   },
   InputDisabled: {
+    border: 'none',
     color: grey[600],
     '&:hover': {
       color: grey[800],
+    },
+    '&:before': {
+      border: 'none !important',
     },
   },
 };
@@ -107,7 +110,6 @@ function TagMeta(props) {
             disabled: classes.InputDisabled,
           },
           fullWidth: true,
-          disableUnderline: true,
           endAdornment: (
             <TagAdornment>
               <InputAdornment position="end">
