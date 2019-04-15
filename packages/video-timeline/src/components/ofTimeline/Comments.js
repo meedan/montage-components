@@ -1,6 +1,6 @@
 import 'rc-slider/assets/index.css';
 import { reduce } from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
 
@@ -31,51 +31,68 @@ const SliderWrapper = styled.div`
   }
 `;
 
-function TimelineComments(props) {
-  const { data, duration } = props;
-  const { commentThreads } = data;
+class TimelineComments extends Component {
+  state = {
+    threads: this.props.data.commentThreads,
+  };
 
-  const arr = commentThreads.map(thread => {
-    return thread;
-  });
+  render() {
+    const { currentTime, duration } = this.props;
 
-  const marks = reduce(
-    arr,
-    (object, param) => {
-      const pos = param.start_seconds;
-      object[pos] = (
-        <CommentMarker {...props} commentData={param} key={param.id} />
+    const getMarks = () =>
+      reduce(
+        this.state.threads,
+        (object, param) => {
+          const pos = param.start_seconds;
+          object[pos] = (
+            <CommentMarker {...this.props} commentData={param} key={param.id} />
+          );
+          return object;
+        },
+        {}
       );
-      return object;
-    },
-    {}
-  );
 
-  return (
-    <TableSection
-      title="Comments"
-      actions={
-        <Tooltip title="New comment">
-          <IconButton>
-            <AddIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      }
-      firstRowContent={
-        <SliderWrapper>
-          <Slider
-            defaultValue={null}
-            disabled
-            included={false}
-            marks={marks}
-            max={duration}
-            min={0}
-            value={null}
-          />
-        </SliderWrapper>
-      }
-    />
-  );
+    const toggleNewCommentThread = () => {
+      const newThread = {
+        isBeingAdded: true,
+        start_seconds: currentTime,
+        user: {
+          first_name: 'Piotr',
+          id: 2468,
+          last_name: 'Fedorczyk',
+          profile_img_url:
+            'https://lh3.googleusercontent.com/-WnVd2Jl55-s/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reNETuW6ipxVS4_eHwhl1sQ0pEn6Q/s100/photo.jpg',
+        },
+      };
+      const newThreads = [...this.state.threads, newThread];
+      this.setState({ threads: newThreads });
+    };
+    return (
+      <TableSection
+        title="Comments"
+        actions={
+          <Tooltip title="New comment">
+            <IconButton>
+              <AddIcon fontSize="small" onClick={toggleNewCommentThread} />
+            </IconButton>
+          </Tooltip>
+        }
+        firstRowContent={
+          <SliderWrapper>
+            <Slider
+              defaultValue={null}
+              disabled
+              included={false}
+              marks={getMarks()}
+              max={duration}
+              min={0}
+              value={null}
+            />
+          </SliderWrapper>
+        }
+      />
+    );
+  }
 }
 
-export default React.memo(props => TimelineComments(props));
+export default TimelineComments;
