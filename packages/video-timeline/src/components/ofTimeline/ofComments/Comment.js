@@ -18,6 +18,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import CommentForm from './CommentForm';
 
@@ -146,17 +147,22 @@ function Comment(props) {
       key={id}
     >
       <ListItemAvatar>
-        <Avatar
-          alt={`${fname} ${lname}`}
-          src={avatar}
-          className={classes.avatar}
-        />
+        <Tooltip
+          title={
+            <Typography align="center" color="inherit" variant="caption">
+              {date}
+            </Typography>
+          }
+        >
+          <Avatar
+            alt={`${fname} ${lname}`}
+            src={avatar}
+            className={classes.avatar}
+          />
+        </Tooltip>
       </ListItemAvatar>
       <ListItemText>
         <Typography variant="body2">{`${fname} ${lname}`}</Typography>
-        <Typography variant="caption" color="textSecondary">
-          {date}
-        </Typography>
         {editMode ? (
           <CommentForm
             isEditing
