@@ -286,7 +286,9 @@ class TimelineTags extends Component {
                 <TableBlock
                   key={tag.id}
                   plain={i < videoTags.length - 1}
-                  leftColContent={<TagMeta name={project_tag.name} />}
+                  leftColContent={
+                    <TagMeta tagName={project_tag.name} tagId={tag.id} />
+                  }
                   rightColContent={
                     <SliderWrapper>
                       <MemoizedRange

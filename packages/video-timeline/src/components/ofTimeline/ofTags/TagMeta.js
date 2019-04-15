@@ -45,7 +45,7 @@ const TagControls = styled.div`
 `;
 
 function TagMeta(props) {
-  const { classes, name } = props;
+  const { classes, tagName, tagId } = props;
   const popupState = usePopupState({
     popupId: 'MoreMenuItem',
     variant: 'popover',
@@ -56,10 +56,19 @@ function TagMeta(props) {
 
   const toggleTagRename = () => {
     setEditable(true);
+    setHovered(false);
     popupState.close();
   };
   const handleTagSave = () => {
     setEditable(false);
+  };
+  const handleTagDelete = () => {
+    // TODO: wire tag delete API calls
+    popupState.close();
+    setHovered(false);
+    console.group('handleTagDelete()');
+    console.log({ tagId });
+    console.groupEnd();
   };
 
   return (
@@ -72,7 +81,7 @@ function TagMeta(props) {
         className={classes.TextField}
         autoComplete={false}
         autoFocus
-        defaultValue={name}
+        defaultValue={tagName}
         fullWidth
         disabled={!editable}
         required
@@ -115,10 +124,7 @@ function TagMeta(props) {
           <ListItem button onClick={toggleTagRename}>
             <ListItemText>Rename</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            // onClick={handleCommentDelete}
-          >
+          <ListItem button onClick={handleTagDelete}>
             <ListItemText>Delete</ListItemText>
           </ListItem>
         </List>
