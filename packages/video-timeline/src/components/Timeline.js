@@ -102,7 +102,10 @@ class Timeline extends Component {
   }
 
   onTrackClick = e => {
-    if (this.state.skip) return;
+    if (this.state.skip) {
+      console.log('skipping click due to drag state on');
+      return;
+    }
     const { player, duration, onPlay } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -115,8 +118,11 @@ class Timeline extends Component {
     if (player && e.clientX > startPos) {
       this.setState({ time: newTime, skip: false, disjoint: true });
 
+      console.log(`seeking to ${newTime}`);
       player.seekTo(newTime);
       if (!player.isPlaying) onPlay();
+    } else {
+      console.log('skipping because player && e.clientX > startPos is false');
     }
 
     return null;
