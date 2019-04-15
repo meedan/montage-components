@@ -15,7 +15,9 @@ import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
-const TimelinePlayheadWrapper = styled.div``;
+const TimelinePlayheadWrapper = styled.div`
+  user-select: none;
+`;
 
 const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   bottom: 0;
