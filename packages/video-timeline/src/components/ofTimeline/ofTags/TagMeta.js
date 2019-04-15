@@ -48,8 +48,19 @@ const TagAdornment = styled.div`
 `;
 const TagControls = styled.div`
   width: 224px;
-  ${({ hovered }) =>
-    hovered
+
+  ${({ editable }) =>
+    editable
+      ? `
+    ${TagAdornment} {
+      visibility: visible;
+    }
+
+  `
+      : ''};
+
+  ${({ hovered, editable }) =>
+    hovered && !editable
       ? `
         ${TagAdornment} {
           visibility: visible;
@@ -102,6 +113,7 @@ function TagMeta(props) {
   return (
     <TagControls
       hovered={hovered}
+      editable={editable}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -114,6 +126,12 @@ function TagMeta(props) {
           defaultValue={tagName}
           fullWidth
           disabled={!editable}
+          onKeyPress={ev => {
+            if (ev.key === 'Enter') {
+              ev.preventDefault();
+              handleTagSave();
+            }
+          }}
           required
           InputProps={{
             classes: {
@@ -124,18 +142,14 @@ function TagMeta(props) {
             endAdornment: (
               <TagAdornment>
                 <InputAdornment position="end">
-                  {editable ? (
-                    <IconButton aria-label="Save" onClick={handleTagSave}>
-                      <CheckIcon />
-                    </IconButton>
-                  ) : (
+                  {!editable ? (
                     <IconButton
                       {...bindHover(popupState)}
                       aria-label="Options…"
                     >
                       <MoreVertIcon />
                     </IconButton>
-                  )}
+                  ) : null}
                 </InputAdornment>
               </TagAdornment>
             ),
