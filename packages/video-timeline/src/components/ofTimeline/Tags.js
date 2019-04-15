@@ -5,14 +5,14 @@ import styled from 'styled-components';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
 
 import formatTime from './formatTime';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
+import TagMeta from './ofTags/TagMeta';
 
 const Range = Slider.Range;
 const Handle = Slider.Handle;
@@ -286,16 +286,7 @@ class TimelineTags extends Component {
                 <TableBlock
                   key={tag.id}
                   plain={i < videoTags.length - 1}
-                  leftColContent={
-                    <Typography
-                      color="textSecondary"
-                      noWrap
-                      style={{ width: '160px' }}
-                      variant="body2"
-                    >
-                      {project_tag.name}
-                    </Typography>
-                  }
+                  leftColContent={<TagMeta name={project_tag.name} />}
                   rightColContent={
                     <SliderWrapper>
                       <MemoizedRange

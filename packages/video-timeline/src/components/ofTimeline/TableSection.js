@@ -17,7 +17,10 @@ function TableSection(props) {
             alignItems="center"
             container
             justify="space-between"
-            style={{ width: '200px' }}
+            style={{
+              paddingLeft: '12px',
+              paddingRight: '12px',
+            }}
           >
             <Grid item>
               <Typography variant="subtitle2">{title}</Typography>
