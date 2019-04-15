@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
+import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import List from '@material-ui/core/List';
@@ -28,6 +29,12 @@ const styles = {
     fontSize: '13px',
     paddingLeft: '12px',
   },
+  InputDisabled: {
+    color: grey[600],
+    '&:hover': {
+      color: grey[800],
+    },
+  },
 };
 
 const TagAdornment = styled.div`
@@ -45,7 +52,7 @@ const TagControls = styled.div`
 `;
 
 function TagMeta(props) {
-  const { classes, tagName, tagId } = props;
+  const { currentTime, classes, tagName, tagId } = props;
   const popupState = usePopupState({
     popupId: 'MoreMenuItem',
     variant: 'popover',
@@ -61,6 +68,14 @@ function TagMeta(props) {
   };
   const handleTagSave = () => {
     setEditable(false);
+  };
+  const placeNewMarker = () => {
+    // TODO:
+    console.group('placeNewMarker()');
+    console.log({ tagName });
+    console.log({ tagId });
+    console.log({ currentTime });
+    console.groupEnd();
   };
   const handleTagDelete = () => {
     // TODO: wire tag delete API calls
@@ -81,6 +96,7 @@ function TagMeta(props) {
         className={classes.TextField}
         autoComplete={false}
         autoFocus
+        onClick={placeNewMarker}
         defaultValue={tagName}
         fullWidth
         disabled={!editable}
@@ -88,6 +104,7 @@ function TagMeta(props) {
         InputProps={{
           classes: {
             root: classes.InputRoot,
+            disabled: classes.InputDisabled,
           },
           fullWidth: true,
           disableUnderline: true,

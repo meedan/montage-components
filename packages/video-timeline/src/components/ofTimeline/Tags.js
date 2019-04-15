@@ -65,7 +65,7 @@ class TimelineTags extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { data, duration } = props;
+    const { currentTime, data, duration } = props;
     const { videoTags } = data;
 
     if (state.videoTags && state.segments) return null;
@@ -235,7 +235,7 @@ class TimelineTags extends Component {
   };
 
   render() {
-    const { duration } = this.props;
+    const { currentTime, duration } = this.props;
     const { videoTags, playlist } = this.state;
 
     return (
@@ -287,7 +287,11 @@ class TimelineTags extends Component {
                   key={tag.id}
                   plain={i < videoTags.length - 1}
                   leftColContent={
-                    <TagMeta tagName={project_tag.name} tagId={tag.id} />
+                    <TagMeta
+                      tagName={project_tag.name}
+                      tagId={tag.id}
+                      currentTime={currentTime}
+                    />
                   }
                   rightColContent={
                     <SliderWrapper>
