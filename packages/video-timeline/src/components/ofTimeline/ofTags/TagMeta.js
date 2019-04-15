@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState } from 'react';
 import {
   usePopupState,
   bindHover,
@@ -8,6 +8,7 @@ import Popover from 'material-ui-popup-state/HoverPopover';
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
@@ -40,6 +41,10 @@ const styles = {
       border: 'none !important',
     },
   },
+  CircularProgress: {
+    position: 'relative',
+    left: '-8px',
+  },
 };
 
 const TagAdornment = styled.div`
@@ -48,8 +53,8 @@ const TagAdornment = styled.div`
 const TagControls = styled.div`
   width: 224px;
 
-  ${({ editable }) =>
-    editable
+  ${({ editable, isProcessing }) =>
+    editable || isProcessing
       ? `
     ${TagAdornment} {
       visibility: visible;
@@ -79,6 +84,8 @@ function TagMeta(props) {
 
   const [editable, setEditable] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [newTagName, setNewTagName] = useState(tagName);
 
   // console.log({ thisFieldRef });
 
@@ -97,7 +104,13 @@ function TagMeta(props) {
     return null;
   };
   const handleTagSave = () => {
+    setIsProcessing(true);
     setEditable(false);
+    // wire tag delete API calls
+    console.group('handleTagSave()');
+    console.log({ newTagName });
+    console.groupEnd();
+    setTimeout(() => setIsProcessing(false), 1000); // TODO: disable processing on either error or success
   };
   const placeNewMarker = () => {
     // TODO:
@@ -108,18 +121,21 @@ function TagMeta(props) {
     console.groupEnd();
   };
   const handleTagDelete = () => {
-    // TODO: wire tag delete API calls
-    popupState.close();
+    setIsProcessing(true);
     setHovered(false);
+    popupState.close();
+    // TODO: wire tag delete API calls
     console.group('handleTagDelete()');
     console.log({ tagId });
     console.groupEnd();
+    setTimeout(() => setIsProcessing(false), 1000); // TODO: disable processing on either error or success
   };
 
   return (
     <TagControls
       hovered={hovered}
       editable={editable}
+      isProcessing={isProcessing}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -133,6 +149,7 @@ function TagMeta(props) {
           disabled={!editable}
           fullWidth
           onClick={!editable ? placeNewMarker : null}
+          onChange={e => setNewTagName(e.currentTarget.value)}
           onKeyPress={ev => {
             if (ev.key === 'Enter') {
               ev.preventDefault();
@@ -146,15 +163,26 @@ function TagMeta(props) {
               disabled: classes.InputDisabled,
             },
             fullWidth: true,
-            endAdornment: !editable ? (
-              <TagAdornment>
-                <InputAdornment position="end">
-                  <IconButton {...bindHover(popupState)} aria-label="Options…">
-                    <MoreVertIcon />
-                  </IconButton>
-                </InputAdornment>
-              </TagAdornment>
-            ) : null,
+            endAdornment:
+              !editable || isProcessing ? (
+                <TagAdornment>
+                  <InputAdornment position="end">
+                    {isProcessing ? (
+                      <CircularProgress
+                        size={18}
+                        className={classes.CircularProgress}
+                      />
+                    ) : (
+                      <IconButton
+                        {...bindHover(popupState)}
+                        aria-label="Options…"
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    )}
+                  </InputAdornment>
+                </TagAdornment>
+              ) : null,
           }}
         />
       </ClickAwayListener>
