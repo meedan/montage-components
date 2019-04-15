@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -27,9 +28,11 @@ const styles = {
     borderBottom: `1px solid ${grey[300]}`,
     fontSize: '13px',
     paddingLeft: '12px',
+    paddingRight: '12px',
   },
   InputDisabled: {
     border: 'none',
+    cursor: 'pointer',
     color: grey[600],
     '&:hover': {
       color: grey[800],
@@ -69,6 +72,13 @@ function TagMeta(props) {
     setHovered(false);
     popupState.close();
   };
+  const toggleTagRenameOff = () => {
+    if (editable) {
+      setEditable(false);
+      setHovered(false);
+    }
+    return null;
+  };
   const handleTagSave = () => {
     setEditable(false);
   };
@@ -95,38 +105,43 @@ function TagMeta(props) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <TextField
-        className={classes.TextField}
-        autoComplete={false}
-        autoFocus
-        onClick={placeNewMarker}
-        defaultValue={tagName}
-        fullWidth
-        disabled={!editable}
-        required
-        InputProps={{
-          classes: {
-            root: classes.InputRoot,
-            disabled: classes.InputDisabled,
-          },
-          fullWidth: true,
-          endAdornment: (
-            <TagAdornment>
-              <InputAdornment position="end">
-                {editable ? (
-                  <IconButton aria-label="Save" onClick={handleTagSave}>
-                    <CheckIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton {...bindHover(popupState)} aria-label="Options…">
-                    <MoreVertIcon />
-                  </IconButton>
-                )}
-              </InputAdornment>
-            </TagAdornment>
-          ),
-        }}
-      />
+      <ClickAwayListener onClickAway={toggleTagRenameOff}>
+        <TextField
+          className={classes.TextField}
+          autoComplete={false}
+          autoFocus
+          onClick={!editable ? placeNewMarker : null}
+          defaultValue={tagName}
+          fullWidth
+          disabled={!editable}
+          required
+          InputProps={{
+            classes: {
+              root: classes.InputRoot,
+              disabled: classes.InputDisabled,
+            },
+            fullWidth: true,
+            endAdornment: (
+              <TagAdornment>
+                <InputAdornment position="end">
+                  {editable ? (
+                    <IconButton aria-label="Save" onClick={handleTagSave}>
+                      <CheckIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      {...bindHover(popupState)}
+                      aria-label="Options…"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              </TagAdornment>
+            ),
+          }}
+        />
+      </ClickAwayListener>
       <Popover
         {...bindPopover(popupState)}
         anchorOrigin={{
