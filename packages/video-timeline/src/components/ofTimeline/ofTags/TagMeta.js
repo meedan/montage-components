@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import {
   usePopupState,
   bindHover,
@@ -8,7 +8,6 @@ import Popover from 'material-ui-popup-state/HoverPopover';
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
-import CheckIcon from '@material-ui/icons/Check';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
@@ -70,6 +69,9 @@ const TagControls = styled.div`
 
 function TagMeta(props) {
   const { currentTime, classes, tagName, tagId } = props;
+
+  // let thisFieldRef = createRef();
+
   const popupState = usePopupState({
     popupId: 'MoreMenuItem',
     variant: 'popover',
@@ -78,10 +80,14 @@ function TagMeta(props) {
   const [editable, setEditable] = useState(false);
   const [hovered, setHovered] = useState(false);
 
+  // console.log({ thisFieldRef });
+
   const toggleTagRename = () => {
-    setEditable(true);
     setHovered(false);
     popupState.close();
+    // console.log({ thisFieldRef });
+    setEditable(true);
+    // thisFieldRef.current.focus()
   };
   const toggleTagRenameOff = () => {
     if (editable) {
@@ -119,13 +125,14 @@ function TagMeta(props) {
     >
       <ClickAwayListener onClickAway={toggleTagRenameOff}>
         <TextField
-          className={classes.TextField}
           autoComplete={false}
           autoFocus
-          onClick={!editable ? placeNewMarker : null}
+          className={classes.TextField}
           defaultValue={tagName}
-          fullWidth
+          // inputRef={thisFieldRef}
           disabled={!editable}
+          fullWidth
+          onClick={!editable ? placeNewMarker : null}
           onKeyPress={ev => {
             if (ev.key === 'Enter') {
               ev.preventDefault();
@@ -139,20 +146,15 @@ function TagMeta(props) {
               disabled: classes.InputDisabled,
             },
             fullWidth: true,
-            endAdornment: (
+            endAdornment: !editable ? (
               <TagAdornment>
                 <InputAdornment position="end">
-                  {!editable ? (
-                    <IconButton
-                      {...bindHover(popupState)}
-                      aria-label="Options…"
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                  ) : null}
+                  <IconButton {...bindHover(popupState)} aria-label="Options…">
+                    <MoreVertIcon />
+                  </IconButton>
                 </InputAdornment>
               </TagAdornment>
-            ),
+            ) : null,
           }}
         />
       </ClickAwayListener>
