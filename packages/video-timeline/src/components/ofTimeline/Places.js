@@ -12,7 +12,7 @@ function TimelinePlaces(props) {
       title="Places"
       actions={
         <>
-          <Tooltip title="New Place">
+          <Tooltip title="New place">
             <IconButton>
               <AddIcon fontSize="small" />
             </IconButton>
@@ -23,5 +23,4 @@ function TimelinePlaces(props) {
   );
 }
 
-
-export default React.memo((props) => TimelinePlaces(props));
+export default React.memo(props => TimelinePlaces(props));
