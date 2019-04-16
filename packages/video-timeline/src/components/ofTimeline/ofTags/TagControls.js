@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Autosuggest from 'react-autosuggest';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -90,7 +91,7 @@ class TagControls extends Component {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
     console.group('handleTagRename()');
-    console.log(this.state.tagName);
+    console.log('tagName:', this.state.tagName);
     console.groupEnd();
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -107,13 +108,21 @@ class TagControls extends Component {
     this.setState({ isProcessing: true, isDeleting: false });
     // TODO: wire tag delete API calls
     console.group('handleTagDelete()');
-    console.log(this.props.tagId);
+    console.log('tagId:', this.props.tagId);
     console.groupEnd();
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
 
+  startNewInstance = () => {
+    // TODO: wire create new instance API calls
+    console.group('startNewInstance()');
+    console.log('tagId:', this.props.tagId);
+    console.log('start_seconds:', this.props.currentTime);
+    console.groupEnd();
+  };
+
   render() {
-    const { currentTime, classes, tagId } = this.props;
+    const { classes } = this.props;
     const {
       isCreating,
       isDeleting,
@@ -122,15 +131,6 @@ class TagControls extends Component {
       isProcessing,
       tagName,
     } = this.state;
-
-    const placeNewMarker = () => {
-      // TODO:
-      console.group('placeNewMarker()');
-      console.log({ tagName });
-      console.log({ tagId });
-      console.log({ currentTime });
-      console.groupEnd();
-    };
 
     return (
       <>
@@ -148,7 +148,7 @@ class TagControls extends Component {
               inputRef={this.inputRef}
               disabled={!isEditing}
               fullWidth
-              onClick={!isEditing ? placeNewMarker : null}
+              onClick={!isEditing ? this.startNewInstance : null}
               onChange={e => this.setState({ tagName: e.currentTarget.value })}
               onKeyPress={ev => {
                 if (ev.key === 'Enter') {
