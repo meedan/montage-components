@@ -8,8 +8,8 @@ import grey from '@material-ui/core/colors/grey';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 
-import DeleteTagModal from './DeleteTagModal';
-import TagControlsEllipsis from './TagControlsEllipsis';
+import TagDeleteModal from './TagDeleteModal';
+import TagControlsPopover from './TagControlsPopover';
 
 const styles = {
   TextField: {
@@ -173,7 +173,7 @@ class TagControls extends Component {
                             className={classes.CircularProgress}
                           />
                         ) : (
-                          <TagControlsEllipsis
+                          <TagControlsPopover
                             onStartRename={this.startTagRename}
                             onStartDelete={this.startTagDelete}
                           />
@@ -186,7 +186,7 @@ class TagControls extends Component {
           </ClickAwayListener>
         </El>
         {isDeleting ? (
-          <DeleteTagModal
+          <TagDeleteModal
             handleClose={this.stopTagDelete}
             handleRemove={this.handleTagDelete}
             tagName={tagName}
