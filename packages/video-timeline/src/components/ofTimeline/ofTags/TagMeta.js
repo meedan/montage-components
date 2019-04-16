@@ -104,14 +104,7 @@ class TagMeta extends Component {
     const toggleTagRenameOff = () => {
       if (isEditing) this.setState({ isEditing: false, isHovering: false });
     };
-    const handleTagSave = () => {
-      this.setState({ isProcessing: true, isEditing: false });
-      // wire tag delete API calls
-      console.group('handleTagSave()');
-      console.log({ newTagName });
-      console.groupEnd();
-      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on either error or success
-    };
+
     const placeNewMarker = () => {
       // TODO:
       console.group('placeNewMarker()');
@@ -120,8 +113,13 @@ class TagMeta extends Component {
       console.log({ currentTime });
       console.groupEnd();
     };
-    const toggleTagDelete = () => {
-      this.setState({ isDeleting: true });
+    const handleTagSave = () => {
+      this.setState({ isProcessing: true, isEditing: false });
+      // wire tag delete API calls
+      console.group('handleTagSave()');
+      console.log({ newTagName });
+      console.groupEnd();
+      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on error or success
     };
     const handleTagDelete = () => {
       this.setState({
@@ -133,7 +131,7 @@ class TagMeta extends Component {
       console.group('handleTagDelete()');
       console.log({ tagId });
       console.groupEnd();
-      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on either error or success
+      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on error or success
     };
 
     return (
@@ -209,7 +207,12 @@ class TagMeta extends Component {
                                     <ListItem button onClick={toggleTagRename}>
                                       <ListItemText>Rename</ListItemText>
                                     </ListItem>
-                                    <ListItem button onClick={toggleTagDelete}>
+                                    <ListItem
+                                      button
+                                      onClick={() =>
+                                        this.setState({ isDeleting: true })
+                                      }
+                                    >
                                       <ListItemText>Delete</ListItemText>
                                     </ListItem>
                                   </List>
