@@ -20,7 +20,7 @@ function DeleteTagModal(props) {
       <DialogTitle>Delete tag</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Do you wish to remove all instances of <strong>{tagName}</strong> tag{' '}
+          Do you wish to remove all instances of <strong>{tagName}</strong>{' '}
           assigned to this video? This can’t be undone.
         </DialogContentText>
       </DialogContent>
