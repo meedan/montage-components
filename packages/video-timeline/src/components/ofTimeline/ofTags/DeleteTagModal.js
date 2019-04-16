@@ -7,19 +7,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-function RemoveModal(props) {
+function DeleteTagModal(props) {
+  const { tagName } = props;
   return (
     <Dialog
       aria-describedby="Confirm that you’re sure to remove this video from your Library"
-      aria-labelledby="Remove video"
+      aria-labelledby="Delete tag"
       onClose={props.handleClose}
       open
+      onClick={e => e.stopPropagation()}
     >
-      <DialogTitle>Remove video</DialogTitle>
+      <DialogTitle>Delete tag</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Do you wish to remove this video from the Library? All related
-          information, including tags, will be lost.
+          Do you wish to remove all instances of <strong>{tagName}</strong> tag{' '}
+          assigned to this video? This can’t be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -27,11 +29,11 @@ function RemoveModal(props) {
           Cancel
         </Button>
         <Button size="large" color="primary" onClick={props.handleRemove}>
-          Remove
+          Delete
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export default RemoveModal;
+export default DeleteTagModal;
