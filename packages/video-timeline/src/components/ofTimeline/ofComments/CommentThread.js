@@ -113,6 +113,7 @@ function CommentThread(props) {
             fname={reply.user.first_name}
             id={reply.id}
             isActionable={isActionable}
+            key={reply.id}
             lname={reply.user.last_name}
             text={reply.text}
             threadId={reply.thread_id}
