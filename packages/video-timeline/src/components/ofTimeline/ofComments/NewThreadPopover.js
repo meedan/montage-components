@@ -5,6 +5,7 @@ import Popover from '@material-ui/core/Popover';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import CommentForm from './CommentForm';
 
@@ -70,19 +71,25 @@ class NewCommentThreadPopover extends Component {
                     horizontal: 'center',
                   }}
                 >
-                  <Grid className={classes.Grid}>
-                    <CommentForm
-                      isCreating
-                      onCancel={() => {
-                        this.setState({ hasPopover: false }, () =>
-                          this.props.stopNewCommentThread()
-                        );
-                      }}
-                      onSubmit={text => {
-                        this.props.saveNewCommentThread(text);
-                      }}
-                    />
-                  </Grid>
+                  <ClickAwayListener
+                    onClickAway={this.props.stopNewCommentThread}
+                  >
+                    <Grid className={classes.Grid}>
+                      <CommentForm
+                        isCreating
+                        onCancel={() => {
+                          this.setState({ hasPopover: false }, () =>
+                            this.props.stopNewCommentThread()
+                          );
+                        }}
+                        onSubmit={text => {
+                          this.setState({ hasPopover: false }, () =>
+                            this.props.saveNewCommentThread(text)
+                          );
+                        }}
+                      />
+                    </Grid>
+                  </ClickAwayListener>
                 </Popover>
               </>
             )}
