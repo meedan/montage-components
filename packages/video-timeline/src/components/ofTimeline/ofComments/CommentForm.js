@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 function CommentForm(props) {
-  const { isEditing, value } = props;
+  const { isCreating, isEditing, value } = props;
 
   const [comment, setComment] = useState(value);
 
@@ -48,12 +48,12 @@ function CommentForm(props) {
               onClick={() => props.onSubmit(comment)}
               size="small"
             >
-              {isEditing ? 'Save' : 'Reply'}
+              {isEditing || isCreating ? 'Save' : 'Reply'}
             </Button>
           </Grid>
           <Grid item>
             <Button mini onClick={onCancel} size="small">
-              Close
+              {isCreating || isCreating ? 'Cancel' : 'Close'}
             </Button>
           </Grid>
         </Grid>

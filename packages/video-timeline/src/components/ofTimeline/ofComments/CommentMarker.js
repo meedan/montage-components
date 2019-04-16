@@ -27,9 +27,6 @@ function CommentPopover(props) {
   const { classes, commentData } = props;
   const { isBeingAdded, user } = commentData;
 
-  let myRef = React.createRef();
-  const open = Boolean(myRef);
-
   const readPopupState = usePopupState({
     variant: 'popover',
     popupId: 'readCommentPopoverPopup',
@@ -38,10 +35,6 @@ function CommentPopover(props) {
     variant: 'popover',
     popupId: 'editCommentPopoverPopup',
   });
-
-  if (isBeingAdded) console.log({ myRef });
-  if (isBeingAdded) console.log({ open });
-  if (isBeingAdded) console.log(myRef.current);
 
   const existingThread = (
     <>
@@ -94,9 +87,14 @@ function CommentPopover(props) {
   );
 
   return (
-    <div ref={myRef}>
+    <div>
       {isBeingAdded ? (
-        <NewThreadPopoover user={user} commentData={commentData} />
+        <NewThreadPopoover
+          commentData={commentData}
+          saveNewCommentThread={props.saveNewCommentThread}
+          stopNewCommentThread={props.stopNewCommentThread}
+          user={user}
+        />
       ) : (
         existingThread
       )}
