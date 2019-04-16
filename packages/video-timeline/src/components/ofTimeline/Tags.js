@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import formatTime from './formatTime';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
-import TagMeta from './ofTags/TagMeta';
+import TagControls from './ofTags/TagControls';
 
 const Range = Slider.Range;
 const Handle = Slider.Handle;
@@ -234,6 +234,21 @@ class TimelineTags extends Component {
     this.setState({ values });
   };
 
+  startNewTag = () => {
+    console.log(this.state.videoTags);
+    const newTags = [
+      {
+        isBeingAdded: true,
+        instances: [],
+        project_tag: {
+          name: '',
+        },
+      },
+      ...this.state.videoTags,
+    ];
+    this.setState({ videoTags: newTags });
+  };
+
   render() {
     const { currentTime, duration } = this.props;
     const { videoTags, playlist } = this.state;
@@ -254,7 +269,7 @@ class TimelineTags extends Component {
               </IconButton>
             </Tooltip>
             <Tooltip title="New Tag">
-              <IconButton>
+              <IconButton onClick={this.startNewTag}>
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -287,7 +302,7 @@ class TimelineTags extends Component {
                   key={tag.id}
                   plain={i < videoTags.length - 1}
                   leftColContent={
-                    <TagMeta
+                    <TagControls
                       tagName={project_tag.name}
                       tagId={tag.id}
                       currentTime={currentTime}
