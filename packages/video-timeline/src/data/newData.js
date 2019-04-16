@@ -27,7 +27,13 @@ const newData = {
         }
       ]
     }
-  }
+  },
+  locationTags: [
+    {
+      c_location_id: "xyz",
+      // id: ,
+    }
+  ]
 };
 
 export default newData;

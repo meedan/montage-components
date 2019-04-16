@@ -19,6 +19,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TextField from '@material-ui/core/TextField';
 
+import DeleteTagModal from './DeleteTagModal';
+
 const styles = {
   TextField: {
     marginBottom: 0,
@@ -86,6 +88,7 @@ function TagMeta(props) {
   const [hovered, setHovered] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [newTagName, setNewTagName] = useState(tagName);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // console.log({ thisFieldRef });
 
@@ -120,9 +123,13 @@ function TagMeta(props) {
     console.log({ currentTime });
     console.groupEnd();
   };
+  const toggleTagDelete = () => {
+    setIsDeleting(true);
+  };
   const handleTagDelete = () => {
     setIsProcessing(true);
     setHovered(false);
+    setIsDeleting(false);
     popupState.close();
     // TODO: wire tag delete API calls
     console.group('handleTagDelete()');
@@ -132,82 +139,91 @@ function TagMeta(props) {
   };
 
   return (
-    <TagControls
-      hovered={hovered}
-      editable={editable}
-      isProcessing={isProcessing}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <ClickAwayListener onClickAway={toggleTagRenameOff}>
-        <TextField
-          autoComplete={false}
-          autoFocus
-          className={classes.TextField}
-          defaultValue={tagName}
-          // inputRef={thisFieldRef}
-          disabled={!editable}
-          fullWidth
-          onClick={!editable ? placeNewMarker : null}
-          onChange={e => setNewTagName(e.currentTarget.value)}
-          onKeyPress={ev => {
-            if (ev.key === 'Enter') {
-              ev.preventDefault();
-              handleTagSave();
-            }
-          }}
-          required
-          InputProps={{
-            classes: {
-              root: classes.InputRoot,
-              disabled: classes.InputDisabled,
-            },
-            fullWidth: true,
-            endAdornment:
-              !editable || isProcessing ? (
-                <TagAdornment>
-                  <InputAdornment position="end">
-                    {isProcessing ? (
-                      <CircularProgress
-                        size={18}
-                        className={classes.CircularProgress}
-                      />
-                    ) : (
-                      <IconButton
-                        {...bindHover(popupState)}
-                        aria-label="Options…"
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                </TagAdornment>
-              ) : null,
-          }}
-        />
-      </ClickAwayListener>
-      <Popover
-        {...bindPopover(popupState)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        disableRestoreFocus
+    <>
+      <TagControls
+        hovered={hovered}
+        editable={editable}
+        isProcessing={isProcessing}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
       >
-        <List dense>
-          <ListItem button onClick={toggleTagRename}>
-            <ListItemText>Rename</ListItemText>
-          </ListItem>
-          <ListItem button onClick={handleTagDelete}>
-            <ListItemText>Delete</ListItemText>
-          </ListItem>
-        </List>
-      </Popover>
-    </TagControls>
+        <ClickAwayListener onClickAway={toggleTagRenameOff}>
+          <TextField
+            autoComplete={false}
+            autoFocus
+            className={classes.TextField}
+            defaultValue={tagName}
+            // inputRef={thisFieldRef}
+            disabled={!editable}
+            fullWidth
+            onClick={!editable ? placeNewMarker : null}
+            onChange={e => setNewTagName(e.currentTarget.value)}
+            onKeyPress={ev => {
+              if (ev.key === 'Enter') {
+                ev.preventDefault();
+                handleTagSave();
+              }
+            }}
+            required
+            InputProps={{
+              classes: {
+                root: classes.InputRoot,
+                disabled: classes.InputDisabled,
+              },
+              fullWidth: true,
+              endAdornment:
+                !editable || isProcessing ? (
+                  <TagAdornment>
+                    <InputAdornment position="end">
+                      {isProcessing ? (
+                        <CircularProgress
+                          size={18}
+                          className={classes.CircularProgress}
+                        />
+                      ) : (
+                        <IconButton
+                          {...bindHover(popupState)}
+                          aria-label="Options…"
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      )}
+                    </InputAdornment>
+                  </TagAdornment>
+                ) : null,
+            }}
+          />
+        </ClickAwayListener>
+        <Popover
+          {...bindPopover(popupState)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          disableRestoreFocus
+        >
+          <List dense>
+            <ListItem button onClick={toggleTagRename}>
+              <ListItemText>Rename</ListItemText>
+            </ListItem>
+            <ListItem button onClick={toggleTagDelete}>
+              <ListItemText>Delete</ListItemText>
+            </ListItem>
+          </List>
+        </Popover>
+      </TagControls>
+      {isDeleting ? (
+        <DeleteTagModal
+          handleClose={() => setIsDeleting(false)}
+          handleRemove={handleTagDelete}
+          tagName={tagName}
+        />
+      ) : null}
+    </>
   );
 }
 
