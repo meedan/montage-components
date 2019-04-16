@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import {
-  usePopupState,
-  bindHover,
-  bindPopover,
-} from 'material-ui-popup-state/hooks';
+import React, { Component } from 'react';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import Popover from 'material-ui-popup-state/HoverPopover';
+
 import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -55,8 +52,8 @@ const TagAdornment = styled.div`
 const TagControls = styled.div`
   width: 224px;
 
-  ${({ editable, isProcessing }) =>
-    editable || isProcessing
+  ${({ isEditable, isProcessing }) =>
+    isEditable || isProcessing
       ? `
     ${TagAdornment} {
       visibility: visible;
@@ -65,8 +62,8 @@ const TagControls = styled.div`
   `
       : ''};
 
-  ${({ hovered, editable }) =>
-    hovered && !editable
+  ${({ isHovered, editable }) =>
+    isHovered && !editable
       ? `
         ${TagAdornment} {
           visibility: visible;
@@ -74,157 +71,164 @@ const TagControls = styled.div`
       : ''};
 `;
 
-function TagMeta(props) {
-  const { currentTime, classes, tagName, tagId } = props;
+class TagMeta extends Component {
+  constructor(props) {
+    super(props);
 
-  // let thisFieldRef = createRef();
+    this.state = {
+      isEditable: false,
+      isHovered: false,
+      isProcessing: false,
+      isDeleting: false,
+      newTagName: props.tagName,
+    };
 
-  const popupState = usePopupState({
-    popupId: 'MoreMenuItem',
-    variant: 'popover',
-  });
+    this.inputRef = React.createRef();
+  }
 
-  const [editable, setEditable] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [newTagName, setNewTagName] = useState(tagName);
-  const [isDeleting, setIsDeleting] = useState(false);
+  render() {
+    const { currentTime, classes, tagName, tagId } = this.props;
 
-  // console.log({ thisFieldRef });
+    const toggleTagRename = () => {
+      this.setState({ isHovered: false, isEditable: true }, () =>
+        this.inputRef.current.focus()
+      );
+    };
+    const toggleTagRenameOff = () => {
+      if (this.state.isEditable)
+        this.setState({ isEditable: false, isHovered: false });
+    };
+    const handleTagSave = () => {
+      this.setState({ isProcessing: true, isEditable: false });
+      // wire tag delete API calls
+      console.group('handleTagSave()');
+      console.log(this.state.newTagName);
+      console.groupEnd();
+      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on either error or success
+    };
+    const placeNewMarker = () => {
+      // TODO:
+      console.group('placeNewMarker()');
+      console.log({ tagName });
+      console.log({ tagId });
+      console.log({ currentTime });
+      console.groupEnd();
+    };
+    const toggleTagDelete = () => {
+      this.setState({ isDeleting: true });
+    };
+    const handleTagDelete = () => {
+      this.setState({
+        isProcessing: true,
+        isHovered: false,
+        isDeleting: false,
+      });
+      // TODO: wire tag delete API calls
+      console.group('handleTagDelete()');
+      console.log({ tagId });
+      console.groupEnd();
+      setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on either error or success
+    };
 
-  const toggleTagRename = () => {
-    setHovered(false);
-    popupState.close();
-    // console.log({ thisFieldRef });
-    setEditable(true);
-    // thisFieldRef.current.focus()
-  };
-  const toggleTagRenameOff = () => {
-    if (editable) {
-      setEditable(false);
-      setHovered(false);
-    }
-    return null;
-  };
-  const handleTagSave = () => {
-    setIsProcessing(true);
-    setEditable(false);
-    // wire tag delete API calls
-    console.group('handleTagSave()');
-    console.log({ newTagName });
-    console.groupEnd();
-    setTimeout(() => setIsProcessing(false), 1000); // TODO: disable processing on either error or success
-  };
-  const placeNewMarker = () => {
-    // TODO:
-    console.group('placeNewMarker()');
-    console.log({ tagName });
-    console.log({ tagId });
-    console.log({ currentTime });
-    console.groupEnd();
-  };
-  const toggleTagDelete = () => {
-    setIsDeleting(true);
-  };
-  const handleTagDelete = () => {
-    setIsProcessing(true);
-    setHovered(false);
-    setIsDeleting(false);
-    popupState.close();
-    // TODO: wire tag delete API calls
-    console.group('handleTagDelete()');
-    console.log({ tagId });
-    console.groupEnd();
-    setTimeout(() => setIsProcessing(false), 1000); // TODO: disable processing on either error or success
-  };
-
-  return (
-    <>
-      <TagControls
-        hovered={hovered}
-        editable={editable}
-        isProcessing={isProcessing}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <ClickAwayListener onClickAway={toggleTagRenameOff}>
-          <TextField
-            autoComplete={false}
-            autoFocus
-            className={classes.TextField}
-            defaultValue={tagName}
-            // inputRef={thisFieldRef}
-            disabled={!editable}
-            fullWidth
-            onClick={!editable ? placeNewMarker : null}
-            onChange={e => setNewTagName(e.currentTarget.value)}
-            onKeyPress={ev => {
-              if (ev.key === 'Enter') {
-                ev.preventDefault();
-                handleTagSave();
-              }
-            }}
-            required
-            InputProps={{
-              classes: {
-                root: classes.InputRoot,
-                disabled: classes.InputDisabled,
-              },
-              fullWidth: true,
-              endAdornment:
-                !editable || isProcessing ? (
-                  <TagAdornment>
-                    <InputAdornment position="end">
-                      {isProcessing ? (
-                        <CircularProgress
-                          size={18}
-                          className={classes.CircularProgress}
-                        />
-                      ) : (
-                        <IconButton
-                          {...bindHover(popupState)}
-                          aria-label="Options…"
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                      )}
-                    </InputAdornment>
-                  </TagAdornment>
-                ) : null,
-            }}
-          />
-        </ClickAwayListener>
-        <Popover
-          {...bindPopover(popupState)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          disableRestoreFocus
+    return (
+      <>
+        <TagControls
+          isEditable={this.state.isEditable}
+          isHovered={this.state.isHovered}
+          isProcessing={this.state.isProcessing}
+          onMouseEnter={() => this.setState({ isHovered: true })}
+          onMouseLeave={() => this.setState({ isHovered: false })}
         >
-          <List dense>
-            <ListItem button onClick={toggleTagRename}>
-              <ListItemText>Rename</ListItemText>
-            </ListItem>
-            <ListItem button onClick={toggleTagDelete}>
-              <ListItemText>Delete</ListItemText>
-            </ListItem>
-          </List>
-        </Popover>
-      </TagControls>
-      {isDeleting ? (
-        <DeleteTagModal
-          handleClose={() => setIsDeleting(false)}
-          handleRemove={handleTagDelete}
-          tagName={tagName}
-        />
-      ) : null}
-    </>
-  );
+          <ClickAwayListener onClickAway={toggleTagRenameOff}>
+            <TextField
+              autoComplete={false}
+              autoFocus
+              className={classes.TextField}
+              defaultValue={tagName}
+              inputRef={this.inputRef}
+              disabled={!this.state.isEditable}
+              fullWidth
+              onClick={!this.state.isEditable ? placeNewMarker : null}
+              onChange={e =>
+                this.setState({ newTagName: e.currentTarget.value })
+              }
+              onKeyPress={ev => {
+                if (ev.key === 'Enter') {
+                  ev.preventDefault();
+                  handleTagSave();
+                }
+              }}
+              required
+              InputProps={{
+                classes: {
+                  root: classes.InputRoot,
+                  disabled: classes.InputDisabled,
+                },
+                fullWidth: true,
+                endAdornment:
+                  !this.state.isEditable || this.state.isProcessing ? (
+                    <TagAdornment>
+                      <InputAdornment position="end">
+                        {this.state.isProcessing ? (
+                          <CircularProgress
+                            size={18}
+                            className={classes.CircularProgress}
+                          />
+                        ) : (
+                          <PopupState
+                            variant="popover"
+                            popupId="moreTagOptionsPopover"
+                          >
+                            {popupState => (
+                              <div>
+                                <IconButton
+                                  {...bindHover(popupState)}
+                                  aria-label="Options…"
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Popover
+                                  {...bindPopover(popupState)}
+                                  anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                  }}
+                                  transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                  }}
+                                  disableRestoreFocus
+                                >
+                                  <List dense>
+                                    <ListItem button onClick={toggleTagRename}>
+                                      <ListItemText>Rename</ListItemText>
+                                    </ListItem>
+                                    <ListItem button onClick={toggleTagDelete}>
+                                      <ListItemText>Delete</ListItemText>
+                                    </ListItem>
+                                  </List>
+                                </Popover>
+                              </div>
+                            )}
+                          </PopupState>
+                        )}
+                      </InputAdornment>
+                    </TagAdornment>
+                  ) : null,
+              }}
+            />
+          </ClickAwayListener>
+        </TagControls>
+        {this.state.isDeleting ? (
+          <DeleteTagModal
+            handleClose={() => this.setState({ isDeleting: false })}
+            handleRemove={handleTagDelete}
+            tagName={tagName}
+          />
+        ) : null}
+      </>
+    );
+  }
 }
 
 export default withStyles(styles)(TagMeta);
