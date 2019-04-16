@@ -32,12 +32,42 @@ const SliderWrapper = styled.div`
 `;
 
 class TimelineComments extends Component {
-  state = {
-    threads: this.props.data.commentThreads,
+  constructor(props) {
+    super(props);
+    this.state = {
+      threads: this.props.data.commentThreads,
+    };
+  }
+
+  startNewCommentThread = () => {
+    const newThread = {
+      isBeingAdded: true,
+      start_seconds: this.props.currentTime,
+      user: {
+        first_name: 'Piotr',
+        id: 2468,
+        last_name: 'Fedorczyk',
+        profile_img_url:
+          'https://lh3.googleusercontent.com/-WnVd2Jl55-s/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reNETuW6ipxVS4_eHwhl1sQ0pEn6Q/s100/photo.jpg',
+      },
+    };
+    const newThreads = [...this.state.threads, newThread];
+    this.setState({ threads: newThreads });
+  };
+
+  stopNewCommentThread = () => {
+    this.setState({ threads: this.props.data.commentThreads });
+  };
+
+  saveNewCommentThread = text => {
+    console.group('saveNewCommentThread()');
+    console.log({ text });
+    console.log(this.props.currentTime);
+    console.groupEnd();
   };
 
   render() {
-    const { currentTime, duration } = this.props;
+    const { duration } = this.props;
 
     const getMarks = () =>
       reduce(
@@ -45,35 +75,26 @@ class TimelineComments extends Component {
         (object, param) => {
           const pos = param.start_seconds;
           object[pos] = (
-            <CommentMarker {...this.props} commentData={param} key={param.id} />
+            <CommentMarker
+              {...this.props}
+              commentData={param}
+              key={param.id}
+              stopNewCommentThread={this.stopNewCommentThread}
+              saveNewCommentThread={this.saveNewCommentThread}
+            />
           );
           return object;
         },
         {}
       );
 
-    const toggleNewCommentThread = () => {
-      const newThread = {
-        isBeingAdded: true,
-        start_seconds: currentTime,
-        user: {
-          first_name: 'Piotr',
-          id: 2468,
-          last_name: 'Fedorczyk',
-          profile_img_url:
-            'https://lh3.googleusercontent.com/-WnVd2Jl55-s/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3reNETuW6ipxVS4_eHwhl1sQ0pEn6Q/s100/photo.jpg',
-        },
-      };
-      const newThreads = [...this.state.threads, newThread];
-      this.setState({ threads: newThreads });
-    };
     return (
       <TableSection
         title="Comments"
         actions={
           <Tooltip title="New comment">
             <IconButton>
-              <AddIcon fontSize="small" onClick={toggleNewCommentThread} />
+              <AddIcon fontSize="small" onClick={this.startNewCommentThread} />
             </IconButton>
           </Tooltip>
         }
