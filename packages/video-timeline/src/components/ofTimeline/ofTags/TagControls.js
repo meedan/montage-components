@@ -124,7 +124,6 @@ class TagControls extends Component {
       isEditing,
       isHovering,
       isProcessing,
-      tagName,
     } = this.state;
 
     const tagInReadMode = (
@@ -142,11 +141,11 @@ class TagControls extends Component {
             noWrap
             variant="body2"
           >
-            {tagName}
+            {this.state.tagName}
           </Typography>
         </Grid>
         <Grid item>
-          <TagControlsEllipsis>
+          <TagControlsEllipsis onClick={e => e.stopPropagation()}>
             {isProcessing ? (
               <CircularProgress
                 size={18}
@@ -166,15 +165,15 @@ class TagControls extends Component {
     const tagInEditMode = (
       <ClickAwayListener onClickAway={this.stopTagRename}>
         <TextField
-          autoComplete={false}
+          autoComplete="false"
           autoFocus
           className={classes.TextField}
-          defaultValue={tagName}
+          defaultValue={this.state.tagName}
           fullWidth
           onChange={e => this.setState({ tagName: e.currentTarget.value })}
-          onKeyPress={ev => {
-            if (ev.key === 'Enter') {
-              ev.preventDefault();
+          onKeyPress={e => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
               this.handleTagRename();
             }
           }}
@@ -183,30 +182,27 @@ class TagControls extends Component {
             classes: {
               root: classes.InputRoot,
             },
-            fullWidth: true,
           }}
         />
       </ClickAwayListener>
     );
 
     return (
-      <>
-        <El
-          hasAdornment={isEditing || isHovering || isProcessing}
-          onClick={!isEditing ? this.startNewInstance : null}
-          onMouseEnter={() => this.setState({ isHovering: true })}
-          onMouseLeave={() => this.setState({ isHovering: false })}
-        >
-          {isEditing ? tagInEditMode : tagInReadMode}
-        </El>
+      <El
+        hasAdornment={isEditing || isHovering || isProcessing}
+        onClick={!isEditing ? this.startNewInstance : null}
+        onMouseEnter={() => this.setState({ isHovering: true })}
+        onMouseLeave={() => this.setState({ isHovering: false })}
+      >
+        {isEditing ? tagInEditMode : tagInReadMode}
         {isDeleting ? (
           <TagDeleteModal
             handleClose={this.stopTagDelete}
             handleRemove={this.handleTagDelete}
-            tagName={tagName}
+            tagName={this.state.tagName}
           />
         ) : null}
-      </>
+      </El>
     );
   }
 }
