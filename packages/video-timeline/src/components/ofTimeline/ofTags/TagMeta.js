@@ -52,8 +52,8 @@ const TagAdornment = styled.div`
 const TagControls = styled.div`
   width: 224px;
 
-  ${({ isEditable, isProcessing }) =>
-    isEditable || isProcessing
+  ${({ isEditing, isProcessing }) =>
+    isEditing || isProcessing
       ? `
     ${TagAdornment} {
       visibility: visible;
@@ -62,8 +62,8 @@ const TagControls = styled.div`
   `
       : ''};
 
-  ${({ isHovered, editable }) =>
-    isHovered && !editable
+  ${({ isHovering, editable }) =>
+    isHovering && !editable
       ? `
         ${TagAdornment} {
           visibility: visible;
@@ -76,8 +76,8 @@ class TagMeta extends Component {
     super(props);
 
     this.state = {
-      isEditable: false,
-      isHovered: false,
+      isEditing: false,
+      isHovering: false,
       isProcessing: false,
       isDeleting: false,
       newTagName: props.tagName,
@@ -88,21 +88,27 @@ class TagMeta extends Component {
 
   render() {
     const { currentTime, classes, tagName, tagId } = this.props;
+    const {
+      isEditing,
+      isHovering,
+      isProcessing,
+      isDeleting,
+      newTagName,
+    } = this.state;
 
     const toggleTagRename = () => {
-      this.setState({ isHovered: false, isEditable: true }, () =>
+      this.setState({ isHovering: false, isEditing: true }, () =>
         this.inputRef.current.focus()
       );
     };
     const toggleTagRenameOff = () => {
-      if (this.state.isEditable)
-        this.setState({ isEditable: false, isHovered: false });
+      if (isEditing) this.setState({ isEditing: false, isHovering: false });
     };
     const handleTagSave = () => {
-      this.setState({ isProcessing: true, isEditable: false });
+      this.setState({ isProcessing: true, isEditing: false });
       // wire tag delete API calls
       console.group('handleTagSave()');
-      console.log(this.state.newTagName);
+      console.log({ newTagName });
       console.groupEnd();
       setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: disable processing on either error or success
     };
@@ -120,7 +126,7 @@ class TagMeta extends Component {
     const handleTagDelete = () => {
       this.setState({
         isProcessing: true,
-        isHovered: false,
+        isHovering: false,
         isDeleting: false,
       });
       // TODO: wire tag delete API calls
@@ -133,11 +139,11 @@ class TagMeta extends Component {
     return (
       <>
         <TagControls
-          isEditable={this.state.isEditable}
-          isHovered={this.state.isHovered}
-          isProcessing={this.state.isProcessing}
-          onMouseEnter={() => this.setState({ isHovered: true })}
-          onMouseLeave={() => this.setState({ isHovered: false })}
+          isEditing={isEditing}
+          isHovering={isHovering}
+          isProcessing={isProcessing}
+          onMouseEnter={() => this.setState({ isHovering: true })}
+          onMouseLeave={() => this.setState({ isHovering: false })}
         >
           <ClickAwayListener onClickAway={toggleTagRenameOff}>
             <TextField
@@ -146,9 +152,9 @@ class TagMeta extends Component {
               className={classes.TextField}
               defaultValue={tagName}
               inputRef={this.inputRef}
-              disabled={!this.state.isEditable}
+              disabled={!isEditing}
               fullWidth
-              onClick={!this.state.isEditable ? placeNewMarker : null}
+              onClick={!isEditing ? placeNewMarker : null}
               onChange={e =>
                 this.setState({ newTagName: e.currentTarget.value })
               }
@@ -166,10 +172,10 @@ class TagMeta extends Component {
                 },
                 fullWidth: true,
                 endAdornment:
-                  !this.state.isEditable || this.state.isProcessing ? (
+                  !isEditing || isProcessing ? (
                     <TagAdornment>
                       <InputAdornment position="end">
-                        {this.state.isProcessing ? (
+                        {isProcessing ? (
                           <CircularProgress
                             size={18}
                             className={classes.CircularProgress}
@@ -219,7 +225,7 @@ class TagMeta extends Component {
             />
           </ClickAwayListener>
         </TagControls>
-        {this.state.isDeleting ? (
+        {isDeleting ? (
           <DeleteTagModal
             handleClose={() => this.setState({ isDeleting: false })}
             handleRemove={handleTagDelete}
