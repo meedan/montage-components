@@ -13,6 +13,7 @@ import Card from '@material-ui/core/Card';
 import TriggerPopover from '@material-ui/core/Popover';
 
 import CommentThread from './CommentThread';
+import NewThreadPopoover from './NewThreadPopover';
 
 const styles = {
   avatar: {
@@ -91,35 +92,16 @@ function CommentPopover(props) {
       </TriggerPopover>
     </>
   );
-  const newThread = (
-    <>
-      <Avatar
-        {...bindTrigger(editPopupState)}
-        alt={`${user.first_name} ${user.last_name}`}
-        className={classes.avatar}
-        src={user.profile_img_url}
-      />
-      <TriggerPopover
-        {...bindPopover(editPopupState)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        open={open}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        anchorEl={myRef.current}
-        disableRestoreFocus
-        onClick={e => e.stopPropagation()}
-      >
-        Hello
-      </TriggerPopover>
-    </>
-  );
 
-  return <div ref={myRef}>{isBeingAdded ? newThread : existingThread}</div>;
+  return (
+    <div ref={myRef}>
+      {isBeingAdded ? (
+        <NewThreadPopoover user={user} commentData={commentData} />
+      ) : (
+        existingThread
+      )}
+    </div>
+  );
 }
 
 export default withStyles(styles)(CommentPopover);
