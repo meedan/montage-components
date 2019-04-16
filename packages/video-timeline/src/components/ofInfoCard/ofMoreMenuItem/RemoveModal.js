@@ -12,6 +12,7 @@ function RemoveModal(props) {
     <Dialog
       aria-describedby="Confirm that you’re sure to remove this video from your Library"
       aria-labelledby="Remove video"
+      maxWidth="xs"
       onClose={props.handleClose}
       open
     >
