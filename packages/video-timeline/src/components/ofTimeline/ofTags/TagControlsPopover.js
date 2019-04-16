@@ -8,7 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function TagControlsEllipsis(props) {
+function TagControlsPopover(props) {
   const { onStartRename, onStartDelete } = props;
   return (
     <PopupState variant="popover" popupId="moreTagOptionsPopover">
@@ -44,4 +44,4 @@ function TagControlsEllipsis(props) {
   );
 }
 
-export default TagControlsEllipsis;
+export default TagControlsPopover;

@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-function DeleteTagModal(props) {
+function TagDeleteModal(props) {
   const { tagName } = props;
   return (
     <Dialog
@@ -37,4 +37,4 @@ function DeleteTagModal(props) {
   );
 }
 
-export default DeleteTagModal;
+export default TagDeleteModal;
