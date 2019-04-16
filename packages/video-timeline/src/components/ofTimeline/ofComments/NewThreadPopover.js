@@ -16,47 +16,48 @@ const styles = {
 class NewCommentThreadPopover extends Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
     this.avatarRef = React.createRef();
   }
 
   render() {
     const { classes, commentData } = this.props;
     const { user } = commentData;
+    const open = Boolean(this.avatarRef);
     console.log(this.avatarRef);
     return (
-      <PopupState variant="popover" popupId="newCommentThread">
-        {popupState => (
-          <>
-            <Avatar
-              {...bindTrigger(popupState)}
-              alt={`${user.first_name} ${user.last_name}`}
-              className={classes.avatar}
-              ref={el => (this.avatarRef = el)}
-              src={user.profile_img_url}
-            />
-            {/* <Popover
-              {...bindPopover(popupState)}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              anchorEl={this.avatarRef}
-              disableRestoreFocus
-              open={true}
-              onClick={e => e.stopPropagation()}
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-            >
-              Hello
-            </Popover> */}
-          </>
-        )}
-      </PopupState>
+      <div ref={this.avatarRef}>
+        {open ? (
+          <PopupState variant="popover" popupId="newCommentThread">
+            {popupState => (
+              <>
+                <Avatar
+                  {...bindTrigger(popupState)}
+                  alt={`${user.first_name} ${user.last_name}`}
+                  className={classes.avatar}
+                  src={user.profile_img_url}
+                />
+                <Popover
+                  {...bindPopover(popupState)}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  anchorEl={this.avatarRef.current}
+                  disableRestoreFocus
+                  open={true}
+                  onClick={e => e.stopPropagation()}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                >
+                  Hello
+                </Popover>
+              </>
+            )}
+          </PopupState>
+        ) : null}
+      </div>
     );
   }
 }
