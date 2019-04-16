@@ -6,13 +6,22 @@ import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import grey from '@material-ui/core/colors/grey';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import TagDeleteModal from './TagDeleteModal';
 import TagControlsPopover from './TagControlsPopover';
 
 const styles = {
+  Grid: {
+    marginLeft: '12px',
+    marginRight: '12px',
+    width: '200px',
+  },
+  Typography: {
+    maxWidth: '160px',
+  },
   TextField: {
     marginBottom: 0,
     marginTop: 0,
@@ -23,32 +32,22 @@ const styles = {
     paddingLeft: '12px',
     paddingRight: '12px',
   },
-  InputDisabled: {
-    border: 'none',
-    cursor: 'pointer',
-    color: grey[600],
-    '&:hover': {
-      color: grey[800],
-    },
-    '&:before': {
-      border: 'none !important',
-    },
-  },
   CircularProgress: {
     position: 'relative',
     left: '-8px',
   },
 };
 
-const TagAdornment = styled.div`
+const TagControlsEllipsis = styled.div`
   visibility: hidden;
 `;
 const El = styled.div`
+  cursor: pointer;
   width: 224px;
   ${({ hasAdornment }) =>
     hasAdornment
       ? `
-    ${TagAdornment} {
+    ${TagControlsEllipsis} {
       visibility: visible;
     }
   `
@@ -67,8 +66,6 @@ class TagControls extends Component {
       isCreating: false,
       tagName: '',
     };
-
-    this.inputRef = React.createRef();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -77,9 +74,7 @@ class TagControls extends Component {
   }
 
   startTagRename = () => {
-    this.setState({ isHovering: false, isEditing: true }, () =>
-      this.inputRef.current.focus()
-    );
+    this.setState({ isHovering: false, isEditing: true });
   };
 
   stopTagRename = () => {
@@ -132,58 +127,77 @@ class TagControls extends Component {
       tagName,
     } = this.state;
 
+    const tagInReadMode = (
+      <Grid
+        alignItems="center"
+        className={classes.Grid}
+        container
+        justify="space-between"
+        wrap="nowrap"
+      >
+        <Grid item>
+          <Typography
+            className={classes.Typography}
+            color="textSecondary"
+            noWrap
+            variant="body2"
+          >
+            {tagName}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <TagControlsEllipsis>
+            {isProcessing ? (
+              <CircularProgress
+                size={18}
+                className={classes.CircularProgress}
+              />
+            ) : (
+              <TagControlsPopover
+                onStartRename={this.startTagRename}
+                onStartDelete={this.startTagDelete}
+              />
+            )}
+          </TagControlsEllipsis>
+        </Grid>
+      </Grid>
+    );
+
+    const tagInEditMode = (
+      <ClickAwayListener onClickAway={this.stopTagRename}>
+        <TextField
+          autoComplete={false}
+          autoFocus
+          className={classes.TextField}
+          defaultValue={tagName}
+          fullWidth
+          onChange={e => this.setState({ tagName: e.currentTarget.value })}
+          onKeyPress={ev => {
+            if (ev.key === 'Enter') {
+              ev.preventDefault();
+              this.handleTagRename();
+            }
+          }}
+          required
+          InputProps={{
+            classes: {
+              root: classes.InputRoot,
+            },
+            fullWidth: true,
+          }}
+        />
+      </ClickAwayListener>
+    );
+
     return (
       <>
         <El
           hasAdornment={isEditing || isHovering || isProcessing}
+          onClick={!isEditing ? this.startNewInstance : null}
           onMouseEnter={() => this.setState({ isHovering: true })}
           onMouseLeave={() => this.setState({ isHovering: false })}
         >
-          <ClickAwayListener onClickAway={this.stopTagRename}>
-            <TextField
-              autoComplete={false}
-              autoFocus
-              className={classes.TextField}
-              defaultValue={tagName}
-              inputRef={this.inputRef}
-              disabled={!isEditing}
-              fullWidth
-              onClick={!isEditing ? this.startNewInstance : null}
-              onChange={e => this.setState({ tagName: e.currentTarget.value })}
-              onKeyPress={ev => {
-                if (ev.key === 'Enter') {
-                  ev.preventDefault();
-                  this.handleTagRename();
-                }
-              }}
-              required
-              InputProps={{
-                classes: {
-                  root: classes.InputRoot,
-                  disabled: classes.InputDisabled,
-                },
-                fullWidth: true,
-                endAdornment:
-                  !isEditing || isProcessing ? (
-                    <TagAdornment>
-                      <InputAdornment position="end">
-                        {isProcessing ? (
-                          <CircularProgress
-                            size={18}
-                            className={classes.CircularProgress}
-                          />
-                        ) : (
-                          <TagControlsPopover
-                            onStartRename={this.startTagRename}
-                            onStartDelete={this.startTagDelete}
-                          />
-                        )}
-                      </InputAdornment>
-                    </TagAdornment>
-                  ) : null,
-              }}
-            />
-          </ClickAwayListener>
+          {isEditing ? tagInEditMode : tagInReadMode}
         </El>
         {isDeleting ? (
           <TagDeleteModal
