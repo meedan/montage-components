@@ -116,6 +116,8 @@ class TagControls extends Component {
     console.log('tagId:', this.props.tagId);
     console.log('start_seconds:', this.props.currentTime);
     console.groupEnd();
+
+    this.props.startNewInstance();
   };
 
   render() {

@@ -284,6 +284,18 @@ class TimelineTags extends Component {
     this.setState({ values, videoTags, segments });
   };
 
+  startNewInstance = (id) => {
+    console.log(id);
+    const { values, videoTags } = this.state;
+    const { duration, currentTime } = this.props;
+    const p = values[id] || [];
+
+    p.push(currentTime, currentTime + 5);
+    p.sort((i, j) => i - j);
+
+    this.onChange(p, id);
+  }
+
   startNewTag = () => {
     const newTags = [
       {
@@ -364,6 +376,7 @@ class TimelineTags extends Component {
                       stopNewTag={this.stopNewTag}
                       tagId={tag.id}
                       tagName={project_tag.name}
+                      startNewInstance={() => this.startNewInstance(tag.id)}
                     />
                   }
                   rightColContent={
