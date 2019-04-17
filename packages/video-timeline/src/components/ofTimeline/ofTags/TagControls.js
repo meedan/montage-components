@@ -64,13 +64,12 @@ class TagControls extends Component {
       isProcessing: false,
       isDeleting: false,
       isCreating: false,
-      tagName: '',
+      tagName: this.props.tagName,
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    // if (props.isBeingAdded) this.setState({ isCreating: true });
-    return { ...state, tagName: props.tagName };
+  componentDidMount() {
+    this.setState({ isEditing: this.props.isBeingAdded });
   }
 
   startTagRename = () => {
@@ -118,15 +117,9 @@ class TagControls extends Component {
 
   render() {
     const { classes } = this.props;
-    const {
-      isCreating,
-      isDeleting,
-      isEditing,
-      isHovering,
-      isProcessing,
-    } = this.state;
+    const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
-    const tagInReadMode = (
+    const readMode = (
       <Grid
         alignItems="center"
         className={classes.Grid}
@@ -162,7 +155,7 @@ class TagControls extends Component {
       </Grid>
     );
 
-    const tagInEditMode = (
+    const editMode = (
       <ClickAwayListener onClickAway={this.stopTagRename}>
         <TextField
           autoComplete="false"
@@ -194,7 +187,7 @@ class TagControls extends Component {
         onMouseEnter={() => this.setState({ isHovering: true })}
         onMouseLeave={() => this.setState({ isHovering: false })}
       >
-        {isEditing ? tagInEditMode : tagInReadMode}
+        {isEditing ? editMode : readMode}
         {isDeleting ? (
           <TagDeleteModal
             handleClose={this.stopTagDelete}

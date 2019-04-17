@@ -238,6 +238,7 @@ class TimelineTags extends Component {
     console.log(this.state.videoTags);
     const newTags = [
       {
+        id: 'newTagTempId',
         isBeingAdded: true,
         instances: [],
         project_tag: {
@@ -303,9 +304,10 @@ class TimelineTags extends Component {
                   plain={i < videoTags.length - 1}
                   leftColContent={
                     <TagControls
-                      tagName={project_tag.name}
-                      tagId={tag.id}
                       currentTime={currentTime}
+                      isBeingAdded={tag.isBeingAdded}
+                      tagId={tag.id}
+                      tagName={project_tag.name}
                     />
                   }
                   rightColContent={
