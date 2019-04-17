@@ -38,7 +38,7 @@ const styles = {
   },
 };
 
-const TagControlsEllipsis = styled.div`
+const ElSideControls = styled.div`
   visibility: hidden;
 `;
 const El = styled.div`
@@ -47,7 +47,7 @@ const El = styled.div`
   ${({ hasAdornment }) =>
     hasAdornment
       ? `
-    ${TagControlsEllipsis} {
+    ${ElSideControls} {
       visibility: visible;
     }
   `
@@ -138,7 +138,7 @@ class TagControls extends Component {
           </Typography>
         </Grid>
         <Grid item>
-          <TagControlsEllipsis onClick={e => e.stopPropagation()}>
+          <ElSideControls onClick={e => e.stopPropagation()}>
             {isProcessing ? (
               <CircularProgress
                 size={18}
@@ -150,7 +150,7 @@ class TagControls extends Component {
                 onStartDelete={this.startTagDelete}
               />
             )}
-          </TagControlsEllipsis>
+          </ElSideControls>
         </Grid>
       </Grid>
     );
