@@ -286,12 +286,25 @@ class TimelineTags extends Component {
 
   startNewInstance = (id) => {
     console.log(id);
-    const { values, videoTags } = this.state;
-    const { duration, currentTime } = this.props;
+    const { values, segments } = this.state;
+    const { currentTime } = this.props;
     const p = values[id] || [];
 
-    p.push(currentTime, currentTime + 5);
-    p.sort((i, j) => i - j);
+    const segment = segments.find(
+      ([i, s, e]) => s <= currentTime && currentTime < e
+    );
+
+    if (!segment) {
+      const nextSegment = this.state.segments.find(([i, s]) => currentTime < s);
+
+      if (nextSegment && currentTime + 5 > nextSegment[1]) {
+        const nextIndex = p.findIndex(t => t === nextSegment[1]);
+        p[nextIndex] = currentTime;
+      } else {
+        p.push(currentTime, currentTime + 5);
+        p.sort((i, j) => i - j);
+      }
+    }
 
     this.onChange(p, id);
   }
