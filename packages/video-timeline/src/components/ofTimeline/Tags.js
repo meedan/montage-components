@@ -285,11 +285,10 @@ class TimelineTags extends Component {
   };
 
   startNewTag = () => {
-    console.log(this.state.videoTags);
     const newTags = [
       {
-        id: `newTagTempId-${Math.random().toString(36).substring(6)}`,
-        isBeingAdded: true,
+        id: 'newTagTempId',
+        isCreating: true,
         instances: [],
         project_tag: {
           name: '',
@@ -297,6 +296,12 @@ class TimelineTags extends Component {
       },
       ...this.state.videoTags,
     ];
+    this.setState({ videoTags: newTags });
+  };
+
+  stopNewTag = () => {
+    let newTags = this.state.videoTags;
+    newTags.splice(0, 1);
     this.setState({ videoTags: newTags });
   };
 
@@ -355,7 +360,8 @@ class TimelineTags extends Component {
                   leftColContent={
                     <TagControls
                       currentTime={currentTime}
-                      isBeingAdded={tag.isBeingAdded}
+                      isCreating={tag.isCreating}
+                      stopNewTag={this.stopNewTag}
                       tagId={tag.id}
                       tagName={project_tag.name}
                     />
