@@ -65,7 +65,7 @@ class TimelineTags extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { currentTime, data, duration } = props;
+    const { data, duration } = props;
     const { videoTags } = data;
 
     if (state.videoTags && state.segments) return null;
@@ -222,7 +222,8 @@ class TimelineTags extends Component {
   };
 
   onChange = (v, id) => {
-    const { values } = this.state;
+    const { values, videoTags } = this.state;
+    const { duration } = this.props;
     const p = values[id] || [];
 
     if (p.length === v.length) {
@@ -230,15 +231,64 @@ class TimelineTags extends Component {
       if (val) this.props.onChange(val);
     }
 
+    const i = videoTags.findIndex(t => t.id === id);
+
+    videoTags[i].instances = v.reduce((acc, s, j, arr) => {
+      if (j % 2 === 0) return acc;
+      return [...acc, {
+        start_seconds: arr[j - 1],
+        end_seconds: s,
+      }];
+    }, [])
+
+    // all tag instances sorted by start time
+    const instances = videoTags
+      .reduce((acc, t) => [...acc, ...t.instances], [])
+      .sort((j, i) => j.start_seconds - i.start_seconds);
+
+    // all start + end events
+    const events = [
+      ...new Set(
+        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+          0,
+          duration,
+        ])
+      ),
+    ].sort((j, i) => j - i);
+
+    // all playable continuous segments
+    const segments = events
+      .reduce(
+        (acc, e, i) => {
+          if (i === 0) return acc;
+          console.log(
+            i,
+            events[i],
+            events[i - 1],
+            events[i - 1] + (events[i] - events[i - 1]) / 2
+          );
+          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+        },
+        [0]
+      )
+      .reduce(
+        (acc, s, i) =>
+          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+            ? [...acc, i]
+            : acc,
+        []
+      )
+      .map(i => [i, events[i - 1], events[i]]);
+
     values[id] = v;
-    this.setState({ values });
+    this.setState({ values, videoTags, segments });
   };
 
   startNewTag = () => {
     console.log(this.state.videoTags);
     const newTags = [
       {
-        id: 'newTagTempId',
+        id: `newTagTempId-${Math.random().toString(36).substring(6)}`,
         isBeingAdded: true,
         instances: [],
         project_tag: {
@@ -315,6 +365,7 @@ class TimelineTags extends Component {
                       <MemoizedRange
                         key={tag.id}
                         defaultValue={arr}
+                        value={arr}
                         handle={this.handle}
                         max={duration}
                         min={0}
