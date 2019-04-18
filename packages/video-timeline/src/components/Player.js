@@ -3,6 +3,10 @@ import { withTheme } from '@material-ui/core/styles';
 
 import ReactPlayer from 'react-player';
 
+
+const NYAN = false;
+
+
 class Player extends Component {
   state = {
     seeking: false,
@@ -57,7 +61,7 @@ class Player extends Component {
       <ReactPlayer
         ref={player => this.props.setPlayer(player)}
         url={`https://www.youtube.com/watch?v=${
-          this.props.data.ytVideoData.id
+          NYAN ? 'wZZ7oFKsKzY' : this.props.data.ytVideoData.id
         }`}
         controls
         width="100%"
