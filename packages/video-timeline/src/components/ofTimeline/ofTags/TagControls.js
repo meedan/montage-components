@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Autosuggest from 'react-autosuggest';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import CloseIcon from '@material-ui/icons/Close';
-import grey from '@material-ui/core/colors/grey';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import TagDeleteModal from './TagDeleteModal';
 import TagControlsPopover from './TagControlsPopover';
+import TagDeleteModal from './TagDeleteModal';
+import TagNameField from './TagNameField';
 
 const styles = {
   Grid: {
@@ -24,16 +18,6 @@ const styles = {
   },
   Typography: {
     maxWidth: '160px',
-  },
-  TextField: {
-    marginBottom: 0,
-    marginTop: 0,
-  },
-  InputRoot: {
-    borderBottom: `1px solid ${grey[300]}`,
-    fontSize: '13px',
-    paddingLeft: '12px',
-    paddingRight: '12px',
   },
   CircularProgress: {
     position: 'relative',
@@ -84,6 +68,10 @@ class TagControls extends Component {
       this.setState({ isEditing: false, isHovering: false });
   };
 
+  tagRename = tagName => {
+    this.setState({ tagName: tagName });
+  };
+
   handleTagRename = () => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
@@ -121,7 +109,7 @@ class TagControls extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, projectTags } = this.props;
     const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
     const readMode = (
@@ -160,38 +148,6 @@ class TagControls extends Component {
       </Grid>
     );
 
-    const editMode = (
-      <ClickAwayListener onClickAway={this.stopTagRename}>
-        <TextField
-          autoComplete="false"
-          autoFocus
-          className={classes.TextField}
-          defaultValue={this.state.tagName}
-          fullWidth
-          onChange={e => this.setState({ tagName: e.currentTarget.value })}
-          onKeyPress={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              this.handleTagRename();
-            }
-          }}
-          required
-          InputProps={{
-            classes: {
-              root: classes.InputRoot,
-            },
-            endAdornment: this.props.isCreating ? (
-              <InputAdornment position="end">
-                <IconButton onClick={this.props.stopNewTag}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-          }}
-        />
-      </ClickAwayListener>
-    );
-
     return (
       <El
         hasAdornment={isEditing || isHovering || isProcessing}
@@ -199,7 +155,19 @@ class TagControls extends Component {
         onMouseEnter={() => this.setState({ isHovering: true })}
         onMouseLeave={() => this.setState({ isHovering: false })}
       >
-        {isEditing ? editMode : readMode}
+        {isEditing ? (
+          <TagNameField
+            handleTagRename={this.handleTagRename}
+            isCreaging={this.props.isCreating}
+            projectTags={projectTags}
+            stopNewTag={this.stopNewTag}
+            stopTagRename={this.stopTagRename}
+            tagName={this.state.tagName}
+            tagRename={this.tagRename}
+          />
+        ) : (
+          readMode
+        )}
         {isDeleting ? (
           <TagDeleteModal
             handleClose={this.stopTagDelete}
