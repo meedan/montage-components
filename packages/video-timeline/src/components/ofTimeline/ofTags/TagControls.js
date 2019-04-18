@@ -148,6 +148,38 @@ class TagControls extends Component {
       </Grid>
     );
 
+    // const editMode = (
+    //   <ClickAwayListener onClickAway={this.stopTagRename}>
+    //     <TextField
+    //       autoComplete="false"
+    //       autoFocus
+    //       className={classes.TextField}
+    //       defaultValue={this.state.tagName}
+    //       fullWidth
+    //       onChange={e => this.setState({ tagName: e.currentTarget.value })}
+    //       onKeyPress={e => {
+    //         if (e.key === 'Enter') {
+    //           e.preventDefault();
+    //           this.handleTagRename();
+    //         }
+    //       }}
+    //       required
+    //       InputProps={{
+    //         classes: {
+    //           root: classes.InputRoot,
+    //         },
+    //         endAdornment: this.props.isCreating ? (
+    //           <InputAdornment position="end">
+    //             <IconButton onClick={this.props.stopNewTag}>
+    //               <CloseIcon fontSize="small" />
+    //             </IconButton>
+    //           </InputAdornment>
+    //         ) : null,
+    //       }}
+    //     />
+    //   </ClickAwayListener>
+    // );
+
     return (
       <El
         hasAdornment={isEditing || isHovering || isProcessing}
@@ -158,9 +190,9 @@ class TagControls extends Component {
         {isEditing ? (
           <TagNameField
             handleTagRename={this.handleTagRename}
-            isCreaging={this.props.isCreating}
+            isCreating={this.props.isCreating}
             projectTags={projectTags}
-            stopNewTag={this.stopNewTag}
+            stopNewTag={this.props.stopNewTag}
             stopTagRename={this.stopTagRename}
             tagName={this.state.tagName}
             tagRename={this.tagRename}
