@@ -345,8 +345,16 @@ class TimelineTags extends Component {
     console.log(mouseTime);
 
     const videoTag = videoTags.find(t => t.id === id);
-    const instance = videoTag.instances.find(i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds);
-    console.log(instance);
+    if (!videoTag) {
+      this.setState({ mousePosFlat, mouseTime, targetInstance: null });
+      return;
+    }
+
+    const targetInstance = videoTag.instances.find(i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds);
+
+    console.log(targetInstance);
+
+    this.setState({ mousePosFlat, mouseTime, targetInstance });
   };
 
   render() {
@@ -412,21 +420,28 @@ class TimelineTags extends Component {
                     />
                   }
                   rightColContent={
-                    <SliderWrapper onMouseMove={e => this.leMenu(e, tag.id)} onMouseOver={e => this.leMenu(e, tag.id)}>
-                      <MemoizedRange
-                        key={tag.id}
-                        defaultValue={arr}
-                        value={arr}
-                        handle={this.handle}
-                        max={duration}
-                        min={0}
-                        trackStyle={trackStyle}
-                        pushable
-                        onAfterChange={v => this.onAfterChange(v, tag.id)}
-                        onBeforeChange={v => this.onBeforeChange(v, tag.id)}
-                        onChange={v => this.onChange(v, tag.id)}
-                      />
-                    </SliderWrapper>
+                    <TehMenu
+                      id={tag.id}
+                      instance={this.state.targetInstance}
+                      x={this.state.mousePosFlat}
+                      el={
+                        <SliderWrapper onMouseMove={e => this.leMenu(e, tag.id)} onMouseOver={e => this.leMenu(e, tag.id)} onMouseOut={e => this.leMenu(e, null)}>
+                          <MemoizedRange
+                            key={tag.id}
+                            defaultValue={arr}
+                            value={arr}
+                            handle={this.handle}
+                            max={duration}
+                            min={0}
+                            trackStyle={trackStyle}
+                            pushable
+                            onAfterChange={v => this.onAfterChange(v, tag.id)}
+                            onBeforeChange={v => this.onBeforeChange(v, tag.id)}
+                            onChange={v => this.onChange(v, tag.id)}
+                          />
+                        </SliderWrapper>
+                      }
+                    />
                   }
                 />
               );
@@ -436,6 +451,11 @@ class TimelineTags extends Component {
     );
   }
 }
+
+const TehMenu = ({id, x, el, instance}) => {
+  if (!instance) return el;
+  return (<Tooltip title={`Tag ${id} at ${x}px [${instance.start_seconds} — ${instance.end_seconds}]`}>{el}</Tooltip>);
+};
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
