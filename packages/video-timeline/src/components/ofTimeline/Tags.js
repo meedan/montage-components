@@ -330,6 +330,25 @@ class TimelineTags extends Component {
     this.setState({ videoTags: newTags });
   };
 
+  leMenu = (e, id) => {
+    const pxOffset = 0;
+    const { videoTags } = this.state;
+    const { duration } = this.props;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const startPos = rect.left + pxOffset;
+    const endPos = rect.width;
+    const mousePos = e.clientX - startPos;
+    const mousePosFlat = mousePos > 0 ? mousePos : 0;
+    const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
+
+    console.log(mouseTime);
+
+    const videoTag = videoTags.find(t => t.id === id);
+    const instance = videoTag.instances.find(i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds);
+    console.log(instance);
+  };
+
   render() {
     const { currentTime, duration } = this.props;
     const { videoTags, playlist } = this.state;
@@ -393,7 +412,7 @@ class TimelineTags extends Component {
                     />
                   }
                   rightColContent={
-                    <SliderWrapper>
+                    <SliderWrapper onMouseMove={e => this.leMenu(e, tag.id)} onMouseOver={e => this.leMenu(e, tag.id)}>
                       <MemoizedRange
                         key={tag.id}
                         defaultValue={arr}
