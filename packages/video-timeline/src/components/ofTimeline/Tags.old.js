@@ -7,7 +7,6 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import formatTime from './formatTime';
@@ -428,32 +427,32 @@ class TimelineTags extends Component {
                     />
                   }
                   rightColContent={
-                    <>
-                      <SliderWrapper
-                        onMouseMove={e => this.leMenu(e, tag.id)}
-                        onMouseOver={e => this.leMenu(e, tag.id)}
-                        onMouseOut={e => this.leMenu(e, null)}
-                      >
-                        <MemoizedRange
-                          key={tag.id}
-                          defaultValue={arr}
-                          value={arr}
-                          handle={this.handle}
-                          max={duration}
-                          min={0}
-                          trackStyle={trackStyle}
-                          pushable
-                          onAfterChange={v => this.onAfterChange(v, tag.id)}
-                          onBeforeChange={v => this.onBeforeChange(v, tag.id)}
-                          onChange={v => this.onChange(v, tag.id)}
-                        />
-                      </SliderWrapper>
-                      <InstanceControls
-                        id={tag.id}
-                        instance={this.state.targetInstance}
-                        x={this.state.mousePosFlat}
-                      />
-                    </>
+                    <TehMenu
+                      id={tag.id}
+                      instance={this.state.targetInstance}
+                      x={this.state.mousePosFlat}
+                      el={
+                        <SliderWrapper
+                          onMouseMove={e => this.leMenu(e, tag.id)}
+                          onMouseOver={e => this.leMenu(e, tag.id)}
+                          onMouseOut={e => this.leMenu(e, null)}
+                        >
+                          <MemoizedRange
+                            key={tag.id}
+                            defaultValue={arr}
+                            value={arr}
+                            handle={this.handle}
+                            max={duration}
+                            min={0}
+                            trackStyle={trackStyle}
+                            pushable
+                            onAfterChange={v => this.onAfterChange(v, tag.id)}
+                            onBeforeChange={v => this.onBeforeChange(v, tag.id)}
+                            onChange={v => this.onChange(v, tag.id)}
+                          />
+                        </SliderWrapper>
+                      }
+                    />
                   }
                 />
               );
@@ -464,26 +463,16 @@ class TimelineTags extends Component {
   }
 }
 
-const InstanceControls = ({ id, x, el, instance }) => {
-  if (!instance) return null;
+const TehMenu = ({ id, x, el, instance }) => {
+  if (!instance) return el;
   return (
-    <Popover
-      id="instanceControlsPopover"
-      open
-      anchorPosition={{ left: 500, top: 500 }}
-      anchorReference="anchorPosition"
-      // anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
+    <Tooltip
+      title={`Tag ${id} at ${x}px [${instance.start_seconds} — ${
+        instance.end_seconds
+      }]`}
     >
-      Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
-    </Popover>
+      {el}
+    </Tooltip>
   );
 };
 
