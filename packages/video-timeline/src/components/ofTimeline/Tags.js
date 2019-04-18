@@ -235,11 +235,14 @@ class TimelineTags extends Component {
 
     videoTags[i].instances = v.reduce((acc, s, j, arr) => {
       if (j % 2 === 0) return acc;
-      return [...acc, {
-        start_seconds: arr[j - 1],
-        end_seconds: s,
-      }];
-    }, [])
+      return [
+        ...acc,
+        {
+          start_seconds: arr[j - 1],
+          end_seconds: s,
+        },
+      ];
+    }, []);
 
     // all tag instances sorted by start time
     const instances = videoTags
@@ -284,7 +287,7 @@ class TimelineTags extends Component {
     this.setState({ values, videoTags, segments });
   };
 
-  startNewInstance = (id) => {
+  startNewInstance = id => {
     console.log(id);
     const { values, segments } = this.state;
     const { currentTime } = this.props;
@@ -307,7 +310,7 @@ class TimelineTags extends Component {
     }
 
     this.onChange(p, id);
-  }
+  };
 
   startNewTag = () => {
     const newTags = [
@@ -342,7 +345,7 @@ class TimelineTags extends Component {
     const mousePosFlat = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
 
-    console.log(mouseTime);
+    // console.log(mouseTime);
 
     const videoTag = videoTags.find(t => t.id === id);
     if (!videoTag) {
@@ -350,16 +353,19 @@ class TimelineTags extends Component {
       return;
     }
 
-    const targetInstance = videoTag.instances.find(i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds);
+    const targetInstance = videoTag.instances.find(
+      i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
+    );
 
-    console.log(targetInstance);
+    // console.log(targetInstance);
 
     this.setState({ mousePosFlat, mouseTime, targetInstance });
   };
 
   render() {
-    const { currentTime, duration } = this.props;
+    const { currentTime, duration, data } = this.props;
     const { videoTags, playlist } = this.state;
+    const { projecttags } = data.project;
 
     return (
       <TableSection
@@ -413,10 +419,11 @@ class TimelineTags extends Component {
                     <TagControls
                       currentTime={currentTime}
                       isCreating={tag.isCreating}
+                      projectTags={projecttags}
+                      startNewInstance={() => this.startNewInstance(tag.id)}
                       stopNewTag={this.stopNewTag}
                       tagId={tag.id}
                       tagName={project_tag.name}
-                      startNewInstance={() => this.startNewInstance(tag.id)}
                     />
                   }
                   rightColContent={
@@ -425,7 +432,11 @@ class TimelineTags extends Component {
                       instance={this.state.targetInstance}
                       x={this.state.mousePosFlat}
                       el={
-                        <SliderWrapper onMouseMove={e => this.leMenu(e, tag.id)} onMouseOver={e => this.leMenu(e, tag.id)} onMouseOut={e => this.leMenu(e, null)}>
+                        <SliderWrapper
+                          onMouseMove={e => this.leMenu(e, tag.id)}
+                          onMouseOver={e => this.leMenu(e, tag.id)}
+                          onMouseOut={e => this.leMenu(e, null)}
+                        >
                           <MemoizedRange
                             key={tag.id}
                             defaultValue={arr}
@@ -452,9 +463,17 @@ class TimelineTags extends Component {
   }
 }
 
-const TehMenu = ({id, x, el, instance}) => {
+const TehMenu = ({ id, x, el, instance }) => {
   if (!instance) return el;
-  return (<Tooltip title={`Tag ${id} at ${x}px [${instance.start_seconds} — ${instance.end_seconds}]`}>{el}</Tooltip>);
+  return (
+    <Tooltip
+      title={`Tag ${id} at ${x}px [${instance.start_seconds} — ${
+        instance.end_seconds
+      }]`}
+    >
+      {el}
+    </Tooltip>
+  );
 };
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
