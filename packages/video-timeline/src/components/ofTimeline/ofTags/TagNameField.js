@@ -8,6 +8,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import CloseIcon from '@material-ui/icons/Close';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
@@ -92,7 +93,6 @@ const styles = theme => ({
   paper: {
     position: 'absolute',
     zIndex: 1,
-    marginTop: theme.spacing.unit,
     left: 0,
     right: 0,
   },
@@ -109,6 +109,12 @@ const styles = theme => ({
     width: 'auto',
     flexGrow: 1,
   },
+  MenuHeading: {
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 8,
+  },
 });
 
 class TagNameField extends Component {
@@ -121,8 +127,6 @@ class TagNameField extends Component {
 
   render() {
     const { classes, projectTags, isCreating } = this.props;
-
-    // console.log({ isCreating });
 
     return (
       <ClickAwayListener onClickAway={this.props.stopTagRename}>
@@ -174,6 +178,15 @@ class TagNameField extends Component {
               <div {...getMenuProps()}>
                 {isOpen ? (
                   <Paper className={classes.paper} square>
+                    {getSuggestions(inputValue, projectTags).length > 0 ? (
+                      <Typography
+                        variant="caption"
+                        color="textSecondary"
+                        className={classes.MenuHeading}
+                      >
+                        In this project:
+                      </Typography>
+                    ) : null}
                     {getSuggestions(inputValue, projectTags).map(
                       (suggestion, index) =>
                         renderSuggestion({
