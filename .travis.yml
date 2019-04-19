@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - 'lts/dubnium'
+deploy:
+  provider: script
+  script: npm run deploy
+  skip_cleanup: true
+  on:
+    branch: develop
