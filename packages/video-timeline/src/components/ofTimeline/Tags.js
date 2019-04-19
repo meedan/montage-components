@@ -335,12 +335,28 @@ class TimelineTags extends Component {
     this.setState({ videoTags: newTags });
   };
 
+  leMenuOff = ({ clientX, clientY, currentTarget }) => {
+    const rect = currentTarget.getBoundingClientRect();
+    // console.log(rect, clientX, clientY);
+
+    if (rect.x < clientX && clientX < rect.x + rect.width && rect.y < clientY && clientY < rect.y + rect.height) {
+      // all fine
+    } else {
+      console.log('outside', rect, clientX, clientY);
+      this.setState({
+        targetInstance: null,
+        targetTag: null,
+      });
+    }
+  };
+
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
         targetInstance: null,
         targetTag: null,
       });
+      return;
     }
 
     const pxOffset = 0;
@@ -475,7 +491,7 @@ class TimelineTags extends Component {
                       <TagInstancePopover
                         id={tag.id}
                         instance={this.state.targetInstance}
-                        onExit={() => this.leMenu()}
+                        onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
