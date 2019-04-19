@@ -11,7 +11,7 @@ import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 const styles = {};
 
-const TagInstancePopover = ({ id, x, y, el, instance, tag }) => {
+const TagInstancePopover = ({ id, x, y, el, instance, tag, onExit }) => {
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
   return (
@@ -28,6 +28,7 @@ const TagInstancePopover = ({ id, x, y, el, instance, tag }) => {
         vertical: 'top',
         horizontal: 'center',
       }}
+      onExit={() => onExit()}
     >
       <Tooltip title="Expand to length of the video">
         <IconButton>
