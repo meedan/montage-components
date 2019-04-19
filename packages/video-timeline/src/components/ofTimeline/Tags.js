@@ -336,6 +336,13 @@ class TimelineTags extends Component {
   };
 
   leMenu = (e, id) => {
+    if (!e) {
+      this.setState({
+        targetInstance: null,
+        targetTag: null,
+      });
+    };
+
     const pxOffset = 0;
     const { videoTags } = this.state;
     const { duration } = this.props;
@@ -450,7 +457,6 @@ class TimelineTags extends Component {
                       <SliderWrapper
                         onMouseMove={e => this.leMenu(e, tag.id)}
                         onMouseOver={e => this.leMenu(e, tag.id)}
-                        onMouseOut={e => this.leMenu(e, null)}
                       >
                         <MemoizedRange
                           key={tag.id}
@@ -472,6 +478,7 @@ class TimelineTags extends Component {
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
+                        onExit={() => this.leMenu()}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
