@@ -67,8 +67,10 @@ class TimelineTags extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { data, duration } = props;
+    const { data, duration, skip } = props;
     const { videoTags } = data;
+
+    if (skip) return null;
 
     if (state.videoTags && state.segments) return null;
 
@@ -142,6 +144,8 @@ class TimelineTags extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.skip) return false;
+
     if (
       nextProps.currentTime !== this.props.currentTime &&
       this.state.playlist
@@ -163,14 +167,6 @@ class TimelineTags extends Component {
     }
 
     // TODO handle extenal video override, like end of video, buffering, etc
-    // if (
-    //   !nextProps.playing &&
-    //   this.props.playing &&
-    //   this.state.playlist &&
-    //   nextState.playlist
-    // ) {
-    //   this.setState({ playlist: false });
-    // }
 
     return true;
   }
@@ -513,7 +509,7 @@ class TimelineTags extends Component {
                       </SliderWrapper>
                       <TagInstancePopover
                         id={tag.id}
-                        instance={this.state.targetInstance}
+                        instance={false && this.state.targetInstance}
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
