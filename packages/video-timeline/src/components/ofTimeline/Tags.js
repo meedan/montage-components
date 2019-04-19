@@ -348,19 +348,19 @@ class TimelineTags extends Component {
 
     // console.log(mouseTime);
 
-    const videoTag = videoTags.find(t => t.id === id);
-    if (!videoTag) {
-      this.setState({ mousePosFlat, mouseTime, targetInstance: null });
+    const targetTag = videoTags.find(t => t.id === id);
+    if (!targetTag) {
+      this.setState({ mousePosFlat, mouseTime, targetInstance: null, targetTag: null });
       return;
     }
 
-    const targetInstance = videoTag.instances.find(
+    const targetInstance = targetTag.instances.find(
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
 
     // console.log(targetInstance);
 
-    this.setState({ mousePosFlat, mouseTime, targetInstance });
+    this.setState({ mousePosFlat, mouseTime, targetInstance, targetTag });
   };
 
   render() {
@@ -451,6 +451,7 @@ class TimelineTags extends Component {
                       <InstanceControls
                         id={tag.id}
                         instance={this.state.targetInstance}
+                        tag={this.state.targetTag}
                         x={this.state.mousePosFlat}
                       />
                       <style scoped>{'#instanceControlsPopover { pointer-events: none; }'}</style>
@@ -465,8 +466,8 @@ class TimelineTags extends Component {
   }
 }
 
-const InstanceControls = ({ id, x, el, instance }) => {
-  if (!instance) return null;
+const InstanceControls = ({ id, x, el, instance, tag }) => {
+  if (!instance || !tag || id !== tag.id) return null;
   return (
     <Popover
       id="instanceControlsPopover"
