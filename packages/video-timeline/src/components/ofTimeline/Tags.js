@@ -453,6 +453,7 @@ class TimelineTags extends Component {
                         instance={this.state.targetInstance}
                         x={this.state.mousePosFlat}
                       />
+                      <style scoped>{'#instanceControlsPopover { pointer-events: none; }'}</style>
                     </>
                   }
                 />
