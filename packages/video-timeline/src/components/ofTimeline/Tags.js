@@ -6,19 +6,14 @@ import styled from 'styled-components';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import PauseIcon from '@material-ui/icons/Pause';
-import DeleteIcon from '@material-ui/icons/Delete';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
-import Toolbar from '@material-ui/core/Toolbar';
-
-import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
-import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 import formatTime from './formatTime';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 import TagControls from './ofTags/TagControls';
+import TagInstancePopover from './ofTags/TagInstancePopover';
 
 const Range = Slider.Range;
 const Handle = Slider.Handle;
@@ -471,7 +466,7 @@ class TimelineTags extends Component {
                           onChange={v => this.onChange(v, tag.id)}
                         />
                       </SliderWrapper>
-                      <InstanceControls
+                      <TagInstancePopover
                         id={tag.id}
                         instance={this.state.targetInstance}
                         tag={this.state.targetTag}
@@ -491,45 +486,6 @@ class TimelineTags extends Component {
     );
   }
 }
-
-const InstanceControls = ({ id, x, y, el, instance, tag }) => {
-  if (!instance || !tag || id !== tag.id) return null;
-  return (
-    <Popover
-      id="instanceControlsPopover"
-      open
-      anchorPosition={{ left: x, top: y }}
-      anchorReference="anchorPosition"
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-      Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
-      <Toolbar>
-        <Tooltip title="Expand to length of the video">
-          <IconButton>
-            <InstanceExpandIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Copy to Clips">
-          <IconButton>
-            <ContentCutIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete tag">
-          <IconButton>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Toolbar>
-    </Popover>
-  );
-};
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
