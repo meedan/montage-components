@@ -6,9 +6,14 @@ import styled from 'styled-components';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import PauseIcon from '@material-ui/icons/Pause';
+import DeleteIcon from '@material-ui/icons/Delete';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
+import Toolbar from '@material-ui/core/Toolbar';
+
+import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
+import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 import formatTime from './formatTime';
 import TableBlock from './TableBlock';
@@ -63,6 +68,7 @@ class TimelineTags extends Component {
   state = {
     playlist: false,
     values: {},
+    mousePosAbs: { x: 0, y: 0 },
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -345,12 +351,19 @@ class TimelineTags extends Component {
     const mousePos = e.clientX - startPos;
     const mousePosFlat = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
+    const mousePosAbs = { x: e.clientX, y: e.clientY };
 
     // console.log(mouseTime);
 
     const targetTag = videoTags.find(t => t.id === id);
     if (!targetTag) {
-      this.setState({ mousePosFlat, mouseTime, targetInstance: null, targetTag: null });
+      this.setState({
+        mousePosAbs,
+        mousePosFlat,
+        mouseTime,
+        targetInstance: null,
+        targetTag: null,
+      });
       return;
     }
 
@@ -360,13 +373,23 @@ class TimelineTags extends Component {
 
     // console.log(targetInstance);
 
-    this.setState({ mousePosFlat, mouseTime, targetInstance, targetTag });
+    this.setState({
+      mousePosFlat,
+      mousePosAbs,
+      mouseTime,
+      targetInstance,
+      targetTag,
+    });
   };
 
   render() {
     const { currentTime, duration, data } = this.props;
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
+
+    console.group('Hello');
+    console.log(this.state);
+    console.groupEnd();
 
     return (
       <TableSection
@@ -452,9 +475,12 @@ class TimelineTags extends Component {
                         id={tag.id}
                         instance={this.state.targetInstance}
                         tag={this.state.targetTag}
-                        x={this.state.mousePosFlat}
+                        x={this.state.mousePosAbs.x}
+                        y={this.state.mousePosAbs.y}
                       />
-                      <style scoped>{'#instanceControlsPopover { pointer-events: none; }'}</style>
+                      <style scoped>
+                        {'#instanceControlsPopover { pointer-events: none; }'}
+                      </style>
                     </>
                   }
                 />
@@ -466,15 +492,14 @@ class TimelineTags extends Component {
   }
 }
 
-const InstanceControls = ({ id, x, el, instance, tag }) => {
+const InstanceControls = ({ id, x, y, el, instance, tag }) => {
   if (!instance || !tag || id !== tag.id) return null;
   return (
     <Popover
       id="instanceControlsPopover"
       open
-      anchorPosition={{ left: 500, top: 500 }}
+      anchorPosition={{ left: x, top: y }}
       anchorReference="anchorPosition"
-      // anchorEl={anchorEl}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'center',
@@ -485,6 +510,23 @@ const InstanceControls = ({ id, x, el, instance, tag }) => {
       }}
     >
       Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+      <Toolbar>
+        <Tooltip title="Expand to length of the video">
+          <IconButton>
+            <InstanceExpandIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Copy to Clips">
+          <IconButton>
+            <ContentCutIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete tag">
+          <IconButton>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Toolbar>
     </Popover>
   );
 };
