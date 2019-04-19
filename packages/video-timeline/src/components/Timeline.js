@@ -91,6 +91,7 @@ class Timeline extends Component {
     time: 0,
     skip: false,
     disjoint: false,
+    playing: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -108,7 +109,7 @@ class Timeline extends Component {
       console.log('skipping click due to drag state on');
       return;
     }
-    const { player, duration, onPlay } = this.props;
+    const { player, duration, playPause } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const startPos = rect.left + pxOffset;
@@ -122,7 +123,7 @@ class Timeline extends Component {
 
       console.log(`seeking to ${newTime}`);
       player.seekTo(newTime);
-      if (!player.isPlaying) onPlay();
+      if (!player.isPlaying) playPause();
     } else {
       console.log('skipping because player && e.clientX > startPos is false');
     }
@@ -130,19 +131,28 @@ class Timeline extends Component {
     return null;
   };
 
-  onDragStart = val => {
-    this.setState({ skip: true, ffTime: val, disjoint: true });
+  onDragStart = (val, skip = true) => {
+    console.log('dragStart', this.props.playing);
+    this.setState({ skip, ffTime: val, disjoint: true, playing: this.props.playing });
+
+    // pause
+    if (this.props.playing) this.props.playPause();
   };
 
-  onDrag = val => {
-    const { player } = this.props;
+  onDrag = (val, skip = true) => {
+    console.log('dragging', this.props.playing);
+    const { player, playing } = this.props;
 
-    this.setState({ time: val, skip: true, disjoint: true });
-    if (player) player.seekTo(val);
+    this.setState({ time: val, skip, disjoint: true, playing: playing || this.state.playing });
+    if (player) setTimeout(() => player.seekTo(val), 0);
+
+    // pause
+    if (playing) this.props.playPause();
   };
 
   onDragEnd = val => {
-    setTimeout(() => this.setState({ skip: false }), 200);
+    if (this.state.playing && !this.props.playing) this.props.playPause();
+    setTimeout(() => this.setState({ skip: false, playing: false }), 100);
   };
 
   render() {
@@ -176,13 +186,13 @@ class Timeline extends Component {
           />
         </TimelinePlayhead>
         <Table padding="dense">
-          <TimelineComments {...props} />
-          <TimelineClips {...props} />
+          <TimelineComments {...props} skip={skip} />
+          <TimelineClips {...props} skip={skip} />
           <TimelineTags
-            {...props}
+            {...props} skip={skip}
             onAfterChange={v => this.onDragEnd(v)}
-            onBeforeChange={v => this.onDragStart(v)}
-            onChange={v => this.onDrag(v)}
+            onBeforeChange={v => this.onDragStart(v, false)}
+            onChange={v => this.onDrag(v, false)}
           />
           <TimelinePlaces {...props} />
         </Table>
