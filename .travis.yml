@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - 'lts/dubnium'
+
+script: echo 
+
 deploy:
   provider: script
   script: npm run deploy
