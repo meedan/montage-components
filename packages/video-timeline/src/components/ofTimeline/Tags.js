@@ -341,7 +341,7 @@ class TimelineTags extends Component {
         targetInstance: null,
         targetTag: null,
       });
-    };
+    }
 
     const pxOffset = 0;
     const { videoTags } = this.state;
@@ -389,9 +389,9 @@ class TimelineTags extends Component {
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
 
-    console.group('Hello');
-    console.log(this.state);
-    console.groupEnd();
+    // console.group('Hello');
+    // console.log(this.state);
+    // console.groupEnd();
 
     return (
       <TableSection
@@ -475,10 +475,10 @@ class TimelineTags extends Component {
                       <TagInstancePopover
                         id={tag.id}
                         instance={this.state.targetInstance}
+                        onExit={() => this.leMenu()}
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
-                        onExit={() => this.leMenu()}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}

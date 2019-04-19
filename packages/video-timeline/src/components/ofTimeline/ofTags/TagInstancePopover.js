@@ -9,9 +9,14 @@ import IconButton from '@material-ui/core/IconButton';
 import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
-const styles = {};
+const styles = {
+  IconButton: {
+    pointerEvents: 'auto',
+  },
+};
 
-const TagInstancePopover = ({ id, x, y, el, instance, tag, onExit }) => {
+const TagInstancePopover = props => {
+  const { classes, id, x, y, instance, tag, onExit } = props;
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
   return (
@@ -31,17 +36,17 @@ const TagInstancePopover = ({ id, x, y, el, instance, tag, onExit }) => {
       onExit={() => onExit()}
     >
       <Tooltip title="Expand to length of the video">
-        <IconButton>
+        <IconButton className={classes.IconButton}>
           <InstanceExpandIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Copy to Clips">
-        <IconButton>
+        <IconButton className={classes.IconButton}>
           <ContentCutIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Delete tag">
-        <IconButton>
+        <IconButton className={classes.IconButton}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>
