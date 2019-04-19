@@ -10,7 +10,7 @@ import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandI
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 const styles = {
-  IconButton: {
+  Toolbar: {
     pointerEvents: 'auto',
   },
 };
@@ -35,21 +35,23 @@ const TagInstancePopover = props => {
       }}
       onExit={() => onExit()}
     >
-      <Tooltip title="Expand to length of the video">
-        <IconButton className={classes.IconButton}>
-          <InstanceExpandIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Copy to Clips">
-        <IconButton className={classes.IconButton}>
-          <ContentCutIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Delete tag">
-        <IconButton className={classes.IconButton}>
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
+      <div className={classes.Toolbar}>
+        <Tooltip title="Expand to length of the video">
+          <IconButton>
+            <InstanceExpandIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Copy to Clips">
+          <IconButton>
+            <ContentCutIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete tag">
+          <IconButton>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </div>
     </Popover>
   );
 };
