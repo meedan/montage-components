@@ -19,6 +19,20 @@ const TagInstancePopover = props => {
   const { classes, id, x, y, instance, tag, onExit } = props;
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+
+  const expandInstance = e => {
+    e.stopPropagation();
+    props.expandInstance(instance);
+  };
+  const duplicateAsClip = e => {
+    e.stopPropagation();
+    props.expandInstance(instance);
+  };
+  const deleteInstance = e => {
+    e.stopPropagation();
+    props.deleteInstance(instance);
+  };
+
   return (
     <Popover
       id="instanceControlsPopover"
@@ -36,17 +50,17 @@ const TagInstancePopover = props => {
     >
       <div className={classes.Toolbar} onMouseOut={e => onExit(e)}>
         <Tooltip title="Expand to length of the video">
-          <IconButton>
+          <IconButton onClick={expandInstance}>
             <InstanceExpandIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Copy to Clips">
-          <IconButton>
+          <IconButton onClick={duplicateAsClip}>
             <ContentCutIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete tag">
-          <IconButton>
+          <IconButton onClick={deleteInstance}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>

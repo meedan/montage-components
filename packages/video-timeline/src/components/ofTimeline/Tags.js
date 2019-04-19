@@ -339,7 +339,12 @@ class TimelineTags extends Component {
     const rect = currentTarget.getBoundingClientRect();
     // console.log(rect, clientX, clientY);
 
-    if (rect.x < clientX && clientX < rect.x + rect.width && rect.y < clientY && clientY < rect.y + rect.height) {
+    if (
+      rect.x < clientX &&
+      clientX < rect.x + rect.width &&
+      rect.y < clientY &&
+      clientY < rect.y + rect.height
+    ) {
       // all fine
     } else {
       console.log('outside', rect, clientX, clientY);
@@ -399,6 +404,24 @@ class TimelineTags extends Component {
       targetTag,
     });
   };
+
+  deleteInstance(instance) {
+    console.group('deleteInstance()');
+    console.log(instance);
+    console.groupEnd();
+  }
+
+  duplicateAsClip(instance) {
+    console.group('duplicateAsClip()');
+    console.log(instance);
+    console.groupEnd();
+  }
+
+  expandInstance(instance) {
+    console.group('expandInstance()');
+    console.log(instance);
+    console.groupEnd();
+  }
 
   render() {
     const { currentTime, duration, data } = this.props;
@@ -495,6 +518,9 @@ class TimelineTags extends Component {
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
+                        deleteInstance={this.deleteInstance}
+                        duplicateAsClip={this.duplicateAsClip}
+                        expandInstance={this.expandInstance}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
