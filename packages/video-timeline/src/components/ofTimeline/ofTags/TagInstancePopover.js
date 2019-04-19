@@ -33,9 +33,8 @@ const TagInstancePopover = props => {
         vertical: 'top',
         horizontal: 'center',
       }}
-      onExit={() => onExit()}
     >
-      <div className={classes.Toolbar}>
+      <div className={classes.Toolbar} onMouseOut={e => onExit(e)}>
         <Tooltip title="Expand to length of the video">
           <IconButton>
             <InstanceExpandIcon fontSize="small" />
