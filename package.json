@@ -7,9 +7,12 @@
   },
   "scripts": {
     "clean": "npx oao clean",
-    "deploy": "now --target=production --no-clipboard --public --token=$NOW_TOKEN" 
+    "deploy": "now --target=production --no-clipboard --public --token=$NOW_TOKEN"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "now": "^15.0.6"
+  }
 }
