@@ -30,7 +30,7 @@ const newData = {
   },
   locationTags: [
     {
-      id: 2060,
+      id: 2070,
       instances: [{
         $$hashKey: "object:232",
         created: "2018-10-25T13:57:42+00:00",
