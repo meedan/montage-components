@@ -190,7 +190,10 @@ class Timeline extends Component {
         </TimelinePlayhead>
         <Table padding="dense">
           <TimelineComments {...props} skip={skip} />
-          <TimelineClips {...props} skip={skip} />
+          <TimelineClips {...props} skip={skip}
+          onAfterChange={v => this.onDragEnd(v)}
+          onBeforeChange={v => this.onDragStart(v, false)}
+          onChange={v => this.onDrag(v, false)} />
           <TimelineTags
             {...props} skip={skip}
             onAfterChange={v => this.onDragEnd(v)}

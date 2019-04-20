@@ -32,6 +32,7 @@ const DATA = produce({
   ...moreData, // Extend with more data missing from Laurian’s export
   newData, // Add new data missing in the API
   videoPlaces: [],
+  videoClips: [],
 }, () => {});
 
 // const DATA = {
