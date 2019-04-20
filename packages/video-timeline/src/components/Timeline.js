@@ -197,7 +197,10 @@ class Timeline extends Component {
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
           />
-          <TimelinePlaces {...props} />
+          <TimelinePlaces {...props} skip={skip}
+          onAfterChange={v => this.onDragEnd(v)}
+          onBeforeChange={v => this.onDragStart(v, false)}
+          onChange={v => this.onDrag(v, false)} />
         </Table>
       </TimelinePlayheadWrapper>
     );
