@@ -69,14 +69,14 @@ class TimelinePlaces extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { data, duration, skip } = props;
-    const { videoPlaces } = data;
+    const { locationTags } = data;
 
     if (skip) return null;
 
-    if (state.videoPlaces && state.segments) return null;
+    if (state.locationTags && state.segments) return null;
 
     // merge overlapping place instances
-    videoPlaces.forEach(t => {
+    locationTags.forEach(t => {
       t.instances = t.instances
         .sort((j, i) => j.start_seconds - i.start_seconds)
         .reduce((acc = [], i) => {
@@ -101,7 +101,7 @@ class TimelinePlaces extends Component {
     });
 
     // all place instances sorted by start time
-    const instances = videoPlaces
+    const instances = locationTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -141,7 +141,7 @@ class TimelinePlaces extends Component {
       .map(i => [i, events[i - 1], events[i]]);
     // console.log(segments);
 
-    return { videoPlaces, segments };
+    return { locationTags, segments };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -234,17 +234,19 @@ class TimelinePlaces extends Component {
 
     const j = v.findIndex(d => d === val);
 
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const t = nextVideoPlaces[ti];
 
-      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[(j - j % 2) / 2];
+      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
+        (j - (j % 2)) / 2
+      ];
 
       if (i && j % 2 === 0) i.start_seconds = val;
       if (i && j % 2 === 1) i.end_seconds = val;
     });
 
-    const instances = videoPlaces
+    const instances = locationTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -275,29 +277,33 @@ class TimelinePlaces extends Component {
       .map(i => [i, events[i - 1], events[i]]);
 
     values[id] = v;
-    this.setState({ videoPlaces, segments, values });
+    this.setState({ locationTags, segments, values });
   };
 
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const t = nextVideoPlaces[ti];
 
-      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
+      const i = t.instances.find(
+        i => i.start_seconds <= currentTime && currentTime < i.end_seconds
+      );
       if (i) {
         console.log('cannot make overlapping instances');
       } else {
         t.instances.push({
-          id: Math.random().toString(36).substring(2),
+          id: Math.random()
+            .toString(36)
+            .substring(2),
           start_seconds: currentTime,
           end_seconds: currentTime + 5,
         });
       }
     });
 
-    const instances = videoPlaces
+    const instances = locationTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -327,28 +333,30 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoPlaces, segments });
+    this.setState({ locationTags, segments });
   };
 
   startNewPlace = () => {
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       nextVideoPlaces.splice(0, 0, {
-        id: Math.random().toString(36).substring(2),
+        id: Math.random()
+          .toString(36)
+          .substring(2),
         isCreating: true,
         instances: [],
-        project_place: {
+        project_location: {
           name: '',
         },
       });
     });
 
-    this.setState({ videoPlaces });
+    this.setState({ locationTags });
   };
 
   stopNewPlace = () => {
-    let newPlaces = this.state.videoPlaces;
+    let newPlaces = this.state.locationTags;
     newPlaces.splice(0, 1);
-    this.setState({ videoPlaces: newPlaces });
+    this.setState({ locationTags: newPlaces });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
@@ -381,7 +389,7 @@ class TimelinePlaces extends Component {
     }
 
     const pxOffset = 0;
-    const { videoPlaces } = this.state;
+    const { locationTags } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -392,7 +400,7 @@ class TimelinePlaces extends Component {
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
     const mousePosAbs = { x: e.clientX, y: e.clientY };
 
-    const targetPlace = videoPlaces.find(t => t.id === id);
+    const targetPlace = locationTags.find(t => t.id === id);
     if (!targetPlace) {
       this.setState({
         mousePosAbs,
@@ -420,21 +428,21 @@ class TimelinePlaces extends Component {
   };
 
   deletePlace = id => {
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
       nextVideoPlaces.splice(i, 1);
     });
 
-    this.setState({ videoPlaces });
+    this.setState({ locationTags });
   };
 
   renamePlace = (id, name) => {
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
-      nextVideoPlaces[i].project_place.name = name;
+      nextVideoPlaces[i].project_location.name = name;
     });
 
-    this.setState({ videoPlaces });
+    this.setState({ locationTags });
   };
 
   deleteInstance(id, instance) {
@@ -442,13 +450,15 @@ class TimelinePlaces extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
-      const ii = nextVideoPlaces[ti].instances.findIndex(i => i.id === instance.id);
+      const ii = nextVideoPlaces[ti].instances.findIndex(
+        i => i.id === instance.id
+      );
       nextVideoPlaces[ti].instances.splice(ii, 1);
     });
 
-    const instances = videoPlaces
+    const instances = locationTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -478,7 +488,7 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoPlaces, segments });
+    this.setState({ locationTags, segments });
   }
 
   duplicateAsClip(instance) {
@@ -492,7 +502,7 @@ class TimelinePlaces extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const i = nextVideoPlaces[ti].instances.find(i => i.id === instance.id);
       i.start_seconds = 0;
@@ -500,7 +510,7 @@ class TimelinePlaces extends Component {
       nextVideoPlaces[ti].instances = [i];
     });
 
-    const instances = videoPlaces
+    const instances = locationTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -530,12 +540,12 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoPlaces, segments });
+    this.setState({ locationTags, segments });
   }
 
   render() {
     const { currentTime, duration, data } = this.props;
-    const { videoPlaces, playlist } = this.state;
+    const { locationTags, playlist } = this.state;
     const { projectplaces } = data.project;
 
     // console.group('Hello');
@@ -544,7 +554,7 @@ class TimelinePlaces extends Component {
 
     return (
       <TableSection
-        plain={videoPlaces ? videoPlaces.length > 0 : false}
+        plain={locationTags ? locationTags.length > 0 : false}
         title="Places"
         actions={
           <>
@@ -565,16 +575,18 @@ class TimelinePlaces extends Component {
           </>
         }
       >
-        {videoPlaces
-          ? videoPlaces.map((place, i) => {
-              const { project_place, instances } = place;
+        {locationTags
+          ? locationTags.map((place, i) => {
+              const { project_location, instances } = place;
               const arr = [];
 
-              Array.from(instances).sort((p, q) => p.start_seconds - q.start_seconds).map(instance => {
-                arr.push(instance.start_seconds);
-                arr.push(instance.end_seconds);
-                return null;
-              });
+              Array.from(instances)
+                .sort((p, q) => p.start_seconds - q.start_seconds)
+                .map(instance => {
+                  arr.push(instance.start_seconds);
+                  arr.push(instance.end_seconds);
+                  return null;
+                });
 
               arr.sort((p, q) => p - q);
 
@@ -593,7 +605,7 @@ class TimelinePlaces extends Component {
               return (
                 <TableBlock
                   key={place.id}
-                  plain={i < videoPlaces.length - 1}
+                  plain={i < locationTags.length - 1}
                   leftColContent={
                     <PlaceControls
                       currentTime={currentTime}
@@ -602,7 +614,7 @@ class TimelinePlaces extends Component {
                       startNewInstance={() => this.startNewInstance(place.id)}
                       stopNewPlace={this.stopNewPlace}
                       placeId={place.id}
-                      placeName={project_place.name}
+                      placeName={project_location.name}
                       deletePlace={() => this.deletePlace(place.id)}
                       renamePlace={name => this.renamePlace(place.id, name)}
                     />
