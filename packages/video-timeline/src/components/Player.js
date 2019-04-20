@@ -64,6 +64,7 @@ class Player extends Component {
           NYAN ? 'wZZ7oFKsKzY' : this.props.data.ytVideoData.id
         }`}
         controls
+        volume={0}
         width="100%"
         height="100%"
         onDuration={this.onDuration}
