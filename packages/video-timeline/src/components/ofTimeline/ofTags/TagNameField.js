@@ -131,7 +131,7 @@ class TagNameField extends Component {
     return (
       <ClickAwayListener onClickAway={this.props.stopTagRename}>
         <Downshift
-          id="downshift-simple"
+          id="downshift-tags"
           onInputValueChange={this.props.tagRename}
         >
           {({
