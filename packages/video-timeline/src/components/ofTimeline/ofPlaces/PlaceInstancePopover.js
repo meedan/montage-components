@@ -26,7 +26,7 @@ const PlaceInstancePopover = props => {
   };
   const duplicateAsClip = e => {
     e.stopPropagation();
-    props.expandInstance(instance);
+    props.duplicateAsClip(instance);
   };
   const deleteInstance = e => {
     e.stopPropagation();

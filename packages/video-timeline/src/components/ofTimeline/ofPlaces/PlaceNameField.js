@@ -131,7 +131,7 @@ class PlaceNameField extends Component {
     return (
       <ClickAwayListener onClickAway={this.props.stopPlaceRename}>
         <Downshift
-          id="downshift-simple"
+          id="downshift-places"
           onInputValueChange={this.props.placeRename}
         >
           {({
