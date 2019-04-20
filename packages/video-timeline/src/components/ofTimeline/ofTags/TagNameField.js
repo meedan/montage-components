@@ -121,12 +121,12 @@ class TagNameField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tagName: this.props.tagName,
+      tagName: this.props.newTagName,
     };
   }
 
   render() {
-    const { classes, projectTags, isCreating } = this.props;
+    const { classes, projectTags, isCreating, oldTagName } = this.props;
 
     return (
       <ClickAwayListener onClickAway={this.props.stopTagRename}>
@@ -163,16 +163,23 @@ class TagNameField extends Component {
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: 'Enter tag name…',
-                  endAdornment: this.props.isCreating ? (
+                  placeholder:
+                    oldTagName.length > 0 ? oldTagName : 'Enter tag name…',
+                  endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton onClick={this.props.stopNewTag}>
+                        <IconButton
+                          onClick={
+                            isCreating
+                              ? this.props.stopNewTag
+                              : this.props.stopTagRename
+                          }
+                        >
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </InputAdornment>
-                  ) : null,
+                  ),
                 }),
               })}
               <div {...getMenuProps()}>

@@ -7,7 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
 import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
-import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 const styles = {
   Toolbar: {
@@ -21,10 +20,6 @@ const ClipInstancePopover = props => {
   // Clip {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
 
   const expandInstance = e => {
-    e.stopPropagation();
-    props.expandInstance(instance);
-  };
-  const duplicateAsClip = e => {
     e.stopPropagation();
     props.expandInstance(instance);
   };
@@ -52,11 +47,6 @@ const ClipInstancePopover = props => {
         <Tooltip title="Expand to length of the video">
           <IconButton onClick={expandInstance}>
             <InstanceExpandIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Copy to Clips">
-          <IconButton onClick={duplicateAsClip}>
-            <ContentCutIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete clip">

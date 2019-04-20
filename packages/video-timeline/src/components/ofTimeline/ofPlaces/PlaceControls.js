@@ -154,38 +154,6 @@ class PlaceControls extends Component {
       </Grid>
     );
 
-    // const editMode = (
-    //   <ClickAwayListener onClickAway={this.stopPlaceRename}>
-    //     <TextField
-    //       autoComplete="false"
-    //       autoFocus
-    //       className={classes.TextField}
-    //       defaultValue={this.state.placeName}
-    //       fullWidth
-    //       onChange={e => this.setState({ placeName: e.currentTarget.value })}
-    //       onKeyPress={e => {
-    //         if (e.key === 'Enter') {
-    //           e.preventDefault();
-    //           this.handlePlaceRename();
-    //         }
-    //       }}
-    //       required
-    //       InputProps={{
-    //         classes: {
-    //           root: classes.InputRoot,
-    //         },
-    //         endAdornment: this.props.isCreating ? (
-    //           <InputAdornment position="end">
-    //             <IconButton onClick={this.props.stopNewPlace}>
-    //               <CloseIcon fontSize="small" />
-    //             </IconButton>
-    //           </InputAdornment>
-    //         ) : null,
-    //       }}
-    //     />
-    //   </ClickAwayListener>
-    // );
-
     return (
       <El
         hasAdornment={isEditing || isHovering || isProcessing}
@@ -197,11 +165,12 @@ class PlaceControls extends Component {
           <PlaceNameField
             handlePlaceRename={this.handlePlaceRename}
             isCreating={this.props.isCreating}
+            newPlaceName={this.state.placeName}
+            oldPlaceName={this.props.placeName}
+            placeRename={this.placeRename}
             projectPlaces={projectPlaces}
             stopNewPlace={this.props.stopNewPlace}
             stopPlaceRename={this.stopPlaceRename}
-            placeName={this.state.placeName}
-            placeRename={this.placeRename}
           />
         ) : (
           readMode

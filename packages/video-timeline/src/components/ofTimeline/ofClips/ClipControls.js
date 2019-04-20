@@ -154,38 +154,6 @@ class ClipControls extends Component {
       </Grid>
     );
 
-    // const editMode = (
-    //   <ClickAwayListener onClickAway={this.stopClipRename}>
-    //     <TextField
-    //       autoComplete="false"
-    //       autoFocus
-    //       className={classes.TextField}
-    //       defaultValue={this.state.clipName}
-    //       fullWidth
-    //       onChange={e => this.setState({ clipName: e.currentTarget.value })}
-    //       onKeyPress={e => {
-    //         if (e.key === 'Enter') {
-    //           e.preventDefault();
-    //           this.handleClipRename();
-    //         }
-    //       }}
-    //       required
-    //       InputProps={{
-    //         classes: {
-    //           root: classes.InputRoot,
-    //         },
-    //         endAdornment: this.props.isCreating ? (
-    //           <InputAdornment position="end">
-    //             <IconButton onClick={this.props.stopNewClip}>
-    //               <CloseIcon fontSize="small" />
-    //             </IconButton>
-    //           </InputAdornment>
-    //         ) : null,
-    //       }}
-    //     />
-    //   </ClickAwayListener>
-    // );
-
     return (
       <El
         hasAdornment={isEditing || isHovering || isProcessing}
@@ -200,7 +168,8 @@ class ClipControls extends Component {
             projectClips={projectClips}
             stopNewClip={this.props.stopNewClip}
             stopClipRename={this.stopClipRename}
-            clipName={this.state.clipName}
+            newClipName={this.state.clipName}
+            oldClipName={this.props.clipName}
             clipRename={this.clipRename}
           />
         ) : (
