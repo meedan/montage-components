@@ -3,6 +3,9 @@ import { react2angular } from 'react2angular';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
+
+import produce from 'immer';
+
 import styled from 'styled-components';
 
 import { MUIThemeProvider } from '@montage/ui';
@@ -21,14 +24,22 @@ import Transport from './components/Transport';
 import baseData from './data/baseData';
 import timelineData from './data/timelineData';
 import moreData from './data/moreData';
-
 import newData from './data/newData';
-const DATA = {
+
+const DATA = produce({
   ...baseData, // Base data from Laurian’s account
   ...timelineData, // Base data from Laurian’s account
   ...moreData, // Extend with more data missing from Laurian’s export
   newData, // Add new data missing in the API
-};
+}, () => {});
+
+// const DATA = {
+//   ...baseData, // Base data from Laurian’s account
+//   ...timelineData, // Base data from Laurian’s account
+//   ...moreData, // Extend with more data missing from Laurian’s export
+//   newData, // Add new data missing in the API
+// };
+
 
 console.group('Data:');
 console.log(DATA);
@@ -71,7 +82,7 @@ class App extends Component {
     currentTime: 0,
     playing: false,
     duration: DATA.gdVideoData.duration,
-    data: DATA, // sample data
+    data: DATA,
   };
 
   static getDerivedStateFromProps(props, state) {

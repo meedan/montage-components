@@ -116,4 +116,4 @@ class TimelineComments extends Component {
   }
 }
 
-export default TimelineComments;
+export default React.memo(props => <TimelineComments {...props} />);
