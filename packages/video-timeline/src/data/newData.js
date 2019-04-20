@@ -30,8 +30,29 @@ const newData = {
   },
   locationTags: [
     {
-      c_location_id: "xyz",
-      // id: ,
+      id: 2060,
+      instances: [{
+        $$hashKey: "object:232",
+        created: "2018-10-25T13:57:42+00:00",
+        end_seconds: 460.578651685393,
+        global_tag_id: 3916,
+        id: 23924,
+        modified: "2018-10-25T13:57:42+00:00",
+        project_id: 1161,
+        project_tag_id: 3938,
+        start_seconds: 411.578651685393
+      }],
+      project_id: 1161,
+      project_location: {
+        created: "2018-10-25T13:57:41+00:00",
+        global_tag_id: 3916,
+        id: 3938,
+        modified: "2018-10-25T13:57:41+00:00",
+        name: "Syria",
+        project_id: 1161,
+        subTags: [],
+        video_tag_instance_count: 1
+      },
     }
   ]
 };
