@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
+import equal from 'fast-deep-equal';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
 import grey from '@material-ui/core/colors/grey';
+import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FormatShapesIcon from '@material-ui/icons/FormatShapes';
@@ -16,9 +19,7 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
-
-import equal from 'fast-deep-equal';
+import { color } from '@montage/ui';
 
 const Separator = styled.span`
   border-left: 1px solid ${grey[300]};
@@ -98,7 +99,7 @@ class Map extends Component {
 
       const { lat, lng } = place.geometry.location;
       this.setState({
-        dropPin: true,
+        dropPin: false,
         marker: {
           lat: lat(),
           lng: lng(),
@@ -255,15 +256,15 @@ class Map extends Component {
     console.groupEnd();
 
     const polygonOptions = {
-      fillColor: 'lightblue',
-      fillOpacity: 0.5,
-      strokeColor: 'red',
-      strokeOpacity: 1,
-      strokeWeight: 2,
       clickable: true,
       draggable: false,
-      editable: false,
-      geodesic: true,
+      editable: true,
+      fillColor: '000',
+      fillOpacity: 0.1,
+      geodesic: false,
+      strokeColor: color.brand,
+      strokeOpacity: 1,
+      strokeWeight: 2,
       zIndex: 1,
     };
 
@@ -315,34 +316,40 @@ class Map extends Component {
                       <FormatShapesIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      color={
-                        this.state.marker &&
-                        this.state.marker.type &&
-                        !this.state.saved
-                          ? 'primary'
-                          : 'secondary'
-                      }
-                      onClick={this.deleteCurrent}
-                    >
-                      <DeleteOutlineIcon fontSize="small" />
+                  <Separator />
+                  <Tooltip title="Close">
+                    <IconButton onClick={this.props.onClose}>
+                      <CloseIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Save location">
-                    <Button
-                      disabled={this.state.saved}
-                      className={classes.Button}
-                      color="primary"
-                      onClick={this.saveCurrent}
-                      variant="contained"
-                    >
-                      <CheckIcon
-                        fontSize="small"
-                        className={classes.SaveIcon}
-                      />
-                    </Button>
-                  </Tooltip>
+                  {/* <Tooltip title="Delete">
+                      <IconButton
+                        color={
+                          this.state.marker &&
+                          this.state.marker.type &&
+                          !this.state.saved
+                            ? 'primary'
+                            : 'secondary'
+                        }
+                        onClick={this.deleteCurrent}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip> */}
+                  {/* <Tooltip title="Save location">
+                      <Button
+                        disabled={this.state.saved}
+                        className={classes.Button}
+                        color="primary"
+                        onClick={this.saveCurrent}
+                        variant="contained"
+                      >
+                        <CheckIcon
+                          fontSize="small"
+                          className={classes.SaveIcon}
+                        />
+                      </Button>
+                    </Tooltip> */}
                 </InputAdornment>
               ),
             }}
@@ -385,6 +392,7 @@ class Map extends Component {
                 editable={this.state.drawPolygon}
                 path={this.state.marker.polygon}
                 onLoad={polygon => (this.polygon = polygon)}
+                options={polygonOptions}
               />
             ) : null}
             {this.state.marker.type === 'marker' ? (
