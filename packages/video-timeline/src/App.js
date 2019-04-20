@@ -33,6 +33,10 @@ const DATA = produce(
     ...moreData, // Extend with more data missing from Laurian’s export
     ...newData, // Add new data missing in the API
     videoClips: [],
+    project: {
+      ...baseData.project,
+      projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
+    },
   },
   () => {}
 );

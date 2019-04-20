@@ -548,10 +548,6 @@ class TimelinePlaces extends Component {
     const { locationTags, playlist } = this.state;
     const { projectplaces } = data.project;
 
-    // console.group('Hello');
-    // console.log(this.state);
-    // console.groupEnd();
-
     return (
       <TableSection
         plain={locationTags ? locationTags.length > 0 : false}
@@ -609,14 +605,14 @@ class TimelinePlaces extends Component {
                   leftColContent={
                     <PlaceControls
                       currentTime={currentTime}
+                      deletePlace={() => this.deletePlace(place.id)}
                       isCreating={place.isCreating}
-                      projectPlaces={projectplaces}
-                      startNewInstance={() => this.startNewInstance(place.id)}
-                      stopNewPlace={this.stopNewPlace}
                       placeId={place.id}
                       placeName={project_location.name}
-                      deletePlace={() => this.deletePlace(place.id)}
+                      projectPlaces={projectplaces}
                       renamePlace={name => this.renamePlace(place.id, name)}
+                      startNewInstance={() => this.startNewInstance(place.id)}
+                      stopNewPlace={this.stopNewPlace}
                     />
                   }
                   rightColContent={
