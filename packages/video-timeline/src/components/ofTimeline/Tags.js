@@ -392,8 +392,6 @@ class TimelineTags extends Component {
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
     const mousePosAbs = { x: e.clientX, y: e.clientY };
 
-    // console.log(mouseTime);
-
     const targetTag = videoTags.find(t => t.id === id);
     if (!targetTag) {
       this.setState({
@@ -439,10 +437,48 @@ class TimelineTags extends Component {
     this.setState({ videoTags });
   };
 
-  deleteInstance(instance) {
+  deleteInstance(id, instance) {
     console.group('deleteInstance()');
     console.log(instance);
     console.groupEnd();
+
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const ti = nextVideoTags.findIndex(t => t.id === id);
+      const ii = nextVideoTags[ti].instances.findIndex(i => i.id === instance.id);
+      nextVideoTags[ti].instances.splice(ii, 1);
+    });
+
+    const instances = videoTags
+      .reduce((acc, t) => [...acc, ...t.instances], [])
+      .sort((j, i) => j.start_seconds - i.start_seconds);
+
+    const events = [
+      ...new Set(
+        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+          0,
+          this.props.duration,
+        ])
+      ),
+    ].sort((j, i) => j - i);
+
+    const segments = events
+      .reduce(
+        (acc, e, i) => {
+          if (i === 0) return acc;
+          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+        },
+        [0]
+      )
+      .reduce(
+        (acc, s, i) =>
+          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+            ? [...acc, i]
+            : acc,
+        []
+      )
+      .map(i => [i, events[i - 1], events[i]]);
+
+    this.setState({ videoTags, segments });
   }
 
   duplicateAsClip(instance) {
@@ -451,10 +487,50 @@ class TimelineTags extends Component {
     console.groupEnd();
   }
 
-  expandInstance(instance) {
+  expandInstance(id, instance) {
     console.group('expandInstance()');
     console.log(instance);
     console.groupEnd();
+
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const ti = nextVideoTags.findIndex(t => t.id === id);
+      const i = nextVideoTags[ti].instances.find(i => i.id === instance.id);
+      i.start_seconds = 0;
+      i.end_seconds = this.props.duration;
+      nextVideoTags[ti].instances = [i];
+    });
+
+    const instances = videoTags
+      .reduce((acc, t) => [...acc, ...t.instances], [])
+      .sort((j, i) => j.start_seconds - i.start_seconds);
+
+    const events = [
+      ...new Set(
+        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+          0,
+          this.props.duration,
+        ])
+      ),
+    ].sort((j, i) => j - i);
+
+    const segments = events
+      .reduce(
+        (acc, e, i) => {
+          if (i === 0) return acc;
+          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+        },
+        [0]
+      )
+      .reduce(
+        (acc, s, i) =>
+          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+            ? [...acc, i]
+            : acc,
+        []
+      )
+      .map(i => [i, events[i - 1], events[i]]);
+
+    this.setState({ videoTags, segments });
   }
 
   render() {
@@ -553,14 +629,14 @@ class TimelineTags extends Component {
                       </SliderWrapper>
                       <TagInstancePopover
                         id={tag.id}
-                        instance={false && this.state.targetInstance}
+                        instance={this.state.targetInstance}
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
-                        deleteInstance={this.deleteInstance}
+                        deleteInstance={i => this.deleteInstance(tag.id, i)}
                         duplicateAsClip={this.duplicateAsClip}
-                        expandInstance={this.expandInstance}
+                        expandInstance={i => this.expandInstance(tag.id, i)}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
