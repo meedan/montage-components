@@ -133,7 +133,12 @@ class Timeline extends Component {
 
   onDragStart = (val, skip = true) => {
     // console.log('dragStart', this.props.playing);
-    this.setState({ skip, ffTime: val, disjoint: true, playing: this.props.playing });
+    this.setState({
+      skip,
+      ffTime: val,
+      disjoint: true,
+      playing: this.props.playing,
+    });
 
     // pause
     if (this.props.playing) this.props.playPause();
@@ -143,11 +148,17 @@ class Timeline extends Component {
     // console.log('dragging', this.props.playing);
     const { player, playing } = this.props;
 
-    this.setState({ time: val, skip, disjoint: true, playing: playing || this.state.playing });
-    if (player) setTimeout(() => {
-      console.log(`seeking to ${val}`);
-      player.seekTo(val);
-    }, 0);
+    this.setState({
+      time: val,
+      skip,
+      disjoint: true,
+      playing: playing || this.state.playing,
+    });
+    if (player)
+      setTimeout(() => {
+        console.log(`seeking to ${val}`);
+        player.seekTo(val);
+      }, 0);
 
     // pause
     if (playing) this.props.playPause();
@@ -190,20 +201,27 @@ class Timeline extends Component {
         </TimelinePlayhead>
         <Table padding="dense">
           <TimelineComments {...props} skip={skip} />
-          <TimelineClips {...props} skip={skip}
-          onAfterChange={v => this.onDragEnd(v)}
-          onBeforeChange={v => this.onDragStart(v, false)}
-          onChange={v => this.onDrag(v, false)} />
-          <TimelineTags
-            {...props} skip={skip}
+          <TimelineClips
+            {...props}
+            skip={skip}
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
           />
-          <TimelinePlaces {...props} skip={skip}
-          onAfterChange={v => this.onDragEnd(v)}
-          onBeforeChange={v => this.onDragStart(v, false)}
-          onChange={v => this.onDrag(v, false)} />
+          <TimelineTags
+            {...props}
+            skip={skip}
+            onAfterChange={v => this.onDragEnd(v)}
+            onBeforeChange={v => this.onDragStart(v, false)}
+            onChange={v => this.onDrag(v, false)}
+          />
+          <TimelinePlaces
+            {...props}
+            skip={skip}
+            onAfterChange={v => this.onDragEnd(v)}
+            onBeforeChange={v => this.onDragStart(v, false)}
+            onChange={v => this.onDrag(v, false)}
+          />
         </Table>
       </TimelinePlayheadWrapper>
     );
