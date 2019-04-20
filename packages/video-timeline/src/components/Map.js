@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-// import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import SearchIcon from '@material-ui/icons/Search';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
-import FormatShapesIcon from '@material-ui/icons/FormatShapes';
+import Button from '@material-ui/core/Button';
 import CheckIcon from '@material-ui/icons/Check';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import FormatShapesIcon from '@material-ui/icons/FormatShapes';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import SearchIcon from '@material-ui/icons/Search';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 
@@ -22,13 +24,11 @@ const classes = {
     alignItems: 'center',
     width: '100%',
   },
-  input: {
-    marginLeft: 8,
-    flex: 1,
+  Input: {
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  iconButton: {
-    padding: 10,
-  },
+  iconButton: {},
   divider: {
     width: 1,
     height: 28,
@@ -263,50 +263,71 @@ class Map extends Component {
     return (
       <>
         <Paper className={classes.root} elevation={1}>
-          <IconButton className={classes.iconButton}>
-            <KeyboardBackspaceIcon />
-          </IconButton>
-          <InputBase
+          <TextField
+            autoFocus
+            fullWidth
             inputRef={this.searchRef}
-            className={classes.input}
             placeholder="Search Google Maps"
+            InputProps={{
+              className: classes.input,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Tooltip title="Return">
+                    <IconButton>
+                      <KeyboardBackspaceIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton className={classes.iconButton}>
+                    <SearchIcon fontSize="small" />
+                  </IconButton>
+                  <Tooltip title="Drop a pin">
+                    <IconButton
+                      color={this.state.dropPin ? 'primary' : 'secondary'}
+                      onClick={this.toggleDropPin}
+                    >
+                      <AddLocationIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Mark an area">
+                    <IconButton
+                      color={this.state.drawPolygon ? 'primary' : 'secondary'}
+                      onClick={this.toggleDrawPolygon}
+                    >
+                      <FormatShapesIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton
+                      color={
+                        this.state.marker &&
+                        this.state.marker.type &&
+                        !this.state.saved
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onClick={this.deleteCurrent}
+                    >
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Save location">
+                    <IconButton
+                      color={!this.state.saved ? 'primary' : 'secondary'}
+                      // disabled={true}
+                      className={classes.Button}
+                      onClick={this.saveCurrent}
+                    >
+                      <CheckIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ),
+            }}
           />
-          <IconButton className={classes.iconButton}>
-            <SearchIcon />
-          </IconButton>
-          {/* <Divider className={classes.divider} /> */}
-          <IconButton
-            color={this.state.dropPin ? 'primary' : 'secondary'}
-            className={classes.iconButton}
-            onClick={this.toggleDropPin}
-          >
-            <AddLocationIcon />
-          </IconButton>
-          <IconButton
-            color={this.state.drawPolygon ? 'primary' : 'secondary'}
-            className={classes.iconButton}
-            onClick={this.toggleDrawPolygon}
-          >
-            <FormatShapesIcon />
-          </IconButton>
-          <IconButton
-            color={
-              this.state.marker && this.state.marker.type && !this.state.saved
-                ? 'primary'
-                : 'secondary'
-            }
-            className={classes.iconButton}
-            onClick={this.deleteCurrent}
-          >
-            <DeleteOutlineIcon />
-          </IconButton>
-          <IconButton
-            color={!this.state.saved ? 'primary' : 'secondary'}
-            className={classes.iconButton}
-            onClick={this.saveCurrent}
-          >
-            <CheckIcon />
-          </IconButton>
         </Paper>
         <LoadScript
           id="script-loader"

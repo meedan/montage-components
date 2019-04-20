@@ -42,7 +42,7 @@ const MediaDescription = styled(Typography)`
 `;
 
 function InfoCard(props) {
-  const [map, setMap] = useState(0);
+  const [map, setMap] = useState(true);
 
   const { data, currentTime, player } = props;
   const { archived_at } = data.gdVideoData;
