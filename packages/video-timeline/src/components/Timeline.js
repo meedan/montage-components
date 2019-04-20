@@ -105,7 +105,6 @@ class Timeline extends Component {
   }
 
   onTrackClick = e => {
-    return false;
     if (this.state.skip) {
       console.log('skipping click due to drag state on');
       return;
