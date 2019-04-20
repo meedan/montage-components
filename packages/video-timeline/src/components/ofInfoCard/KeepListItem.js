@@ -22,8 +22,8 @@ function KeepListItem(props) {
   const { data } = props;
   const { id } = data.gdVideoData;
   const { archived_at } = data.gdVideoData;
-  const { services, serviceIds } = data.newData.keep.settings;
-  const { media, mediaIds } = data.newData.keep.backups;
+  const { services, serviceIds } = data.keep.settings;
+  const { media, mediaIds } = data.keep.backups;
   const currentMedia = media[mediaIds.indexOf(id)];
   const isArchived = archived_at !== null && archived_at !== undefined;
 
