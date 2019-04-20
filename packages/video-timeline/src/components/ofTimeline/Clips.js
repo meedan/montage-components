@@ -69,14 +69,14 @@ class TimelineClips extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { data, duration, skip } = props;
-    const { videoClips } = data;
+    const { clips } = data;
 
     if (skip) return null;
 
-    if (state.videoClips && state.segments) return null;
+    if (state.clips && state.segments) return null;
 
     // merge overlapping clip instances
-    videoClips.forEach(t => {
+    clips.forEach(t => {
       t.instances = t.instances
         .sort((j, i) => j.start_seconds - i.start_seconds)
         .reduce((acc = [], i) => {
@@ -101,7 +101,7 @@ class TimelineClips extends Component {
     });
 
     // all clip instances sorted by start time
-    const instances = videoClips
+    const instances = clips
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -141,7 +141,7 @@ class TimelineClips extends Component {
       .map(i => [i, events[i - 1], events[i]]);
     // console.log(segments);
 
-    return { videoClips, segments };
+    return { clips, segments };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -234,17 +234,19 @@ class TimelineClips extends Component {
 
     const j = v.findIndex(d => d === val);
 
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
       const t = nextVideoClips[ti];
 
-      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[(j - j % 2) / 2];
+      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
+        (j - (j % 2)) / 2
+      ];
 
       if (i && j % 2 === 0) i.start_seconds = val;
       if (i && j % 2 === 1) i.end_seconds = val;
     });
 
-    const instances = videoClips
+    const instances = clips
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -275,29 +277,33 @@ class TimelineClips extends Component {
       .map(i => [i, events[i - 1], events[i]]);
 
     values[id] = v;
-    this.setState({ videoClips, segments, values });
+    this.setState({ clips, segments, values });
   };
 
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
       const t = nextVideoClips[ti];
 
-      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
+      const i = t.instances.find(
+        i => i.start_seconds <= currentTime && currentTime < i.end_seconds
+      );
       if (i) {
         console.log('cannot make overlapping instances');
       } else {
         t.instances.push({
-          id: Math.random().toString(36).substring(2),
+          id: Math.random()
+            .toString(36)
+            .substring(2),
           start_seconds: currentTime,
           end_seconds: currentTime + 5,
         });
       }
     });
 
-    const instances = videoClips
+    const instances = clips
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -327,13 +333,15 @@ class TimelineClips extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoClips, segments });
+    this.setState({ clips, segments });
   };
 
   startNewClip = () => {
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       nextVideoClips.splice(0, 0, {
-        id: Math.random().toString(36).substring(2),
+        id: Math.random()
+          .toString(36)
+          .substring(2),
         isCreating: true,
         instances: [],
         project_clip: {
@@ -342,13 +350,13 @@ class TimelineClips extends Component {
       });
     });
 
-    this.setState({ videoClips });
+    this.setState({ clips });
   };
 
   stopNewClip = () => {
-    let newClips = this.state.videoClips;
+    let newClips = this.state.clips;
     newClips.splice(0, 1);
-    this.setState({ videoClips: newClips });
+    this.setState({ clips: newClips });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
@@ -381,7 +389,7 @@ class TimelineClips extends Component {
     }
 
     const pxOffset = 0;
-    const { videoClips } = this.state;
+    const { clips } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -392,7 +400,7 @@ class TimelineClips extends Component {
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
     const mousePosAbs = { x: e.clientX, y: e.clientY };
 
-    const targetClip = videoClips.find(t => t.id === id);
+    const targetClip = clips.find(t => t.id === id);
     if (!targetClip) {
       this.setState({
         mousePosAbs,
@@ -420,21 +428,21 @@ class TimelineClips extends Component {
   };
 
   deleteClip = id => {
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const i = nextVideoClips.findIndex(t => t.id === id);
       nextVideoClips.splice(i, 1);
     });
 
-    this.setState({ videoClips });
+    this.setState({ clips });
   };
 
   renameClip = (id, name) => {
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const i = nextVideoClips.findIndex(t => t.id === id);
       nextVideoClips[i].project_clip.name = name;
     });
 
-    this.setState({ videoClips });
+    this.setState({ clips });
   };
 
   deleteInstance(id, instance) {
@@ -442,13 +450,15 @@ class TimelineClips extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
-      const ii = nextVideoClips[ti].instances.findIndex(i => i.id === instance.id);
+      const ii = nextVideoClips[ti].instances.findIndex(
+        i => i.id === instance.id
+      );
       nextVideoClips[ti].instances.splice(ii, 1);
     });
 
-    const instances = videoClips
+    const instances = clips
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -478,7 +488,7 @@ class TimelineClips extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoClips, segments });
+    this.setState({ clips, segments });
   }
 
   duplicateAsClip(instance) {
@@ -492,7 +502,7 @@ class TimelineClips extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+    const clips = produce(this.state.clips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
       const i = nextVideoClips[ti].instances.find(i => i.id === instance.id);
       i.start_seconds = 0;
@@ -500,7 +510,7 @@ class TimelineClips extends Component {
       nextVideoClips[ti].instances = [i];
     });
 
-    const instances = videoClips
+    const instances = clips
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -530,12 +540,12 @@ class TimelineClips extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ videoClips, segments });
+    this.setState({ clips, segments });
   }
 
   render() {
     const { currentTime, duration, data } = this.props;
-    const { videoClips, playlist } = this.state;
+    const { clips, playlist } = this.state;
     const { projectclips } = data.project;
 
     // console.group('Hello');
@@ -544,7 +554,7 @@ class TimelineClips extends Component {
 
     return (
       <TableSection
-        plain={videoClips ? videoClips.length > 0 : false}
+        plain={clips ? clips.length > 0 : false}
         title="Clips"
         actions={
           <>
@@ -565,16 +575,18 @@ class TimelineClips extends Component {
           </>
         }
       >
-        {videoClips
-          ? videoClips.map((clip, i) => {
+        {clips
+          ? clips.map((clip, i) => {
               const { project_clip, instances } = clip;
               const arr = [];
 
-              Array.from(instances).sort((p, q) => p.start_seconds - q.start_seconds).map(instance => {
-                arr.push(instance.start_seconds);
-                arr.push(instance.end_seconds);
-                return null;
-              });
+              Array.from(instances)
+                .sort((p, q) => p.start_seconds - q.start_seconds)
+                .map(instance => {
+                  arr.push(instance.start_seconds);
+                  arr.push(instance.end_seconds);
+                  return null;
+                });
 
               arr.sort((p, q) => p - q);
 
@@ -593,7 +605,7 @@ class TimelineClips extends Component {
               return (
                 <TableBlock
                   key={clip.id}
-                  plain={i < videoClips.length - 1}
+                  plain={i < clips.length - 1}
                   leftColContent={
                     <ClipControls
                       currentTime={currentTime}
