@@ -491,12 +491,6 @@ class TimelineClips extends Component {
     this.setState({ videoClips, segments });
   }
 
-  duplicateAsClip(instance) {
-    console.group('duplicateAsClip()');
-    console.log(instance);
-    console.groupEnd();
-  }
-
   expandInstance(id, instance) {
     console.group('expandInstance()');
     console.log(instance);
@@ -647,7 +641,6 @@ class TimelineClips extends Component {
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
                         deleteInstance={i => this.deleteInstance(clip.id, i)}
-                        duplicateAsClip={this.duplicateAsClip}
                         expandInstance={i => this.expandInstance(clip.id, i)}
                       />
                       <style scoped>

@@ -121,12 +121,12 @@ class PlaceNameField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeName: this.props.placeName,
+      placeName: this.props.newPlaceName,
     };
   }
 
   render() {
-    const { classes, projectPlaces, isCreating } = this.props;
+    const { classes, projectPlaces, isCreating, oldPlaceName } = this.props;
 
     return (
       <ClickAwayListener onClickAway={this.props.stopPlaceRename}>
@@ -163,16 +163,25 @@ class PlaceNameField extends Component {
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: 'Enter place name…',
-                  endAdornment: this.props.isCreating ? (
+                  placeholder:
+                    oldPlaceName.length > 0
+                      ? oldPlaceName
+                      : 'Enter place name…',
+                  endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton onClick={this.props.stopNewPlace}>
+                        <IconButton
+                          onClick={
+                            isCreating
+                              ? this.props.stopNewPlace
+                              : this.props.stopPlaceRename
+                          }
+                        >
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </InputAdornment>
-                  ) : null,
+                  ),
                 }),
               })}
               <div {...getMenuProps()}>

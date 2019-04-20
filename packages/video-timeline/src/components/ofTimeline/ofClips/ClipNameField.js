@@ -121,12 +121,12 @@ class ClipNameField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      clipName: this.props.clipName,
+      newClipName: this.props.newClipName,
     };
   }
 
   render() {
-    const { classes, projectClips, isCreating } = this.props;
+    const { classes, projectClips, isCreating, oldClipName } = this.props;
 
     return (
       <ClickAwayListener onClickAway={this.props.stopClipRename}>
@@ -163,16 +163,23 @@ class ClipNameField extends Component {
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: 'Enter clip name…',
-                  endAdornment: this.props.isCreating ? (
+                  placeholder:
+                    oldClipName.length > 0 ? oldClipName : 'Enter clip name…',
+                  endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton onClick={this.props.stopNewClip}>
+                        <IconButton
+                          onClick={
+                            this.props.isCreating
+                              ? this.props.stopNewClip
+                              : this.props.stopClipRename
+                          }
+                        >
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </InputAdornment>
-                  ) : null,
+                  ),
                 }),
               })}
               <div {...getMenuProps()}>
