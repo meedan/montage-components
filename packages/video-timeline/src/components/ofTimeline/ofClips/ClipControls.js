@@ -51,7 +51,7 @@ class ClipControls extends Component {
       isProcessing: false,
       isDeleting: false,
       isCreating: false,
-      tagName: this.props.tagName,
+      clipName: this.props.clipName,
     };
   }
 
@@ -68,18 +68,18 @@ class ClipControls extends Component {
       this.setState({ isEditing: false, isHovering: false });
   };
 
-  tagRename = tagName => {
-    this.setState({ tagName: tagName });
+  clipRename = clipName => {
+    this.setState({ clipName: clipName });
   };
 
   handleClipRename = () => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
     console.group('handleClipRename()');
-    console.log('tagName:', this.state.tagName);
+    console.log('clipName:', this.state.clipName);
     console.groupEnd();
 
-    this.props.renameClip(this.state.tagName);
+    this.props.renameClip(this.state.clipName);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -133,7 +133,7 @@ class ClipControls extends Component {
             noWrap
             variant="body2"
           >
-            {this.state.tagName}
+            {this.state.clipName}
           </Typography>
         </Grid>
         <Grid item>
@@ -160,9 +160,9 @@ class ClipControls extends Component {
     //       autoComplete="false"
     //       autoFocus
     //       className={classes.TextField}
-    //       defaultValue={this.state.tagName}
+    //       defaultValue={this.state.clipName}
     //       fullWidth
-    //       onChange={e => this.setState({ tagName: e.currentTarget.value })}
+    //       onChange={e => this.setState({ clipName: e.currentTarget.value })}
     //       onKeyPress={e => {
     //         if (e.key === 'Enter') {
     //           e.preventDefault();
@@ -200,8 +200,8 @@ class ClipControls extends Component {
             projectClips={projectClips}
             stopNewClip={this.props.stopNewClip}
             stopClipRename={this.stopClipRename}
-            tagName={this.state.tagName}
-            tagRename={this.tagRename}
+            clipName={this.state.clipName}
+            clipRename={this.clipRename}
           />
         ) : (
           readMode
@@ -210,7 +210,7 @@ class ClipControls extends Component {
           <ClipDeleteModal
             handleClose={this.stopClipDelete}
             handleRemove={this.handleClipDelete}
-            tagName={this.state.tagName}
+            clipName={this.state.clipName}
           />
         ) : null}
       </El>
