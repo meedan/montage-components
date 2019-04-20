@@ -32,10 +32,10 @@ const DATA = produce(
     ...timelineData, // Base data from Laurian’s account
     ...moreData, // Extend with more data missing from Laurian’s export
     ...newData, // Add new data missing in the API
-    videoClips: [],
     project: {
       ...baseData.project,
       projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
+      projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
     },
   },
   () => {}

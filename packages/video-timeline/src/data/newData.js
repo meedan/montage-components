@@ -28,7 +28,7 @@ const newData = {
       ]
     }
   },
-  locationTags: [
+  videoPlaces: [
     {
       id: 2070,
       instances: [{
@@ -47,7 +47,7 @@ const newData = {
       },
     }
   ],
-  clips: [
+  videoClips: [
     {
       id: 20743,
       instances: [{
