@@ -25,6 +25,12 @@ function CommentForm(props) {
           inputProps={{
             autoComplete: 'off',
             style: { fontSize: '13px' },
+            onKeyPress: e => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                return comment.length > 0 ? props.onSubmit(comment) : null;
+              }
+            },
           }}
           onChange={e => setComment(e.currentTarget.value)}
           placeholder={isEditing ? 'Enter comment' : 'New comment'}
