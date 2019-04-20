@@ -31,6 +31,7 @@ const DATA = produce({
   ...timelineData, // Base data from Laurian’s account
   ...moreData, // Extend with more data missing from Laurian’s export
   newData, // Add new data missing in the API
+  videoPlaces: [],
 }, () => {});
 
 // const DATA = {

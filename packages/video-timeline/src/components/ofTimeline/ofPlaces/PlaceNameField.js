@@ -65,14 +65,14 @@ renderSuggestion.propTypes = {
   suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired,
 };
 
-function getSuggestions(value, projectTags = []) {
+function getSuggestions(value, projectPlaces = []) {
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
 
   return inputLength === 0
     ? []
-    : projectTags.filter(suggestion => {
+    : projectPlaces.filter(suggestion => {
         const keep =
           count < 5 &&
           suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
@@ -117,22 +117,22 @@ const styles = theme => ({
   },
 });
 
-class TagNameField extends Component {
+class PlaceNameField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tagName: this.props.tagName,
+      placeName: this.props.placeName,
     };
   }
 
   render() {
-    const { classes, projectTags, isCreating } = this.props;
+    const { classes, projectPlaces, isCreating } = this.props;
 
     return (
-      <ClickAwayListener onClickAway={this.props.stopTagRename}>
+      <ClickAwayListener onClickAway={this.props.stopPlaceRename}>
         <Downshift
           id="downshift-simple"
-          onInputValueChange={this.props.tagRename}
+          onInputValueChange={this.props.placeRename}
         >
           {({
             getInputProps,
@@ -153,21 +153,21 @@ class TagNameField extends Component {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     isCreating
-                      ? this.props.handleTagRename()
-                      : this.props.handleTagRename();
+                      ? this.props.handlePlaceRename()
+                      : this.props.handlePlaceRename();
                   } else if (e.key === 'Escape') {
                     e.preventDefault();
                     isCreating
-                      ? this.props.stopNewTag()
-                      : this.props.stopTagRename();
+                      ? this.props.stopNewPlace()
+                      : this.props.stopPlaceRename();
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: 'Enter tag name…',
+                  placeholder: 'Enter place name…',
                   endAdornment: this.props.isCreating ? (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton onClick={this.props.stopNewTag}>
+                        <IconButton onClick={this.props.stopNewPlace}>
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
@@ -178,7 +178,7 @@ class TagNameField extends Component {
               <div {...getMenuProps()}>
                 {isOpen ? (
                   <Paper className={classes.paper} square>
-                    {getSuggestions(inputValue, projectTags).length > 0 ? (
+                    {getSuggestions(inputValue, projectPlaces).length > 0 ? (
                       <Typography
                         variant="caption"
                         color="textSecondary"
@@ -187,7 +187,7 @@ class TagNameField extends Component {
                         In this project:
                       </Typography>
                     ) : null}
-                    {getSuggestions(inputValue, projectTags).map(
+                    {getSuggestions(inputValue, projectPlaces).map(
                       (suggestion, index) =>
                         renderSuggestion({
                           suggestion,
@@ -208,8 +208,8 @@ class TagNameField extends Component {
   }
 }
 
-TagNameField.propTypes = {
+PlaceNameField.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TagNameField);
+export default withStyles(styles)(PlaceNameField);
