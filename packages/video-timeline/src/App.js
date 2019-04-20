@@ -26,19 +26,19 @@ import timelineData from './data/timelineData';
 import moreData from './data/moreData';
 import newData from './data/newData';
 
-// const DATA = produce({
-//   ...baseData, // Base data from Laurian’s account
-//   ...timelineData, // Base data from Laurian’s account
-//   ...moreData, // Extend with more data missing from Laurian’s export
-//   newData, // Add new data missing in the API
-// }, () => {});
-
-const DATA = {
+const DATA = produce({
   ...baseData, // Base data from Laurian’s account
   ...timelineData, // Base data from Laurian’s account
   ...moreData, // Extend with more data missing from Laurian’s export
   newData, // Add new data missing in the API
-};
+}, () => {});
+
+// const DATA = {
+//   ...baseData, // Base data from Laurian’s account
+//   ...timelineData, // Base data from Laurian’s account
+//   ...moreData, // Extend with more data missing from Laurian’s export
+//   newData, // Add new data missing in the API
+// };
 
 
 console.group('Data:');
