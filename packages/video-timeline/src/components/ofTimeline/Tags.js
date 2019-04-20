@@ -226,7 +226,6 @@ class TimelineTags extends Component {
     const { duration } = this.props;
     const p = values[id] || [];
 
-    // console.log(p, v);
     let val;
     if (p.length === v.length) {
       val = v.find((d, i) => p[i] !== d);
@@ -234,12 +233,10 @@ class TimelineTags extends Component {
     }
 
     const j = v.findIndex(d => d === val);
-    // console.log(val, j);
 
     const videoTags = produce(this.state.videoTags, nextVideoTags => {
       const ti = nextVideoTags.findIndex(t => t.id === id);
       const t = nextVideoTags[ti];
-      // console.log(t);
 
       const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[(j - j % 2) / 2];
 
@@ -282,51 +279,70 @@ class TimelineTags extends Component {
   };
 
   startNewInstance = id => {
-    // const { values, segments } = this.state;
-    // const { currentTime } = this.props;
-    // const p = values[id] || [];
-    //
-    // const segment = segments.find(
-    //   ([i, s, e]) => s <= currentTime && currentTime < e
-    // );
-    //
-    // if (!segment) {
-    //   const nextSegment = this.state.segments.find(([i, s]) => currentTime < s);
-    //
-    //   if (nextSegment && currentTime + 5 > nextSegment[1]) {
-    //     const nextIndex = p.findIndex(t => t === nextSegment[1]);
-    //     p[nextIndex] = currentTime;
-    //   } else {
-    //     p.push(currentTime, currentTime + 5);
-    //     p.sort((i, j) => i - j);
-    //   }
-    //
-    //   const videoTags = produce(this.state.videoTags, nextVideoTags => {
-    //     const i = nextVideoTags.findIndex(t => t.id === id);
-    //     const t = nextVideoTags[i];
-    //
-    //
-    //   });
-    //
-    //   this.setState({ videoTags });
-    // }
+    const { currentTime, duration } = this.props;
 
-    // this.onChange(p, id);
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const ti = nextVideoTags.findIndex(t => t.id === id);
+      const t = nextVideoTags[ti];
+
+      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
+      if (i) {
+        console.log('cannot make overlapping instances');
+      } else {
+        t.instances.push({
+          id: Math.random().toString(36).substring(2),
+          start_seconds: currentTime,
+          end_seconds: currentTime + 5,
+        });
+      }
+    });
+
+    const instances = videoTags
+      .reduce((acc, t) => [...acc, ...t.instances], [])
+      .sort((j, i) => j.start_seconds - i.start_seconds);
+
+    const events = [
+      ...new Set(
+        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+          0,
+          duration,
+        ])
+      ),
+    ].sort((j, i) => j - i);
+
+    const segments = events
+      .reduce(
+        (acc, e, i) => {
+          if (i === 0) return acc;
+          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+        },
+        [0]
+      )
+      .reduce(
+        (acc, s, i) =>
+          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+            ? [...acc, i]
+            : acc,
+        []
+      )
+      .map(i => [i, events[i - 1], events[i]]);
+
+    this.setState({ videoTags, segments });
   };
 
   startNewTag = () => {
-    const newTags = [
-      {
-        id: 'newTagTempId',
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      nextVideoTags.splice(0, 0, {
+        id: Math.random().toString(36).substring(2),
         isCreating: true,
         instances: [],
         project_tag: {
           name: '',
         },
-      },
-      ...this.state.videoTags,
-    ];
-    this.setState({ videoTags: newTags });
+      });
+    });
+
+    this.setState({ videoTags });
   };
 
   stopNewTag = () => {
