@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
+import produce from 'immer';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -185,6 +186,7 @@ class TimelineTags extends Component {
   };
 
   handle = props => {
+    // console.log(props);
     const { value, index, ...restProps } = props;
     return (
       <Tooltip key={index} placement="top" title={formatTime(value)}>
@@ -220,34 +222,35 @@ class TimelineTags extends Component {
   };
 
   onChange = (v, id) => {
-    const { values, videoTags } = this.state;
+    const { values } = this.state;
     const { duration } = this.props;
     const p = values[id] || [];
 
+    // console.log(p, v);
+    let val;
     if (p.length === v.length) {
-      const val = v.find((d, i) => p[i] !== d);
+      val = v.find((d, i) => p[i] !== d);
       if (val) this.props.onChange(val);
     }
 
-    const i = videoTags.findIndex(t => t.id === id);
+    const j = v.findIndex(d => d === val);
+    // console.log(val, j);
 
-    videoTags[i].instances = v.reduce((acc, s, j, arr) => {
-      if (j % 2 === 0) return acc;
-      return [
-        ...acc,
-        {
-          start_seconds: arr[j - 1],
-          end_seconds: s,
-        },
-      ];
-    }, []);
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const ti = nextVideoTags.findIndex(t => t.id === id);
+      const t = nextVideoTags[ti];
+      // console.log(t);
 
-    // all tag instances sorted by start time
+      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[(j - j % 2) / 2];
+
+      if (i && j % 2 === 0) i.start_seconds = val;
+      if (i && j % 2 === 1) i.end_seconds = val;
+    });
+
     const instances = videoTags
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
-    // all start + end events
     const events = [
       ...new Set(
         instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
@@ -257,17 +260,10 @@ class TimelineTags extends Component {
       ),
     ].sort((j, i) => j - i);
 
-    // all playable continuous segments
     const segments = events
       .reduce(
         (acc, e, i) => {
           if (i === 0) return acc;
-          console.log(
-            i,
-            events[i],
-            events[i - 1],
-            events[i - 1] + (events[i] - events[i - 1]) / 2
-          );
           return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
         },
         [0]
@@ -282,32 +278,40 @@ class TimelineTags extends Component {
       .map(i => [i, events[i - 1], events[i]]);
 
     values[id] = v;
-    this.setState({ values, videoTags, segments });
+    this.setState({ videoTags, segments, values });
   };
 
   startNewInstance = id => {
-    console.log(id);
-    const { values, segments } = this.state;
-    const { currentTime } = this.props;
-    const p = values[id] || [];
+    // const { values, segments } = this.state;
+    // const { currentTime } = this.props;
+    // const p = values[id] || [];
+    //
+    // const segment = segments.find(
+    //   ([i, s, e]) => s <= currentTime && currentTime < e
+    // );
+    //
+    // if (!segment) {
+    //   const nextSegment = this.state.segments.find(([i, s]) => currentTime < s);
+    //
+    //   if (nextSegment && currentTime + 5 > nextSegment[1]) {
+    //     const nextIndex = p.findIndex(t => t === nextSegment[1]);
+    //     p[nextIndex] = currentTime;
+    //   } else {
+    //     p.push(currentTime, currentTime + 5);
+    //     p.sort((i, j) => i - j);
+    //   }
+    //
+    //   const videoTags = produce(this.state.videoTags, nextVideoTags => {
+    //     const i = nextVideoTags.findIndex(t => t.id === id);
+    //     const t = nextVideoTags[i];
+    //
+    //
+    //   });
+    //
+    //   this.setState({ videoTags });
+    // }
 
-    const segment = segments.find(
-      ([i, s, e]) => s <= currentTime && currentTime < e
-    );
-
-    if (!segment) {
-      const nextSegment = this.state.segments.find(([i, s]) => currentTime < s);
-
-      if (nextSegment && currentTime + 5 > nextSegment[1]) {
-        const nextIndex = p.findIndex(t => t === nextSegment[1]);
-        p[nextIndex] = currentTime;
-      } else {
-        p.push(currentTime, currentTime + 5);
-        p.sort((i, j) => i - j);
-      }
-    }
-
-    this.onChange(p, id);
+    // this.onChange(p, id);
   };
 
   startNewTag = () => {
@@ -343,7 +347,7 @@ class TimelineTags extends Component {
     ) {
       // all fine
     } else {
-      console.log('outside', rect, clientX, clientY);
+      // console.log('outside', rect, clientX, clientY);
       this.setState({
         targetInstance: null,
         targetTag: null,
@@ -401,6 +405,24 @@ class TimelineTags extends Component {
     });
   };
 
+  deleteTag = id => {
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const i = nextVideoTags.findIndex(t => t.id === id);
+      nextVideoTags.splice(i, 1);
+    });
+
+    this.setState({ videoTags });
+  };
+
+  renameTag = (id, name) => {
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      const i = nextVideoTags.findIndex(t => t.id === id);
+      nextVideoTags[i].project_tag.name = name;
+    });
+
+    this.setState({ videoTags });
+  };
+
   deleteInstance(instance) {
     console.group('deleteInstance()');
     console.log(instance);
@@ -456,11 +478,13 @@ class TimelineTags extends Component {
               const { project_tag, instances } = tag;
               const arr = [];
 
-              instances.map(instance => {
+              Array.from(instances).sort((p, q) => p.start_seconds - q.start_seconds).map(instance => {
                 arr.push(instance.start_seconds);
                 arr.push(instance.end_seconds);
                 return null;
               });
+
+              arr.sort((p, q) => p - q);
 
               const trackStyle = arr.reduce((acc, j, i) => {
                 return [
@@ -471,6 +495,8 @@ class TimelineTags extends Component {
                   },
                 ];
               }, []);
+
+              // console.log(tag.id, arr);
 
               return (
                 <TableBlock
@@ -485,6 +511,8 @@ class TimelineTags extends Component {
                       stopNewTag={this.stopNewTag}
                       tagId={tag.id}
                       tagName={project_tag.name}
+                      deleteTag={() => this.deleteTag(tag.id)}
+                      renameTag={name => this.renameTag(tag.id, name)}
                     />
                   }
                   rightColContent={

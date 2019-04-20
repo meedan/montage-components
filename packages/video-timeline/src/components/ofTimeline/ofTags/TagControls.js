@@ -78,6 +78,9 @@ class TagControls extends Component {
     console.group('handleTagRename()');
     console.log('tagName:', this.state.tagName);
     console.groupEnd();
+
+    this.props.renameTag(this.state.tagName);
+
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
 
@@ -95,6 +98,9 @@ class TagControls extends Component {
     console.group('handleTagDelete()');
     console.log('tagId:', this.props.tagId);
     console.groupEnd();
+
+    this.props.deleteTag();
+
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
 
