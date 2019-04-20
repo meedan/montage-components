@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 
+import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
-import Button from '@material-ui/core/Button';
+import grey from '@material-ui/core/colors/grey';
 import CheckIcon from '@material-ui/icons/Check';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import Paper from '@material-ui/core/Paper';
@@ -17,18 +20,29 @@ import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 
 import equal from 'fast-deep-equal';
 
-const classes = {
-  root: {
-    padding: '2px 4px',
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
+const Separator = styled.span`
+  border-left: 1px solid ${grey[300]};
+  display: inline-block;
+  height: 18px;
+  margin-left: 4px;
+  margin-right: 4px;
+  width: 1px;
+`;
+
+const styles = {
+  Button: {
+    height: 28,
+    minWidth: 'auto',
+    width: 32,
   },
   Input: {
-    paddingTop: 16,
-    paddingBottom: 16,
+    padding: 8,
   },
-  iconButton: {},
+  SaveIcon: {
+    fontSize: '22px',
+    position: 'relative',
+    top: '-3px',
+  },
   divider: {
     width: 1,
     height: 28,
@@ -234,7 +248,12 @@ class Map extends Component {
   };
 
   render() {
+    const { classes } = this.props;
+
+    console.group('Map.js');
     console.log(this.state);
+    console.groupEnd();
+
     const polygonOptions = {
       fillColor: 'lightblue',
       fillOpacity: 0.5,
@@ -262,28 +281,24 @@ class Map extends Component {
 
     return (
       <>
-        <Paper className={classes.root} elevation={1}>
+        <Paper square>
           <TextField
             autoFocus
             fullWidth
             inputRef={this.searchRef}
-            placeholder="Search Google Maps"
+            placeholder="Find location…"
             InputProps={{
-              className: classes.input,
+              classes: {
+                root: classes.Input,
+              },
               startAdornment: (
                 <InputAdornment position="start">
-                  <Tooltip title="Return">
-                    <IconButton>
-                      <KeyboardBackspaceIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <SearchIcon fontSize="small" color="disabled" />
                 </InputAdornment>
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton className={classes.iconButton}>
-                    <SearchIcon fontSize="small" />
-                  </IconButton>
+                  <Separator />
                   <Tooltip title="Drop a pin">
                     <IconButton
                       color={this.state.dropPin ? 'primary' : 'secondary'}
@@ -315,14 +330,18 @@ class Map extends Component {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Save location">
-                    <IconButton
-                      color={!this.state.saved ? 'primary' : 'secondary'}
-                      // disabled={true}
+                    <Button
+                      disabled={this.state.saved}
                       className={classes.Button}
+                      color="primary"
                       onClick={this.saveCurrent}
+                      variant="contained"
                     >
-                      <CheckIcon fontSize="small" />
-                    </IconButton>
+                      <CheckIcon
+                        fontSize="small"
+                        className={classes.SaveIcon}
+                      />
+                    </Button>
                   </Tooltip>
                 </InputAdornment>
               ),
@@ -412,4 +431,4 @@ class Map extends Component {
   }
 }
 
-export default Map;
+export default withStyles(styles)(Map);
