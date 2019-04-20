@@ -69,14 +69,14 @@ class TimelinePlaces extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { data, duration, skip } = props;
-    const { locationTags } = data;
+    const { videoPlaces } = data;
 
     if (skip) return null;
 
-    if (state.locationTags && state.segments) return null;
+    if (state.videoPlaces && state.segments) return null;
 
     // merge overlapping place instances
-    locationTags.forEach(t => {
+    videoPlaces.forEach(t => {
       t.instances = t.instances
         .sort((j, i) => j.start_seconds - i.start_seconds)
         .reduce((acc = [], i) => {
@@ -101,7 +101,7 @@ class TimelinePlaces extends Component {
     });
 
     // all place instances sorted by start time
-    const instances = locationTags
+    const instances = videoPlaces
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -141,7 +141,7 @@ class TimelinePlaces extends Component {
       .map(i => [i, events[i - 1], events[i]]);
     // console.log(segments);
 
-    return { locationTags, segments };
+    return { videoPlaces, segments };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -234,7 +234,7 @@ class TimelinePlaces extends Component {
 
     const j = v.findIndex(d => d === val);
 
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const t = nextVideoPlaces[ti];
 
@@ -246,7 +246,7 @@ class TimelinePlaces extends Component {
       if (i && j % 2 === 1) i.end_seconds = val;
     });
 
-    const instances = locationTags
+    const instances = videoPlaces
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -277,13 +277,13 @@ class TimelinePlaces extends Component {
       .map(i => [i, events[i - 1], events[i]]);
 
     values[id] = v;
-    this.setState({ locationTags, segments, values });
+    this.setState({ videoPlaces, segments, values });
   };
 
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const t = nextVideoPlaces[ti];
 
@@ -303,7 +303,7 @@ class TimelinePlaces extends Component {
       }
     });
 
-    const instances = locationTags
+    const instances = videoPlaces
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -333,11 +333,11 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ locationTags, segments });
+    this.setState({ videoPlaces, segments });
   };
 
   startNewPlace = () => {
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       nextVideoPlaces.splice(0, 0, {
         id: Math.random()
           .toString(36)
@@ -350,13 +350,13 @@ class TimelinePlaces extends Component {
       });
     });
 
-    this.setState({ locationTags });
+    this.setState({ videoPlaces });
   };
 
   stopNewPlace = () => {
-    let newPlaces = this.state.locationTags;
+    let newPlaces = this.state.videoPlaces;
     newPlaces.splice(0, 1);
-    this.setState({ locationTags: newPlaces });
+    this.setState({ videoPlaces: newPlaces });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
@@ -389,7 +389,7 @@ class TimelinePlaces extends Component {
     }
 
     const pxOffset = 0;
-    const { locationTags } = this.state;
+    const { videoPlaces } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -400,7 +400,7 @@ class TimelinePlaces extends Component {
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
     const mousePosAbs = { x: e.clientX, y: e.clientY };
 
-    const targetPlace = locationTags.find(t => t.id === id);
+    const targetPlace = videoPlaces.find(t => t.id === id);
     if (!targetPlace) {
       this.setState({
         mousePosAbs,
@@ -428,21 +428,21 @@ class TimelinePlaces extends Component {
   };
 
   deletePlace = id => {
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
       nextVideoPlaces.splice(i, 1);
     });
 
-    this.setState({ locationTags });
+    this.setState({ videoPlaces });
   };
 
   renamePlace = (id, name) => {
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
       nextVideoPlaces[i].project_location.name = name;
     });
 
-    this.setState({ locationTags });
+    this.setState({ videoPlaces });
   };
 
   deleteInstance(id, instance) {
@@ -450,7 +450,7 @@ class TimelinePlaces extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const ii = nextVideoPlaces[ti].instances.findIndex(
         i => i.id === instance.id
@@ -458,7 +458,7 @@ class TimelinePlaces extends Component {
       nextVideoPlaces[ti].instances.splice(ii, 1);
     });
 
-    const instances = locationTags
+    const instances = videoPlaces
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -488,7 +488,7 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ locationTags, segments });
+    this.setState({ videoPlaces, segments });
   }
 
   duplicateAsClip(instance) {
@@ -502,7 +502,7 @@ class TimelinePlaces extends Component {
     console.log(instance);
     console.groupEnd();
 
-    const locationTags = produce(this.state.locationTags, nextVideoPlaces => {
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const i = nextVideoPlaces[ti].instances.find(i => i.id === instance.id);
       i.start_seconds = 0;
@@ -510,7 +510,7 @@ class TimelinePlaces extends Component {
       nextVideoPlaces[ti].instances = [i];
     });
 
-    const instances = locationTags
+    const instances = videoPlaces
       .reduce((acc, t) => [...acc, ...t.instances], [])
       .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -540,17 +540,17 @@ class TimelinePlaces extends Component {
       )
       .map(i => [i, events[i - 1], events[i]]);
 
-    this.setState({ locationTags, segments });
+    this.setState({ videoPlaces, segments });
   }
 
   render() {
     const { currentTime, duration, data } = this.props;
-    const { locationTags, playlist } = this.state;
+    const { videoPlaces, playlist } = this.state;
     const { projectplaces } = data.project;
 
     return (
       <TableSection
-        plain={locationTags ? locationTags.length > 0 : false}
+        plain={videoPlaces ? videoPlaces.length > 0 : false}
         title="Places"
         actions={
           <>
@@ -571,8 +571,8 @@ class TimelinePlaces extends Component {
           </>
         }
       >
-        {locationTags
-          ? locationTags.map((place, i) => {
+        {videoPlaces
+          ? videoPlaces.map((place, i) => {
               const { project_location, instances } = place;
               const arr = [];
 
@@ -601,7 +601,7 @@ class TimelinePlaces extends Component {
               return (
                 <TableBlock
                   key={place.id}
-                  plain={i < locationTags.length - 1}
+                  plain={i < videoPlaces.length - 1}
                   leftColContent={
                     <PlaceControls
                       currentTime={currentTime}
