@@ -119,6 +119,7 @@ function InfoCard(props) {
         currentTime={currentTime}
         player={player}
         onSave={d => console.log(d)}
+        onClose={() => setMap(false)}
       />
     );
 
