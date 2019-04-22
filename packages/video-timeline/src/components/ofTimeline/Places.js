@@ -262,9 +262,11 @@ class TimelinePlaces extends Component {
   };
 
   stopNewPlace = () => {
-    let newPlaces = this.state.videoPlaces;
-    newPlaces.splice(0, 1);
-    this.setState({ videoPlaces: newPlaces });
+    const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
+      nextVideoPlaces.splice(0, 1);
+    });
+
+    this.setState({ videoPlaces });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
