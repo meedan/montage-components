@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 function PlaceControlsPopover(props) {
-  const { onStartRename, onStartDelete } = props;
+  const { onStartRename, onStartDelete, onStartReposition } = props;
   return (
     <PopupState variant="popover" popupId="morePlaceOptionsPopover">
       {popupState => (
@@ -32,6 +32,9 @@ function PlaceControlsPopover(props) {
             <List dense>
               <ListItem button onClick={onStartRename}>
                 <ListItemText>Rename</ListItemText>
+              </ListItem>
+              <ListItem button onClick={onStartReposition}>
+                <ListItemText>Reposition</ListItemText>
               </ListItem>
               <ListItem button onClick={onStartDelete}>
                 <ListItemText>Delete</ListItemText>

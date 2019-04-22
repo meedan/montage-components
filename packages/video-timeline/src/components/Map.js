@@ -356,13 +356,11 @@ class Map extends Component {
           />
         </Paper>
         <LoadScript
-          id="script-loader"
           googleMapsApiKey="***REMOVED***"
           libraries={['places', 'drawing', 'geometry']}
           onLoad={this.onScriptLoad}
         >
           <GoogleMap
-            id="montage-map"
             mapContainerStyle={{
               height: '400px',
               width: '100%',
