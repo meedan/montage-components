@@ -256,9 +256,11 @@ class TimelineTags extends Component {
   };
 
   stopNewTag = () => {
-    let newTags = this.state.videoTags;
-    newTags.splice(0, 1);
-    this.setState({ videoTags: newTags });
+    const videoTags = produce(this.state.videoTags, nextVideoTags => {
+      nextVideoTags.splice(0, 1);
+    });
+
+    this.setState({ videoTags });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {

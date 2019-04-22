@@ -262,9 +262,11 @@ class TimelineClips extends Component {
   };
 
   stopNewClip = () => {
-    let newClips = this.state.videoClips;
-    newClips.splice(0, 1);
-    this.setState({ videoClips: newClips });
+    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+      nextVideoClips.splice(0, 1);
+    });
+
+    this.setState({ videoClips });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
