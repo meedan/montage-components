@@ -100,47 +100,7 @@ class TimelinePlaces extends Component {
         }, []);
     });
 
-    // all place instances sorted by start time
-    const instances = videoPlaces
-      .reduce((acc, t) => [...acc, ...t.instances], [])
-      .sort((j, i) => j.start_seconds - i.start_seconds);
-
-    // all start + end events
-    const events = [
-      ...new Set(
-        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-          0,
-          duration,
-        ])
-      ),
-    ].sort((j, i) => j - i);
-    // console.log(events);
-
-    // all playable continuous segments
-    const segments = events
-      .reduce(
-        (acc, e, i) => {
-          if (i === 0) return acc;
-          console.log(
-            i,
-            events[i],
-            events[i - 1],
-            events[i - 1] + (events[i] - events[i - 1]) / 2
-          );
-          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-        },
-        [0]
-      )
-      .reduce(
-        (acc, s, i) =>
-          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-            ? [...acc, i]
-            : acc,
-        []
-      )
-      .map(i => [i, events[i - 1], events[i]]);
-    // console.log(segments);
-
+    const segments = recomputeSegments(videoPlaces, duration);
     return { videoPlaces, segments };
   }
 
@@ -246,37 +206,8 @@ class TimelinePlaces extends Component {
       if (i && j % 2 === 1) i.end_seconds = val;
     });
 
-    const instances = videoPlaces
-      .reduce((acc, t) => [...acc, ...t.instances], [])
-      .sort((j, i) => j.start_seconds - i.start_seconds);
-
-    const events = [
-      ...new Set(
-        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-          0,
-          duration,
-        ])
-      ),
-    ].sort((j, i) => j - i);
-
-    const segments = events
-      .reduce(
-        (acc, e, i) => {
-          if (i === 0) return acc;
-          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-        },
-        [0]
-      )
-      .reduce(
-        (acc, s, i) =>
-          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-            ? [...acc, i]
-            : acc,
-        []
-      )
-      .map(i => [i, events[i - 1], events[i]]);
-
     values[id] = v;
+    const segments = recomputeSegments(videoPlaces, duration);
     this.setState({ videoPlaces, segments, values });
   };
 
@@ -303,54 +234,31 @@ class TimelinePlaces extends Component {
       }
     });
 
-    const instances = videoPlaces
-      .reduce((acc, t) => [...acc, ...t.instances], [])
-      .sort((j, i) => j.start_seconds - i.start_seconds);
-
-    const events = [
-      ...new Set(
-        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-          0,
-          duration,
-        ])
-      ),
-    ].sort((j, i) => j - i);
-
-    const segments = events
-      .reduce(
-        (acc, e, i) => {
-          if (i === 0) return acc;
-          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-        },
-        [0]
-      )
-      .reduce(
-        (acc, s, i) =>
-          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-            ? [...acc, i]
-            : acc,
-        []
-      )
-      .map(i => [i, events[i - 1], events[i]]);
-
+    const segments = recomputeSegments(videoPlaces, duration);
     this.setState({ videoPlaces, segments });
   };
 
   startNewPlace = () => {
+    const { currentTime, duration } = this.props;
+    const id = Math.random().toString(36).substring(2);
+
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       nextVideoPlaces.splice(0, 0, {
-        id: Math.random()
-          .toString(36)
-          .substring(2),
+        id,
         isCreating: true,
-        instances: [],
+        instances: [{
+          id: Math.random().toString(36).substring(2),
+          start_seconds: currentTime,
+          end_seconds: currentTime + 5,
+        }],
         project_location: {
           name: '',
         },
       });
     });
 
-    this.setState({ videoPlaces });
+    const segments = recomputeSegments(videoPlaces, duration);
+    this.setState({ videoPlaces, segments });
   };
 
   stopNewPlace = () => {
@@ -458,36 +366,7 @@ class TimelinePlaces extends Component {
       nextVideoPlaces[ti].instances.splice(ii, 1);
     });
 
-    const instances = videoPlaces
-      .reduce((acc, t) => [...acc, ...t.instances], [])
-      .sort((j, i) => j.start_seconds - i.start_seconds);
-
-    const events = [
-      ...new Set(
-        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-          0,
-          this.props.duration,
-        ])
-      ),
-    ].sort((j, i) => j - i);
-
-    const segments = events
-      .reduce(
-        (acc, e, i) => {
-          if (i === 0) return acc;
-          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-        },
-        [0]
-      )
-      .reduce(
-        (acc, s, i) =>
-          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-            ? [...acc, i]
-            : acc,
-        []
-      )
-      .map(i => [i, events[i - 1], events[i]]);
-
+    const segments = recomputeSegments(videoPlaces, this.props.duration);
     this.setState({ videoPlaces, segments });
   }
 
@@ -510,36 +389,7 @@ class TimelinePlaces extends Component {
       nextVideoPlaces[ti].instances = [i];
     });
 
-    const instances = videoPlaces
-      .reduce((acc, t) => [...acc, ...t.instances], [])
-      .sort((j, i) => j.start_seconds - i.start_seconds);
-
-    const events = [
-      ...new Set(
-        instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-          0,
-          this.props.duration,
-        ])
-      ),
-    ].sort((j, i) => j - i);
-
-    const segments = events
-      .reduce(
-        (acc, e, i) => {
-          if (i === 0) return acc;
-          return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-        },
-        [0]
-      )
-      .reduce(
-        (acc, s, i) =>
-          !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-            ? [...acc, i]
-            : acc,
-        []
-      )
-      .map(i => [i, events[i - 1], events[i]]);
-
+    const segments = recomputeSegments(videoPlaces, this.props.duration);
     this.setState({ videoPlaces, segments });
   }
 
@@ -659,6 +509,40 @@ class TimelinePlaces extends Component {
     );
   }
 }
+
+const recomputeSegments = (videoTags, duration) => {
+  const instances = videoTags
+    .reduce((acc, t) => [...acc, ...t.instances], [])
+    .sort((j, i) => j.start_seconds - i.start_seconds);
+
+  const events = [
+    ...new Set(
+      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+        0,
+        duration,
+      ])
+    ),
+  ].sort((j, i) => j - i);
+
+  const segments = events
+    .reduce(
+      (acc, e, i) => {
+        if (i === 0) return acc;
+        return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+      },
+      [0]
+    )
+    .reduce(
+      (acc, s, i) =>
+        !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+          ? [...acc, i]
+          : acc,
+      []
+    )
+    .map(i => [i, events[i - 1], events[i]]);
+
+  return segments;
+};
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
