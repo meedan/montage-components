@@ -10,7 +10,7 @@ import PlaceControlsPopover from './PlaceControlsPopover';
 import PlaceDeleteModal from './PlaceDeleteModal';
 import PlaceNameField from './PlaceNameField';
 
-import Map from '../../Map';
+import PlaceMap from './PlaceMap';
 
 const styles = {
   Grid: {
@@ -127,7 +127,13 @@ class PlaceControls extends Component {
 
   render() {
     const { classes, projectPlaces } = this.props;
-    const { isDeleting, isEditing, isHovering, isProcessing, isMap } = this.state;
+    const {
+      isDeleting,
+      isEditing,
+      isHovering,
+      isProcessing,
+      isMap,
+    } = this.state;
 
     const readMode = (
       <Grid
@@ -174,17 +180,20 @@ class PlaceControls extends Component {
         onMouseLeave={() => this.setState({ isHovering: false })}
       >
         {isEditing ? (
-          isMap ? <Map data={[]} onClose={this.endReposition} /> :
-          <PlaceNameField
-            handlePlaceRename={this.handlePlaceRename}
-            isCreating={this.props.isCreating}
-            newPlaceName={this.state.placeName}
-            oldPlaceName={this.props.placeName}
-            placeRename={this.placeRename}
-            projectPlaces={projectPlaces}
-            stopNewPlace={this.props.stopNewPlace}
-            stopPlaceRename={this.stopPlaceRename}
-          />
+          isMap ? (
+            <PlaceMap data={[]} onClose={this.endReposition} />
+          ) : (
+            <PlaceNameField
+              handlePlaceRename={this.handlePlaceRename}
+              isCreating={this.props.isCreating}
+              newPlaceName={this.state.placeName}
+              oldPlaceName={this.props.placeName}
+              placeRename={this.placeRename}
+              projectPlaces={projectPlaces}
+              stopNewPlace={this.props.stopNewPlace}
+              stopPlaceRename={this.stopPlaceRename}
+            />
+          )
         ) : (
           readMode
         )}
