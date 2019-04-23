@@ -126,11 +126,11 @@ class PlaceMap extends Component {
   };
 
   toggleDropPin = () => {
-    this.setState({ dropPin: !this.state.dropPin, drawPolygon: false });
+    this.setState({ dropPin: true, drawPolygon: false, marker: {} });
   };
 
   toggleDrawPolygon = () => {
-    this.setState({ dropPin: false, drawPolygon: !this.state.drawPolygon });
+    this.setState({ dropPin: false, drawPolygon: true, marker: {} });
   };
 
   saveCurrent = () => {
@@ -180,17 +180,18 @@ class PlaceMap extends Component {
       });
     }
 
-    this.props.onSave(marker);
+    // this.props.onSave(marker);
+    this.props.onClose();
   };
 
-  deleteCurrent = () => {
-    this.setState({
-      drawPolygon: false,
-      dropPin: false,
-      marker: {},
-      saved: true,
-    });
-  };
+  // deleteCurrent = () => {
+  //   this.setState({
+  //     drawPolygon: false,
+  //     dropPin: false,
+  //     marker: {},
+  //     saved: true,
+  //   });
+  // };
 
   handleMapClick = e => {
     if (this.state.dropPin) {
@@ -255,6 +256,7 @@ class PlaceMap extends Component {
 
   render() {
     const { classes } = this.props;
+    const { dropPin, drawPolygon, marker } = this.state;
 
     const polygonOptions = {
       clickable: true,
@@ -268,6 +270,11 @@ class PlaceMap extends Component {
       strokeWeight: 2,
       zIndex: 1,
     };
+
+    console.group('PlaceMapPopover');
+    console.log('props', this.props);
+    console.log('state', this.state);
+    console.groupEnd();
 
     const center = this.props.data
       .reduce(
@@ -294,50 +301,56 @@ class PlaceMap extends Component {
         anchorEl={this.props.anchorRef}
         open
         disableRestoreFocus
+        onClick={e => e.stopPropagation()}
+        PaperProps={{ square: true }}
       >
-        <Paper square>
-          <TextField
-            autoFocus
-            fullWidth
-            inputRef={this.searchRef}
-            placeholder="Find location…"
-            InputProps={{
-              classes: {
-                root: classes.Input,
-              },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={this.setStep(0)}>
+        <TextField
+          autoFocus
+          fullWidth
+          inputRef={this.searchRef}
+          placeholder="Find location…"
+          InputProps={{
+            classes: {
+              root: classes.Input,
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <Tooltip title="Change name…">
+                  <IconButton onClick={this.props.startPlaceRename}>
                     <KeyboardBackspaceIcon fontSize="small" color="disabled" />
                   </IconButton>
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Separator />
-                  <Tooltip title="Drop a pin">
-                    <IconButton
-                      color={this.state.dropPin ? 'primary' : 'secondary'}
-                      onClick={this.toggleDropPin}
-                    >
-                      <AddLocationIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Mark an area">
-                    <IconButton
-                      color={this.state.drawPolygon ? 'primary' : 'secondary'}
-                      onClick={this.toggleDrawPolygon}
-                    >
-                      <FormatShapesIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Separator />
-                  <Tooltip title="Close">
-                    <IconButton onClick={this.props.onClose}>
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  {/* <Tooltip title="Delete">
+                </Tooltip>
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <Separator />
+                <Tooltip title="Drop a pin">
+                  <IconButton
+                    color={
+                      dropPin && marker.type !== 'marker'
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onClick={this.toggleDropPin}
+                  >
+                    <AddLocationIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Mark an area">
+                  <IconButton
+                    color={
+                      drawPolygon && marker.type !== 'polygon'
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onClick={this.toggleDrawPolygon}
+                  >
+                    <FormatShapesIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Separator />
+                {/* <Tooltip title="Delete">
                       <IconButton
                         color={
                           this.state.marker &&
@@ -351,25 +364,32 @@ class PlaceMap extends Component {
                         <DeleteOutlineIcon fontSize="small" />
                       </IconButton>
                     </Tooltip> */}
-                  {/* <Tooltip title="Save location">
-                      <Button
-                        disabled={this.state.saved}
-                        className={classes.Button}
-                        color="primary"
-                        onClick={this.saveCurrent}
-                        variant="contained"
-                      >
-                        <CheckIcon
-                          fontSize="small"
-                          className={classes.SaveIcon}
-                        />
-                      </Button>
-                    </Tooltip> */}
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Paper>
+                {this.state.marker.type ? (
+                  <Tooltip title="Save location">
+                    <Button
+                      disabled={this.state.saved}
+                      className={classes.Button}
+                      color="primary"
+                      onClick={this.saveCurrent}
+                      variant="contained"
+                    >
+                      <CheckIcon
+                        fontSize="small"
+                        className={classes.SaveIcon}
+                      />
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Close">
+                    <IconButton onClick={this.props.onClose}>
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </InputAdornment>
+            ),
+          }}
+        />
         <LoadScript
           googleMapsApiKey="AIzaSyASFlPz3OiJvgzeUCZoA9JLtUJYN89s8y0"
           libraries={['places', 'drawing', 'geometry']}
