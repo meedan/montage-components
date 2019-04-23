@@ -49,8 +49,7 @@ class PlaceControls extends Component {
     super(props);
 
     this.state = {
-      isMap: false,
-      isEditing: false,
+      editStep: 0,
       isHovering: false,
       isProcessing: false,
       isDeleting: false,
@@ -61,16 +60,16 @@ class PlaceControls extends Component {
   }
 
   componentDidMount() {
-    this.setState({ isEditing: this.props.isCreating });
+    return this.props.isCreating ? this.setState({ editStep: 1 }) : null;
   }
 
   startPlaceRename = () => {
-    this.setState({ isHovering: false, isEditing: true });
+    this.setState({ isHovering: false, editStep: 1 });
   };
 
   stopPlaceRename = () => {
-    if (this.state.isEditing)
-      this.setState({ isEditing: false, isHovering: false });
+    if (this.state.editStep === 1)
+      this.setState({ editStep: 0, isHovering: false });
   };
 
   placeRename = placeName => {
@@ -78,15 +77,15 @@ class PlaceControls extends Component {
   };
 
   startReposition = () => {
-    this.setState({ isHovering: false, isEditing: true, isMap: true });
+    this.setState({ isHovering: false, editStep: 2 });
   };
 
   endReposition = () => {
-    this.setState({ isEditing: false, isHovering: false, isMap: false });
+    this.setState({ editStep: 0 });
   };
 
   handlePlaceRename = () => {
-    this.setState({ isProcessing: true, isEditing: false });
+    this.setState({ isProcessing: true, editStep: 0 });
     // TODO: wire place delete API calls
     console.group('handlePlaceRename()');
     console.log('placeName:', this.state.placeName);
@@ -95,14 +94,6 @@ class PlaceControls extends Component {
     this.props.renamePlace(this.state.placeName);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
-  };
-
-  startPlaceDelete = () => {
-    this.setState({ isDeleting: true });
-  };
-
-  stopPlaceDelete = () => {
-    this.setState({ isDeleting: false });
   };
 
   handlePlaceDelete = () => {
@@ -129,15 +120,9 @@ class PlaceControls extends Component {
 
   render() {
     const { classes, projectPlaces } = this.props;
-    const {
-      isDeleting,
-      isEditing,
-      isHovering,
-      isProcessing,
-      isMap,
-    } = this.state;
+    const { editStep, isDeleting, isHovering, isProcessing } = this.state;
 
-    const readMode = (
+    const readModeLabel = (
       <Grid
         alignItems="center"
         className={classes.Grid}
@@ -167,7 +152,7 @@ class PlaceControls extends Component {
             ) : (
               <PlaceControlsPopover
                 onStartRename={this.startPlaceRename}
-                onStartDelete={this.startPlaceDelete}
+                onStartDelete={() => this.setState({ isDeleting: true })}
                 onStartReposition={this.startReposition}
               />
             )}
@@ -176,39 +161,53 @@ class PlaceControls extends Component {
       </Grid>
     );
 
+    const displayControls = () => {
+      if (editStep === 0) {
+        return readModeLabel;
+      } else if (editStep === 1) {
+        return (
+          <PlaceNameField
+            handlePlaceRename={
+              this.props.isCreating
+                ? this.startReposition
+                : this.handlePlaceRename
+            }
+            isCreating={this.props.isCreating}
+            newPlaceName={this.state.placeName}
+            oldPlaceName={this.props.placeName}
+            placeRename={this.placeRename}
+            projectPlaces={projectPlaces}
+            stopNewPlace={this.props.stopNewPlace}
+            stopPlaceRename={this.stopPlaceRename}
+          />
+        );
+      } else if (editStep === 2) {
+        return (
+          <>
+            {readModeLabel}
+            <PlaceMapPopover
+              anchorRef={this.anchorRef.current}
+              data={[]}
+              onClose={this.endReposition}
+              startPlaceRename={this.startPlaceRename}
+            />
+          </>
+        );
+      } else return null;
+    };
+
     return (
       <El
-        hasAdornment={isEditing || isHovering || isProcessing}
-        onClick={!isEditing ? this.startNewInstance : null}
+        hasAdornment={editStep === 1 || isHovering || isProcessing}
+        onClick={editStep === 0 ? this.startNewInstance : null}
         onMouseEnter={() => this.setState({ isHovering: true })}
         onMouseLeave={() => this.setState({ isHovering: false })}
         ref={this.anchorRef}
       >
-        {isEditing ? (
-          isMap ? (
-            <PlaceMapPopover
-              data={[]}
-              onClose={this.endReposition}
-              anchorRef={this.anchorRef.current}
-            />
-          ) : (
-            <PlaceNameField
-              handlePlaceRename={this.handlePlaceRename}
-              isCreating={this.props.isCreating}
-              newPlaceName={this.state.placeName}
-              oldPlaceName={this.props.placeName}
-              placeRename={this.placeRename}
-              projectPlaces={projectPlaces}
-              stopNewPlace={this.props.stopNewPlace}
-              stopPlaceRename={this.stopPlaceRename}
-            />
-          )
-        ) : (
-          readMode
-        )}
+        {displayControls()}
         {isDeleting ? (
           <PlaceDeleteModal
-            handleClose={this.stopPlaceDelete}
+            handleClose={() => this.setState({ isDeleting: false })}
             handleRemove={this.handlePlaceDelete}
             placeName={this.state.placeName}
           />
