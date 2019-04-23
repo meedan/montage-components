@@ -326,6 +326,8 @@ class TimelineTags extends Component {
 
     // console.log(targetInstance);
 
+    const pxs = endPos / duration;
+
     this.setState({
       targetTrack: e.currentTarget,
       trackRect: rect,
@@ -333,8 +335,8 @@ class TimelineTags extends Component {
       mousePosAbs,
       mouseTime,
       targetInstance,
-      targetInstanceStartX: targetInstance ? (duration * targetInstance.start_seconds) / (endPos - pxOffset) : 0,
-      targetInstanceEndX: targetInstance ? (duration * targetInstance.end_seconds) / (endPos - pxOffset) : 0,
+      targetInstanceStartX: targetInstance ? pxs * targetInstance.start_seconds : 0,
+      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetTag,
     });
   };
