@@ -256,9 +256,9 @@ class PlaceMap extends Component {
   render() {
     const { classes } = this.props;
 
-    // console.group('Map.js');
-    // console.log(this.props.anchorEl);
-    // console.groupEnd();
+    console.group('PlaceMapPopover.js');
+    console.log('anchorRef', this.props.anchorRef);
+    console.groupEnd();
 
     const polygonOptions = {
       clickable: true,
@@ -295,7 +295,7 @@ class PlaceMap extends Component {
           vertical: 'top',
           horizontal: 'left',
         }}
-        // anchorEl={this.props.anchorEl}
+        anchorEl={this.props.anchorRef}
         open
         disableRestoreFocus
       >

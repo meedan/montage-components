@@ -10,7 +10,7 @@ import PlaceControlsPopover from './PlaceControlsPopover';
 import PlaceDeleteModal from './PlaceDeleteModal';
 import PlaceNameField from './PlaceNameField';
 
-import PlaceMap from './PlaceMap';
+import PlaceMapPopover from './PlaceMapPopover';
 
 const styles = {
   Grid: {
@@ -56,6 +56,7 @@ class PlaceControls extends Component {
       isCreating: false,
       placeName: this.props.placeName,
     };
+    this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -135,6 +136,8 @@ class PlaceControls extends Component {
       isMap,
     } = this.state;
 
+    console.log(this.anchorRef);
+
     const readMode = (
       <Grid
         alignItems="center"
@@ -178,10 +181,15 @@ class PlaceControls extends Component {
         onClick={!isEditing ? this.startNewInstance : null}
         onMouseEnter={() => this.setState({ isHovering: true })}
         onMouseLeave={() => this.setState({ isHovering: false })}
+        ref={this.anchorRef}
       >
         {isEditing ? (
           isMap ? (
-            <PlaceMap data={[]} onClose={this.endReposition} />
+            <PlaceMapPopover
+              data={[]}
+              onClose={this.endReposition}
+              anchorRef={this.anchorRef.current}
+            />
           ) : (
             <PlaceNameField
               handlePlaceRename={this.handlePlaceRename}
