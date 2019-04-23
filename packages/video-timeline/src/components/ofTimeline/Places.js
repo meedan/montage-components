@@ -477,6 +477,7 @@ class TimelinePlaces extends Component {
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
                         place={this.state.targetPlace}
+                        timelineOffset={this.props.timelineOffset}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
                       />

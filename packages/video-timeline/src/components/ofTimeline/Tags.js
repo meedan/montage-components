@@ -485,6 +485,7 @@ class TimelineTags extends Component {
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
+                        timelineOffset={this.props.timelineOffset}
                         track={this.state.targetTrack}
                         trackRect={this.state.trackRect}
                       />

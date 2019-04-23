@@ -99,16 +99,33 @@ class TimelineClips extends Component {
         nextVideoClips.splice(0, 0, clip);
       } else {
         const j = {
-          id: Math.random().toString(36).substring(2),
+          id: Math.random()
+            .toString(36)
+            .substring(2),
           start_seconds: instance.start_seconds,
           end_seconds: instance.end_seconds,
         };
 
-        const overlappingInstance = clip.instances.find(i => (j.start_seconds <= i.start_seconds && i.start_seconds <= j.end_seconds) || (j.start_seconds <= i.end_seconds && i.end_seconds <= j.end_seconds) || (i.start_seconds <= j.start_seconds && j.start_seconds <= i.end_seconds) || (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds));
+        const overlappingInstance = clip.instances.find(
+          i =>
+            (j.start_seconds <= i.start_seconds &&
+              i.start_seconds <= j.end_seconds) ||
+            (j.start_seconds <= i.end_seconds &&
+              i.end_seconds <= j.end_seconds) ||
+            (i.start_seconds <= j.start_seconds &&
+              j.start_seconds <= i.end_seconds) ||
+            (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
+        );
 
         if (overlappingInstance) {
-          overlappingInstance.start_seconds = Math.min(overlappingInstance.start_seconds, j.start_seconds);
-          overlappingInstance.end_seconds = Math.max(overlappingInstance.end_seconds, j.end_seconds);
+          overlappingInstance.start_seconds = Math.min(
+            overlappingInstance.start_seconds,
+            j.start_seconds
+          );
+          overlappingInstance.end_seconds = Math.max(
+            overlappingInstance.end_seconds,
+            j.end_seconds
+          );
         } else {
           clip.instances.push(j);
         }
@@ -521,6 +538,7 @@ class TimelineClips extends Component {
                         instance={this.state.targetInstance}
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
+                        timelineOffset={this.props.timelineOffset}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
                       />

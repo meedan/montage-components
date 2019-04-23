@@ -86,12 +86,19 @@ const styles = theme => ({});
 const pxOffset = 224;
 
 class Timeline extends Component {
+  constructor(props) {
+    super(props);
+    this.timelineRef = React.createRef();
+
+    this.updateDimensions = this.updateDimensions.bind(this);
+  }
   state = {
     ffTime: 0,
     time: 0,
     skip: false,
     disjoint: false,
     playing: false,
+    timelineOffset: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -102,6 +109,22 @@ class Timeline extends Component {
     time = disjoint ? time : currentTime;
 
     return { time, events, skip, disjoint };
+  }
+
+  componentDidMount() {
+    this.updateDimensions();
+  }
+
+  updateDimensions() {
+    const rect = this.timelineRef.current;
+    const rectBox = rect.getBoundingClientRect();
+
+    console.group('updateDimensions()');
+    console.log({ rect });
+    console.log({ rectBox });
+    console.groupEnd();
+
+    this.setState({ timelineOffset: rectBox.left });
   }
 
   onTrackClick = e => {
@@ -190,7 +213,10 @@ class Timeline extends Component {
     );
 
     return (
-      <TimelinePlayheadWrapper onClick={e => this.onTrackClick(e)}>
+      <TimelinePlayheadWrapper
+        onClick={e => this.onTrackClick(e)}
+        ref={this.timelineRef}
+      >
         <TimelinePlayhead pxOffset={pxOffset}>
           <Slider
             defaultValue={0}
@@ -216,6 +242,7 @@ class Timeline extends Component {
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
+            timelineOffset={this.state.timelineOffset}
           />
           <TimelineTags
             {...props}
@@ -224,6 +251,7 @@ class Timeline extends Component {
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
             duplicateAsClip={this.relayDuplicateAsClip}
+            timelineOffset={this.state.timelineOffset}
           />
           <TimelinePlaces
             {...props}
@@ -231,6 +259,7 @@ class Timeline extends Component {
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
+            timelineOffset={this.state.timelineOffset}
           />
         </Table>
       </TimelinePlayheadWrapper>

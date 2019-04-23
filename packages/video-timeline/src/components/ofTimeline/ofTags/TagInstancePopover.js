@@ -23,15 +23,19 @@ const TagInstancePopover = props => {
     instance,
     instanceEndX,
     instanceStartX,
-    tag,
-    trackRect,
     onExit,
+    tag,
+    timelineOffset,
+    trackRect,
   } = props;
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
 
   const x = instanceEndX
-    ? instanceStartX + (instanceEndX - instanceStartX) / 2 + 224
+    ? instanceStartX +
+      (instanceEndX - instanceStartX) / 2 +
+      224 +
+      timelineOffset
     : 0;
   const y = trackRect ? trackRect.y + trackRect.height : 0;
 
