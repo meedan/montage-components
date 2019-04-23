@@ -34,7 +34,7 @@ function PlaceControlsPopover(props) {
                 <ListItemText>Rename</ListItemText>
               </ListItem>
               <ListItem button onClick={onStartReposition}>
-                <ListItemText>Reposition</ListItemText>
+                <ListItemText>Locate</ListItemText>
               </ListItem>
               <ListItem button onClick={onStartDelete}>
                 <ListItemText>Delete</ListItemText>
