@@ -12,6 +12,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import Paper from '@material-ui/core/Paper';
@@ -248,12 +249,16 @@ class PlaceMap extends Component {
     }, 0);
   };
 
+  setStep(step) {
+    this.setState({ step: step });
+  }
+
   render() {
     const { classes } = this.props;
 
-    console.group('Map.js');
-    console.log(this.state);
-    console.groupEnd();
+    // console.group('Map.js');
+    // console.log(this.props.anchorEl);
+    // console.groupEnd();
 
     const polygonOptions = {
       clickable: true,
@@ -281,7 +286,19 @@ class PlaceMap extends Component {
       .pop();
 
     return (
-      <>
+      <Popover
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        // anchorEl={this.props.anchorEl}
+        open
+        disableRestoreFocus
+      >
         <Paper square>
           <TextField
             autoFocus
@@ -294,7 +311,9 @@ class PlaceMap extends Component {
               },
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon fontSize="small" color="disabled" />
+                  <IconButton onClick={this.setStep(0)}>
+                    <KeyboardBackspaceIcon fontSize="small" color="disabled" />
+                  </IconButton>
                 </InputAdornment>
               ),
               endAdornment: (
@@ -432,7 +451,7 @@ class PlaceMap extends Component {
               ))}
           </GoogleMap>
         </LoadScript>
-      </>
+      </Popover>
     );
   }
 }
