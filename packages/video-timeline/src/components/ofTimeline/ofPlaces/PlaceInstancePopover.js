@@ -22,14 +22,17 @@ const PlaceInstancePopover = props => {
 
   const expandInstance = e => {
     e.stopPropagation();
+    props.onClose();
     props.expandInstance(instance);
   };
   const duplicateAsClip = e => {
     e.stopPropagation();
+    props.onClose();
     props.duplicateAsClip(instance);
   };
   const deleteInstance = e => {
     e.stopPropagation();
+    props.onClose();
     props.deleteInstance(instance);
   };
 

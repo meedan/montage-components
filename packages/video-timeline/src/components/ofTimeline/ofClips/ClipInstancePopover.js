@@ -21,10 +21,12 @@ const ClipInstancePopover = props => {
 
   const expandInstance = e => {
     e.stopPropagation();
+    props.onClose();
     props.expandInstance(instance);
   };
   const deleteInstance = e => {
     e.stopPropagation();
+    props.onClose();
     props.deleteInstance(instance);
   };
 
