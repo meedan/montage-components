@@ -16,6 +16,8 @@ const styles = {
 };
 
 const TagInstancePopover = props => {
+  console.log(props);
+
   const { classes, id, x, y, instance, tag, onExit } = props;
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
