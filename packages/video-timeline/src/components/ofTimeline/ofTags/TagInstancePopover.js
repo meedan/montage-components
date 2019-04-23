@@ -34,12 +34,6 @@ const TagInstancePopover = props => {
     : 0;
   const y = trackRect ? trackRect.y + trackRect.height : 0;
 
-  console.group('coors');
-  console.log('props.instanceEndX', props.instanceEndX);
-  console.log('props.instanceStartX', props.instanceStartX);
-  console.log(x, y);
-  console.groupEnd();
-
   const expandInstance = e => {
     e.stopPropagation();
     props.expandInstance(instance);
