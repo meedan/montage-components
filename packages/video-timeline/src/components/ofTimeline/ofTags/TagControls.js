@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import TagControlsPopover from './TagControlsPopover';
@@ -127,14 +128,16 @@ class TagControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Typography
-            className={classes.Typography}
-            color="textSecondary"
-            noWrap
-            variant="body2"
-          >
-            {this.state.tagName}
-          </Typography>
+          <Tooltip title={this.state.tagName} enterDelay={750}>
+            <Typography
+              className={classes.Typography}
+              color="textSecondary"
+              noWrap
+              variant="body2"
+            >
+              {this.state.tagName}
+            </Typography>
+          </Tooltip>
         </Grid>
         <Grid item>
           <ElSideControls onClick={e => e.stopPropagation()}>
