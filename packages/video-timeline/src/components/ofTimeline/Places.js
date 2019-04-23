@@ -22,6 +22,7 @@ const Handle = Slider.Handle;
 const SliderWrapper = styled.div`
   .rc-slider {
     height: 28px;
+    z-index: 1;
   }
   .rc-slider-rail {
     height: 28px;
@@ -240,17 +241,23 @@ class TimelinePlaces extends Component {
 
   startNewPlace = () => {
     const { currentTime, duration } = this.props;
-    const id = Math.random().toString(36).substring(2);
+    const id = Math.random()
+      .toString(36)
+      .substring(2);
 
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       nextVideoPlaces.splice(0, 0, {
         id,
         isCreating: true,
-        instances: [{
-          id: Math.random().toString(36).substring(2),
-          start_seconds: currentTime,
-          end_seconds: currentTime + 5,
-        }],
+        instances: [
+          {
+            id: Math.random()
+              .toString(36)
+              .substring(2),
+            start_seconds: currentTime,
+            end_seconds: currentTime + 5,
+          },
+        ],
         project_location: {
           name: '',
         },
