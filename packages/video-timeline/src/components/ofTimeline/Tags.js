@@ -65,6 +65,10 @@ class TimelineTags extends Component {
     playlist: false,
     values: {},
     mousePosAbs: { x: 0, y: 0 },
+    targetTrack: null,
+    trackRect: null,
+    targetInstanceStartX: 0,
+    targetInstanceEndX: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -323,10 +327,14 @@ class TimelineTags extends Component {
     // console.log(targetInstance);
 
     this.setState({
+      targetTrack: e.currentTarget,
+      trackRect: rect,
       mousePosFlat,
       mousePosAbs,
       mouseTime,
       targetInstance,
+      targetInstanceStartX: targetInstance ? (duration * targetInstance.start_seconds) / (endPos - pxOffset) : 0,
+      targetInstanceEndX: targetInstance ? (duration * targetInstance.end_seconds) / (endPos - pxOffset) : 0,
       targetTag,
     });
   };
@@ -484,6 +492,10 @@ class TimelineTags extends Component {
                       <TagInstancePopover
                         id={tag.id}
                         instance={this.state.targetInstance}
+                        track={this.state.targetTrack}
+                        trackRect={this.state.trackRect}
+                        instanceStartX={this.state.targetInstanceStartX}
+                        instanceEndX={this.state.targetInstanceEndX}
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
                         x={this.state.mousePosAbs.x}
