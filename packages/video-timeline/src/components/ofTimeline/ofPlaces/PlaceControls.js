@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import PlaceControlsPopover from './PlaceControlsPopover';
 import PlaceDeleteModal from './PlaceDeleteModal';
 import PlaceNameField from './PlaceNameField';
 
-import PlaceMap from './PlaceMap';
+import PlaceMapPopover from './PlaceMapPopover';
 
 const styles = {
   Grid: {
@@ -56,6 +57,7 @@ class PlaceControls extends Component {
       isCreating: false,
       placeName: this.props.placeName,
     };
+    this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -144,14 +146,16 @@ class PlaceControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Typography
-            className={classes.Typography}
-            color="textSecondary"
-            noWrap
-            variant="body2"
-          >
-            {this.state.placeName}
-          </Typography>
+          <Tooltip title={this.state.placeName} enterDelay={750}>
+            <Typography
+              className={classes.Typography}
+              color="textSecondary"
+              noWrap
+              variant="body2"
+            >
+              {this.state.placeName}
+            </Typography>
+          </Tooltip>
         </Grid>
         <Grid item>
           <ElSideControls onClick={e => e.stopPropagation()}>
@@ -178,10 +182,15 @@ class PlaceControls extends Component {
         onClick={!isEditing ? this.startNewInstance : null}
         onMouseEnter={() => this.setState({ isHovering: true })}
         onMouseLeave={() => this.setState({ isHovering: false })}
+        ref={this.anchorRef}
       >
         {isEditing ? (
           isMap ? (
-            <PlaceMap data={[]} onClose={this.endReposition} />
+            <PlaceMapPopover
+              data={[]}
+              onClose={this.endReposition}
+              anchorRef={this.anchorRef.current}
+            />
           ) : (
             <PlaceNameField
               handlePlaceRename={this.handlePlaceRename}

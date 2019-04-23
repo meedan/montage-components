@@ -1,7 +1,6 @@
 import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
-import styled from 'styled-components';
 import produce from 'immer';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -11,6 +10,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import formatTime from './formatTime';
+import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 import TagControls from './ofTags/TagControls';
@@ -18,47 +18,6 @@ import TagInstancePopover from './ofTags/TagInstancePopover';
 
 const Range = Slider.Range;
 const Handle = Slider.Handle;
-
-const SliderWrapper = styled.div`
-  .rc-slider {
-    height: 28px;
-  }
-  .rc-slider-rail {
-    height: 28px;
-    background: transparent;
-  }
-  .rc-slider-track {
-    background: rgba(71, 123, 181, 0.4);
-    border-radius: 0;
-    height: 28px;
-    position: absolute;
-    top: 0;
-  }
-  .rc-slider-handle {
-    background: rgba(71, 123, 181, 1);
-    border-radius: 1px;
-    border: none;
-    height: 28px;
-    margin: 0;
-    position: absolute;
-    top: 0;
-    transform: translateX(-2px);
-    transition: background 0.1s;
-    width: 4px;
-  }
-  .rc-slider:hover .rc-slider-handle {
-    background: rgba(71, 123, 181, 1);
-  }
-  .rc-slider:hover .rc-slider-handle,
-  .rc-slider-handle:focus {
-    box-shadow: none;
-  }
-  .rc-slider-mark-text {
-  }
-  .rc-slider-mark-text:hover {
-    z-index: 50;
-  }
-`;
 
 class TimelineTags extends Component {
   state = {
