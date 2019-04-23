@@ -16,11 +16,29 @@ const styles = {
 };
 
 const TagInstancePopover = props => {
-  console.log(props);
-
-  const { classes, id, x, y, instance, tag, onExit } = props;
+  const {
+    classes,
+    id,
+    instance,
+    instanceEndX,
+    instanceStartX,
+    tag,
+    trackRect,
+    onExit,
+  } = props;
   if (!instance || !tag || id !== tag.id) return null;
   // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+
+  const x = instanceEndX
+    ? instanceStartX + (instanceEndX - instanceStartX) / 2 + 224
+    : 0;
+  const y = trackRect ? trackRect.y + trackRect.height : 0;
+
+  console.group('coors');
+  console.log('props.instanceEndX', props.instanceEndX);
+  console.log('props.instanceStartX', props.instanceStartX);
+  console.log(x, y);
+  console.groupEnd();
 
   const expandInstance = e => {
     e.stopPropagation();
