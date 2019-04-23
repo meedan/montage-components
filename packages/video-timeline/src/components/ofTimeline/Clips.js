@@ -71,7 +71,7 @@ class TimelineClips extends Component {
     console.log(tag, instance);
 
     const videoClips = produce(this.state.videoClips, nextVideoClips => {
-      let clip = this.state.videoClips.find(c => c.project_clip.name === tag.project_tag.name);
+      let clip = nextVideoClips.find(c => c.project_clip.name === tag.project_tag.name);
 
       if (!clip) {
         // this.startNewClip(null, tag.project_tag.name);
@@ -89,10 +89,22 @@ class TimelineClips extends Component {
         };
 
         nextVideoClips.splice(0, 0, clip);
+      } else {
+        const j = {
+          id: Math.random().toString(36).substring(2),
+          start_seconds: instance.start_seconds,
+          end_seconds: instance.end_seconds,
+        };
+
+        const overlappingInstance = clip.instances.find(i => (j.start_seconds <= i.start_seconds && i.start_seconds <= j.end_seconds) || (j.start_seconds <= i.end_seconds && i.end_seconds <= j.end_seconds) || (i.start_seconds <= j.start_seconds && j.start_seconds <= i.end_seconds) || (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds));
+
+        if (overlappingInstance) {
+          overlappingInstance.start_seconds = Math.min(overlappingInstance.start_seconds, j.start_seconds);
+          overlappingInstance.end_seconds = Math.max(overlappingInstance.end_seconds, j.end_seconds);
+        } else {
+          clip.instances.push(j);
+        }
       }
-
-
-
     });
 
     const segments = recomputeSegments(videoClips, this.props.duration);
