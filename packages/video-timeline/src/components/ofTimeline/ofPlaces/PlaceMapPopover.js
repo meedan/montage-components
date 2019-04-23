@@ -256,10 +256,6 @@ class PlaceMap extends Component {
   render() {
     const { classes } = this.props;
 
-    console.group('PlaceMapPopover.js');
-    console.log('anchorRef', this.props.anchorRef);
-    console.groupEnd();
-
     const polygonOptions = {
       clickable: true,
       draggable: false,
@@ -381,8 +377,8 @@ class PlaceMap extends Component {
         >
           <GoogleMap
             mapContainerStyle={{
-              height: '400px',
-              width: '100%',
+              height: '320px',
+              width: '400px',
             }}
             zoom={2.5}
             center={center}
