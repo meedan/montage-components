@@ -65,24 +65,32 @@ class TimelineClips extends Component {
 
   componentDidMount = () => {
     this.props.registerDuplicateAsClip(this.duplicateAsClip);
-  }
+  };
 
   duplicateAsClip = (tag, instance) => {
     console.log(tag, instance);
 
     const videoClips = produce(this.state.videoClips, nextVideoClips => {
-      let clip = this.state.videoClips.find(c => c.project_clip.name === tag.project_tag.name);
+      let clip = this.state.videoClips.find(
+        c => c.project_clip.name === tag.project_tag.name
+      );
 
       if (!clip) {
         // this.startNewClip(null, tag.project_tag.name);
         clip = {
-          id: Math.random().toString(36).substring(2),
+          id: Math.random()
+            .toString(36)
+            .substring(2),
           isCreating: false,
-          instances: [{
-            id: Math.random().toString(36).substring(2),
-            start_seconds: instance.start_seconds,
-            end_seconds: instance.end_seconds,
-          }],
+          instances: [
+            {
+              id: Math.random()
+                .toString(36)
+                .substring(2),
+              start_seconds: instance.start_seconds,
+              end_seconds: instance.end_seconds,
+            },
+          ],
           project_clip: {
             name: tag.project_tag.name,
           },
@@ -90,9 +98,6 @@ class TimelineClips extends Component {
 
         nextVideoClips.splice(0, 0, clip);
       }
-
-
-
     });
 
     const segments = recomputeSegments(videoClips, this.props.duration);
@@ -288,6 +293,13 @@ class TimelineClips extends Component {
         targetClip: null,
       });
     }
+  };
+
+  leMenuClose = () => {
+    this.setState({
+      targetInstance: null,
+      targetTag: null,
+    });
   };
 
   leMenu = (e, id) => {
@@ -487,14 +499,15 @@ class TimelineClips extends Component {
                         />
                       </SliderWrapper>
                       <ClipInstancePopover
-                        id={clip.id}
-                        instance={this.state.targetInstance}
-                        onExit={e => this.leMenuOff(e)}
                         clip={this.state.targetClip}
-                        x={this.state.mousePosAbs.x}
-                        y={this.state.mousePosAbs.y}
                         deleteInstance={i => this.deleteInstance(clip.id, i)}
                         expandInstance={i => this.expandInstance(clip.id, i)}
+                        id={clip.id}
+                        instance={this.state.targetInstance}
+                        onClose={this.leMenuClose}
+                        onExit={e => this.leMenuOff(e)}
+                        x={this.state.mousePosAbs.x}
+                        y={this.state.mousePosAbs.y}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
