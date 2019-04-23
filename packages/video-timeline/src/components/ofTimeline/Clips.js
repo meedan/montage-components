@@ -63,6 +63,42 @@ class TimelineClips extends Component {
     return { videoClips, segments };
   }
 
+  componentDidMount = () => {
+    this.props.registerDuplicateAsClip(this.duplicateAsClip);
+  }
+
+  duplicateAsClip = (tag, instance) => {
+    console.log(tag, instance);
+
+    const videoClips = produce(this.state.videoClips, nextVideoClips => {
+      let clip = this.state.videoClips.find(c => c.project_clip.name === tag.project_tag.name);
+
+      if (!clip) {
+        // this.startNewClip(null, tag.project_tag.name);
+        clip = {
+          id: Math.random().toString(36).substring(2),
+          isCreating: false,
+          instances: [{
+            id: Math.random().toString(36).substring(2),
+            start_seconds: instance.start_seconds,
+            end_seconds: instance.end_seconds,
+          }],
+          project_clip: {
+            name: tag.project_tag.name,
+          },
+        };
+
+        nextVideoClips.splice(0, 0, clip);
+      }
+
+
+
+    });
+
+    const segments = recomputeSegments(videoClips, this.props.duration);
+    this.setState({ videoClips, segments });
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.skip) return false;
 
@@ -197,7 +233,7 @@ class TimelineClips extends Component {
     this.setState({ videoClips, segments });
   };
 
-  startNewClip = () => {
+  startNewClip = (event, name = '') => {
     const { currentTime, duration } = this.props;
     const id = Math.random()
       .toString(36)
@@ -217,7 +253,7 @@ class TimelineClips extends Component {
           },
         ],
         project_clip: {
-          name: '',
+          name,
         },
       });
     });
