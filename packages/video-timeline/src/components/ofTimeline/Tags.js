@@ -64,7 +64,6 @@ class TimelineTags extends Component {
   state = {
     playlist: false,
     values: {},
-    mousePosAbs: { x: 0, y: 0 },
     targetTrack: null,
     trackRect: null,
     targetInstanceStartX: 0,
@@ -202,7 +201,9 @@ class TimelineTags extends Component {
       const ti = nextVideoTags.findIndex(t => t.id === id);
       const t = nextVideoTags[ti];
 
-      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[(j - j % 2) / 2];
+      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
+        (j - (j % 2)) / 2
+      ];
 
       if (i && j % 2 === 0) i.start_seconds = val;
       if (i && j % 2 === 1) i.end_seconds = val;
@@ -220,12 +221,16 @@ class TimelineTags extends Component {
       const ti = nextVideoTags.findIndex(t => t.id === id);
       const t = nextVideoTags[ti];
 
-      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
+      const i = t.instances.find(
+        i => i.start_seconds <= currentTime && currentTime < i.end_seconds
+      );
       if (i) {
         console.log('cannot make overlapping instances');
       } else {
         t.instances.push({
-          id: Math.random().toString(36).substring(2),
+          id: Math.random()
+            .toString(36)
+            .substring(2),
           start_seconds: currentTime,
           end_seconds: currentTime + 5,
         });
@@ -238,17 +243,23 @@ class TimelineTags extends Component {
 
   startNewTag = () => {
     const { currentTime, duration } = this.props;
-    const id = Math.random().toString(36).substring(2);
+    const id = Math.random()
+      .toString(36)
+      .substring(2);
 
     const videoTags = produce(this.state.videoTags, nextVideoTags => {
       nextVideoTags.splice(0, 0, {
         id,
         isCreating: true,
-        instances: [{
-          id: Math.random().toString(36).substring(2),
-          start_seconds: currentTime,
-          end_seconds: currentTime + 5,
-        }],
+        instances: [
+          {
+            id: Math.random()
+              .toString(36)
+              .substring(2),
+            start_seconds: currentTime,
+            end_seconds: currentTime + 5,
+          },
+        ],
         project_tag: {
           name: '',
         },
@@ -306,12 +317,10 @@ class TimelineTags extends Component {
     const mousePos = e.clientX - startPos;
     const mousePosFlat = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
-    const mousePosAbs = { x: e.clientX, y: e.clientY };
 
     const targetTag = videoTags.find(t => t.id === id);
     if (!targetTag) {
       this.setState({
-        mousePosAbs,
         mousePosFlat,
         mouseTime,
         targetInstance: null,
@@ -332,10 +341,11 @@ class TimelineTags extends Component {
       targetTrack: e.currentTarget,
       trackRect: rect,
       mousePosFlat,
-      mousePosAbs,
       mouseTime,
       targetInstance,
-      targetInstanceStartX: targetInstance ? pxs * targetInstance.start_seconds : 0,
+      targetInstanceStartX: targetInstance
+        ? pxs * targetInstance.start_seconds
+        : 0,
       targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetTag,
     });
@@ -366,7 +376,9 @@ class TimelineTags extends Component {
 
     const videoTags = produce(this.state.videoTags, nextVideoTags => {
       const ti = nextVideoTags.findIndex(t => t.id === id);
-      const ii = nextVideoTags[ti].instances.findIndex(i => i.id === instance.id);
+      const ii = nextVideoTags[ti].instances.findIndex(
+        i => i.id === instance.id
+      );
       nextVideoTags[ti].instances.splice(ii, 1);
     });
 
@@ -434,11 +446,13 @@ class TimelineTags extends Component {
               const { project_tag, instances } = tag;
               const arr = [];
 
-              Array.from(instances).sort((p, q) => p.start_seconds - q.start_seconds).map(instance => {
-                arr.push(instance.start_seconds);
-                arr.push(instance.end_seconds);
-                return null;
-              });
+              Array.from(instances)
+                .sort((p, q) => p.start_seconds - q.start_seconds)
+                .map(instance => {
+                  arr.push(instance.start_seconds);
+                  arr.push(instance.end_seconds);
+                  return null;
+                });
 
               arr.sort((p, q) => p - q);
 
@@ -461,14 +475,14 @@ class TimelineTags extends Component {
                   leftColContent={
                     <TagControls
                       currentTime={currentTime}
+                      deleteTag={() => this.deleteTag(tag.id)}
                       isCreating={tag.isCreating}
                       projectTags={projecttags}
+                      renameTag={name => this.renameTag(tag.id, name)}
                       startNewInstance={() => this.startNewInstance(tag.id)}
                       stopNewTag={this.stopNewTag}
                       tagId={tag.id}
                       tagName={project_tag.name}
-                      deleteTag={() => this.deleteTag(tag.id)}
-                      renameTag={name => this.renameTag(tag.id, name)}
                     />
                   }
                   rightColContent={
@@ -500,8 +514,6 @@ class TimelineTags extends Component {
                         instanceEndX={this.state.targetInstanceEndX}
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
-                        x={this.state.mousePosAbs.x}
-                        y={this.state.mousePosAbs.y}
                         deleteInstance={i => this.deleteInstance(tag.id, i)}
                         duplicateAsClip={this.duplicateAsClip}
                         expandInstance={i => this.expandInstance(tag.id, i)}
