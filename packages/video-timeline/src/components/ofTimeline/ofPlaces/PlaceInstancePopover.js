@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -51,23 +52,25 @@ const PlaceInstancePopover = props => {
         horizontal: 'center',
       }}
     >
-      <div className={classes.Toolbar} onMouseOut={e => onExit(e)}>
-        <Tooltip title="Expand to length of the video">
-          <IconButton onClick={expandInstance}>
-            <InstanceExpandIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Copy to Clips">
-          <IconButton onClick={duplicateAsClip}>
-            <ContentCutIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete place">
-          <IconButton onClick={deleteInstance}>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </div>
+      <ClickAwayListener onClickAway={props.onClose}>
+        <div className={classes.Toolbar} onMouseOut={e => onExit(e)}>
+          <Tooltip title="Expand to length of the video">
+            <IconButton onClick={expandInstance}>
+              <InstanceExpandIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Copy to Clips">
+            <IconButton onClick={duplicateAsClip}>
+              <ContentCutIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete place">
+            <IconButton onClick={deleteInstance}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </ClickAwayListener>
     </Popover>
   );
 };
