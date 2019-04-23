@@ -169,6 +169,14 @@ class Timeline extends Component {
     setTimeout(() => this.setState({ skip: false, playing: false }), 100);
   };
 
+  registerDuplicateAsClip = fn => {
+    this.duplicateAsClip = fn;
+  };
+
+  relayDuplicateAsClip = (tag, instance) => {
+    if (this.duplicateAsClip) this.duplicateAsClip(tag, instance);
+  };
+
   render() {
     const { time, skip, ffTime } = this.state;
     const { duration } = this.props;
@@ -207,6 +215,7 @@ class Timeline extends Component {
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
+            registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
           />
           <TimelineTags
             {...props}
@@ -214,6 +223,7 @@ class Timeline extends Component {
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
+            duplicateAsClip={this.relayDuplicateAsClip}
           />
           <TimelinePlaces
             {...props}

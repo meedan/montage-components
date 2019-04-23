@@ -386,11 +386,14 @@ class TimelineTags extends Component {
     this.setState({ videoTags, segments });
   }
 
-  duplicateAsClip(instance) {
+  duplicateAsClip = (id, instance) => {
     console.group('duplicateAsClip()');
     console.log(instance);
     console.groupEnd();
-  }
+
+    const tag = this.state.videoTags.find(t => t.id === id);
+    this.props.duplicateAsClip(tag, instance);
+  };
 
   expandInstance(id, instance) {
     console.group('expandInstance()');
@@ -515,7 +518,7 @@ class TimelineTags extends Component {
                         onExit={e => this.leMenuOff(e)}
                         tag={this.state.targetTag}
                         deleteInstance={i => this.deleteInstance(tag.id, i)}
-                        duplicateAsClip={this.duplicateAsClip}
+                        duplicateAsClip={i => this.duplicateAsClip(tag.id, i)}
                         expandInstance={i => this.expandInstance(tag.id, i)}
                       />
                       <style scoped>
