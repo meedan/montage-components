@@ -81,7 +81,7 @@ class PlaceControls extends Component {
   };
 
   endReposition = () => {
-    this.setState({ editStep: 0 });
+    this.setState({ editStep: 0, isHovering: false });
   };
 
   handlePlaceRename = () => {
@@ -134,7 +134,7 @@ class PlaceControls extends Component {
           <Tooltip title={this.state.placeName} enterDelay={750}>
             <Typography
               className={classes.Typography}
-              color="textSecondary"
+              color={editStep === 2 ? 'primary' : 'textSecondary'}
               noWrap
               variant="body2"
             >
@@ -188,8 +188,10 @@ class PlaceControls extends Component {
             <PlaceMapPopover
               anchorRef={this.anchorRef.current}
               data={[]}
+              isCreating={this.props.isCreating}
               onClose={this.endReposition}
               startPlaceRename={this.startPlaceRename}
+              stopNewPlace={this.props.stopNewPlace}
             />
           </>
         );

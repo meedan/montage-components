@@ -8,16 +8,13 @@ import AddLocationIcon from '@material-ui/icons/AddLocation';
 import grey from '@material-ui/core/colors/grey';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { color } from '@montage/ui';
@@ -300,9 +297,9 @@ class PlaceMap extends Component {
         }}
         anchorEl={this.props.anchorRef}
         open
-        disableRestoreFocus
         onClick={e => e.stopPropagation()}
         PaperProps={{ square: true }}
+        onEscapeKeyDown={this.props.isCreating}
       >
         <TextField
           autoFocus
@@ -381,7 +378,13 @@ class PlaceMap extends Component {
                   </Tooltip>
                 ) : (
                   <Tooltip title="Close">
-                    <IconButton onClick={this.props.onClose}>
+                    <IconButton
+                      onClick={
+                        this.props.isCreating
+                          ? this.props.stopNewPlace
+                          : this.props.onClose
+                      }
+                    >
                       <CloseIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>

@@ -131,6 +131,14 @@ class TimelinePlaces extends Component {
     const { values } = this.state;
     const p = values[id] || [];
 
+    // deleteCurrent = () => {
+    //   this.setState({
+    //     drawPolygon: false,
+    //     dropPin: false,
+    //     marker: {},
+    //     saved: true,
+    //   });
+    // };
     if (p.length === v.length) {
       const val = v.find((d, i) => p[i] !== d);
       if (val) this.props.onBeforeChange(val);
@@ -227,6 +235,7 @@ class TimelinePlaces extends Component {
   };
 
   stopNewPlace = () => {
+    console.log('this.stopNewPlace()');
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       nextVideoPlaces.splice(0, 1);
     });
