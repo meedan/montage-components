@@ -22,6 +22,7 @@ const Handle = Slider.Handle;
 const SliderWrapper = styled.div`
   .rc-slider {
     height: 28px;
+    z-index: 1;
   }
   .rc-slider-rail {
     height: 28px;
