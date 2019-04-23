@@ -254,6 +254,13 @@ class TimelinePlaces extends Component {
     }
   };
 
+  leMenuClose = () => {
+    this.setState({
+      targetInstance: null,
+      targetTag: null,
+    });
+  };
+
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
@@ -453,15 +460,16 @@ class TimelinePlaces extends Component {
                         />
                       </SliderWrapper>
                       <PlaceInstancePopover
+                        deleteInstance={i => this.deleteInstance(place.id, i)}
+                        duplicateAsClip={this.duplicateAsClip}
+                        expandInstance={i => this.expandInstance(place.id, i)}
                         id={place.id}
                         instance={this.state.targetInstance}
+                        onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
                         place={this.state.targetPlace}
                         x={this.state.mousePosAbs.x}
                         y={this.state.mousePosAbs.y}
-                        deleteInstance={i => this.deleteInstance(place.id, i)}
-                        duplicateAsClip={this.duplicateAsClip}
-                        expandInstance={i => this.expandInstance(place.id, i)}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}

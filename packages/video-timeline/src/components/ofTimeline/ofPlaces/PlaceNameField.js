@@ -129,7 +129,11 @@ class PlaceNameField extends Component {
     const { classes, projectPlaces, isCreating, oldPlaceName } = this.props;
 
     return (
-      <ClickAwayListener onClickAway={this.props.stopPlaceRename}>
+      <ClickAwayListener
+        onClickAway={
+          isCreating ? this.props.stopNewPlace : this.props.stopPlaceRename
+        }
+      >
         <Downshift
           id="downshift-places"
           onInputValueChange={this.props.placeRename}

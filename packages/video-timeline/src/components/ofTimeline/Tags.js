@@ -257,6 +257,13 @@ class TimelineTags extends Component {
     }
   };
 
+  leMenuClose = () => {
+    this.setState({
+      targetInstance: null,
+      targetTag: null,
+    });
+  };
+
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
@@ -468,17 +475,18 @@ class TimelineTags extends Component {
                         />
                       </SliderWrapper>
                       <TagInstancePopover
-                        id={tag.id}
-                        instance={this.state.targetInstance}
-                        track={this.state.targetTrack}
-                        trackRect={this.state.trackRect}
-                        instanceStartX={this.state.targetInstanceStartX}
-                        instanceEndX={this.state.targetInstanceEndX}
-                        onExit={e => this.leMenuOff(e)}
-                        tag={this.state.targetTag}
                         deleteInstance={i => this.deleteInstance(tag.id, i)}
                         duplicateAsClip={i => this.duplicateAsClip(tag.id, i)}
                         expandInstance={i => this.expandInstance(tag.id, i)}
+                        id={tag.id}
+                        instance={this.state.targetInstance}
+                        instanceEndX={this.state.targetInstanceEndX}
+                        instanceStartX={this.state.targetInstanceStartX}
+                        onClose={this.leMenuClose}
+                        onExit={e => this.leMenuOff(e)}
+                        tag={this.state.targetTag}
+                        track={this.state.targetTrack}
+                        trackRect={this.state.trackRect}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}

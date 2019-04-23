@@ -129,7 +129,11 @@ class ClipNameField extends Component {
     const { classes, projectClips, isCreating, oldClipName } = this.props;
 
     return (
-      <ClickAwayListener onClickAway={this.props.stopClipRename}>
+      <ClickAwayListener
+        onClickAway={
+          isCreating ? this.props.stopNewClip : this.props.stopClipRename
+        }
+      >
         <Downshift
           id="downshift-simple"
           onInputValueChange={this.props.clipRename}

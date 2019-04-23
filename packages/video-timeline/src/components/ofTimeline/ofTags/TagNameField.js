@@ -129,7 +129,11 @@ class TagNameField extends Component {
     const { classes, projectTags, isCreating, oldTagName } = this.props;
 
     return (
-      <ClickAwayListener onClickAway={this.props.stopTagRename}>
+      <ClickAwayListener
+        onClickAway={
+          isCreating ? this.props.stopNewTag : this.props.stopTagRename
+        }
+      >
         <Downshift
           id="downshift-tags"
           onInputValueChange={this.props.tagRename}
