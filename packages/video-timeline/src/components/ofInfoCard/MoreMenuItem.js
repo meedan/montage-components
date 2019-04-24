@@ -102,30 +102,32 @@ const MoreMenuItem = props => {
                 title="Add to collection"
                 open={isAddingCollection ? true : popupState._childPopupState}
               >
-                {collections.map(collection => {
-                  const { name, id } = collection;
-                  const belongsToCollection = includes(in_collections, id);
-                  return (
-                    <MenuItem
-                      onClick={() =>
-                        belongsToCollection
-                          ? removeFromCollection(id, name)
-                          : addToCollection(id, name)
-                      }
-                      key={id}
-                    >
-                      <ListItemIcon>
-                        {belongsToCollection ? (
-                          <CheckBoxIcon fontSize="small" />
-                        ) : (
-                          <CheckBoxOutlineBlankIcon fontSize="small" />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText>{name}</ListItemText>
-                    </MenuItem>
-                  );
-                })}
-                <Divider />
+                {collections
+                  ? collections.map(collection => {
+                      const { name, id } = collection;
+                      const belongsToCollection = includes(in_collections, id);
+                      return (
+                        <MenuItem
+                          onClick={() =>
+                            belongsToCollection
+                              ? removeFromCollection(id, name)
+                              : addToCollection(id, name)
+                          }
+                          key={id}
+                        >
+                          <ListItemIcon>
+                            {belongsToCollection ? (
+                              <CheckBoxIcon fontSize="small" />
+                            ) : (
+                              <CheckBoxOutlineBlankIcon fontSize="small" />
+                            )}
+                          </ListItemIcon>
+                          <ListItemText>{name}</ListItemText>
+                        </MenuItem>
+                      );
+                    })
+                  : null}
+                {collections ? <Divider /> : null}
                 <ListItem
                   button={!isAddingCollection}
                   onClick={
