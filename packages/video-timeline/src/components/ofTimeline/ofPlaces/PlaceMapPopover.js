@@ -400,7 +400,7 @@ class PlaceMap extends Component {
         >
           <GoogleMap
             mapContainerStyle={{
-              height: '320px',
+              height: '240px',
               width: '400px',
             }}
             zoom={2.5}
