@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -11,7 +11,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import PlaceIcon from '@material-ui/icons/Place';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
@@ -23,8 +22,6 @@ import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
 import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
 
 import Map from './Map';
-
-import { color } from '@montage/ui';
 
 const MediaDescription = styled(Typography)`
   max-height: 50px;
@@ -41,30 +38,28 @@ const MediaDescription = styled(Typography)`
   }
 `;
 
+const styles = {
+  Card: {
+    height: '380px',
+    position: 'relative',
+    paddingBottom: '60px',
+  },
+};
+
 function InfoCard(props) {
   const [map, setMap] = useState(false);
 
-  const { data, currentTime, player } = props;
+  const { classes, data, currentTime, player } = props;
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
-  const mapData = data.videoPlaces.reduce((acc, p) => [...acc, ...p.instances.filter(i => !!i.data).map(i => i.data)], []);
-  // console.log(mapData);
-
-  if (map)
-    return (
-      <Map
-        key="map"
-        data={mapData}
-        currentTime={currentTime}
-        player={player}
-        onSave={d => console.log(d)}
-        onClose={() => setMap(false)}
-      />
-    );
+  const mapData = data.videoPlaces.reduce(
+    (acc, p) => [...acc, ...p.instances.filter(i => !!i.data).map(i => i.data)],
+    []
+  );
 
   return (
-    <Card square elevation={0}>
+    <Card square elevation={0} className={classes.Card}>
       <CardHeader
         style={{ paddingBottom: 0 }}
         action={
@@ -107,22 +102,16 @@ function InfoCard(props) {
           {data.ytVideoData.snippet.description}
         </MediaDescription>
       </CardContent>
-      <Button
-        fullWidth
-        variant="contained"
-        style={{
-          borderRadius: 0,
-          boxShadow: 'none',
-          paddingTop: 16,
-          paddingBottom: 16,
-        }}
-        onClick={() => setMap(true)}
-      >
-        <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} />{' '}
-        <span style={{ color: color.brand }}>Set location</span>
-      </Button>
+      <Map
+        collapseMap={() => setMap(false)}
+        currentTime={currentTime}
+        data={mapData}
+        expandMap={() => setMap(true)}
+        isCompact={!map}
+        player={player}
+      />
     </Card>
   );
 }
 
-export default InfoCard;
+export default withStyles(styles)(InfoCard);
