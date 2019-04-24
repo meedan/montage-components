@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 import equal from 'fast-deep-equal';
 
