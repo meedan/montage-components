@@ -6,13 +6,17 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import grey from '@material-ui/core/colors/grey';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+import PlaceIcon from '@material-ui/icons/Place';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+
+import { color } from '@montage/ui/src/config';
 
 import ArchiveMenuItem from './ofInfoCard/ArchiveMenuItem';
 import FavMenuItem from './ofInfoCard/FavMenuItem';
@@ -53,12 +57,27 @@ function InfoCard(props) {
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
-  const mapData = !data.videoPlaces ? [] : data.videoPlaces.reduce(
-    (acc, p) => [...acc, ...p.instances.filter(i => !!i.data).map(i => i.data)],
-    []
-  );
+  const mapData = !data.videoPlaces
+    ? []
+    : data.videoPlaces.reduce(
+        (acc, p) => [
+          ...acc,
+          ...p.instances.filter(i => !!i.data).map(i => i.data),
+        ],
+        []
+      );
 
-  return (
+  return map ? (
+    <Map
+      collapseMap={() => setMap(false)}
+      currentTime={currentTime}
+      data={mapData}
+      expandMap={() => setMap(true)}
+      isCompact={!map}
+      onClose={() => setMap(false)}
+      player={player}
+    />
+  ) : (
     <Card square elevation={0} className={classes.Card}>
       <CardHeader
         style={{ paddingBottom: 0 }}
@@ -80,7 +99,6 @@ function InfoCard(props) {
           </Typography>
         }
       />
-
       <CardContent>
         <List dense disablePadding component="div">
           <ListItem component="div" dense>
@@ -102,14 +120,22 @@ function InfoCard(props) {
           {data.ytVideoData.snippet.description}
         </MediaDescription>
       </CardContent>
-      <Map
-        collapseMap={() => setMap(false)}
-        currentTime={currentTime}
-        data={mapData}
-        expandMap={() => setMap(true)}
-        isCompact={!map}
-        player={player}
-      />
+      <CardContent>
+        <Button
+          fullWidth
+          variant="contained"
+          style={{
+            borderRadius: 0,
+            boxShadow: 'none',
+            paddingTop: 16,
+            paddingBottom: 16,
+          }}
+          onClick={() => setMap(true)}
+        >
+          <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} />{' '}
+          <span style={{ color: color.brand }}>Set location</span>
+        </Button>
+      </CardContent>
     </Card>
   );
 }
