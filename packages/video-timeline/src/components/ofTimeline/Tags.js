@@ -125,7 +125,7 @@ class TimelineTags extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({ values, isDragging: false });
   };
 
   onBeforeChange = (v, id) => {
@@ -138,7 +138,12 @@ class TimelineTags extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({
+      values,
+      targetInstance: null,
+      targetTag: null,
+      isDragging: true,
+    });
   };
 
   onChange = (v, id) => {
@@ -300,6 +305,13 @@ class TimelineTags extends Component {
 
     const pxs = endPos / duration;
 
+    // console.group('leMenu');
+    // // console.log('rect', rect);
+    // console.log('e.currentTarget', e.currentTarget);
+    // console.log('targetTag', targetTag);
+    // console.log('targetInstance', targetInstance);
+    // console.groupEnd();
+
     this.setState({
       targetTrack: e.currentTarget,
       trackRect: rect,
@@ -451,8 +463,16 @@ class TimelineTags extends Component {
                   rightColContent={
                     <>
                       <SliderWrapper
-                        onMouseMove={e => this.leMenu(e, tag.id)}
-                        onMouseOver={e => this.leMenu(e, tag.id)}
+                        onMouseMove={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, tag.id)
+                            : null
+                        }
+                        onMouseOver={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, tag.id)
+                            : null
+                        }
                       >
                         <MemoizedRange
                           key={tag.id}
