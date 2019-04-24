@@ -10,10 +10,13 @@ import styled from 'styled-components';
 
 import { MUIThemeProvider } from '@montage/ui';
 
+import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import grey from '@material-ui/core/colors/grey';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
 import InfoCard from './components/InfoCard';
 import Player from './components/Player';
@@ -82,7 +85,23 @@ const Bottom = styled.div`
   }
 `;
 
+const styles = {
+  Tab: {
+    color: 'white',
+  },
+  TabSelected: {
+    borderColor: 'white',
+    color: 'white',
+  },
+  TabsIndicator: {
+    background: 'white',
+  },
+};
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
     anchorElPrev: null,
     anchorElNext: null,
@@ -90,6 +109,7 @@ class App extends Component {
     playing: false,
     duration: DATA.gdVideoData.duration,
     data: DATA,
+    mode: 'timeline',
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -151,6 +171,7 @@ class App extends Component {
 
   render() {
     const { data, currentTime, duration } = this.state;
+    const { classes } = this.props;
 
     return (
       <>
@@ -216,19 +237,49 @@ class App extends Component {
                   playing={this.state.playing}
                   playPause={() => this.playPause()}
                 />
+                <Tabs
+                  value={this.state.mode}
+                  centered
+                  classes={{ indicator: classes.TabsIndicator }}
+                >
+                  <Tab
+                    onClick={() => this.setState({ mode: 'transcript' })}
+                    label="Transcript"
+                    selected={this.state.mode === 'transcript'}
+                    classes={{
+                      root: classes.Tab,
+                      selected: classes.TabSelected,
+                    }}
+                    value={'transcript'}
+                  >
+                    Transcript
+                  </Tab>
+                  <Tab
+                    onClick={() => this.setState({ mode: 'timeline' })}
+                    selected={this.state.mode === 'timeline'}
+                    label="Timeline"
+                    classes={{
+                      root: classes.Tab,
+                      selected: classes.TabSelected,
+                    }}
+                    value={'timeline'}
+                  />
+                </Tabs>
               </Top>
-              <Bottom>
-                <Timeline
-                  currentTime={currentTime}
-                  data={data}
-                  duration={duration}
-                  onPause={() => this.onPause()}
-                  onPlay={() => this.onPlay()}
-                  player={this.player}
-                  playing={this.state.playing}
-                  playPause={() => this.playPause()}
-                />
-              </Bottom>
+              {this.state.mode === 'timeline' ? (
+                <Bottom>
+                  <Timeline
+                    currentTime={currentTime}
+                    data={data}
+                    duration={duration}
+                    onPause={() => this.onPause()}
+                    onPlay={() => this.onPlay()}
+                    player={this.player}
+                    playing={this.state.playing}
+                    playPause={() => this.playPause()}
+                  />
+                </Bottom>
+              ) : null}
             </MUIThemeProvider>
           </MuiPickersUtilsProvider>
         </SnackbarProvider>
@@ -237,7 +288,7 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
 
 export const AngularVideoTimeline = react2angular(
   App,
