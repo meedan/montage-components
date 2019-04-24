@@ -27,6 +27,10 @@ function KeepListItem(props) {
   const currentMedia = media[mediaIds.indexOf(id)];
   const isArchived = archived_at !== null && archived_at !== undefined;
 
+  console.group('KeepListItem');
+  console.log(data.keep);
+  console.groupEnd();
+
   const [status, setStatus] = useState(null);
 
   const popupState = usePopupState({
