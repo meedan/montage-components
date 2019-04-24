@@ -16,9 +16,26 @@ const styles = {
 };
 
 const PlaceInstancePopover = props => {
-  const { classes, id, x, y, instance, place, onExit } = props;
+  const {
+    classes,
+    id,
+    instance,
+    instanceEndX,
+    instanceStartX,
+    onExit,
+    place,
+    timelineOffset,
+    trackRect,
+  } = props;
   if (!instance || !place || id !== place.id) return null;
-  // Place {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+
+  const x = instanceEndX
+    ? instanceStartX +
+      (instanceEndX - instanceStartX) / 2 +
+      224 +
+      timelineOffset
+    : 0;
+  const y = trackRect ? trackRect.y + trackRect.height : 0;
 
   const expandInstance = e => {
     e.stopPropagation();
