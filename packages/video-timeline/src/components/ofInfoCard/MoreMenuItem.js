@@ -94,7 +94,7 @@ const MoreMenuItem = props => {
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           {...bindMenu(popupState)}
         >
-          {/* !isArchived ? (
+          {!isArchived ? (
             <>
               <Submenu
                 dense
@@ -200,7 +200,7 @@ const MoreMenuItem = props => {
                 <ListItemText>Manage duplicates</ListItemText>
               </MenuItem>
             </>
-          ) : null */}
+          ) : null}
           <MenuItem onClick={() => setIsRemovingVideo(true)} dense>
             <ListItemText>Remove from Library</ListItemText>
           </MenuItem>
