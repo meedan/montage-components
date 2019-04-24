@@ -113,11 +113,16 @@ class Timeline extends Component {
 
   componentDidMount() {
     this.updateDimensions();
+    window.addEventListener('resize', this.updateDimensions.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions.bind(this));
   }
 
   updateDimensions() {
     const rect = this.timelineRef.current;
-    const rectBox = rect.getBoundingClientRect();
+    const rectBox = rect ? rect.getBoundingClientRect() : null;
 
     console.group('updateDimensions()');
     console.log({ rect });
