@@ -53,7 +53,7 @@ function InfoCard(props) {
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
-  const mapData = data.videoPlaces.reduce(
+  const mapData = !data.videoPlaces ? [] : data.videoPlaces.reduce(
     (acc, p) => [...acc, ...p.instances.filter(i => !!i.data).map(i => i.data)],
     []
   );
