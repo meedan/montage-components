@@ -16,20 +16,27 @@ const SliderWrapper = styled.div`
     position: absolute;
     top: 0;
   }
-  .rc-slider-handle {
-    background: rgba(71, 123, 181, 1);
-    border-radius: 1px;
+  .rc-slider-handle:focus {
     border: none;
+    outline: none;
+  }
+  .rc-slider-handle,
+  .rc-slider-handle:active,
+  .rc-slider-handle:focus,
+  .rc-slider-handle:hover {
+    background: rgba(71, 123, 181, 1);
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
     height: 28px;
     margin: 0;
     position: absolute;
     top: 0;
     transform: translateX(-2px);
-    transition: background 0.1s;
+    transition: background 0.1s, top 0.5s;
     width: 4px;
   }
-  .rc-slider:hover .rc-slider-handle {
-    background: rgba(71, 123, 181, 1);
+  .rc-slider-handle:hover {
   }
   .rc-slider:hover .rc-slider-handle,
   .rc-slider-handle:focus {
