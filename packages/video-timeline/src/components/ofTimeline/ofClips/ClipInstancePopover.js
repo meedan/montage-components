@@ -6,6 +6,8 @@ import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
+import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
+
 import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
 
 const styles = {
@@ -74,6 +76,11 @@ const ClipInstancePopover = props => {
         <Tooltip title="Delete clip">
           <IconButton onClick={deleteInstance}>
             <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Open in Check">
+          <IconButton onClick={() => alert('This will open the Clip in Check')}>
+            <CheckIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       </div>
