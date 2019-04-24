@@ -561,6 +561,7 @@ class TimelineClips extends Component {
                         />
                       </SliderWrapper>
                       <ClipInstancePopover
+                        clip={this.state.targetClip}
                         deleteInstance={i => this.deleteInstance(clip.id, i)}
                         duplicateAsClip={i => this.share2Check(clip.id, i)}
                         expandInstance={i => this.expandInstance(clip.id, i)}
@@ -570,7 +571,6 @@ class TimelineClips extends Component {
                         instanceStartX={this.state.targetInstanceStartX}
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
-                        clip={this.state.targetClip}
                         timelineOffset={this.props.timelineOffset}
                         track={this.state.targetTrack}
                         trackRect={this.state.trackRect}

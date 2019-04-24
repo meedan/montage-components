@@ -15,9 +15,27 @@ const styles = {
 };
 
 const ClipInstancePopover = props => {
-  const { classes, id, x, y, instance, clip, onExit } = props;
+  const {
+    classes,
+    clip,
+    id,
+    instance,
+    instanceEndX,
+    instanceStartX,
+    onExit,
+    timelineOffset,
+    trackRect,
+  } = props;
   if (!instance || !clip || id !== clip.id) return null;
   // Clip {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+
+  const x = instanceEndX
+    ? instanceStartX +
+      (instanceEndX - instanceStartX) / 2 +
+      224 +
+      timelineOffset
+    : 0;
+  const y = trackRect ? trackRect.y + trackRect.height : 0;
 
   const expandInstance = e => {
     e.stopPropagation();
