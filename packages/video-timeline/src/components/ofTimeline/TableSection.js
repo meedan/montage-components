@@ -9,7 +9,10 @@ import TableBlock from './TableBlock';
 function TableSection(props) {
   const { actions, firstRowContent, children, title } = props;
   return (
-    <TableBody style={{ width: '100%', position: 'relative', zIndex: '20' }}>
+    <TableBody
+      style={{ width: '100%', position: 'relative', zIndex: '20' }}
+      onMouseLeave={props.onMouseLeave}
+    >
       <TableBlock
         plain={props.plain}
         leftColContent={

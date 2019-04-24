@@ -258,6 +258,7 @@ class TimelineTags extends Component {
   };
 
   leMenuClose = () => {
+    console.log('leMenuClose()');
     this.setState({
       targetInstance: null,
       targetTag: null,
@@ -298,10 +299,6 @@ class TimelineTags extends Component {
     const targetInstance = targetTag.instances.find(
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
-
-    if (!targetInstance || !targetTag) this.leMenuClose();
-
-    // console.log(targetInstance);
 
     const pxs = endPos / duration;
 
@@ -385,10 +382,6 @@ class TimelineTags extends Component {
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
 
-    // console.group('Hello');
-    // console.log(this.state);
-    // console.groupEnd();
-
     return (
       <TableSection
         plain={videoTags ? videoTags.length > 0 : false}
@@ -411,6 +404,7 @@ class TimelineTags extends Component {
             </Tooltip>
           </>
         }
+        onMouseLeave={this.leMenuClose}
       >
         {videoTags
           ? videoTags.map((tag, i) => {
@@ -461,7 +455,6 @@ class TimelineTags extends Component {
                       <SliderWrapper
                         onMouseMove={e => this.leMenu(e, tag.id)}
                         onMouseOver={e => this.leMenu(e, tag.id)}
-                        onMouseLeave={this.leMenuClose}
                       >
                         <MemoizedRange
                           key={tag.id}
