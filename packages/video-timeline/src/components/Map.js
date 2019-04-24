@@ -118,7 +118,7 @@ class Map extends Component {
             .map(({ lat, lng, time }, i) => (
               <Marker
                 key={`m-${i}`}
-                draggable
+                draggable={false}
                 animation={window.google && window.google.maps.Animation.DROP}
                 position={{ lat, lng }}
                 onClick={e => this.handleMarkerClick(time, e)}
