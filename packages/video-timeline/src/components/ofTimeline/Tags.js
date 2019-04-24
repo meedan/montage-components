@@ -299,6 +299,8 @@ class TimelineTags extends Component {
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
 
+    if (!targetInstance || !targetTag) this.leMenuClose();
+
     // console.log(targetInstance);
 
     const pxs = endPos / duration;
@@ -459,6 +461,7 @@ class TimelineTags extends Component {
                       <SliderWrapper
                         onMouseMove={e => this.leMenu(e, tag.id)}
                         onMouseOver={e => this.leMenu(e, tag.id)}
+                        onMouseLeave={this.leMenuClose}
                       >
                         <MemoizedRange
                           key={tag.id}
