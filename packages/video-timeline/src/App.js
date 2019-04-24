@@ -55,22 +55,40 @@ console.group('Data:');
 console.log(DATA);
 console.groupEnd();
 
-const Top = styled.div`
+const Layout = styled.div`
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+`;
+const TopWrapper = styled.div`
   background-color: ${grey[600]};
+  flex: 0 0 auto;
+  width: 100%;
   & > * {
     margin-left: auto;
     margin-right: auto;
     max-width: 1150px;
   }
 `;
-const Bottom = styled.div`
+const TimelineWrapper = styled.div`
   border-left: 1px solid ${grey[300]};
   border-right: 1px solid ${grey[300]};
   margin-left: auto;
   margin-right: auto;
   max-width: 1600px;
   min-height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 200px;
   position: relative;
+  width: 100%;
   &:before {
     border-left: 1px solid ${grey[300]};
     content: ' ';
@@ -180,106 +198,108 @@ class App extends Component {
             <CssBaseline />
             <MUIThemeProvider>
               <style scoped>{'.popover { pointer-events: none; }'}</style>
-              <Top>
-                <Grid
-                  alignItems="center"
-                  alignContent="space-between"
-                  container
-                  justify="center"
-                  spacing={0}
-                  wrap="nowrap"
-                >
-                  <Grid item sm={'auto'}>
-                    {data.prevVideo ? (
-                      <Preview data={data.prevVideo} isPrev />
-                    ) : null}
-                  </Grid>
-                  <Grid item sm={12}>
-                    <Paper square>
-                      <Grid
-                        container
-                        justify="center"
-                        alignItems="stretch"
-                        spacing={0}
-                        direction="row-reverse"
-                      >
-                        <Grid item sm={4}>
-                          <InfoCard
-                            data={data}
-                            currentTime={currentTime}
-                            player={this.player}
-                          />
-                        </Grid>
-                        <Grid item sm={8}>
-                          <Player
-                            data={data}
-                            onProgress={this.onProgress}
-                            onDuration={this.onDuration}
-                            setPlayer={this.setPlayer}
-                            playing={this.state.playing}
-                            onPlay={() => this.onPlay()}
-                            onPause={() => this.onPause()}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Paper>
-                  </Grid>
-                  <Grid item sm={'auto'}>
-                    {data.prevVideo ? (
-                      <Preview data={data.nextVideo} isNext />
-                    ) : null}
-                  </Grid>
-                </Grid>
-                <Transport
-                  currentTime={currentTime}
-                  duration={duration}
-                  player={this.player}
-                  playing={this.state.playing}
-                  playPause={() => this.playPause()}
-                />
-                <Tabs
-                  value={this.state.mode}
-                  centered
-                  classes={{ indicator: classes.TabsIndicator }}
-                >
-                  <Tab
-                    onClick={() => this.setState({ mode: 'transcript' })}
-                    label="Transcript"
-                    selected={this.state.mode === 'transcript'}
-                    classes={{
-                      root: classes.Tab,
-                      selected: classes.TabSelected,
-                    }}
-                    value={'transcript'}
+              <Layout>
+                <TopWrapper>
+                  <Grid
+                    alignItems="center"
+                    alignContent="space-between"
+                    container
+                    justify="center"
+                    spacing={0}
+                    wrap="nowrap"
                   >
-                    Transcript
-                  </Tab>
-                  <Tab
-                    onClick={() => this.setState({ mode: 'timeline' })}
-                    selected={this.state.mode === 'timeline'}
-                    label="Timeline"
-                    classes={{
-                      root: classes.Tab,
-                      selected: classes.TabSelected,
-                    }}
-                    value={'timeline'}
-                  />
-                </Tabs>
-              </Top>
-              {this.state.mode === 'timeline' ? (
-                <Bottom>
-                  <Timeline
+                    <Grid item sm={'auto'}>
+                      {data.prevVideo ? (
+                        <Preview data={data.prevVideo} isPrev />
+                      ) : null}
+                    </Grid>
+                    <Grid item sm={12}>
+                      <Paper square>
+                        <Grid
+                          container
+                          justify="center"
+                          alignItems="stretch"
+                          spacing={0}
+                          direction="row-reverse"
+                        >
+                          <Grid item sm={4}>
+                            <InfoCard
+                              data={data}
+                              currentTime={currentTime}
+                              player={this.player}
+                            />
+                          </Grid>
+                          <Grid item sm={8}>
+                            <Player
+                              data={data}
+                              onProgress={this.onProgress}
+                              onDuration={this.onDuration}
+                              setPlayer={this.setPlayer}
+                              playing={this.state.playing}
+                              onPlay={() => this.onPlay()}
+                              onPause={() => this.onPause()}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                    <Grid item sm={'auto'}>
+                      {data.prevVideo ? (
+                        <Preview data={data.nextVideo} isNext />
+                      ) : null}
+                    </Grid>
+                  </Grid>
+                  <Transport
                     currentTime={currentTime}
-                    data={data}
                     duration={duration}
-                    onPause={() => this.onPause()}
-                    onPlay={() => this.onPlay()}
                     player={this.player}
                     playing={this.state.playing}
                     playPause={() => this.playPause()}
                   />
-                </Bottom>
-              ) : null}
+                  <Tabs
+                    value={this.state.mode}
+                    centered
+                    classes={{ indicator: classes.TabsIndicator }}
+                  >
+                    <Tab
+                      onClick={() => this.setState({ mode: 'transcript' })}
+                      label="Transcript"
+                      selected={this.state.mode === 'transcript'}
+                      classes={{
+                        root: classes.Tab,
+                        selected: classes.TabSelected,
+                      }}
+                      value={'transcript'}
+                    >
+                      Transcript
+                    </Tab>
+                    <Tab
+                      onClick={() => this.setState({ mode: 'timeline' })}
+                      selected={this.state.mode === 'timeline'}
+                      label="Timeline"
+                      classes={{
+                        root: classes.Tab,
+                        selected: classes.TabSelected,
+                      }}
+                      value={'timeline'}
+                    />
+                  </Tabs>
+                </TopWrapper>
+                {this.state.mode === 'timeline' ? (
+                  <TimelineWrapper>
+                    <Timeline
+                      currentTime={currentTime}
+                      data={data}
+                      duration={duration}
+                      onPause={() => this.onPause()}
+                      onPlay={() => this.onPlay()}
+                      player={this.player}
+                      playing={this.state.playing}
+                      playPause={() => this.playPause()}
+                    />
+                  </TimelineWrapper>
+                ) : null}
+              </Layout>
             </MUIThemeProvider>
           </MuiPickersUtilsProvider>
         </SnackbarProvider>
