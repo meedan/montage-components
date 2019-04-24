@@ -23,7 +23,10 @@ class TimelineClips extends Component {
   state = {
     playlist: false,
     values: {},
-    mousePosAbs: { x: 0, y: 0 },
+    targetTrack: null,
+    trackRect: null,
+    targetInstanceStartX: 0,
+    targetInstanceEndX: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -197,7 +200,7 @@ class TimelineClips extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({ values, isDragging: false });
   };
 
   onBeforeChange = (v, id) => {
@@ -210,7 +213,12 @@ class TimelineClips extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({
+      values,
+      targetInstance: null,
+      targetClip: null,
+      isDragging: true,
+    });
   };
 
   onChange = (v, id) => {
@@ -270,7 +278,7 @@ class TimelineClips extends Component {
     this.setState({ videoClips, segments });
   };
 
-  startNewClip = (event, name = '') => {
+  startNewClip = () => {
     const { currentTime, duration } = this.props;
     const id = Math.random()
       .toString(36)
@@ -290,7 +298,7 @@ class TimelineClips extends Component {
           },
         ],
         project_clip: {
-          name,
+          name: '',
         },
       });
     });
@@ -328,9 +336,10 @@ class TimelineClips extends Component {
   };
 
   leMenuClose = () => {
+    console.log('leMenuClose()');
     this.setState({
       targetInstance: null,
-      targetTag: null,
+      targetClip: null,
     });
   };
 
@@ -353,12 +362,10 @@ class TimelineClips extends Component {
     const mousePos = e.clientX - startPos;
     const mousePosFlat = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
-    const mousePosAbs = { x: e.clientX, y: e.clientY };
 
     const targetClip = videoClips.find(t => t.id === id);
     if (!targetClip) {
       this.setState({
-        mousePosAbs,
         mousePosFlat,
         mouseTime,
         targetInstance: null,
@@ -371,13 +378,25 @@ class TimelineClips extends Component {
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
 
-    // console.log(targetInstance);
+    const pxs = endPos / duration;
+
+    // console.group('leMenu');
+    // // console.log('rect', rect);
+    // console.log('e.currentTarget', e.currentTarget);
+    // console.log('targetClip', targetClip);
+    // console.log('targetInstance', targetInstance);
+    // console.groupEnd();
 
     this.setState({
+      targetTrack: e.currentTarget,
+      trackRect: rect,
       mousePosFlat,
-      mousePosAbs,
       mouseTime,
       targetInstance,
+      targetInstanceStartX: targetInstance
+        ? pxs * targetInstance.start_seconds
+        : 0,
+      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetClip,
     });
   };
@@ -417,6 +436,12 @@ class TimelineClips extends Component {
     this.setState({ videoClips, segments });
   }
 
+  share2Check = (id, instance) => {
+    console.group('share2Check');
+    console.log(instance);
+    console.groupEnd();
+  };
+
   expandInstance(id, instance) {
     console.group('expandInstance()');
     console.log(instance);
@@ -438,10 +463,6 @@ class TimelineClips extends Component {
     const { currentTime, duration, data } = this.props;
     const { videoClips, playlist } = this.state;
     const { projectclips } = data.project;
-
-    // console.group('Hello');
-    // console.log(this.state);
-    // console.groupEnd();
 
     return (
       <TableSection
@@ -465,6 +486,7 @@ class TimelineClips extends Component {
             </Tooltip>
           </>
         }
+        onMouseLeave={this.leMenuClose}
       >
         {videoClips
           ? videoClips.map((clip, i) => {
@@ -500,21 +522,29 @@ class TimelineClips extends Component {
                   leftColContent={
                     <ClipControls
                       currentTime={currentTime}
+                      deleteClip={() => this.deleteClip(clip.id)}
                       isCreating={clip.isCreating}
                       projectClips={projectclips}
+                      renameClip={name => this.renameClip(clip.id, name)}
                       startNewInstance={() => this.startNewInstance(clip.id)}
                       stopNewClip={this.stopNewClip}
                       clipId={clip.id}
                       clipName={project_clip.name}
-                      deleteClip={() => this.deleteClip(clip.id)}
-                      renameClip={name => this.renameClip(clip.id, name)}
                     />
                   }
                   rightColContent={
                     <>
                       <SliderWrapper
-                        onMouseMove={e => this.leMenu(e, clip.id)}
-                        onMouseOver={e => this.leMenu(e, clip.id)}
+                        onMouseMove={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, clip.id)
+                            : null
+                        }
+                        onMouseOver={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, clip.id)
+                            : null
+                        }
                       >
                         <MemoizedRange
                           key={clip.id}
@@ -531,16 +561,19 @@ class TimelineClips extends Component {
                         />
                       </SliderWrapper>
                       <ClipInstancePopover
-                        clip={this.state.targetClip}
                         deleteInstance={i => this.deleteInstance(clip.id, i)}
+                        duplicateAsClip={i => this.share2Check(clip.id, i)}
                         expandInstance={i => this.expandInstance(clip.id, i)}
                         id={clip.id}
                         instance={this.state.targetInstance}
+                        instanceEndX={this.state.targetInstanceEndX}
+                        instanceStartX={this.state.targetInstanceStartX}
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
+                        clip={this.state.targetClip}
                         timelineOffset={this.props.timelineOffset}
-                        x={this.state.mousePosAbs.x}
-                        y={this.state.mousePosAbs.y}
+                        track={this.state.targetTrack}
+                        trackRect={this.state.trackRect}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
@@ -556,8 +589,8 @@ class TimelineClips extends Component {
   }
 }
 
-const recomputeSegments = (videoTags, duration) => {
-  const instances = videoTags
+const recomputeSegments = (videoClips, duration) => {
+  const instances = videoClips
     .reduce((acc, t) => [...acc, ...t.instances], [])
     .sort((j, i) => j.start_seconds - i.start_seconds);
 
