@@ -10,11 +10,11 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import formatTime from './formatTime';
-import PlaceControls from './ofPlaces/PlaceControls';
-import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
+import PlaceControls from './ofPlaces/PlaceControls';
+import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 
 const Range = Slider.Range;
 const Handle = Slider.Handle;
@@ -23,7 +23,10 @@ class TimelinePlaces extends Component {
   state = {
     playlist: false,
     values: {},
-    mousePosAbs: { x: 0, y: 0 },
+    targetTrack: null,
+    trackRect: null,
+    targetInstanceStartX: 0,
+    targetInstanceEndX: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -124,7 +127,7 @@ class TimelinePlaces extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({ values, isDragging: false });
   };
 
   onBeforeChange = (v, id) => {
@@ -145,7 +148,12 @@ class TimelinePlaces extends Component {
     }
 
     values[id] = v;
-    this.setState({ values });
+    this.setState({
+      values,
+      targetInstance: null,
+      targetPlace: null,
+      isDragging: true,
+    });
   };
 
   onChange = (v, id) => {
@@ -264,9 +272,10 @@ class TimelinePlaces extends Component {
   };
 
   leMenuClose = () => {
+    console.log('leMenuClose()');
     this.setState({
       targetInstance: null,
-      targetTag: null,
+      targetPlace: null,
     });
   };
 
@@ -289,12 +298,10 @@ class TimelinePlaces extends Component {
     const mousePos = e.clientX - startPos;
     const mousePosFlat = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
-    const mousePosAbs = { x: e.clientX, y: e.clientY };
 
     const targetPlace = videoPlaces.find(t => t.id === id);
     if (!targetPlace) {
       this.setState({
-        mousePosAbs,
         mousePosFlat,
         mouseTime,
         targetInstance: null,
@@ -307,13 +314,25 @@ class TimelinePlaces extends Component {
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
 
-    // console.log(targetInstance);
+    const pxs = endPos / duration;
+
+    // console.group('leMenu');
+    // // console.log('rect', rect);
+    // console.log('e.currentTarget', e.currentTarget);
+    // console.log('targetPlace', targetPlace);
+    // console.log('targetInstance', targetInstance);
+    // console.groupEnd();
 
     this.setState({
+      targetTrack: e.currentTarget,
+      trackRect: rect,
       mousePosFlat,
-      mousePosAbs,
       mouseTime,
       targetInstance,
+      targetInstanceStartX: targetInstance
+        ? pxs * targetInstance.start_seconds
+        : 0,
+      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetPlace,
     });
   };
@@ -353,11 +372,14 @@ class TimelinePlaces extends Component {
     this.setState({ videoPlaces, segments });
   }
 
-  duplicateAsClip(instance) {
+  duplicateAsClip = (id, instance) => {
     console.group('duplicateAsClip()');
     console.log(instance);
     console.groupEnd();
-  }
+
+    const place = this.state.videoPlaces.find(t => t.id === id);
+    this.props.duplicateAsClip(place, instance);
+  };
 
   expandInstance(id, instance) {
     console.group('expandInstance()');
@@ -403,6 +425,7 @@ class TimelinePlaces extends Component {
             </Tooltip>
           </>
         }
+        onMouseLeave={this.leMenuClose}
       >
         {videoPlaces
           ? videoPlaces.map((place, i) => {
@@ -451,8 +474,16 @@ class TimelinePlaces extends Component {
                   rightColContent={
                     <>
                       <SliderWrapper
-                        onMouseMove={e => this.leMenu(e, place.id)}
-                        onMouseOver={e => this.leMenu(e, place.id)}
+                        onMouseMove={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, place.id)
+                            : null
+                        }
+                        onMouseOver={
+                          !this.state.isDragging
+                            ? e => this.leMenu(e, place.id)
+                            : null
+                        }
                       >
                         <MemoizedRange
                           key={place.id}
@@ -470,16 +501,18 @@ class TimelinePlaces extends Component {
                       </SliderWrapper>
                       <PlaceInstancePopover
                         deleteInstance={i => this.deleteInstance(place.id, i)}
-                        duplicateAsClip={this.duplicateAsClip}
+                        duplicateAsClip={i => this.duplicateAsClip(place.id, i)}
                         expandInstance={i => this.expandInstance(place.id, i)}
                         id={place.id}
                         instance={this.state.targetInstance}
+                        instanceEndX={this.state.targetInstanceEndX}
+                        instanceStartX={this.state.targetInstanceStartX}
                         onClose={this.leMenuClose}
                         onExit={e => this.leMenuOff(e)}
                         place={this.state.targetPlace}
                         timelineOffset={this.props.timelineOffset}
-                        x={this.state.mousePosAbs.x}
-                        y={this.state.mousePosAbs.y}
+                        track={this.state.targetTrack}
+                        trackRect={this.state.trackRect}
                       />
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
@@ -495,8 +528,8 @@ class TimelinePlaces extends Component {
   }
 }
 
-const recomputeSegments = (videoTags, duration) => {
-  const instances = videoTags
+const recomputeSegments = (videoPlaces, duration) => {
+  const instances = videoPlaces
     .reduce((acc, t) => [...acc, ...t.instances], [])
     .sort((j, i) => j.start_seconds - i.start_seconds);
 
