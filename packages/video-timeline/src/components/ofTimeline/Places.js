@@ -214,6 +214,7 @@ class TimelinePlaces extends Component {
   };
 
   startNewPlace = () => {
+    this.props.setMap(false);
     const { currentTime, duration } = this.props;
     const id = Math.random()
       .toString(36)

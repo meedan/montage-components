@@ -127,6 +127,7 @@ class App extends Component {
     duration: DATA.gdVideoData.duration,
     data: DATA,
     mode: 'timeline',
+    map: false,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -186,8 +187,12 @@ class App extends Component {
     this.setState({ playing: false });
   };
 
+  setMap = map => {
+    this.setState({ map });
+  };
+
   render() {
-    const { data, currentTime, duration } = this.state;
+    const { data, currentTime, duration, map } = this.state;
     const { classes } = this.props;
 
     return (
@@ -226,6 +231,8 @@ class App extends Component {
                               data={data}
                               currentTime={currentTime}
                               player={this.player}
+                              map={map}
+                              setMap={this.setMap}
                             />
                           </Grid>
                           <Grid item sm={8}>
@@ -296,6 +303,7 @@ class App extends Component {
                         player={this.player}
                         playing={this.state.playing}
                         playPause={() => this.playPause()}
+                        setMap={this.setMap}
                       />
                     </TimelineWrapper>
                   ) : null}
