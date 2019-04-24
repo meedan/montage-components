@@ -110,9 +110,11 @@ class TimelineTags extends Component {
   handle = props => {
     // console.log(props);
     const { value, index, ...restProps } = props;
-    // <Tooltip key={index} placement="top" title={formatTime(value)}>
-    // </Tooltip>
-    return <Handle value={value} {...restProps} />;
+    return (
+      <Tooltip key={index} placement="top" title={formatTime(value)}>
+        <Handle value={value} {...restProps} />
+      </Tooltip>
+    );
   };
 
   onAfterChange = (v, id) => {
