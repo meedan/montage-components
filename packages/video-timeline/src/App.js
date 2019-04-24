@@ -77,6 +77,11 @@ const TopWrapper = styled.div`
     max-width: 1150px;
   }
 `;
+const BottomWrapper = styled.div`
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+`;
 const TimelineWrapper = styled.div`
   border-left: 1px solid ${grey[300]};
   border-right: 1px solid ${grey[300]};
@@ -84,11 +89,8 @@ const TimelineWrapper = styled.div`
   margin-right: auto;
   max-width: 1600px;
   min-height: 500px;
-  overflow-x: hidden;
-  overflow-y: auto;
   padding-bottom: 200px;
   position: relative;
-  width: 100%;
   &:before {
     border-left: 1px solid ${grey[300]};
     content: ' ';
@@ -285,20 +287,22 @@ class App extends Component {
                     />
                   </Tabs>
                 </TopWrapper>
-                {this.state.mode === 'timeline' ? (
-                  <TimelineWrapper>
-                    <Timeline
-                      currentTime={currentTime}
-                      data={data}
-                      duration={duration}
-                      onPause={() => this.onPause()}
-                      onPlay={() => this.onPlay()}
-                      player={this.player}
-                      playing={this.state.playing}
-                      playPause={() => this.playPause()}
-                    />
-                  </TimelineWrapper>
-                ) : null}
+                <BottomWrapper>
+                  {this.state.mode === 'timeline' ? (
+                    <TimelineWrapper>
+                      <Timeline
+                        currentTime={currentTime}
+                        data={data}
+                        duration={duration}
+                        onPause={() => this.onPause()}
+                        onPlay={() => this.onPlay()}
+                        player={this.player}
+                        playing={this.state.playing}
+                        playPause={() => this.playPause()}
+                      />
+                    </TimelineWrapper>
+                  ) : null}
+                </BottomWrapper>
               </Layout>
             </MUIThemeProvider>
           </MuiPickersUtilsProvider>
