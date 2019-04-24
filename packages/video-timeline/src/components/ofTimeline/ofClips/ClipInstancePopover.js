@@ -73,14 +73,14 @@ const ClipInstancePopover = props => {
             <InstanceExpandIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Delete clip">
-          <IconButton onClick={deleteInstance}>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
         <Tooltip title="Open in Check">
           <IconButton onClick={() => alert('This will open the Clip in Check')}>
             <CheckIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete clip">
+          <IconButton onClick={deleteInstance}>
+            <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       </div>
