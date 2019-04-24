@@ -1,6 +1,7 @@
 import React from "react";
 import { markdown, ReactSpecimen } from "@catalog/core";
 
+import CheckIcon from "@montage/ui/src/components/icons/CheckIcon";
 import ContentCutIcon from "@montage/ui/src/components/icons/ContentCutIcon";
 import CopyToClipboardIcon from "@montage/ui/src/components/icons/CopyToClipboardIcon";
 import InstanceExpandIcon from "@montage/ui/src/components/icons/InstanceExpandIcon";
@@ -50,6 +51,11 @@ ${(
 ${(
   <ReactSpecimen showSource span={2}>
     <InstanceExpandIcon />
+  </ReactSpecimen>
+)}
+${(
+  <ReactSpecimen showSource span={2}>
+    <CheckIcon />
   </ReactSpecimen>
 )}
 
