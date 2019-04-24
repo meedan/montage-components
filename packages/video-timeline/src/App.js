@@ -4,6 +4,8 @@ import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
 
+import hamock from './hamock.png';
+
 import produce from 'immer';
 
 import styled from 'styled-components';
@@ -298,7 +300,16 @@ class App extends Component {
                         playPause={() => this.playPause()}
                       />
                     </TimelineWrapper>
-                  ) : null}
+                  ) : (
+                    <div style={{ textAlign: 'center' }}>
+                      <img
+                        alt=""
+                        src={hamock}
+                        style={{ margin: '0 auto' }}
+                        width="1024px"
+                      />
+                    </div>
+                  )}
                 </BottomWrapper>
               </Layout>
             </MUIThemeProvider>
