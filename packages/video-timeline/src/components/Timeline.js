@@ -122,14 +122,14 @@ class Timeline extends Component {
 
   updateDimensions() {
     const rect = this.timelineRef.current;
-    const rectBox = rect ? rect.getBoundingClientRect() : null;
-
-    console.group('updateDimensions()');
-    console.log({ rect });
-    console.log({ rectBox });
-    console.groupEnd();
-
-    this.setState({ timelineOffset: rectBox.left });
+    if (rect) {
+      const rectBox = rect ? rect.getBoundingClientRect() : null;
+      console.group('updateDimensions()');
+      console.log({ rect });
+      console.log({ rectBox });
+      console.groupEnd();
+      this.setState({ timelineOffset: rectBox.left });
+    }
   }
 
   onTrackClick = e => {
