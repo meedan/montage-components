@@ -265,6 +265,7 @@ class Timeline extends Component {
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
             timelineOffset={this.state.timelineOffset}
+            setMap={this.props.setMap}
           />
         </Table>
       </TimelinePlayheadWrapper>
