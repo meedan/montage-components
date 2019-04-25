@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import produce from 'immer';
+import Flatted from 'flatted/esm';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -31,14 +32,19 @@ class TimelinePlaces extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { data, duration, skip } = props;
-    const { videoPlaces } = data;
+    let { videoPlaces } = data;
 
     if (skip) return null;
+
+    const persisted = window.localStorage.getItem('videoPlaces');
+    if (persisted) videoPlaces = Flatted.parse(persisted);
+    console.log(videoPlaces);
 
     if (state.videoPlaces && state.segments) return null;
 
     // merge overlapping place instances
     videoPlaces.forEach(t => {
+      t.isCreating = false;
       t.instances = t.instances
         .sort((j, i) => j.start_seconds - i.start_seconds)
         .reduce((acc = [], i) => {
@@ -67,6 +73,8 @@ class TimelinePlaces extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (nextState !== this.state) window.localStorage.setItem('videoPlaces', Flatted.stringify(nextState.videoPlaces));
+
     if (nextProps.skip) return false;
 
     if (
