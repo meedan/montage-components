@@ -38,7 +38,7 @@ class TimelinePlaces extends Component {
 
     const persisted = window.localStorage.getItem('videoPlaces');
     if (persisted) videoPlaces = Flatted.parse(persisted);
-    console.log(videoPlaces);
+    // console.log(videoPlaces);
 
     if (state.videoPlaces && state.segments) return null;
 
@@ -75,7 +75,7 @@ class TimelinePlaces extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState !== this.state) {
       window.localStorage.setItem('videoPlaces', Flatted.stringify(nextState.videoPlaces));
-      window.localStorage.setItem('videoPlacesData', Flatted.stringify(window.BIGNONO));
+      // if (window.BIGNONO && Object.keys(window.BIGNONO).length > 0) window.localStorage.setItem('videoPlacesData', Flatted.stringify(window.BIGNONO));
     }
 
     if (nextProps.skip) return false;

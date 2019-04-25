@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Flatted from 'flatted/esm';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -82,8 +83,14 @@ class PlaceControls extends Component {
     // this.props.renamePlace(this.state.placeName, this.state.marker);
     // setTimeout(() => this.setState({ isProcessing: false }), 1000);
 
-    if (!window.BIGNONO) window.BIGNONO = {};
-    window.BIGNONO[this.props.placeId] = marker;
+    // if (!window.BIGNONO) window.BIGNONO = {};
+    // window.BIGNONO[this.props.placeId] = marker;
+    let videoPlacesData = window.localStorage.getItem('videoPlacesData');
+    if (videoPlacesData) {
+      videoPlacesData = Flatted.parse(videoPlacesData);
+    } else videoPlacesData = {};
+    videoPlacesData[this.props.placeId] = marker;
+    window.localStorage.setItem('videoPlacesData', Flatted.stringify(videoPlacesData));
   };
 
   startReposition = () => {
@@ -196,6 +203,7 @@ class PlaceControls extends Component {
           <>
             {readModeLabel}
             <PlaceMapPopover
+              placeId={this.props.placeId}
               anchorRef={this.anchorRef.current}
               data={[]}
               isCreating={this.props.isCreating}
