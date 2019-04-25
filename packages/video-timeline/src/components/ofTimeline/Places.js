@@ -73,7 +73,10 @@ class TimelinePlaces extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState !== this.state) window.localStorage.setItem('videoPlaces', Flatted.stringify(nextState.videoPlaces));
+    if (nextState !== this.state) {
+      window.localStorage.setItem('videoPlaces', Flatted.stringify(nextState.videoPlaces));
+      window.localStorage.setItem('videoPlacesData', Flatted.stringify(window.BIGNONO));
+    }
 
     if (nextProps.skip) return false;
 
@@ -355,10 +358,15 @@ class TimelinePlaces extends Component {
     this.setState({ videoPlaces });
   };
 
-  renamePlace = (id, name) => {
+  renamePlace = (id, name, marker) => {
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
       nextVideoPlaces[i].project_location.name = name;
+      if (marker) nextVideoPlaces[i].instances.forEach(j => {
+        j.data = marker;
+        j.data.time = j.start_seconds;
+        j.data.duration = j.end_seconds - j.start_seconds;
+      });
     });
 
     this.setState({ videoPlaces });
@@ -475,7 +483,7 @@ class TimelinePlaces extends Component {
                       placeId={place.id}
                       placeName={project_location.name}
                       projectPlaces={projectplaces}
-                      renamePlace={name => this.renamePlace(place.id, name)}
+                      renamePlace={(name, marker) => this.renamePlace(place.id, name, marker)}
                       startNewInstance={() => this.startNewInstance(place.id)}
                       stopNewPlace={this.stopNewPlace}
                     />

@@ -177,7 +177,7 @@ class PlaceMap extends Component {
       });
     }
 
-    // this.props.onSave(marker);
+    this.props.onSave(marker);
     this.props.onClose();
   };
 

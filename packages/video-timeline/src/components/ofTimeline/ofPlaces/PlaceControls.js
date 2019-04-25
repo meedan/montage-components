@@ -76,6 +76,16 @@ class PlaceControls extends Component {
     this.setState({ placeName: placeName });
   };
 
+  placeRename2 = (marker, placeName) => {
+    console.log(marker, placeName);
+    this.setState({ marker, placeName });
+    // this.props.renamePlace(this.state.placeName, this.state.marker);
+    // setTimeout(() => this.setState({ isProcessing: false }), 1000);
+
+    if (!window.BIGNONO) window.BIGNONO = {};
+    window.BIGNONO[this.props.placeId] = marker;
+  };
+
   startReposition = () => {
     this.setState({ isHovering: false, editStep: 2 });
   };
@@ -91,7 +101,7 @@ class PlaceControls extends Component {
     console.log('placeName:', this.state.placeName);
     console.groupEnd();
 
-    this.props.renamePlace(this.state.placeName);
+    this.props.renamePlace(this.state.placeName, this.state.marker);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -192,6 +202,7 @@ class PlaceControls extends Component {
               onClose={this.endReposition}
               startPlaceRename={this.startPlaceRename}
               stopNewPlace={this.props.stopNewPlace}
+              onSave={marker => this.placeRename2(marker, this.state.placeName)}
             />
           </>
         );
