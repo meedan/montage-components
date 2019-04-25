@@ -278,7 +278,7 @@ class Map extends Component {
     console.log('state', this.state);
     console.groupEnd();
 
-    const center = marker ? { lat: marker.lat, lng: marker.lng } : data
+    let center = data
       .reduce(
         (acc, d) => {
           const coords =
@@ -289,6 +289,9 @@ class Map extends Component {
       )
       .reverse()
       .pop();
+
+  if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
+    console.log(center, marker);
 
     return (
       <MapWrapper>
