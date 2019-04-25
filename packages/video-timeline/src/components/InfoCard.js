@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import Flatted from 'flatted/esm';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -57,18 +58,35 @@ function InfoCard(props) {
   const { archived_at } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
-  const mapData = !data.videoPlaces
-    ? []
-    : data.videoPlaces.reduce(
+  let videoPlaces = [];
+  if (data.videoPlaces) videoPlaces = data.videoPlaces;
+  const persisted2 = window.localStorage.getItem('videoPlaces');
+  if (persisted2) videoPlaces = Flatted.parse(persisted2);
+
+  let videoPlacesData = {};
+  const persisted = window.localStorage.getItem('videoPlacesData');
+  if (persisted) videoPlacesData = Flatted.parse(persisted);
+
+  let mapData = videoPlaces.reduce(
         (acc, p) => [
           ...acc,
-          ...p.instances.filter(i => !!i.data).map(i => i.data),
+          ...p.instances.map(i => {
+            if (!videoPlacesData) return null;
+            if (!videoPlacesData[p.id]) return null;
+            videoPlacesData[p.id].time = i.start_seconds;
+            videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
+            return videoPlacesData[p.id];
+          }),
+          // ...p.instances.filter(i => !!i.data).map(i => i.data),
         ],
         []
-      );
+      ).filter(d => !!d);
+
+  // console.log(videoPlaces, videoPlacesData, mapData);
 
   return map ? (
     <Map
+      id="TopMap"
       collapseMap={() => setMap(false)}
       currentTime={currentTime}
       data={mapData}

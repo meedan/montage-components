@@ -394,11 +394,13 @@ class PlaceMap extends Component {
           }}
         />
         <LoadScript
+          id={`map-${this.props.placeId}`}
           googleMapsApiKey="***REMOVED***"
           libraries={['places', 'drawing', 'geometry']}
           onLoad={this.onScriptLoad}
         >
           <GoogleMap
+            id={`map-${this.props.placeId}`}
             mapContainerStyle={{
               height: '240px',
               width: '400px',

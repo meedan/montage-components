@@ -61,6 +61,7 @@ class Map extends Component {
       drawPolygon: false,
       saved: true,
       marker: this.props.marker || {},
+      center: null, // { lat: 0, lng: 0 },
     };
 
     this.searchRef = React.createRef();
@@ -73,11 +74,14 @@ class Map extends Component {
           time <= nextProps.currentTime &&
           nextProps.currentTime < time + duration
       );
+
+      console.log(match);
       if (match && this.map) {
         const { lat, lng, viewport } =
           match.type === 'marker' ? match : match.polygon[0];
         this.map.panTo({ lat, lng });
         viewport && this.map.fitBounds(viewport);
+        this.setState({center: { lat, lng }});
       }
     }
 
@@ -257,7 +261,7 @@ class Map extends Component {
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, id } = this.props;
     const { dropPin, drawPolygon, marker } = this.state;
 
     const polygonOptions = {
@@ -273,10 +277,10 @@ class Map extends Component {
       zIndex: 1,
     };
 
-    console.group('PlaceMapPopover');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
+    // console.group('PlaceMapPopover');
+    // console.log('props', this.props);
+    // console.log('state', this.state);
+    // console.groupEnd();
 
     let center = data
       .reduce(
@@ -290,8 +294,11 @@ class Map extends Component {
       .reverse()
       .pop();
 
-  if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
-    console.log(center, marker);
+    if (this.state.center) center = this.state.center;
+    if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
+  // console.log(center, marker);
+
+    if (this.map && this.map.center) center = this.map.center;
 
     return (
       <MapWrapper>
@@ -388,11 +395,15 @@ class Map extends Component {
           }}
         />
         <LoadScript
+          id={`gm-${id}`}
+          key={`gm-${id}`}
           googleMapsApiKey="***REMOVED***"
           libraries={['places', 'drawing', 'geometry']}
           onLoad={this.onScriptLoad}
         >
           <GoogleMap
+            id={`map-${id}`}
+            key={`map-${id}`}
             mapContainerStyle={{
               height: '334px',
               width: '100%',
