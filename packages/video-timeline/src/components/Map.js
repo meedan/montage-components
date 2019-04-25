@@ -214,6 +214,8 @@ class Map extends Component {
       this.setState({
         saved: false,
         marker: {
+          lat: lat(), // TODO use center
+          lng: lng(),
           polygon: [
             ...(this.state.marker.polygon || []),
             { lat: lat(), lng: lng() },
