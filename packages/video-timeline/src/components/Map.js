@@ -255,7 +255,7 @@ class Map extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, data } = this.props;
     const { dropPin, drawPolygon, marker } = this.state;
 
     const polygonOptions = {
@@ -276,7 +276,7 @@ class Map extends Component {
     console.log('state', this.state);
     console.groupEnd();
 
-    const center = this.props.data
+    const center = marker ? { lat: marker.lat, lng: marker.lng } : data
       .reduce(
         (acc, d) => {
           const coords =
