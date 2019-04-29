@@ -4,22 +4,20 @@ import Slider from 'rc-slider';
 import produce from 'immer';
 import Flatted from 'flatted/esm';
 
-
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import formatTime from './formatTime';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 import TagControls from './ofTags/TagControls';
 import TagInstancePopover from './ofTags/TagInstancePopover';
+import InstanceHandle from './InstanceHandle';
 
 const Range = Slider.Range;
-const Handle = Slider.Handle;
 
 class TimelineTags extends Component {
   state = {
@@ -73,7 +71,11 @@ class TimelineTags extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState !== this.state) window.localStorage.setItem('videoTags', Flatted.stringify(nextState.videoTags));
+    if (nextState !== this.state)
+      window.localStorage.setItem(
+        'videoTags',
+        Flatted.stringify(nextState.videoTags)
+      );
 
     if (nextProps.skip) return false;
 
@@ -113,16 +115,6 @@ class TimelineTags extends Component {
       if (this.props.playing) this.props.playPause();
       this.setState({ playlist: false });
     }
-  };
-
-  handle = props => {
-    // console.log(props);
-    const { value, index, ...restProps } = props;
-    return (
-      <Tooltip key={index} placement="top" title={formatTime(value)}>
-        <Handle value={value} {...restProps} />
-      </Tooltip>
-    );
   };
 
   onAfterChange = (v, id) => {
@@ -488,7 +480,7 @@ class TimelineTags extends Component {
                           key={tag.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={this.handle}
+                          handle={props => <InstanceHandle {...props} />}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
