@@ -4,6 +4,7 @@ const SliderWrapper = styled.div`
   .rc-slider {
     height: 28px;
     z-index: 1;
+    pointer-events: none;
   }
   .rc-slider-rail {
     background: transparent;
@@ -15,6 +16,7 @@ const SliderWrapper = styled.div`
     height: 28px;
     position: absolute;
     top: 0;
+    pointer-events: auto;
   }
   .rc-slider-handle:focus {
     border: none;
@@ -30,6 +32,7 @@ const SliderWrapper = styled.div`
     box-shadow: none;
     height: 28px;
     margin: 0;
+    pointer-events: auto;
     position: absolute;
     top: 0;
     transform: translateX(-2px);
