@@ -19,7 +19,7 @@ const styles = theme => ({
 });
 
 const FavMenuItem = props => {
-  const { favourited } = props.data.gdVideoData;
+  const { favourited } = props;
   const { classes } = props;
   const [isProcessing, setProcessingStatus] = useState(false);
 

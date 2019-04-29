@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { withSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import {
-  usePopupState,
-  bindTrigger,
-  bindPopover,
-} from 'material-ui-popup-state/hooks';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import List from '@material-ui/core/List';
@@ -18,141 +14,150 @@ import Typography from '@material-ui/core/Typography';
 import KeepIcon from '@montage/ui/src/components/icons/KeepIcon';
 import CopyToClipboardIcon from '@montage/ui/src/components/icons/CopyToClipboardIcon';
 
-function KeepListItem(props) {
-  const { data } = props;
-  const { id } = data.gdVideoData;
-  const { archived_at } = data.gdVideoData;
-  const { services, serviceIds } = data.keep.settings;
-  const { media, mediaIds } = data.keep.backups;
-  const currentMedia = media[mediaIds.indexOf(id)];
-  const isArchived = archived_at !== null && archived_at !== undefined;
+class KeepListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { status: null };
+  }
 
-  console.group('KeepListItem');
-  console.log(data.keep);
-  console.groupEnd();
+  render() {
+    const { status } = this.state;
+    const { data } = this.props;
 
-  const [status, setStatus] = useState(null);
+    const { id } = data.gdVideoData;
+    const { archived_at } = data.gdVideoData;
+    const { services, serviceIds } = data.keep.settings;
+    const { media, mediaIds } = data.keep.backups;
+    const currentMedia = media[mediaIds.indexOf(id)];
+    const isArchived = archived_at !== null && archived_at !== undefined;
 
-  const popupState = usePopupState({
-    variant: 'popover',
-    popupId: 'KeepLocationsPopup',
-  });
+    const handleClipboardCopy = popupState => {
+      popupState.close();
+      this.props.enqueueSnackbar('URL copied to clipboard');
+    };
 
-  const handleClipboardCopy = () => {
-    popupState.close();
-    props.enqueueSnackbar('URL copied to clipboard');
-  };
+    const triggerSave = () => {
+      this.setState({ status: 'processing' });
+      setTimeout(() => this.setState({ status: 'error' }), 1000);
+    };
 
-  const triggerSave = () => {
-    setStatus('processing');
-    setTimeout(() => setStatus('error'), 1000);
-  };
-
-  if (status === 'processing') {
-    return (
-      <ListItem dense>
-        <ListItemIcon>
-          <KeepIcon />
-        </ListItemIcon>
-        <ListItemText>
-          <Typography inline>Sending video to Keep locations…</Typography>
-        </ListItemText>
-      </ListItem>
-    );
-  } else if (status === 'error') {
-    return (
-      <ListItem
-        button={!isArchived ? true : false}
-        onClick={!isArchived ? () => setStatus('success') : null}
-        dense
-      >
-        <ListItemIcon>
-          <KeepIcon />
-        </ListItemIcon>
-        <ListItemText>
-          <Typography>
-            Sending to Keep failed.{' '}
-            {!isArchived ? (
-              <Typography component="span" inline color="primary">
-                Retry?
-              </Typography>
-            ) : null}
-          </Typography>
-        </ListItemText>
-      </ListItem>
-    );
-  } else if (status === 'success') {
-    return (
-      <>
-        <ListItem button {...bindTrigger(popupState)} dense>
+    if (status === 'processing') {
+      return (
+        <ListItem dense>
+          <ListItemIcon>
+            <KeepIcon />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography inline>Sending video to Keep locations…</Typography>
+          </ListItemText>
+        </ListItem>
+      );
+    } else if (status === 'error') {
+      return (
+        <ListItem
+          button={!isArchived ? true : false}
+          onClick={
+            !isArchived ? () => this.setState({ status: 'success' }) : null
+          }
+          dense
+        >
           <ListItemIcon>
             <KeepIcon />
           </ListItemIcon>
           <ListItemText>
             <Typography>
-              Safely stored in {currentMedia.locations.length} Keep locations
+              Sending to Keep failed.{' '}
+              {!isArchived ? (
+                <Typography component="span" inline color="primary">
+                  Retry?
+                </Typography>
+              ) : null}
             </Typography>
           </ListItemText>
         </ListItem>
-        <Popover
-          {...bindPopover(popupState)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
+      );
+    } else if (status === 'success') {
+      return (
+        <>
+          <PopupState variant="popover" popupId="demoPopover">
+            {popupState => (
+              <>
+                <ListItem button {...bindTrigger(popupState)} dense>
+                  <ListItemIcon>
+                    <KeepIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography>
+                      Safely stored in {currentMedia.locations.length} Keep
+                      locations
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+                <Popover
+                  {...bindPopover(popupState)}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                >
+                  <List dense>
+                    {currentMedia.locations.map(location => {
+                      const { serviceId, url } = location;
+                      if (location) {
+                        return (
+                          <CopyToClipboard
+                            text={location.url}
+                            key={url}
+                            onCopy={() => handleClipboardCopy(popupState)}
+                          >
+                            <ListItem button={url !== null || undefined}>
+                              <ListItemIcon>
+                                <Tooltip title="Copy to Clipboard">
+                                  <CopyToClipboardIcon />
+                                </Tooltip>
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={
+                                  services[serviceIds.indexOf(serviceId)].name
+                                }
+                              />
+                            </ListItem>
+                          </CopyToClipboard>
+                        );
+                      }
+                      return null;
+                    })}
+                  </List>
+                </Popover>
+              </>
+            )}
+          </PopupState>
+        </>
+      );
+    } else {
+      return (
+        <ListItem
+          button={!isArchived ? true : false}
+          onClick={!isArchived ? triggerSave : null}
+          dense
         >
-          <List dense>
-            {currentMedia.locations.map(location => {
-              const { serviceId, url } = location;
-              if (location) {
-                return (
-                  <CopyToClipboard
-                    text={location.url}
-                    key={url}
-                    onCopy={handleClipboardCopy}
-                  >
-                    <ListItem button={url !== null || undefined}>
-                      <ListItemIcon>
-                        <Tooltip title="Copy to Clipboard">
-                          <CopyToClipboardIcon />
-                        </Tooltip>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={services[serviceIds.indexOf(serviceId)].name}
-                      />
-                    </ListItem>
-                  </CopyToClipboard>
-                );
-              }
-              return null;
-            })}
-          </List>
-        </Popover>
-      </>
-    );
-  } else {
-    return (
-      <ListItem
-        button={!isArchived ? true : false}
-        onClick={!isArchived ? triggerSave : null}
-        dense
-      >
-        <ListItemIcon>
-          <KeepIcon />
-        </ListItemIcon>
-        <ListItemText>
-          <Typography inline color={!isArchived ? 'primary' : 'default'}>
-            {!isArchived
-              ? 'Save video to Keep locations'
-              : 'This video has not been saved to Keep'}
-          </Typography>
-        </ListItemText>
-      </ListItem>
-    );
+          <ListItemIcon>
+            <KeepIcon />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography inline color={!isArchived ? 'primary' : 'default'}>
+              {!isArchived
+                ? 'Save video to Keep locations'
+                : 'This video has not been saved to Keep'}
+            </Typography>
+          </ListItemText>
+        </ListItem>
+      );
+    }
   }
 }
 
