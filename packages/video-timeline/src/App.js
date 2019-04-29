@@ -3,6 +3,7 @@ import { react2angular } from 'react2angular';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import hamock from './hamock.png';
 
@@ -124,23 +125,22 @@ class App extends Component {
   state = {
     anchorElPrev: null,
     anchorElNext: null,
-    currentTime: 0,
-    playing: false,
-    duration: DATA.gdVideoData.duration,
     data: DATA,
     mode: 'timeline',
     map: false,
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.$scope) {
-      const data = props.$scope.$parent.ctrl;
-      return {
-        data,
-        duration: data.gdVideoData.duration,
-      };
-    }
-    return {};
+    // FIXME:
+    // if (props.$scope) {
+    //   const data = props.$scope.$parent.ctrl;
+    //   return {
+    //     data,
+    //     duration: data.gdVideoData.duration,
+    //   };
+    // }
+
+    return { };
   }
 
   handlePopoverPrevOpen = event => {
@@ -159,43 +159,14 @@ class App extends Component {
     this.setState({ anchorElNext: null });
   };
 
-  setPlayer = player => {
-    this.player = player;
-  };
-
-  playPause = () => {
-    this.setState({ playing: !this.state.playing });
-  };
-
-  stop = () => {
-    this.setState({ playing: false });
-  };
-
-  onDuration = duration => {
-    this.setState({ duration });
-  };
-
-  onProgress = progress => {
-    this.setState({
-      currentTime: progress.playedSeconds,
-    });
-  };
-
-  onPlay = () => {
-    this.setState({ playing: true });
-  };
-
-  onPause = () => {
-    this.setState({ playing: false });
-  };
-
   setMap = map => {
     this.setState({ map });
   };
 
   render() {
-    const { data, currentTime, duration, map } = this.state;
-    const { classes } = this.props;
+    const { classes, player } = this.props;
+    const { currentTime, duration, playing } = player;
+    const { data, map } = this.state;
 
     return (
       <>
@@ -232,7 +203,6 @@ class App extends Component {
                             <InfoCard
                               data={data}
                               currentTime={currentTime}
-                              player={this.player}
                               map={map}
                               setMap={this.setMap}
                             />
@@ -240,12 +210,7 @@ class App extends Component {
                           <Grid item sm={8}>
                             <Player
                               data={data}
-                              onProgress={this.onProgress}
-                              onDuration={this.onDuration}
-                              setPlayer={this.setPlayer}
-                              playing={this.state.playing}
-                              onPlay={() => this.onPlay()}
-                              onPause={() => this.onPause()}
+                              player={player}
                             />
                           </Grid>
                         </Grid>
@@ -260,8 +225,7 @@ class App extends Component {
                   <Transport
                     currentTime={currentTime}
                     duration={duration}
-                    player={this.player}
-                    playing={this.state.playing}
+                    player={this.props.player}
                     playPause={() => this.playPause()}
                   />
                   <Tabs
@@ -300,11 +264,7 @@ class App extends Component {
                         currentTime={currentTime}
                         data={data}
                         duration={duration}
-                        onPause={() => this.onPause()}
-                        onPlay={() => this.onPlay()}
-                        player={this.player}
-                        playing={this.state.playing}
-                        playPause={() => this.playPause()}
+                        playing={playing}
                         setMap={this.setMap}
                       />
                     </TimelineWrapper>
@@ -328,8 +288,10 @@ class App extends Component {
   }
 }
 
-export default withStyles(styles)(App);
+// export default withStyles(styles)(App);
+export default connect(({ player }) => ({ player }))(withStyles(styles)(App));
 
+// FIXME:
 export const AngularVideoTimeline = react2angular(
   App,
   ['foo'],
