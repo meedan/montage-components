@@ -6,6 +6,7 @@
     "url": "git+https://github.com/meedan/montage-components.git"
   },
   "scripts": {
+    "status": "npx oao status",
     "clean": "npx oao clean",
     "deploy": "now --target=production --no-clipboard --public --token=$NOW_TOKEN"
   },
@@ -13,6 +14,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "now": "^15.0.6"
+    "now": "^15.0.8"
   }
 }
