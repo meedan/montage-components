@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { withTheme } from '@material-ui/core/styles';
 import FastForwardIcon from '@material-ui/icons/FastForward';
@@ -11,6 +12,8 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { play, pause, seekTo } from '../reducers/player';
+
 const PlaybackControls = styled.div`
   padding-bottom: 16px;
   padding-top: 16px;
@@ -18,7 +21,11 @@ const PlaybackControls = styled.div`
 `;
 
 const Transport = props => {
-  const { player, currentTime, frameRate = 30, playing } = props;
+  const { player, play, pause, seekTo, frameRate = 30 } = props;
+
+  const { playing, currentTime } = player;
+
+  // console.log(player);
 
   if (playing)
     return (
@@ -26,7 +33,7 @@ const Transport = props => {
         <Tooltip disableFocusListener title="Jump backward 5 seconds">
           <IconButton
             color="secondary"
-            onClick={() => player.seekTo(currentTime - 5)}
+            onClick={() => seekTo(currentTime - 5)}
           >
             <FastRewindIcon />
           </IconButton>
@@ -34,7 +41,7 @@ const Transport = props => {
         <Tooltip disableFocusListener title="Jump backward 1 second">
           <IconButton
             color="secondary"
-            onClick={() => player.seekTo(currentTime - 1)}
+            onClick={() => seekTo(currentTime - 1)}
           >
             <SkipPreviousIcon />
           </IconButton>
@@ -42,14 +49,14 @@ const Transport = props => {
         <IconButton
           color="secondary"
           key="playPause"
-          onClick={() => props.playPause()}
+          onClick={() => pause()}
         >
           <PauseIcon />
         </IconButton>
         <Tooltip disableFocusListener title="Jump forward 1 second">
           <IconButton
             color="secondary"
-            onClick={() => player.seekTo(currentTime + 1)}
+            onClick={() => seekTo(currentTime + 1)}
           >
             <SkipNextIcon />
           </IconButton>
@@ -57,7 +64,7 @@ const Transport = props => {
         <Tooltip disableFocusListener title="Jump forward 5 seconds">
           <IconButton
             color="secondary"
-            onClick={() => player.seekTo(currentTime + 5)}
+            onClick={() => seekTo(currentTime + 5)}
           >
             <FastForwardIcon />
           </IconButton>
@@ -70,7 +77,7 @@ const Transport = props => {
       <Tooltip disableFocusListener title="Jump backward 1 second">
         <IconButton
           color="secondary"
-          onClick={() => player.seekTo(currentTime - 1 / frameRate)}
+          onClick={() => seekTo(currentTime - 1 / frameRate)}
         >
           <SkipPreviousIcon />
         </IconButton>
@@ -78,14 +85,14 @@ const Transport = props => {
       <IconButton
         key="playPause"
         color="secondary"
-        onClick={() => props.playPause()}
+        onClick={() => play()}
       >
         <PlayArrowIcon />
       </IconButton>
       <Tooltip disableFocusListener title="Jump forward 1 second">
         <IconButton
           color="secondary"
-          onClick={() => player.seekTo(currentTime + 1 / frameRate)}
+          onClick={() => seekTo(currentTime + 1 / frameRate)}
         >
           <SkipNextIcon />
         </IconButton>
@@ -94,4 +101,5 @@ const Transport = props => {
   );
 };
 
-export default withTheme()(Transport);
+// export default withTheme()(Transport);
+export default connect(null, { play, pause, seekTo })(withTheme()(Transport));

@@ -54,7 +54,7 @@ const styles = {
 function InfoCard(props) {
   // const [map, setMap] = useState(false);
 
-  const { classes, data, currentTime, player, map, setMap } = props;
+  const { classes, data, currentTime, map, setMap } = props;
   const { archived_at, favourited } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
@@ -95,7 +95,6 @@ function InfoCard(props) {
       expandMap={() => setMap(true)}
       isCompact={!map}
       onClose={() => setMap(false)}
-      player={player}
     />
   ) : (
     <Card square elevation={0} className={classes.Card}>
