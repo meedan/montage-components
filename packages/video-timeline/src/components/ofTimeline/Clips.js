@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import produce from 'immer';
 import Flatted from 'flatted/esm';
+import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,6 +17,8 @@ import InstanceHandle from './InstanceHandle';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
+
+import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
 
@@ -164,9 +167,9 @@ class TimelineClips extends Component {
           ([i, s]) => nextProps.currentTime < s
         );
         if (nextSegment) {
-          this.props.player.seekTo(nextSegment[1]);
+          this.props.seekTo(nextSegment[1]);
         } else {
-          if (this.props.playing) this.props.playPause();
+          if (this.props.playing) this.props.pause();
           this.setState({ playlist: false });
         }
       }
@@ -182,10 +185,10 @@ class TimelineClips extends Component {
     console.log(playlist, this.props.playing);
 
     if (!playlist) {
-      if (!this.props.playing) this.props.playPause();
+      if (!this.props.playing) this.props.play();
       this.setState({ playlist: true });
     } else {
-      if (this.props.playing) this.props.playPause();
+      if (this.props.playing) this.props.pause();
       this.setState({ playlist: false });
     }
   };
@@ -627,4 +630,5 @@ const recomputeSegments = (videoClips, duration) => {
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
-export default React.memo(props => <TimelineClips {...props} />);
+// export default React.memo(props => <TimelineClips {...props} />);
+export default connect(null, { play, pause, seekTo }) ( React.memo(props => <TimelineClips {...props} />) );

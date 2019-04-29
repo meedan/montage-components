@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,6 +15,8 @@ import TimelinePlaces from './ofTimeline/Places';
 import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
+
+import { play, pause, seekTo } from '../reducers/player';
 
 const TimelinePlayheadWrapper = styled.div`
   user-select: none;
@@ -92,6 +95,7 @@ class Timeline extends Component {
 
     this.updateDimensions = this.updateDimensions.bind(this);
   }
+
   state = {
     ffTime: 0,
     time: 0,
@@ -137,7 +141,7 @@ class Timeline extends Component {
       console.log('skipping click due to drag state on');
       return;
     }
-    const { player, duration, playPause, playing } = this.props;
+    const { seekTo, play, duration, playing } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const startPos = rect.left + pxOffset;
@@ -146,12 +150,12 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
 
-    if (player && e.clientX > startPos) {
+    if ( e.clientX > startPos) {
       this.setState({ time: newTime, skip: false, disjoint: true });
 
       console.log(`seeking to ${newTime}`);
-      player.seekTo(newTime);
-      if (!playing) playPause();
+      seekTo(newTime);
+      if (!playing) play();
     } else {
       // console.log('skipping because player && e.clientX > startPos is false');
     }
@@ -169,12 +173,12 @@ class Timeline extends Component {
     });
 
     // pause
-    if (this.props.playing) this.props.playPause();
+    if (this.props.playing) this.props.pause();
   };
 
   onDrag = (val, skip = true) => {
     // console.log('dragging', this.props.playing);
-    const { player, playing } = this.props;
+    const { seekTo, pause, playing } = this.props;
 
     this.setState({
       time: val,
@@ -182,18 +186,18 @@ class Timeline extends Component {
       disjoint: true,
       playing: playing || this.state.playing,
     });
-    if (player)
-      setTimeout(() => {
-        console.log(`seeking to ${val}`);
-        player.seekTo(val);
-      }, 0);
+
+    setTimeout(() => {
+      console.log(`seeking to ${val}`);
+      seekTo(val);
+    }, 0);
 
     // pause
-    if (playing) this.props.playPause();
+    if (playing) pause();
   };
 
   onDragEnd = val => {
-    if (this.state.playing && !this.props.playing) this.props.playPause();
+    if (this.state.playing && !this.props.playing) this.props.play();
     setTimeout(() => this.setState({ skip: false, playing: false }), 100);
   };
 
@@ -276,4 +280,5 @@ class Timeline extends Component {
   }
 }
 
-export default withStyles(styles)(Timeline);
+// export default withStyles(styles)(Timeline);
+export default connect(null, { play, pause, seekTo })(withStyles(styles)(Timeline));
