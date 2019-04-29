@@ -11,14 +11,14 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import formatTime from './formatTime';
+import InstanceHandle from './InstanceHandle';
+import PlaceControls from './ofPlaces/PlaceControls';
+import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
-import PlaceControls from './ofPlaces/PlaceControls';
-import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 
 const Range = Slider.Range;
-const Handle = Slider.Handle;
 
 class TimelinePlaces extends Component {
   state = {
@@ -74,7 +74,10 @@ class TimelinePlaces extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState !== this.state) {
-      window.localStorage.setItem('videoPlaces', Flatted.stringify(nextState.videoPlaces));
+      window.localStorage.setItem(
+        'videoPlaces',
+        Flatted.stringify(nextState.videoPlaces)
+      );
       // if (window.BIGNONO && Object.keys(window.BIGNONO).length > 0) window.localStorage.setItem('videoPlacesData', Flatted.stringify(window.BIGNONO));
     }
 
@@ -116,16 +119,6 @@ class TimelinePlaces extends Component {
       if (this.props.playing) this.props.playPause();
       this.setState({ playlist: false });
     }
-  };
-
-  handle = props => {
-    // console.log(props);
-    const { value, index, ...restProps } = props;
-    return (
-      <Tooltip key={index} placement="top" title={formatTime(value)}>
-        <Handle value={value} {...restProps} />
-      </Tooltip>
-    );
   };
 
   onAfterChange = (v, id) => {
@@ -362,11 +355,12 @@ class TimelinePlaces extends Component {
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const i = nextVideoPlaces.findIndex(t => t.id === id);
       nextVideoPlaces[i].project_location.name = name;
-      if (marker) nextVideoPlaces[i].instances.forEach(j => {
-        j.data = marker;
-        j.data.time = j.start_seconds;
-        j.data.duration = j.end_seconds - j.start_seconds;
-      });
+      if (marker)
+        nextVideoPlaces[i].instances.forEach(j => {
+          j.data = marker;
+          j.data.time = j.start_seconds;
+          j.data.duration = j.end_seconds - j.start_seconds;
+        });
     });
 
     this.setState({ videoPlaces });
@@ -483,7 +477,9 @@ class TimelinePlaces extends Component {
                       placeId={place.id}
                       placeName={project_location.name}
                       projectPlaces={projectplaces}
-                      renamePlace={(name, marker) => this.renamePlace(place.id, name, marker)}
+                      renamePlace={(name, marker) =>
+                        this.renamePlace(place.id, name, marker)
+                      }
                       startNewInstance={() => this.startNewInstance(place.id)}
                       stopNewPlace={this.stopNewPlace}
                     />
@@ -506,7 +502,7 @@ class TimelinePlaces extends Component {
                           key={place.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={this.handle}
+                          handle={props => <InstanceHandle {...props} />}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
