@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Flatted from 'flatted/esm';
 
@@ -55,7 +55,7 @@ function InfoCard(props) {
   // const [map, setMap] = useState(false);
 
   const { classes, data, currentTime, player, map, setMap } = props;
-  const { archived_at } = data.gdVideoData;
+  const { archived_at, favourited } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
   let videoPlaces = [];
@@ -67,20 +67,22 @@ function InfoCard(props) {
   const persisted = window.localStorage.getItem('videoPlacesData');
   if (persisted) videoPlacesData = Flatted.parse(persisted);
 
-  let mapData = videoPlaces.reduce(
-        (acc, p) => [
-          ...acc,
-          ...p.instances.map(i => {
-            if (!videoPlacesData) return null;
-            if (!videoPlacesData[p.id]) return null;
-            videoPlacesData[p.id].time = i.start_seconds;
-            videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
-            return videoPlacesData[p.id];
-          }),
-          // ...p.instances.filter(i => !!i.data).map(i => i.data),
-        ],
-        []
-      ).filter(d => !!d);
+  let mapData = videoPlaces
+    .reduce(
+      (acc, p) => [
+        ...acc,
+        ...p.instances.map(i => {
+          if (!videoPlacesData) return null;
+          if (!videoPlacesData[p.id]) return null;
+          videoPlacesData[p.id].time = i.start_seconds;
+          videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
+          return videoPlacesData[p.id];
+        }),
+        // ...p.instances.filter(i => !!i.data).map(i => i.data),
+      ],
+      []
+    )
+    .filter(d => !!d);
 
   // console.log(videoPlaces, videoPlacesData, mapData);
 
@@ -106,8 +108,8 @@ function InfoCard(props) {
               top: '8px',
             }}
           >
-            {!isArchived ? <FavMenuItem {...props} /> : null}
-            <ArchiveMenuItem {...props} />
+            {!isArchived ? <FavMenuItem favourited={favourited} /> : null}
+            <ArchiveMenuItem archived_at={archived_at} />
             <MoreMenuItem {...props} />
           </div>
         }

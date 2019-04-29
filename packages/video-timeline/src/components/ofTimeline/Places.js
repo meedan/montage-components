@@ -10,7 +10,6 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import formatTime from './formatTime';
 import InstanceHandle from './InstanceHandle';
 import PlaceControls from './ofPlaces/PlaceControls';
 import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
@@ -502,7 +501,9 @@ class TimelinePlaces extends Component {
                           key={place.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={props => <InstanceHandle {...props} />}
+                          handle={handleProps => (
+                            <InstanceHandle {...handleProps} />
+                          )}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
