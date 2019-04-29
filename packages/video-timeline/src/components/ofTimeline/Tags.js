@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import produce from 'immer';
 import Flatted from 'flatted/esm';
+import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,6 +19,8 @@ import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 import TagControls from './ofTags/TagControls';
 import TagInstancePopover from './ofTags/TagInstancePopover';
+
+import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
 
@@ -93,9 +96,9 @@ class TimelineTags extends Component {
           ([i, s]) => nextProps.currentTime < s
         );
         if (nextSegment) {
-          this.props.player.seekTo(nextSegment[1]);
+          this.props.seekTo(nextSegment[1]);
         } else {
-          if (this.props.playing) this.props.playPause();
+          if (this.props.playing) this.props.pause();
           this.setState({ playlist: false });
         }
       }
@@ -111,10 +114,10 @@ class TimelineTags extends Component {
     console.log(playlist, this.props.playing);
 
     if (!playlist) {
-      if (!this.props.playing) this.props.playPause();
+      if (!this.props.playing) this.props.play();
       this.setState({ playlist: true });
     } else {
-      if (this.props.playing) this.props.playPause();
+      if (this.props.playing) this.props.pause();
       this.setState({ playlist: false });
     }
   };
@@ -580,4 +583,5 @@ const recomputeSegments = (videoTags, duration) => {
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
-export default React.memo(props => <TimelineTags {...props} />);
+// export default React.memo(props => <TimelineTags {...props} />);
+export default connect(null, { play, pause, seekTo }) ( React.memo(props => <TimelineTags {...props} />) );

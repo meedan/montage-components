@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
 import equal from 'fast-deep-equal';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
@@ -17,6 +18,8 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { color } from '@montage/ui';
+
+import { seekTo } from '../reducers/player';
 
 const MapWrapper = styled.div`
   height: 380px;
@@ -75,7 +78,7 @@ class Map extends Component {
           nextProps.currentTime < time + duration
       );
 
-      console.log(match);
+      // console.log(match);
       if (match && this.map) {
         const { lat, lng, viewport } =
           match.type === 'marker' ? match : match.polygon[0];
@@ -98,7 +101,7 @@ class Map extends Component {
 
   handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
-    console.log(place);
+    // console.log(place);
     if (place && place.geometry) {
       this.map.fitBounds(place.geometry.viewport.toJSON());
 
@@ -117,7 +120,7 @@ class Map extends Component {
   };
 
   onLoad = autocomplete => {
-    console.log('autocomplete: ', autocomplete);
+    // console.log('autocomplete: ', autocomplete);
     this.autocomplete = autocomplete;
   };
 
@@ -233,7 +236,7 @@ class Map extends Component {
   };
 
   handleMarkerClick = time => {
-    if (this.props.player) this.props.player.seekTo(time);
+    this.props.seekTo(time);
   };
 
   handleMarkerUpdate = () => {
@@ -480,4 +483,5 @@ class Map extends Component {
   }
 }
 
-export default withStyles(styles)(Map);
+// export default withStyles(styles)(Map);
+export default connect(null, { seekTo })(withStyles(styles)(Map));
