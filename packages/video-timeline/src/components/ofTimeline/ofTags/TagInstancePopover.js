@@ -1,95 +1,81 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 
 import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
-import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
-const styles = {
-  Toolbar: {
-    pointerEvents: 'auto',
-  },
-};
+class InstancePopover extends Component {
+  // constructor(props) {
+  //   super(props);
+  // }
 
-const TagInstancePopover = props => {
-  const {
-    classes,
-    id,
-    instance,
-    instanceEndX,
-    instanceStartX,
-    onExit,
-    tag,
-    timelineOffset,
-    trackRect,
-  } = props;
-  if (!instance || !tag || id !== tag.id) return null;
-  // Tag {id} at {x}px [{instance.start_seconds} — {instance.end_seconds}]
+  render() {
+    const { children, choors, isHandle, onExit } = this.props;
 
-  const x = instanceEndX
-    ? instanceStartX +
-      (instanceEndX - instanceStartX) / 2 +
-      224 +
-      timelineOffset
-    : 0;
-  const y = trackRect ? trackRect.y + trackRect.height : 0;
-
-  const expandInstance = e => {
-    e.stopPropagation();
-    props.onClose();
-    props.expandInstance(instance);
-  };
-  const duplicateAsClip = e => {
-    e.stopPropagation();
-    props.onClose();
-    props.duplicateAsClip(instance);
-  };
-  const deleteInstance = e => {
-    e.stopPropagation();
-    props.onClose();
-    props.deleteInstance(instance);
-  };
-
-  return (
-    <Popover
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      anchorPosition={{ left: x, top: y }}
-      anchorReference="anchorPosition"
-      id="instanceControlsPopover"
-      onEscapeKeyDown={props.onClose}
-      onBackdropClick={props.onClose}
-      open
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-    >
-      <div className={classes.Toolbar} onMouseOut={e => onExit(e)}>
-        <Tooltip title="Expand to length of the video">
-          <IconButton onClick={expandInstance}>
+    const renderHandlePopover = (
+      <>
+        <Tooltip title="Move backward">
+          <IconButton
+          // onClick={expandInstance}
+          >
+            <ArrowBackIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Move forward">
+          <IconButton
+          // onClick={duplicateAsClip}
+          >
+            <ArrowForwardIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </>
+    );
+    const renderInstancePopover = (
+      <>
+        <Tooltip title="Match length of the video">
+          <IconButton
+          // onClick={expandInstance}
+          >
             <InstanceExpandIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Copy to Clips">
-          <IconButton onClick={duplicateAsClip}>
-            <ContentCutIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete tag">
-          <IconButton onClick={deleteInstance}>
+        {children}
+        <Tooltip title="Delete">
+          <IconButton
+          // onClick={deleteInstance}
+          >
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-      </div>
-    </Popover>
-  );
-};
+      </>
+    );
 
-export default withStyles(styles)(TagInstancePopover);
+    return (
+      <Popover
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        anchorPosition={{ left: choors.x, top: choors.y }}
+        anchorReference="anchorPosition"
+        id="instanceControlsPopover"
+        onEscapeKeyDown={onExit}
+        onBackdropClick={onExit}
+        open
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        {isHandle ? renderHandlePopover : renderInstancePopover}
+      </Popover>
+    );
+  }
+}
+
+export default InstancePopover;

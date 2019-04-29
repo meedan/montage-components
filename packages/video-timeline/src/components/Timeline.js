@@ -242,30 +242,33 @@ class Timeline extends Component {
           <TimelineComments {...props} skip={skip} />
           <TimelineClips
             {...props}
-            skip={skip}
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
+            pxOffset={pxOffset}
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
+            skip={skip}
             timelineOffset={this.state.timelineOffset}
           />
           <TimelineTags
             {...props}
-            skip={skip}
+            duplicateAsClip={this.relayDuplicateAsClip}
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
-            duplicateAsClip={this.relayDuplicateAsClip}
+            pxOffset={pxOffset}
+            skip={skip}
             timelineOffset={this.state.timelineOffset}
           />
           <TimelinePlaces
             {...props}
-            skip={skip}
             onAfterChange={v => this.onDragEnd(v)}
             onBeforeChange={v => this.onDragStart(v, false)}
             onChange={v => this.onDrag(v, false)}
-            timelineOffset={this.state.timelineOffset}
+            pxOffset={pxOffset}
             setMap={this.props.setMap}
+            skip={skip}
+            timelineOffset={this.state.timelineOffset}
           />
         </Table>
       </TimelinePlayheadWrapper>
