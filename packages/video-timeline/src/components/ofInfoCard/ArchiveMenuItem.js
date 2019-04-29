@@ -19,7 +19,7 @@ const styles = theme => ({
 });
 
 const ArchiveMenuItem = props => {
-  const { archived_at } = props.data.gdVideoData;
+  const { archived_at } = props;
   const isArchived = archived_at !== null && archived_at !== undefined;
 
   const { classes } = props;
