@@ -226,7 +226,6 @@ class App extends Component {
                     currentTime={currentTime}
                     duration={duration}
                     player={this.props.player}
-                    playPause={() => this.playPause()}
                   />
                   <Tabs
                     value={this.state.mode}
