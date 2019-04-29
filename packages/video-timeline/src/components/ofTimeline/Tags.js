@@ -10,12 +10,12 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import InstanceHandle from './InstanceHandle';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 import TagControls from './ofTags/TagControls';
 import TagInstancePopover from './ofTags/TagInstancePopover';
-import InstanceHandle from './InstanceHandle';
 
 const Range = Slider.Range;
 
@@ -480,7 +480,9 @@ class TimelineTags extends Component {
                           key={tag.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={props => <InstanceHandle {...props} />}
+                          handle={handleProps => (
+                            <InstanceHandle {...handleProps} />
+                          )}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
