@@ -550,7 +550,9 @@ class TimelineClips extends Component {
                           key={clip.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={props => <InstanceHandle {...props} />}
+                          handle={handleProps => (
+                            <InstanceHandle {...handleProps} />
+                          )}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
