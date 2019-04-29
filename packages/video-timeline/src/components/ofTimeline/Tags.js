@@ -10,6 +10,8 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
+
 import InstanceHandle from './InstanceHandle';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
@@ -262,14 +264,6 @@ class TimelineTags extends Component {
     }
   };
 
-  leMenuClose = () => {
-    console.log('leMenuClose()');
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
-  };
-
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
@@ -279,21 +273,19 @@ class TimelineTags extends Component {
       return;
     }
 
-    const pxOffset = 0;
     const { videoTags } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const startPos = rect.left + pxOffset;
-    const endPos = rect.width;
-    const mousePos = e.clientX - startPos;
-    const mousePosFlat = mousePos > 0 ? mousePos : 0;
-    const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
+
+    const mousePos = e.clientX - rect.left;
+    const relativeMousePos = mousePos > 0 ? mousePos : 0;
+    const mouseTime = (duration * relativeMousePos) / rect.width;
 
     const targetTag = videoTags.find(t => t.id === id);
     if (!targetTag) {
       this.setState({
-        mousePosFlat,
+        mousePos,
         mouseTime,
         targetInstance: null,
         targetTag: null,
@@ -305,25 +297,39 @@ class TimelineTags extends Component {
       i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
     );
 
-    const pxs = endPos / duration;
+    const pxs = rect.width / duration;
+    const targetInstanceStartX = targetInstance
+      ? pxs * targetInstance.start_seconds - 2
+      : 0;
+    const targetInstanceEndX = targetInstance
+      ? pxs * targetInstance.end_seconds + 2
+      : 0;
 
-    // console.group('leMenu');
-    // // console.log('rect', rect);
-    // console.log('e.currentTarget', e.currentTarget);
-    // console.log('targetTag', targetTag);
-    // console.log('targetInstance', targetInstance);
-    // console.groupEnd();
+    const isOnStartHandle =
+      mousePos >= targetInstanceStartX - 5 &&
+      mousePos <= targetInstanceStartX + 5;
+    const isOnEndHandle =
+      mousePos <= targetInstanceEndX + 5 && mousePos >= targetInstanceEndX - 5;
+
+    console.group('leMenu()');
+    // console.log(e);
+    console.log(mousePos);
+    // console.log(e.currentTarget);
+    // console.log(e.currentTarget.getBoundingClientRect());
+    // console.log(targetTag);
+    console.log(targetInstance);
+    console.groupEnd();
 
     this.setState({
       targetTrack: e.currentTarget,
       trackRect: rect,
-      mousePosFlat,
+      mousePos,
       mouseTime,
+      isOnStartHandle,
+      isOnEndHandle,
       targetInstance,
-      targetInstanceStartX: targetInstance
-        ? pxs * targetInstance.start_seconds
-        : 0,
-      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
+      targetInstanceStartX,
+      targetInstanceEndX,
       targetTag,
     });
   };
@@ -416,7 +422,7 @@ class TimelineTags extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.leMenuClose}
+        onMouseLeave={this.leMenuOff}
       >
         {videoTags
           ? videoTags.map((tag, i) => {
@@ -481,7 +487,9 @@ class TimelineTags extends Component {
                           defaultValue={arr}
                           value={arr}
                           handle={handleProps => (
-                            <InstanceHandle {...handleProps} />
+                            <>
+                              <InstanceHandle {...handleProps} />
+                            </>
                           )}
                           max={duration}
                           min={0}
@@ -493,6 +501,10 @@ class TimelineTags extends Component {
                         />
                       </SliderWrapper>
                       <TagInstancePopover
+                        choors={{ x: 0, y: 0 }}
+                        onExit={this.leMenuOff}
+                      >
+                        {/* <TagInstancePopover
                         deleteInstance={i => this.deleteInstance(tag.id, i)}
                         duplicateAsClip={i => this.duplicateAsClip(tag.id, i)}
                         expandInstance={i => this.expandInstance(tag.id, i)}
@@ -500,13 +512,24 @@ class TimelineTags extends Component {
                         instance={this.state.targetInstance}
                         instanceEndX={this.state.targetInstanceEndX}
                         instanceStartX={this.state.targetInstanceStartX}
-                        onClose={this.leMenuClose}
-                        onExit={e => this.leMenuOff(e)}
+                        isOnEndHandle={this.state.isOnEndHandle}
+                        isOnStartHandle={this.state.isOnStartHandle}
+                        mousePos={this.state.mousePos}
+                        onExit={this.leMenuOff}
                         tag={this.state.targetTag}
                         timelineOffset={this.props.timelineOffset}
                         track={this.state.targetTrack}
                         trackRect={this.state.trackRect}
-                      />
+                      /> */}
+
+                        <Tooltip title="Copy to Clips">
+                          <IconButton
+                          // onClick={duplicateAsClip}
+                          >
+                            <ContentCutIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </TagInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
                       </style>
