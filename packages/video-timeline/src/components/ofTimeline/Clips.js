@@ -12,13 +12,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import ClipControls from './ofClips/ClipControls';
 import ClipInstancePopover from './ofClips/ClipInstancePopover';
-import formatTime from './formatTime';
+import InstanceHandle from './InstanceHandle';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
 const Range = Slider.Range;
-const Handle = Slider.Handle;
 
 class TimelineClips extends Component {
   state = {
@@ -145,7 +144,11 @@ class TimelineClips extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState !== this.state) window.localStorage.setItem('videoClips', Flatted.stringify(nextState.videoClips));
+    if (nextState !== this.state)
+      window.localStorage.setItem(
+        'videoClips',
+        Flatted.stringify(nextState.videoClips)
+      );
 
     if (nextProps.skip) return false;
 
@@ -185,16 +188,6 @@ class TimelineClips extends Component {
       if (this.props.playing) this.props.playPause();
       this.setState({ playlist: false });
     }
-  };
-
-  handle = props => {
-    // console.log(props);
-    const { value, index, ...restProps } = props;
-    return (
-      <Tooltip key={index} placement="top" title={formatTime(value)}>
-        <Handle value={value} {...restProps} />
-      </Tooltip>
-    );
   };
 
   onAfterChange = (v, id) => {
@@ -557,7 +550,7 @@ class TimelineClips extends Component {
                           key={clip.id}
                           defaultValue={arr}
                           value={arr}
-                          handle={this.handle}
+                          handle={props => <InstanceHandle {...props} />}
                           max={duration}
                           min={0}
                           trackStyle={trackStyle}
