@@ -16,7 +16,7 @@ import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
-import { play, seekTo } from '../reducers/player';
+import { play, pause, seekTo } from '../reducers/player';
 
 const TimelinePlayheadWrapper = styled.div`
   user-select: none;
@@ -95,6 +95,7 @@ class Timeline extends Component {
 
     this.updateDimensions = this.updateDimensions.bind(this);
   }
+
   state = {
     ffTime: 0,
     time: 0,
@@ -140,7 +141,7 @@ class Timeline extends Component {
       console.log('skipping click due to drag state on');
       return;
     }
-    const { seekTo, duration, playPause, playing } = this.props;
+    const { seekTo, play, duration, playing } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const startPos = rect.left + pxOffset;
@@ -154,7 +155,7 @@ class Timeline extends Component {
 
       console.log(`seeking to ${newTime}`);
       seekTo(newTime);
-      if (!playing) playPause();
+      if (!playing) play();
     } else {
       // console.log('skipping because player && e.clientX > startPos is false');
     }
@@ -196,7 +197,7 @@ class Timeline extends Component {
   };
 
   onDragEnd = val => {
-    if (this.state.playing && !this.props.playing) this.props.playPause();
+    if (this.state.playing && !this.props.playing) this.props.play();
     setTimeout(() => this.setState({ skip: false, playing: false }), 100);
   };
 
@@ -277,4 +278,4 @@ class Timeline extends Component {
 }
 
 // export default withStyles(styles)(Timeline);
-export default connect(null, { play, seekTo })(withStyles(styles)(Timeline));
+export default connect(null, { play, pause, seekTo })(withStyles(styles)(Timeline));
