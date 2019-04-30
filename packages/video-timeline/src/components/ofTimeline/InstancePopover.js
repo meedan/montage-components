@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { withStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -9,13 +10,38 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
 
+const styles = theme => ({
+  Toolbar: {
+    pointerEvents: 'auto',
+  },
+});
+
 class InstancePopover extends Component {
   // constructor(props) {
   //   super(props);
   // }
+  // shouldComponentUpdate(nextProps) {
+  //   return this.props.mousePos !== nextProps.mousePos;
+  // }
 
   render() {
-    const { children, choors, isHandle, onExit } = this.props;
+    const {
+      classes,
+      children,
+      choords,
+      instance,
+      isOnEndHandle,
+      isOnStartHandle,
+      onDelete,
+      onExit,
+      onExtend,
+      tag,
+      tagId,
+    } = this.props;
+
+    if (!isOnStartHandle || !isOnEndHandle) {
+      if (!tag || !instance || tag.id !== tagId) return null;
+    }
 
     const renderHandlePopover = (
       <>
@@ -38,17 +64,13 @@ class InstancePopover extends Component {
     const renderInstancePopover = (
       <>
         <Tooltip title="Match length of the video">
-          <IconButton
-          // onClick={expandInstance}
-          >
+          <IconButton onClick={onExtend}>
             <InstanceExpandIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         {children}
         <Tooltip title="Delete">
-          <IconButton
-          // onClick={deleteInstance}
-          >
+          <IconButton onClick={onDelete}>
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Tooltip>
@@ -61,7 +83,7 @@ class InstancePopover extends Component {
           vertical: 'bottom',
           horizontal: 'center',
         }}
-        anchorPosition={{ left: choors.x, top: choors.y }}
+        anchorPosition={{ left: choords.x, top: choords.y }}
         anchorReference="anchorPosition"
         id="instanceControlsPopover"
         onEscapeKeyDown={onExit}
@@ -72,10 +94,14 @@ class InstancePopover extends Component {
           horizontal: 'center',
         }}
       >
-        {isHandle ? renderHandlePopover : renderInstancePopover}
+        <div className={classes.Toolbar} onClick={e => e.stopPropagation()}>
+          {isOnStartHandle || isOnEndHandle
+            ? renderHandlePopover
+            : renderInstancePopover}
+        </div>
       </Popover>
     );
   }
 }
 
-export default InstancePopover;
+export default withStyles(styles)(InstancePopover);
