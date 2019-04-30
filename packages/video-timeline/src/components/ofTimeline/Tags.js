@@ -296,17 +296,34 @@ class TimelineTags extends Component {
       return;
     }
 
+    const pxs = rect.width / duration;
+
+    // 4px handle -> time
+    const handle = 4 / pxs;
     const targetInstance = targetTag.instances.find(
-      i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
+      i => i.start_seconds - handle <= mouseTime && mouseTime < i.end_seconds + handle
     );
 
-    const pxs = rect.width / duration;
     const instanceStartX = targetInstance
       ? pxs * targetInstance.start_seconds - 2
       : 0;
     const instanceEndX = targetInstance
       ? pxs * targetInstance.end_seconds + 2
       : 0;
+
+    const handleOver = !targetTag.instances.find(
+      i => i.start_seconds + handle <= mouseTime && mouseTime < i.end_seconds - handle
+    ) && !!targetTag.instances.find(
+      i => i.start_seconds - handle <= mouseTime && mouseTime < i.end_seconds + handle
+    );
+
+    const handleOverStart = targetTag.instances.find(
+      i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
+    );
+
+    const handleOverEnd = targetTag.instances.find(
+      i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
+    );
 
     const isOnStartHandle =
       mousePos >= instanceStartX && mousePos <= instanceStartX;
@@ -326,6 +343,9 @@ class TimelineTags extends Component {
     console.group('leMenu()');
     // console.log(e);
     // console.log(mousePos);
+    if (handleOver) console.log('handleOver');
+    if (handleOverStart) console.log('handleOverStart');
+    if (handleOverEnd) console.log('handleOverEnd');
     if (isOnStartHandle) console.log({ isOnStartHandle });
     if (isOnEndHandle) console.log({ isOnEndHandle });
     // console.log(e.currentTarget);
