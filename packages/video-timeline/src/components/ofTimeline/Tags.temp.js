@@ -27,11 +27,9 @@ const Range = Slider.Range;
 class TimelineTags extends Component {
   state = {
     choords: { x: 0, y: 0 },
-    instanceEndX: 0,
-    instanceStartX: 0,
+    clientX: 0,
     playlist: false,
-    targetTrack: null,
-    trackRect: null,
+    tag: { id: null },
     values: {},
   };
 
@@ -148,8 +146,8 @@ class TimelineTags extends Component {
     values[id] = v;
     this.setState({
       values,
-      targetInstance: null,
-      targetTag: null,
+      instance: null,
+      tag: null,
       isDragging: true,
     });
   };
@@ -248,7 +246,7 @@ class TimelineTags extends Component {
     this.setState({ videoTags });
   };
 
-  leMenuOff = ({ clientX, clientY, currentTarget }) => {
+  hideInstancePopover = ({ clientX, clientY, currentTarget }) => {
     const rect = currentTarget.getBoundingClientRect();
     // console.log(rect, clientX, clientY);
 
@@ -262,76 +260,79 @@ class TimelineTags extends Component {
     } else {
       // console.log('outside', rect, clientX, clientY);
       this.setState({
-        targetInstance: null,
-        targetTag: null,
+        instance: null,
+        tag: null,
       });
     }
   };
 
-  leMenu = (e, id) => {
+  checkForInstancePopover = (e, id) => {
+    // check for the event
     if (!e) {
       this.setState({
-        targetInstance: null,
-        targetTag: null,
+        instance: null,
+        tag: null,
       });
       return;
     }
 
-    const { videoTags } = this.state;
+    // name what’s needed
+    const { videoTags, clientX } = this.state;
     const { duration } = this.props;
-
     const rect = e.currentTarget.getBoundingClientRect();
-    const mousePos = this.state.clientX - rect.left;
-    const relativeMousePos = mousePos > 0 ? mousePos : 0;
-    const mouseTime = (duration * relativeMousePos) / rect.width;
+    const targetX = clientX - rect.left > 0 ? clientX - rect.left : 0;
+    const mouseTime = (duration * targetX) / rect.width;
+    const p2s = rect.width / duration;
+    const s2p = duration / rect.width;
 
-    const targetTag = videoTags.find(t => t.id === id);
-    if (!targetTag) {
+    // check for target tag
+    const tag = videoTags.find(t => t.id === id);
+    if (!tag) {
       this.setState({
-        mousePos,
-        mouseTime,
-        targetInstance: null,
-        targetTag: null,
+        instance: null,
+        tag: null,
       });
       return;
     }
 
-    const targetInstance = targetTag.instances.find(
-      i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
+    // get target instance
+    let instance = tag.instances.find(
+      i => i.start_seconds <= mouseTime && mouseTime <= i.end_seconds
     );
+    const instanceStartX = instance ? p2s * instance.start_seconds - 2 : 0;
+    const instanceEndX = instance ? p2s * instance.end_seconds + 2 : 0;
 
-    const pxs = rect.width / duration;
-    const instanceStartX = targetInstance
-      ? pxs * targetInstance.start_seconds - 2
-      : 0;
-    const instanceEndX = targetInstance
-      ? pxs * targetInstance.end_seconds + 2
-      : 0;
-
+    // get anchor choords
     const isOnStartHandle =
-      mousePos >= instanceStartX && mousePos <= instanceStartX;
-    const isOnEndHandle = mousePos <= instanceEndX && mousePos >= instanceEndX;
-
-    // get x choords
+      targetX - 2 >= instanceStartX && targetX <= instanceStartX;
+    const isOnEndHandle =
+      targetX + 2 >= instanceEndX && targetX <= instanceEndX;
     const getXChoord = () => {
       if (isOnStartHandle) {
+        instance = true;
         return instanceStartX;
       } else if (isOnEndHandle) {
+        instance = true;
         return instanceEndX;
       } else {
         return instanceStartX + (instanceEndX - instanceStartX) / 2;
       }
     };
 
-    console.group('leMenu()');
+    console.group('checkForInstancePopover()');
+    // if (rect) console.log({ rect });
+    console.log(instanceStartX, targetX);
+    // console.log(instanceStartX, instanceStartX, clientX);
     // console.log(e);
-    // console.log(mousePos);
-    if (isOnStartHandle) console.log({ isOnStartHandle });
-    if (isOnEndHandle) console.log({ isOnEndHandle });
+    // console.log(clientX);
     // console.log(e.currentTarget);
     // console.log(e.currentTarget.getBoundingClientRect());
-    // console.log(targetTag);
-    // console.log({ targetInstance });
+    // console.log(tag);
+    // if (tag) console.log(mouseTime);
+    // console.log({ clientX });
+    // if (isOnStartHandle) console.log({ isOnStartHandle });
+    // if (isOnEndHandle) console.log({ isOnEndHandle });
+    // console.log(instance);
     console.groupEnd();
 
     this.setState({
@@ -339,16 +340,10 @@ class TimelineTags extends Component {
         x: getXChoord() + rect.left,
         y: rect.top + rect.height,
       },
-      targetTrack: e.currentTarget,
-      trackRect: rect,
-      mousePos,
-      mouseTime,
-      isOnStartHandle,
       isOnEndHandle,
-      targetInstance,
-      instanceStartX,
-      instanceEndX,
-      targetTag,
+      isOnStartHandle,
+      instance,
+      tag,
     });
   };
 
@@ -371,10 +366,6 @@ class TimelineTags extends Component {
   };
 
   deleteInstance(id, instance) {
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
     console.group('deleteInstance()');
     console.log(instance);
     console.groupEnd();
@@ -392,10 +383,6 @@ class TimelineTags extends Component {
   }
 
   duplicateAsClip = (id, instance) => {
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
     console.group('duplicateAsClip()');
     console.log(instance);
     console.groupEnd();
@@ -405,10 +392,6 @@ class TimelineTags extends Component {
   };
 
   expandInstance(id, instance) {
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
     console.group('expandInstance()');
     console.log(instance);
     console.groupEnd();
@@ -429,6 +412,15 @@ class TimelineTags extends Component {
     const { currentTime, duration, data } = this.props;
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
+
+    // console.group('Tags');
+    // console.log(this.state.tag);
+    // console.log(this.state.instance);
+    // console.log(this.state.tag.id);
+    // console.log(this.state.choords);
+    // console.log(this.props.pxOffset);
+    // console.log(this.props.timelineOffset);
+    // console.groupEnd();
 
     return (
       <TableSection
@@ -452,7 +444,7 @@ class TimelineTags extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.leMenuOff}
+        onMouseLeave={this.hideInstancePopover}
       >
         {videoTags
           ? videoTags.map((tag, i) => {
@@ -506,34 +498,36 @@ class TimelineTags extends Component {
                             ? e =>
                                 this.setState(
                                   { clientX: e.clientX },
-                                  this.leMenu(e, tag.id)
+                                  this.checkForInstancePopover(e, tag.id)
                                 )
-                            : this.leMenuOff
+                            : null
                         }
                         onMouseOver={
                           !this.state.isDragging
                             ? e =>
                                 this.setState(
                                   { clientX: e.clientX },
-                                  this.leMenu(e, tag.id)
+                                  this.checkForInstancePopover(e, tag.id)
                                 )
-                            : this.leMenuOff
+                            : null
                         }
                       >
                         <MemoizedRange
-                          defaultValue={arr}
-                          handle={handleProps => (
-                            <InstanceHandle {...handleProps} />
-                          )}
                           key={tag.id}
+                          defaultValue={arr}
+                          value={arr}
+                          handle={handleProps => (
+                            <>
+                              <InstanceHandle {...handleProps} />
+                            </>
+                          )}
                           max={duration}
                           min={0}
+                          trackStyle={trackStyle}
+                          pushable
                           onAfterChange={v => this.onAfterChange(v, tag.id)}
                           onBeforeChange={v => this.onBeforeChange(v, tag.id)}
                           onChange={v => this.onChange(v, tag.id)}
-                          pushable
-                          trackStyle={trackStyle}
-                          value={arr}
                         />
                       </SliderWrapper>
                       <InstancePopover
@@ -541,13 +535,14 @@ class TimelineTags extends Component {
                           x: this.state.choords.x,
                           y: this.state.choords.y,
                         }}
-                        instance={this.state.targetInstance}
+                        instance={this.state.instance}
                         isOnEndHandle={this.state.isOnEndHandle}
                         isOnStartHandle={this.state.isOnStartHandle}
+                        mouseTime={this.state.mouseTime}
                         onDelete={i => this.deleteInstance(tag.id, i)}
-                        onExit={this.leMenuOff}
+                        onExit={this.hideInstancePopover}
                         onExtend={i => this.expandInstance(tag.id, i)}
-                        tag={this.state.targetTag}
+                        tag={this.state.tag}
                         tagId={tag.id}
                       >
                         <Tooltip title="Copy to Clips">
