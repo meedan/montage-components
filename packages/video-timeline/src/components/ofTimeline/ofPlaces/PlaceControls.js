@@ -90,7 +90,10 @@ class PlaceControls extends Component {
       videoPlacesData = Flatted.parse(videoPlacesData);
     } else videoPlacesData = {};
     videoPlacesData[this.props.placeId] = marker;
-    window.localStorage.setItem('videoPlacesData', Flatted.stringify(videoPlacesData));
+    window.localStorage.setItem(
+      'videoPlacesData',
+      Flatted.stringify(videoPlacesData)
+    );
   };
 
   startReposition = () => {
@@ -203,14 +206,15 @@ class PlaceControls extends Component {
           <>
             {readModeLabel}
             <PlaceMapPopover
-              placeId={this.props.placeId}
               anchorRef={this.anchorRef.current}
               data={[]}
               isCreating={this.props.isCreating}
               onClose={this.endReposition}
+              onSave={marker => this.placeRename2(marker, this.state.placeName)}
+              placeId={this.props.placeId}
+              placeName={this.state.placeName}
               startPlaceRename={this.startPlaceRename}
               stopNewPlace={this.props.stopNewPlace}
-              onSave={marker => this.placeRename2(marker, this.state.placeName)}
             />
           </>
         );
