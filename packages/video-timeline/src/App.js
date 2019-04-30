@@ -83,6 +83,8 @@ const TopWrapper = styled.div`
 const BottomWrapper = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
+  padding-left: 50px;
+  padding-right: 50px;
   width: 100%;
 `;
 const TimelineWrapper = styled.div`
@@ -90,7 +92,7 @@ const TimelineWrapper = styled.div`
   border-right: 1px solid ${grey[300]};
   margin-left: auto;
   margin-right: auto;
-  max-width: 1600px;
+  max-width: 1500px;
   min-height: 500px;
   padding-bottom: 260px;
   position: relative;
@@ -140,7 +142,7 @@ class App extends Component {
     //   };
     // }
 
-    return { };
+    return {};
   }
 
   handlePopoverPrevOpen = event => {
@@ -208,10 +210,7 @@ class App extends Component {
                             />
                           </Grid>
                           <Grid item sm={8}>
-                            <Player
-                              data={data}
-                              player={player}
-                            />
+                            <Player data={data} player={player} />
                           </Grid>
                         </Grid>
                       </Paper>
