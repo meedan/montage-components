@@ -85,6 +85,8 @@ class InstancePopover extends Component {
         id="instanceControlsPopover"
         onEscapeKeyDown={onExit}
         onBackdropClick={onExit}
+        disablePortal
+        hideBackdrop
         open
         transformOrigin={{
           vertical: 'top',

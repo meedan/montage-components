@@ -27,11 +27,7 @@ const Range = Slider.Range;
 class TimelineTags extends Component {
   state = {
     choords: { x: 0, y: 0 },
-    instanceEndX: 0,
-    instanceStartX: 0,
     playlist: false,
-    targetTrack: null,
-    trackRect: null,
     values: {},
   };
 
@@ -281,7 +277,7 @@ class TimelineTags extends Component {
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const mousePos = this.state.clientX - rect.left;
+    const mousePos = e.clientX - rect.left;
     const relativeMousePos = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * relativeMousePos) / rect.width;
 
@@ -365,14 +361,8 @@ class TimelineTags extends Component {
         x: getXChoord() + rect.left,
         y: rect.top + rect.height,
       },
-      targetTrack: e.currentTarget,
-      trackRect: rect,
-      mousePos,
-      mouseTime,
       isOverHandle,
       targetInstance,
-      instanceStartX,
-      instanceEndX,
       targetTag,
     });
   };
@@ -455,6 +445,8 @@ class TimelineTags extends Component {
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
 
+    console.log(this.state.choords);
+
     return (
       <TableSection
         plain={videoTags ? videoTags.length > 0 : false}
@@ -528,20 +520,12 @@ class TimelineTags extends Component {
                       <SliderWrapper
                         onMouseMove={
                           !this.state.isDragging
-                            ? e =>
-                                this.setState(
-                                  { clientX: e.clientX },
-                                  this.leMenu(e, tag.id)
-                                )
+                            ? e => this.leMenu(e, tag.id)
                             : this.leMenuOff
                         }
                         onMouseOver={
                           !this.state.isDragging
-                            ? e =>
-                                this.setState(
-                                  { clientX: e.clientX },
-                                  this.leMenu(e, tag.id)
-                                )
+                            ? e => this.leMenu(e, tag.id)
                             : this.leMenuOff
                         }
                       >
