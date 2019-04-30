@@ -301,7 +301,9 @@ class TimelineTags extends Component {
     // 4px handle -> time
     const handle = 4 / pxs;
     const targetInstance = targetTag.instances.find(
-      i => i.start_seconds - handle <= mouseTime && mouseTime < i.end_seconds + handle
+      i =>
+        i.start_seconds - handle <= mouseTime &&
+        mouseTime < i.end_seconds + handle
     );
 
     const instanceStartX = targetInstance
@@ -311,11 +313,17 @@ class TimelineTags extends Component {
       ? pxs * targetInstance.end_seconds + 2
       : 0;
 
-    const handleOver = !targetTag.instances.find(
-      i => i.start_seconds + handle <= mouseTime && mouseTime < i.end_seconds - handle
-    ) && !!targetTag.instances.find(
-      i => i.start_seconds - handle <= mouseTime && mouseTime < i.end_seconds + handle
-    );
+    const isOverHandle =
+      !targetTag.instances.find(
+        i =>
+          i.start_seconds + handle <= mouseTime &&
+          mouseTime < i.end_seconds - handle
+      ) &&
+      !!targetTag.instances.find(
+        i =>
+          i.start_seconds - handle <= mouseTime &&
+          mouseTime < i.end_seconds + handle
+      );
 
     const handleOverStart = targetTag.instances.find(
       i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
@@ -325,15 +333,11 @@ class TimelineTags extends Component {
       i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
     );
 
-    const isOnStartHandle =
-      mousePos >= instanceStartX && mousePos <= instanceStartX;
-    const isOnEndHandle = mousePos <= instanceEndX && mousePos >= instanceEndX;
-
     // get x choords
     const getXChoord = () => {
-      if (isOnStartHandle) {
+      if (handleOverStart) {
         return instanceStartX;
-      } else if (isOnEndHandle) {
+      } else if (handleOverEnd) {
         return instanceEndX;
       } else {
         return instanceStartX + (instanceEndX - instanceStartX) / 2;
@@ -343,11 +347,13 @@ class TimelineTags extends Component {
     console.group('leMenu()');
     // console.log(e);
     // console.log(mousePos);
-    if (handleOver) console.log('handleOver');
+    if (isOverHandle) console.log('isOverHandle');
     if (handleOverStart) console.log('handleOverStart');
     if (handleOverEnd) console.log('handleOverEnd');
-    if (isOnStartHandle) console.log({ isOnStartHandle });
-    if (isOnEndHandle) console.log({ isOnEndHandle });
+    // if (handleOverStart) console.log('handleOverStart');
+    // if (handleOverEnd) console.log('handleOverEnd');
+    // if (isOnStartHandle) console.log({ isOnStartHandle });
+    // if (isOnEndHandle) console.log({ isOnEndHandle });
     // console.log(e.currentTarget);
     // console.log(e.currentTarget.getBoundingClientRect());
     // console.log(targetTag);
@@ -363,8 +369,7 @@ class TimelineTags extends Component {
       trackRect: rect,
       mousePos,
       mouseTime,
-      isOnStartHandle,
-      isOnEndHandle,
+      isOverHandle,
       targetInstance,
       instanceStartX,
       instanceEndX,
@@ -562,8 +567,7 @@ class TimelineTags extends Component {
                           y: this.state.choords.y,
                         }}
                         instance={this.state.targetInstance}
-                        isOnEndHandle={this.state.isOnEndHandle}
-                        isOnStartHandle={this.state.isOnStartHandle}
+                        isOverHandle={this.state.isOverHandle}
                         onDelete={i => this.deleteInstance(tag.id, i)}
                         onExit={this.leMenuOff}
                         onExtend={i => this.expandInstance(tag.id, i)}

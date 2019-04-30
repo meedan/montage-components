@@ -30,8 +30,7 @@ class InstancePopover extends Component {
       children,
       choords,
       instance,
-      isOnEndHandle,
-      isOnStartHandle,
+      isOverHandle,
       onDelete,
       onExit,
       onExtend,
@@ -39,9 +38,7 @@ class InstancePopover extends Component {
       tagId,
     } = this.props;
 
-    if (!isOnStartHandle || !isOnEndHandle) {
-      if (!tag || !instance || tag.id !== tagId) return null;
-    }
+    if (!tag || !instance || tag.id !== tagId) return null;
 
     const renderHandlePopover = (
       <>
@@ -95,9 +92,7 @@ class InstancePopover extends Component {
         }}
       >
         <div className={classes.Toolbar} onClick={e => e.stopPropagation()}>
-          {isOnStartHandle || isOnEndHandle
-            ? renderHandlePopover
-            : renderInstancePopover}
+          {isOverHandle ? renderHandlePopover : renderInstancePopover}
         </div>
       </Popover>
     );
