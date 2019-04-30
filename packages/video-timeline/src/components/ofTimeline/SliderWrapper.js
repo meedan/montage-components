@@ -34,7 +34,6 @@ const SliderWrapper = styled.div`
     pointer-events: auto;
     position: absolute;
     top: 0;
-    transform: translateX(-2px);
     transition: background 0.1s, top 0.5s;
     width: 4px;
   }
