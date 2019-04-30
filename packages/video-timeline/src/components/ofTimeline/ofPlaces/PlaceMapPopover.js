@@ -5,15 +5,16 @@ import equal from 'fast-deep-equal';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
-import grey from '@material-ui/core/colors/grey';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckIcon from '@material-ui/icons/Check';
-import FormatShapesIcon from '@material-ui/icons/FormatShapes';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import FormatShapesIcon from '@material-ui/icons/FormatShapes';
+import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -268,7 +269,7 @@ class PlaceMap extends Component {
       zIndex: 1,
     };
 
-    console.group('PlaceMapPopover');
+    console.group('PlaceMapPopper');
     console.log('props', this.props);
     console.log('state', this.state);
     console.groupEnd();
@@ -286,7 +287,7 @@ class PlaceMap extends Component {
       .pop();
 
     return (
-      <Popover
+      <Popper
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -301,53 +302,57 @@ class PlaceMap extends Component {
         PaperProps={{ square: true }}
         onEscapeKeyDown={this.props.isCreating}
       >
-        <TextField
-          autoFocus
-          fullWidth
-          inputRef={this.searchRef}
-          placeholder="Find location…"
-          InputProps={{
-            classes: {
-              root: classes.Input,
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <Tooltip title="Change name…">
-                  <IconButton onClick={this.props.startPlaceRename}>
-                    <KeyboardBackspaceIcon fontSize="small" color="disabled" />
-                  </IconButton>
-                </Tooltip>
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <Separator />
-                <Tooltip title="Drop a pin">
-                  <IconButton
-                    color={
-                      dropPin && marker.type !== 'marker'
-                        ? 'primary'
-                        : 'secondary'
-                    }
-                    onClick={this.toggleDropPin}
-                  >
-                    <AddLocationIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Mark an area">
-                  <IconButton
-                    color={
-                      drawPolygon && marker.type !== 'polygon'
-                        ? 'primary'
-                        : 'secondary'
-                    }
-                    onClick={this.toggleDrawPolygon}
-                  >
-                    <FormatShapesIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Separator />
-                {/* <Tooltip title="Delete">
+        <Paper>
+          <TextField
+            autoFocus
+            fullWidth
+            inputRef={this.searchRef}
+            placeholder="Find location…"
+            InputProps={{
+              classes: {
+                root: classes.Input,
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Tooltip title="Change name…">
+                    <IconButton onClick={this.props.startPlaceRename}>
+                      <KeyboardBackspaceIcon
+                        fontSize="small"
+                        color="disabled"
+                      />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Separator />
+                  <Tooltip title="Drop a pin">
+                    <IconButton
+                      color={
+                        dropPin && marker.type !== 'marker'
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onClick={this.toggleDropPin}
+                    >
+                      <AddLocationIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Mark an area">
+                    <IconButton
+                      color={
+                        drawPolygon && marker.type !== 'polygon'
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onClick={this.toggleDrawPolygon}
+                    >
+                      <FormatShapesIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Separator />
+                  {/* <Tooltip title="Delete">
                       <IconButton
                         color={
                           this.state.marker &&
@@ -361,118 +366,121 @@ class PlaceMap extends Component {
                         <DeleteOutlineIcon fontSize="small" />
                       </IconButton>
                     </Tooltip> */}
-                {this.state.marker.type ? (
-                  <Tooltip title="Save location">
-                    <Button
-                      disabled={this.state.saved}
-                      className={classes.Button}
-                      color="primary"
-                      onClick={this.saveCurrent}
-                      variant="contained"
-                    >
-                      <CheckIcon
-                        fontSize="small"
-                        className={classes.SaveIcon}
-                      />
-                    </Button>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Close">
-                    <IconButton
-                      onClick={
-                        this.props.isCreating
-                          ? this.props.stopNewPlace
-                          : this.props.onClose
-                      }
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </InputAdornment>
-            ),
-          }}
-        />
-        <LoadScript
-          id={`map-${this.props.placeId}`}
-          googleMapsApiKey="AIzaSyASFlPz3OiJvgzeUCZoA9JLtUJYN89s8y0"
-          libraries={['places', 'drawing', 'geometry']}
-          onLoad={this.onScriptLoad}
-        >
-          <GoogleMap
+                  {this.state.marker.type ? (
+                    <Tooltip title="Save location">
+                      <Button
+                        disabled={this.state.saved}
+                        className={classes.Button}
+                        color="primary"
+                        onClick={this.saveCurrent}
+                        variant="contained"
+                      >
+                        <CheckIcon
+                          fontSize="small"
+                          className={classes.SaveIcon}
+                        />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Close">
+                      <IconButton
+                        onClick={
+                          this.props.isCreating
+                            ? this.props.stopNewPlace
+                            : this.props.onClose
+                        }
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
+          <LoadScript
             id={`map-${this.props.placeId}`}
-            mapContainerStyle={{
-              height: '240px',
-              width: '400px',
-            }}
-            zoom={2.5}
-            center={center}
-            onClick={this.handleMapClick}
-            onLoad={map => (this.map = map)}
-            options={{
-              draggableCursor:
-                this.state.dropPin || this.state.drawPolygon
-                  ? 'crosshair'
-                  : 'grab',
-              mapTypeControl: false,
-              streetViewControl: true,
-              streetViewControlOptions: {
-                position:
-                  window.google &&
-                  window.google.maps.ControlPosition.LEFT_BOTTOM,
-              },
-            }}
+            googleMapsApiKey="AIzaSyASFlPz3OiJvgzeUCZoA9JLtUJYN89s8y0"
+            libraries={['places', 'drawing', 'geometry']}
+            onLoad={this.onScriptLoad}
           >
-            {this.state.marker.type === 'polygon' &&
-            this.state.marker.polygon.length > 0 ? (
-              <Polygon
-                key="poly"
-                editable={this.state.drawPolygon}
-                path={this.state.marker.polygon}
-                onLoad={polygon => (this.polygon = polygon)}
-                options={polygonOptions}
-              />
-            ) : null}
-            {this.state.marker.type === 'marker' ? (
-              <Marker
-                key="marker"
-                draggable={this.state.dropPin}
-                animation={window.google && window.google.maps.Animation.DROP}
-                position={{
-                  lat: this.state.marker.lat,
-                  lng: this.state.marker.lng,
-                }}
-                onLoad={marker => (this.marker = marker)}
-                onPositionChanged={this.handleMarkerUpdate}
-              />
-            ) : null}
-            {this.props.data
-              .filter(d => d.type === 'marker')
-              .map(({ lat, lng, time }, i) => (
-                <Marker
-                  key={`m-${i}`}
-                  draggable
-                  animation={window.google && window.google.maps.Animation.DROP}
-                  position={{ lat, lng }}
-                  onClick={() => this.handleMarkerClick(time)}
-                />
-              ))}
-            {this.props.data
-              .filter(d => d.type === 'polygon')
-              .map((polygon, i) => (
+            <GoogleMap
+              id={`map-${this.props.placeId}`}
+              mapContainerStyle={{
+                height: '240px',
+                width: '400px',
+              }}
+              zoom={2.5}
+              center={center}
+              onClick={this.handleMapClick}
+              onLoad={map => (this.map = map)}
+              options={{
+                draggableCursor:
+                  this.state.dropPin || this.state.drawPolygon
+                    ? 'crosshair'
+                    : 'grab',
+                mapTypeControl: false,
+                streetViewControl: true,
+                streetViewControlOptions: {
+                  position:
+                    window.google &&
+                    window.google.maps.ControlPosition.LEFT_BOTTOM,
+                },
+              }}
+            >
+              {this.state.marker.type === 'polygon' &&
+              this.state.marker.polygon.length > 0 ? (
                 <Polygon
-                  key={`p-${i}`}
-                  onLoad={polygon => {
-                    console.log('polygon: ', polygon);
-                  }}
-                  path={polygon.polygon}
+                  key="poly"
+                  editable={this.state.drawPolygon}
+                  path={this.state.marker.polygon}
+                  onLoad={polygon => (this.polygon = polygon)}
                   options={polygonOptions}
-                  onClick={() => this.handleMarkerClick(polygon.time)}
                 />
-              ))}
-          </GoogleMap>
-        </LoadScript>
-      </Popover>
+              ) : null}
+              {this.state.marker.type === 'marker' ? (
+                <Marker
+                  key="marker"
+                  draggable={this.state.dropPin}
+                  animation={window.google && window.google.maps.Animation.DROP}
+                  position={{
+                    lat: this.state.marker.lat,
+                    lng: this.state.marker.lng,
+                  }}
+                  onLoad={marker => (this.marker = marker)}
+                  onPositionChanged={this.handleMarkerUpdate}
+                />
+              ) : null}
+              {this.props.data
+                .filter(d => d.type === 'marker')
+                .map(({ lat, lng, time }, i) => (
+                  <Marker
+                    key={`m-${i}`}
+                    draggable
+                    animation={
+                      window.google && window.google.maps.Animation.DROP
+                    }
+                    position={{ lat, lng }}
+                    onClick={() => this.handleMarkerClick(time)}
+                  />
+                ))}
+              {this.props.data
+                .filter(d => d.type === 'polygon')
+                .map((polygon, i) => (
+                  <Polygon
+                    key={`p-${i}`}
+                    onLoad={polygon => {
+                      console.log('polygon: ', polygon);
+                    }}
+                    path={polygon.polygon}
+                    options={polygonOptions}
+                    onClick={() => this.handleMarkerClick(polygon.time)}
+                  />
+                ))}
+            </GoogleMap>
+          </LoadScript>
+        </Paper>
+      </Popper>
     );
   }
 }
