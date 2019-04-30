@@ -16,7 +16,6 @@ const SliderWrapper = styled.div`
     height: 28px;
     position: absolute;
     top: 0;
-    pointer-events: auto;
   }
   .rc-slider-handle:focus {
     border: none;
