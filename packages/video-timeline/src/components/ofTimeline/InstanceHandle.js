@@ -33,7 +33,7 @@ class InstanceHandle extends Component {
     const { classes, value } = this.props;
     return (
       <>
-        <Tooltip placement="top" title={formatTime(value)}>
+        <Tooltip placement="top" title={formatTime(value)} enterDelay={350}>
           <Handle {...this.props} />
         </Tooltip>
         <Popover
