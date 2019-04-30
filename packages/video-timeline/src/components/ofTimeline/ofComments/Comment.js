@@ -37,6 +37,21 @@ const styles = {
   savingProgress: {},
 };
 
+const ElSideControls = styled.div`
+  visibility: hidden;
+`;
+
+const El = styled.div`
+  ${({ hasAddornment }) =>
+    hasAddornment
+      ? `
+  ${ElSideControls} {
+    visibility: visible;
+  }
+`
+      : ''};
+`;
+
 const Mask = styled.div`
   align-items: center;
   background: rgba(255, 255, 255, 0.66);
@@ -64,8 +79,9 @@ function Comment(props) {
     text,
   } = props;
 
-  const [editMode, setEditMode] = useState(false);
+  const [isEditing, setEditingStatus] = useState(false);
   const [isProcessing, setProcessingStatus] = useState(false);
+  const [isHovering, setHoveringStatus] = useState(false);
 
   const popupState = usePopupState({
     popupId: 'MoreMenuItem',
@@ -73,7 +89,7 @@ function Comment(props) {
   });
 
   const toggleCommentEdit = () => {
-    setEditMode(true);
+    setEditingStatus(true);
     popupState.close();
   };
   const handleCommentEdit = text => {
@@ -83,7 +99,7 @@ function Comment(props) {
     // subsequent comments have also threadId (which is first comment’s id)
 
     setProcessingStatus(true);
-    setEditMode(false);
+    setEditingStatus(false);
     setTimeout(() => setProcessingStatus(false), 1000); // TODO: make this real
 
     console.group('handleCommentEdit()');
@@ -94,7 +110,7 @@ function Comment(props) {
   const handleCommentDelete = () => {
     // TODO: wire this up to delete comment
     setProcessingStatus(true);
-    setEditMode(false);
+    setEditingStatus(false);
     setTimeout(() => setProcessingStatus(false), 1000); // TODO: make this real
     popupState.close();
     console.group('handleCommentDelete()');
@@ -107,32 +123,34 @@ function Comment(props) {
     if (isActionable) {
       return (
         <>
-          <IconButton {...bindHover(popupState)}>
-            <MoreVertIcon />
-          </IconButton>
-          <Popover
-            {...bindPopover(popupState)}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            disableRestoreFocus
-          >
-            <List dense>
-              <ListItem button onClick={toggleCommentEdit}>
-                <ListItemText>Edit</ListItemText>
-              </ListItem>
-              {!isRoot ? (
-                <ListItem button onClick={handleCommentDelete}>
-                  <ListItemText>Delete</ListItemText>
+          <ElSideControls>
+            <IconButton {...bindHover(popupState)}>
+              <MoreVertIcon />
+            </IconButton>
+            <Popover
+              {...bindPopover(popupState)}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+              disableRestoreFocus
+            >
+              <List dense>
+                <ListItem button onClick={toggleCommentEdit}>
+                  <ListItemText>Edit</ListItemText>
                 </ListItem>
-              ) : null}
-            </List>
-          </Popover>
+                {!isRoot ? (
+                  <ListItem button onClick={handleCommentDelete}>
+                    <ListItemText>Delete</ListItemText>
+                  </ListItem>
+                ) : null}
+              </List>
+            </Popover>
+          </ElSideControls>
         </>
       );
     }
@@ -140,51 +158,52 @@ function Comment(props) {
   };
 
   return (
-    <ListItem
-      alignItems="flex-start"
-      className={classes.ListItem}
-      component="div"
-      key={id}
+    <El
+      hasAddornment={isHovering && !isEditing}
+      onMouseEnter={() => setHoveringStatus(true)}
+      onMouseLeave={() => setHoveringStatus(false)}
     >
-      <ListItemAvatar>
-        <Tooltip
-          title={
-            <Typography align="center" color="inherit" variant="caption">
-              {date}
+      <ListItem alignItems="flex-start" className={classes.ListItem} key={id}>
+        <ListItemAvatar>
+          <Tooltip
+            title={
+              <Typography align="center" color="inherit" variant="caption">
+                {date}
+              </Typography>
+            }
+          >
+            <Avatar
+              alt={`${fname} ${lname}`}
+              src={avatar}
+              className={classes.avatar}
+            />
+          </Tooltip>
+        </ListItemAvatar>
+        <ListItemText>
+          <Typography variant="body2">{`${fname} ${lname}`}</Typography>
+          {isEditing ? (
+            <CommentForm
+              isEditing
+              onCancel={() => setEditingStatus(false)}
+              onSubmit={text => handleCommentEdit(text, id)}
+              value={text}
+            />
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              {text}
             </Typography>
-          }
-        >
-          <Avatar
-            alt={`${fname} ${lname}`}
-            src={avatar}
-            className={classes.avatar}
-          />
-        </Tooltip>
-      </ListItemAvatar>
-      <ListItemText>
-        <Typography variant="body2">{`${fname} ${lname}`}</Typography>
-        {editMode ? (
-          <CommentForm
-            isEditing
-            onCancel={() => setEditMode(false)}
-            onSubmit={text => handleCommentEdit(text, id)}
-            value={text}
-          />
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            {text}
-          </Typography>
+          )}
+        </ListItemText>
+        <ListItemSecondaryAction className={classes.listItemSecondaryAction}>
+          {displayActions()}
+        </ListItemSecondaryAction>
+        {isProcessing && (
+          <Mask>
+            <CircularProgress size={22} className={classes.savingProgress} />
+          </Mask>
         )}
-      </ListItemText>
-      <ListItemSecondaryAction className={classes.listItemSecondaryAction}>
-        {displayActions()}
-      </ListItemSecondaryAction>
-      {isProcessing && (
-        <Mask>
-          <CircularProgress size={22} className={classes.savingProgress} />
-        </Mask>
-      )}
-    </ListItem>
+      </ListItem>
+    </El>
   );
 }
 
