@@ -55,10 +55,11 @@ class PlaceMap extends Component {
     super(props);
 
     this.state = {
-      dropPin: false,
       drawPolygon: false,
-      saved: true,
+      dropPin: false,
       marker: this.props.marker || {},
+      placeName: this.props.placeName,
+      saved: true,
     };
 
     this.searchRef = React.createRef();
@@ -305,8 +306,15 @@ class PlaceMap extends Component {
         <Paper>
           <TextField
             autoFocus
+            defaultValue={this.state.placeName}
             fullWidth
             inputRef={this.searchRef}
+            onKeyPress={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                console.log('trigger search');
+              }
+            }}
             placeholder="Find location…"
             InputProps={{
               classes: {
