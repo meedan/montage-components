@@ -18,6 +18,9 @@ import { color } from '@montage/ui';
 
 import { play, pause, seekTo } from '../reducers/player';
 
+const DISABLE_TIMELINE_TRANSPORT = true;
+const DISABLE_TRACK_TRANSPORT = true;
+
 const TimelinePlayheadWrapper = styled.div`
   user-select: none;
 `;
@@ -91,26 +94,30 @@ const pxOffset = 224;
 class Timeline extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      ffTime: 0,
+      clip: false,
+      time: 0,
+      skip: false,
+      disjoint: false,
+      playing: false,
+      timelineOffset: 0,
+      seekTo: null,
+    };
+
     this.timelineRef = React.createRef();
 
     this.updateDimensions = this.updateDimensions.bind(this);
   }
 
-  state = {
-    ffTime: 0,
-    time: 0,
-    skip: false,
-    disjoint: false,
-    playing: true,
-    timelineOffset: 0,
-  };
-
   static getDerivedStateFromProps(props, state) {
     const { currentTime } = props;
-    let { time, events, skip, disjoint } = state;
+    let { time, events, skip, disjoint, clip, ffTime } = state;
 
     disjoint = disjoint && Math.floor(time / 5) !== Math.floor(currentTime / 5);
     time = disjoint ? time : currentTime;
+    time = clip ? ffTime : time;
 
     return { time, events, skip, disjoint };
   }
@@ -118,6 +125,12 @@ class Timeline extends Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener('resize', this.updateDimensions.bind(this));
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.seekTo !== this.state.seekTo) {
+      // this.props.seekTo(this.state.seekTo);
+    }
   }
 
   componentWillUnmount() {
@@ -137,7 +150,7 @@ class Timeline extends Component {
   }
 
   onTrackClick = e => {
-    if (this.state.skip) {
+    if (this.state.skip || this.state.clip) {
       console.log('skipping click due to drag state on');
       return;
     }
@@ -151,14 +164,12 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
 
-    if (e.clientX > startPos) {
-      this.setState({ time: newTime, skip: false, disjoint: true });
+    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+      this.setState({ time: newTime, disjoint: true });
 
       console.log(`seeking to ${newTime}`);
       if (!playing) play();
       seekTo(newTime);
-    } else {
-      console.log('skipping because player && e.clientX > startPos is false');
     }
 
     return null;
@@ -177,21 +188,23 @@ class Timeline extends Component {
     if (this.props.playing) this.props.pause();
   };
 
-  onDrag = (val, skip = true) => {
+  onDrag = (val, skip = true, clip = false) => {
     console.log('dragging');
-    const { seekTo, pause, playing } = this.props;
+    const { pause, playing } = this.props;
 
     this.setState({
-      time: val,
+      time: clip ? this.state.time : val,
+      clip,
       skip,
+      seekTo: val,
       disjoint: true,
       playing: playing || this.state.playing,
     });
 
-    setTimeout(() => {
-      console.log(`seeking to ${val}`);
-      seekTo(val);
-    }, 0);
+    // setTimeout(() => {
+    //   console.log(`seeking to ${val}`);
+    //   seekTo(val);
+    // }, 0);
 
     // pause
     if (playing) pause();
@@ -199,8 +212,11 @@ class Timeline extends Component {
 
   onDragEnd = val => {
     console.log('dragEnd');
-    if (this.state.playing && !this.props.playing) this.props.play();
-    setTimeout(() => this.setState({ skip: false, playing: false }), 100);
+    // if (this.state.playing && !this.props.playing) this.props.play();
+    setTimeout(
+      () => this.setState({ skip: false, playing: false, clip: false }),
+      300
+    );
   };
 
   registerDuplicateAsClip = fn => {
@@ -215,13 +231,16 @@ class Timeline extends Component {
     const { time, skip, ffTime } = this.state;
     const { duration } = this.props;
 
-    const props = Object.keys(this.props).reduce(
-      (acc, k) => {
-        if (!acc[k]) acc[k] = this.props[k];
-        return acc;
-      },
-      { currentTime: skip ? ffTime : time }
-    );
+    // const props = Object.keys(this.props).reduce(
+    //   (acc, k) => {
+    //     if (!acc[k]) acc[k] = this.props[k];
+    //     return acc;
+    //   },
+    //   { currentTime: skip ? ffTime : time }
+    // );
+    const currentTime = skip ? ffTime : time;
+
+    console.log('ffTime', currentTime);
 
     return (
       <TimelinePlayheadWrapper
@@ -245,32 +264,57 @@ class Timeline extends Component {
           />
         </TimelinePlayhead>
         <Table padding="dense">
-          <TimelineComments {...props} skip={skip} />
+          <TimelineComments
+            {...this.props}
+            currentTime={currentTime}
+            skip={skip}
+          />
           <TimelineClips
-            {...props}
-            onAfterChange={v => this.onDragEnd(v)}
-            onBeforeChange={v => this.onDragStart(v, false)}
-            onChange={v => this.onDrag(v, false)}
+            {...this.props}
+            currentTime={currentTime}
+            onAfterChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+            }
+            onBeforeChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+            }
+            onChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+            }
             pxOffset={pxOffset}
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
             skip={skip}
             timelineOffset={this.state.timelineOffset}
           />
           <TimelineTags
-            {...props}
+            {...this.props}
+            currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
-            onAfterChange={v => this.onDragEnd(v)}
-            onBeforeChange={v => this.onDragStart(v, false)}
-            onChange={v => this.onDrag(v, false)}
+            onAfterChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+            }
+            onBeforeChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+            }
+            onChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+            }
             pxOffset={pxOffset}
             skip={skip}
             timelineOffset={this.state.timelineOffset}
           />
           <TimelinePlaces
-            {...props}
-            onAfterChange={v => this.onDragEnd(v)}
-            onBeforeChange={v => this.onDragStart(v, false)}
-            onChange={v => this.onDrag(v, false)}
+            {...this.props}
+            currentTime={time}
+            onAfterChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+            }
+            onBeforeChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+            }
+            onChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+            }
             pxOffset={pxOffset}
             setMap={this.props.setMap}
             skip={skip}
