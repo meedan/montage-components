@@ -8,9 +8,9 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import EntityNameField from '../EntityNameField';
 import PlaceControlsPopover from './PlaceControlsPopover';
 import PlaceDeleteModal from './PlaceDeleteModal';
-import PlaceNameField from './PlaceNameField';
 
 import PlaceMapPopover from './PlaceMapPopover';
 
@@ -186,19 +186,19 @@ class PlaceControls extends Component {
         return readModeLabel;
       } else if (editStep === 1) {
         return (
-          <PlaceNameField
-            handlePlaceRename={
+          <EntityNameField
+            handleRename={
               this.props.isCreating
                 ? this.startReposition
                 : this.handlePlaceRename
             }
             isCreating={this.props.isCreating}
-            newPlaceName={this.state.placeName}
-            oldPlaceName={this.props.placeName}
-            placeRename={this.placeRename}
-            projectPlaces={projectPlaces}
-            stopNewPlace={this.props.stopNewPlace}
-            stopPlaceRename={this.stopPlaceRename}
+            newName={this.state.placeName}
+            oldName={this.props.placeName}
+            suggestions={projectPlaces}
+            stopNew={this.props.stopNewPlace}
+            stopRename={this.stopPlaceRename}
+            onChange={this.placeRename}
           />
         );
       } else if (editStep === 2) {
