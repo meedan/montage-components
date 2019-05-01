@@ -101,7 +101,7 @@ class Timeline extends Component {
     time: 0,
     skip: false,
     disjoint: false,
-    playing: false,
+    playing: true,
     timelineOffset: 0,
   };
 
