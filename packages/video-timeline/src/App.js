@@ -94,7 +94,7 @@ const TimelineWrapper = styled.div`
   margin-right: auto;
   max-width: 1500px;
   min-height: 500px;
-  padding-bottom: 260px;
+  padding-bottom: 300px;
   position: relative;
   &:before {
     border-left: 1px solid ${grey[300]};
