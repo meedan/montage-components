@@ -3,7 +3,7 @@ import { withTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 
-import { update } from '../reducers/player';
+import { play, pause, duration, timeupdate, update } from '../reducers/player';
 
 class Player extends Component {
   ref = player => {
@@ -19,9 +19,19 @@ class Player extends Component {
     }
   }
 
+  handleOnReady = () => {
+    const { update } = this.props;
+    this.internalPlayer = this.player.getInternalPlayer();
+
+    update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
+    this.internalPlayer.addEventListener('onStateChange', ({ data: status }) =>
+      update({ status })
+    );
+  };
+
   render() {
-    const { player, update } = this.props;
-    const { playing } = player;
+    const { player, play, pause, duration, timeupdate } = this.props;
+    const { playing, playbackRate } = player;
 
     return (
       <ReactPlayer
@@ -38,21 +48,20 @@ class Player extends Component {
           this.props.data.ytVideoData.id
         }`}
         progressInterval={200}
+        playbackRate={playbackRate}
         controls
         volume={null}
         muted
         width="100%"
         height="100%"
         playing={playing}
-        onPlay={() => update({ playing: true })}
-        onPause={() => update({ playing: false })}
-        onEnded={() => update({ playing: false })}
-        onDuration={duration => update({ duration })}
-        onProgress={({ playedSeconds }) =>
-          update({ currentTime: playedSeconds })
-        }
-        onReady={() => console.info('onReady')}
-        onStart={() => console.info('onStart')}
+        onPlay={() => play()}
+        onPause={() => pause()}
+        onEnded={() => pause()}
+        onDuration={d => duration(d)}
+        onProgress={({ playedSeconds }) => timeupdate(playedSeconds)}
+        onReady={this.handleOnReady}
+        onStart={e => console.info('onStart', e)}
         onSeek={e => console.info('onSeek', e)}
         onError={e => console.error('onError', e)}
       />
@@ -62,5 +71,5 @@ class Player extends Component {
 
 export default connect(
   null,
-  { update }
+  { play, pause, duration, timeupdate, update }
 )(withTheme()(Player));
