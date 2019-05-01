@@ -37,6 +37,7 @@ const styles = {
   },
   Input: {
     padding: 8,
+    fontSize: '13px',
   },
   SaveIcon: {
     fontSize: '22px',
@@ -289,21 +290,18 @@ class PlaceMap extends Component {
 
     return (
       <Popper
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
+        placement="bottom-start"
         anchorEl={this.props.anchorRef}
         open
+        modifiers={{
+          offset: {
+            offset: '0, -100%',
+          },
+        }}
         onClick={e => e.stopPropagation()}
-        PaperProps={{ square: true }}
         onEscapeKeyDown={this.props.isCreating}
       >
-        <Paper>
+        <Paper square>
           <TextField
             autoFocus
             defaultValue={this.state.placeName}
