@@ -141,6 +141,7 @@ class Timeline extends Component {
       console.log('skipping click due to drag state on');
       return;
     }
+
     const { seekTo, play, duration, playing } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -154,17 +155,17 @@ class Timeline extends Component {
       this.setState({ time: newTime, skip: false, disjoint: true });
 
       console.log(`seeking to ${newTime}`);
-      seekTo(newTime);
       if (!playing) play();
+      seekTo(newTime);
     } else {
-      // console.log('skipping because player && e.clientX > startPos is false');
+      console.log('skipping because player && e.clientX > startPos is false');
     }
 
     return null;
   };
 
   onDragStart = (val, skip = true) => {
-    // console.log('dragStart', this.props.playing);
+    console.log('dragStart');
     this.setState({
       skip,
       ffTime: val,
@@ -177,7 +178,7 @@ class Timeline extends Component {
   };
 
   onDrag = (val, skip = true) => {
-    // console.log('dragging', this.props.playing);
+    console.log('dragging');
     const { seekTo, pause, playing } = this.props;
 
     this.setState({
@@ -197,6 +198,7 @@ class Timeline extends Component {
   };
 
   onDragEnd = val => {
+    console.log('dragEnd');
     if (this.state.playing && !this.props.playing) this.props.play();
     setTimeout(() => this.setState({ skip: false, playing: false }), 100);
   };
