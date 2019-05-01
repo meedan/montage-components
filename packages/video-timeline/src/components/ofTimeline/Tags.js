@@ -340,12 +340,12 @@ class TimelineTags extends Component {
       }
     };
 
-    console.group('leMenu()');
+    // console.group('leMenu()');
     // console.log(e);
     // console.log(mousePos);
-    if (isOverHandle) console.log('isOverHandle');
-    if (handleOverStart) console.log('handleOverStart');
-    if (handleOverEnd) console.log('handleOverEnd');
+    // if (isOverHandle) console.log('isOverHandle');
+    // if (handleOverStart) console.log('handleOverStart');
+    // if (handleOverEnd) console.log('handleOverEnd');
     // if (handleOverStart) console.log('handleOverStart');
     // if (handleOverEnd) console.log('handleOverEnd');
     // if (isOnStartHandle) console.log({ isOnStartHandle });
@@ -354,7 +354,7 @@ class TimelineTags extends Component {
     // console.log(e.currentTarget.getBoundingClientRect());
     // console.log(targetTag);
     // console.log({ targetInstance });
-    console.groupEnd();
+    // console.groupEnd();
 
     this.setState({
       choords: {

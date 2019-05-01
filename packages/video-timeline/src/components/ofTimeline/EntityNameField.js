@@ -120,25 +120,36 @@ const styles = theme => ({
 class EntityNameField extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: this.props.newName,
-    };
+    this.state = { name: this.props.name };
   }
 
+  onChange = str => {
+    this.setState({ name: str });
+  };
+  onSubmit = () => {
+    this.props.onSubmit(this.state.name);
+  };
+  onClickAway = () => {
+    if (
+      !this.state.name ||
+      this.state.name.length === 0 ||
+      this.state.name === this.props.name
+    ) {
+      this.props.onCancel();
+    } else {
+      this.onSubmit();
+    }
+  };
+
   render() {
-    const {
-      classes,
-      isCreating,
-      oldName,
-      onChange,
-      stopNew,
-      stopRename,
-      suggestions,
-    } = this.props;
+    const { classes, name, onCancel, suggestions } = this.props;
 
     return (
-      <ClickAwayListener onClickAway={isCreating ? stopNew : stopRename}>
-        <Downshift id="downshift-tags" onInputValueChange={onChange}>
+      <ClickAwayListener onClickAway={this.onClickAway}>
+        <Downshift
+          id="downshift-tags"
+          onInputValueChange={e => this.onChange(e)}
+        >
           {({
             getInputProps,
             getItemProps,
@@ -157,18 +168,18 @@ class EntityNameField extends Component {
                 onKeyPress: e => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
-                    this.props.handleRename();
+                    this.onSubmit();
                   } else if (e.key === 'Escape') {
                     e.preventDefault();
-                    isCreating ? stopNew() : stopRename();
+                    onCancel();
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: oldName.length > 0 ? oldName : 'Enter new name…',
+                  placeholder: name.length > 0 ? name : 'Enter new name…',
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton onClick={isCreating ? stopNew : stopRename}>
+                        <IconButton onClick={onCancel}>
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>

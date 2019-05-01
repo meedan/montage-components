@@ -47,12 +47,11 @@ class ClipControls extends Component {
     super(props);
 
     this.state = {
+      isCreating: false,
+      isDeleting: false,
       isEditing: false,
       isHovering: false,
       isProcessing: false,
-      isDeleting: false,
-      isCreating: false,
-      clipName: this.props.clipName,
     };
   }
 
@@ -69,18 +68,13 @@ class ClipControls extends Component {
       this.setState({ isEditing: false, isHovering: false });
   };
 
-  clipRename = clipName => {
-    this.setState({ clipName: clipName });
-  };
-
-  handleClipRename = () => {
+  handleClipRename = name => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
     console.group('handleClipRename()');
-    console.log('clipName:', this.state.clipName);
+    console.log('name:', name);
     console.groupEnd();
-
-    this.props.renameClip(this.state.clipName);
+    this.props.renameClip(name);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -97,7 +91,7 @@ class ClipControls extends Component {
     this.setState({ isProcessing: true, isDeleting: false });
     // TODO: wire tag delete API calls
     console.group('handleClipDelete()');
-    console.log('tagId:', this.props.tagId);
+    console.log('clipId:', this.props.clipId);
     console.groupEnd();
 
     this.props.deleteClip();
@@ -108,7 +102,7 @@ class ClipControls extends Component {
   startNewInstance = () => {
     // TODO: wire create new instance API calls
     console.group('startNewInstance()');
-    console.log('tagId:', this.props.tagId);
+    console.log('clipId:', this.props.clipId);
     console.log('start_seconds:', this.props.currentTime);
     console.groupEnd();
 
@@ -116,7 +110,7 @@ class ClipControls extends Component {
   };
 
   render() {
-    const { classes, projectClips } = this.props;
+    const { classes, isCreating, projectClips } = this.props;
     const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
     const readMode = (
@@ -128,14 +122,14 @@ class ClipControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Tooltip title={this.state.clipName} enterDelay={750}>
+          <Tooltip title={this.props.clipName} enterDelay={750}>
             <Typography
               className={classes.Typography}
               color="textSecondary"
               noWrap
               variant="body2"
             >
-              {this.state.clipName}
+              {this.props.clipName}
             </Typography>
           </Tooltip>
         </Grid>
@@ -166,13 +160,9 @@ class ClipControls extends Component {
       >
         {isEditing ? (
           <EntityNameField
-            handleRename={this.handleClipRename}
-            isCreating={this.props.isCreating}
-            newName={this.state.clipName}
-            oldName={this.props.clipName}
-            onChange={this.clipRename}
-            stopNew={this.props.stopNewClip}
-            stopRename={this.stopClipRename}
+            name={this.props.clipName}
+            onCancel={isCreating ? this.props.stopNewClip : this.stopClipRename}
+            onSubmit={this.handleClipRename}
             suggestions={projectClips}
           />
         ) : (
@@ -180,9 +170,9 @@ class ClipControls extends Component {
         )}
         {isDeleting ? (
           <ClipDeleteModal
+            clipName={this.props.clipName}
             handleClose={this.stopClipDelete}
             handleRemove={this.handleClipDelete}
-            clipName={this.state.clipName}
           />
         ) : null}
       </El>

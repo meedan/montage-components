@@ -47,12 +47,11 @@ class TagControls extends Component {
     super(props);
 
     this.state = {
+      isCreating: false,
+      isDeleting: false,
       isEditing: false,
       isHovering: false,
       isProcessing: false,
-      isDeleting: false,
-      isCreating: false,
-      tagName: this.props.tagName,
     };
   }
 
@@ -69,18 +68,14 @@ class TagControls extends Component {
       this.setState({ isEditing: false, isHovering: false });
   };
 
-  tagRename = tagName => {
-    this.setState({ tagName: tagName });
-  };
-
-  handleTagRename = () => {
+  handleTagRename = name => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
     console.group('handleTagRename()');
-    console.log('tagName:', this.state.tagName);
+    console.log('tagName:', name);
     console.groupEnd();
 
-    this.props.renameTag(this.state.tagName);
+    this.props.renameTag(name);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -116,7 +111,7 @@ class TagControls extends Component {
   };
 
   render() {
-    const { classes, projectTags } = this.props;
+    const { classes, isCreating, projectTags } = this.props;
     const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
     const readMode = (
@@ -128,14 +123,14 @@ class TagControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Tooltip title={this.state.tagName} enterDelay={750}>
+          <Tooltip title={this.props.tagName} enterDelay={750}>
             <Typography
               className={classes.Typography}
               color="textSecondary"
               noWrap
               variant="body2"
             >
-              {this.state.tagName}
+              {this.props.tagName}
             </Typography>
           </Tooltip>
         </Grid>
@@ -166,13 +161,9 @@ class TagControls extends Component {
       >
         {isEditing ? (
           <EntityNameField
-            handleRename={this.handleTagRename}
-            isCreating={this.props.isCreating}
-            newName={this.state.tagName}
-            oldName={this.props.tagName}
-            onChange={this.tagRename}
-            stopNew={this.props.stopNewTag}
-            stopRename={this.stopTagRename}
+            name={this.props.tagName}
+            onCancel={isCreating ? this.props.stopNewTag : this.stopTagRename}
+            onSubmit={this.handleTagRename}
             suggestions={projectTags}
           />
         ) : (
@@ -182,7 +173,7 @@ class TagControls extends Component {
           <TagDeleteModal
             handleClose={this.stopTagDelete}
             handleRemove={this.handleTagDelete}
-            tagName={this.state.tagName}
+            tagName={this.props.tagName}
           />
         ) : null}
       </El>
