@@ -3,6 +3,7 @@ import { reduce } from 'lodash';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,6 +11,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import TableSection from './TableSection';
 import CommentMarker from './ofComments/CommentMarker';
+
+import { pause } from '../../reducers/player';
 
 const SliderWrapper = styled.div`
   .rc-slider-disabled,
@@ -40,6 +43,8 @@ class TimelineComments extends Component {
   }
 
   startNewCommentThread = () => {
+    this.props.pause();
+
     const newThread = {
       isBeingAdded: true,
       start_seconds: this.props.currentTime,
@@ -116,4 +121,8 @@ class TimelineComments extends Component {
   }
 }
 
-export default React.memo(props => <TimelineComments {...props} />);
+// export default React.memo(props => <TimelineComments {...props} />);
+export default connect(
+  null,
+  { pause }
+)(React.memo(props => <TimelineComments {...props} />));
