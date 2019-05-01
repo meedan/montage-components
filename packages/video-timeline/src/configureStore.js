@@ -1,11 +1,11 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
-import RavenMiddleware from 'redux-raven-middleware';
+// import RavenMiddleware from 'redux-raven-middleware';
 import { createLogger } from 'redux-logger';
 
 import rootReducer from './reducers';
 
 const logger = createLogger({
-  predicate: (s, a) => !['update'].includes(a.type),
+  predicate: (state, action) => !['update', 'timeupdate'].includes(action.type),
   duration: true,
   collapsed: true,
   diff: true,

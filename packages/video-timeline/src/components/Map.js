@@ -101,7 +101,7 @@ class Map extends Component {
 
   handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
-    // console.log(place);
+    console.log(place);
     if (place && place.geometry) {
       this.map.fitBounds(place.geometry.viewport.toJSON());
 
@@ -120,7 +120,7 @@ class Map extends Component {
   };
 
   onLoad = autocomplete => {
-    // console.log('autocomplete: ', autocomplete);
+    console.log('autocomplete: ', autocomplete);
     this.autocomplete = autocomplete;
   };
 
