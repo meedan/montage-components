@@ -24,8 +24,14 @@ class Player extends Component {
     this.internalPlayer = this.player.getInternalPlayer();
 
     update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
+
     this.internalPlayer.addEventListener('onStateChange', ({ data: status }) =>
       update({ status })
+    );
+
+    this.internalPlayer.addEventListener(
+      'onPlaybackRateChange',
+      ({ data: playbackRate }) => update({ playbackRate })
     );
   };
 
