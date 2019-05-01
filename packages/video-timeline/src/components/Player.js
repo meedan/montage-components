@@ -12,15 +12,25 @@ class Player extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.player.seekTo !== prevProps.player.seekTo) {
-      if (this.player && !isNaN(this.props.player.seekTo)) {
+      if (this.props.player.seekTo !== null) {
         console.log('seeking', this.props.player.seekTo);
         this.player.seekTo(this.props.player.seekTo);
       }
+    }
+
+    if (
+      this.props.player.seekTo === null &&
+      prevProps.player.playing === false &&
+      this.props.player.playing === true
+    ) {
+      this.props.update({ seekTo: 0, playing: false });
     }
   }
 
   handleOnReady = () => {
     const { update } = this.props;
+    // this.player.seekTo(0);
+
     this.internalPlayer = this.player.getInternalPlayer();
 
     update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
@@ -45,7 +55,7 @@ class Player extends Component {
         config={{
           youtube: {
             playerVars: {
-              autoplay: 0,
+              autoplay: 1,
             },
             preload: true,
           },
