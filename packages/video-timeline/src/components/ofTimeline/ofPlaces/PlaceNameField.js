@@ -98,7 +98,7 @@ const styles = theme => ({
   },
   inputRoot: {
     borderBottom: `1px solid ${grey[300]}`,
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     fontSize: '13px',
     marginBottom: 0,
     marginTop: 0,
