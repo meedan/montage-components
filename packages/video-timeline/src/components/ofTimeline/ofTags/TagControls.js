@@ -7,9 +7,9 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import EntityDeleteModal from '../EntityDeleteModal';
 import EntityNameField from '../EntityNameField';
 import TagControlsPopover from './TagControlsPopover';
-import TagDeleteModal from './TagDeleteModal';
 
 const styles = {
   Grid: {
@@ -170,10 +170,11 @@ class TagControls extends Component {
           readMode
         )}
         {isDeleting ? (
-          <TagDeleteModal
-            handleClose={this.stopTagDelete}
-            handleRemove={this.handleTagDelete}
-            tagName={this.props.tagName}
+          <EntityDeleteModal
+            name={this.props.tagName}
+            onCancel={this.stopTagDelete}
+            onConfirm={this.handleTagDelete}
+            title="Delete tag"
           />
         ) : null}
       </El>

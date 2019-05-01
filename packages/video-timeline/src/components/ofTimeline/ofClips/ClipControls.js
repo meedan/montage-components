@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ClipControlsPopover from './ClipControlsPopover';
-import ClipDeleteModal from './ClipDeleteModal';
+import EntityDeleteModal from '../EntityDeleteModal';
 import EntityNameField from '../EntityNameField';
 
 const styles = {
@@ -169,10 +169,11 @@ class ClipControls extends Component {
           readMode
         )}
         {isDeleting ? (
-          <ClipDeleteModal
-            clipName={this.props.clipName}
-            handleClose={this.stopClipDelete}
-            handleRemove={this.handleClipDelete}
+          <EntityDeleteModal
+            name={this.props.clipName}
+            onCancel={this.stopClipDelete}
+            onConfirm={this.handleClipDelete}
+            title="Delete clip"
           />
         ) : null}
       </El>
