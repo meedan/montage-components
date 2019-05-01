@@ -58,7 +58,7 @@ const Transport = props => {
 
   return (
     <PlaybackControls>
-      <Tooltip disableFocusListener title="Jump backward 1 second">
+      <Tooltip disableFocusListener title="Jump backward 1 frame">
         <IconButton
           color="secondary"
           onClick={() => seekTo(currentTime - 1 / frameRate)}
@@ -69,7 +69,7 @@ const Transport = props => {
       <IconButton key="playPause" color="secondary" onClick={() => play()}>
         <PlayArrowIcon />
       </IconButton>
-      <Tooltip disableFocusListener title="Jump forward 1 second">
+      <Tooltip disableFocusListener title="Jump forward 1 frame">
         <IconButton
           color="secondary"
           onClick={() => seekTo(currentTime + 1 / frameRate)}
