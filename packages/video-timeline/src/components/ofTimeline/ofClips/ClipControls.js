@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import ClipControlsPopover from './ClipControlsPopover';
 import ClipDeleteModal from './ClipDeleteModal';
-import ClipNameField from './ClipNameField';
+import EntityNameField from '../EntityNameField';
 
 const styles = {
   Grid: {
@@ -165,15 +165,15 @@ class ClipControls extends Component {
         onMouseLeave={() => this.setState({ isHovering: false })}
       >
         {isEditing ? (
-          <ClipNameField
-            handleClipRename={this.handleClipRename}
+          <EntityNameField
+            handleRename={this.handleClipRename}
             isCreating={this.props.isCreating}
-            projectClips={projectClips}
-            stopNewClip={this.props.stopNewClip}
-            stopClipRename={this.stopClipRename}
-            newClipName={this.state.clipName}
-            oldClipName={this.props.clipName}
-            clipRename={this.clipRename}
+            newName={this.state.clipName}
+            oldName={this.props.clipName}
+            onChange={this.clipRename}
+            stopNew={this.props.stopNewClip}
+            stopRename={this.stopClipRename}
+            suggestions={projectClips}
           />
         ) : (
           readMode

@@ -8,12 +8,12 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import CloseIcon from '@material-ui/icons/Close';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 function renderInput(inputProps) {
   const { InputProps, classes, ref, ...other } = inputProps;
@@ -65,14 +65,14 @@ renderSuggestion.propTypes = {
   suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired,
 };
 
-function getSuggestions(value, projectPlaces = []) {
+function getSuggestions(value, suggestions = []) {
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
 
   return inputLength === 0
     ? []
-    : projectPlaces.filter(suggestion => {
+    : suggestions.filter(suggestion => {
         const keep =
           count < 5 &&
           suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
@@ -117,27 +117,28 @@ const styles = theme => ({
   },
 });
 
-class PlaceNameField extends Component {
+class EntityNameField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeName: this.props.newPlaceName,
+      name: this.props.newName,
     };
   }
 
   render() {
-    const { classes, projectPlaces, isCreating, oldPlaceName } = this.props;
+    const {
+      classes,
+      isCreating,
+      oldName,
+      onChange,
+      stopNew,
+      stopRename,
+      suggestions,
+    } = this.props;
 
     return (
-      <ClickAwayListener
-        onClickAway={
-          isCreating ? this.props.stopNewPlace : this.props.stopPlaceRename
-        }
-      >
-        <Downshift
-          id="downshift-places"
-          onInputValueChange={this.props.placeRename}
-        >
+      <ClickAwayListener onClickAway={isCreating ? stopNew : stopRename}>
+        <Downshift id="downshift-tags" onInputValueChange={onChange}>
           {({
             getInputProps,
             getItemProps,
@@ -156,31 +157,18 @@ class PlaceNameField extends Component {
                 onKeyPress: e => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
-                    isCreating
-                      ? this.props.handlePlaceRename()
-                      : this.props.handlePlaceRename();
+                    this.props.handleRename();
                   } else if (e.key === 'Escape') {
                     e.preventDefault();
-                    isCreating
-                      ? this.props.stopNewPlace()
-                      : this.props.stopPlaceRename();
+                    isCreating ? stopNew() : stopRename();
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder:
-                    oldPlaceName.length > 0
-                      ? oldPlaceName
-                      : 'Enter place name…',
+                  placeholder: oldName.length > 0 ? oldName : 'Enter new name…',
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
-                        <IconButton
-                          onClick={
-                            isCreating
-                              ? this.props.stopNewPlace
-                              : this.props.stopPlaceRename
-                          }
-                        >
+                        <IconButton onClick={isCreating ? stopNew : stopRename}>
                           <CloseIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
@@ -191,7 +179,7 @@ class PlaceNameField extends Component {
               <div {...getMenuProps()}>
                 {isOpen ? (
                   <Paper className={classes.paper} square>
-                    {getSuggestions(inputValue, projectPlaces).length > 0 ? (
+                    {getSuggestions(inputValue, suggestions).length > 0 ? (
                       <Typography
                         variant="caption"
                         color="textSecondary"
@@ -200,7 +188,7 @@ class PlaceNameField extends Component {
                         In this project:
                       </Typography>
                     ) : null}
-                    {getSuggestions(inputValue, projectPlaces).map(
+                    {getSuggestions(inputValue, suggestions).map(
                       (suggestion, index) =>
                         renderSuggestion({
                           suggestion,
@@ -221,8 +209,4 @@ class PlaceNameField extends Component {
   }
 }
 
-PlaceNameField.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(PlaceNameField);
+export default withStyles(styles)(EntityNameField);

@@ -7,9 +7,9 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import EntityNameField from '../EntityNameField';
 import TagControlsPopover from './TagControlsPopover';
 import TagDeleteModal from './TagDeleteModal';
-import TagNameField from './TagNameField';
 
 const styles = {
   Grid: {
@@ -165,15 +165,15 @@ class TagControls extends Component {
         onMouseLeave={() => this.setState({ isHovering: false })}
       >
         {isEditing ? (
-          <TagNameField
-            handleTagRename={this.handleTagRename}
+          <EntityNameField
+            handleRename={this.handleTagRename}
             isCreating={this.props.isCreating}
-            newTagName={this.state.tagName}
-            oldTagName={this.props.tagName}
-            projectTags={projectTags}
-            stopNewTag={this.props.stopNewTag}
-            stopTagRename={this.stopTagRename}
-            tagRename={this.tagRename}
+            newName={this.state.tagName}
+            oldName={this.props.tagName}
+            onChange={this.tagRename}
+            stopNew={this.props.stopNewTag}
+            stopRename={this.stopTagRename}
+            suggestions={projectTags}
           />
         ) : (
           readMode
