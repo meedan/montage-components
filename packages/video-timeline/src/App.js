@@ -216,7 +216,7 @@ class App extends Component {
                       </Paper>
                     </Grid>
                     <Grid item sm={'auto'}>
-                      {data.prevVideo ? (
+                      {data.nextVideo ? (
                         <Preview data={data.nextVideo} isNext />
                       ) : null}
                     </Grid>
