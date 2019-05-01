@@ -29,7 +29,6 @@ class Player extends Component {
 
   handleOnReady = () => {
     const { update } = this.props;
-    // this.player.seekTo(0);
 
     this.internalPlayer = this.player.getInternalPlayer();
 
