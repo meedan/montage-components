@@ -61,7 +61,7 @@ const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
   position: absolute;
   touch-action: pan-x;
   transform: translateX(-50%);
-  width: 13px;
+  width: 7px;
   &:before {
     background: ${color.brand};
     border-radius: 100%;
@@ -72,7 +72,7 @@ const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
     position: absolute;
     top: 0;
     transform: translate(-50%, -50%);
-    width: 9px;
+    width: 5px;
   }
   &:after {
     border-left: 1px solid ${color.brand};
