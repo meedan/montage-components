@@ -73,10 +73,6 @@ class PlaceControls extends Component {
       this.setState({ editStep: 0, isHovering: false });
   };
 
-  placeRename = placeName => {
-    this.setState({ placeName: placeName });
-  };
-
   placeRename2 = (marker, placeName) => {
     console.log(marker, placeName);
     this.setState({ marker, placeName });
@@ -104,14 +100,14 @@ class PlaceControls extends Component {
     this.setState({ editStep: 0, isHovering: false });
   };
 
-  handlePlaceRename = () => {
+  handlePlaceRename = name => {
     this.setState({ isProcessing: true, editStep: 0 });
     // TODO: wire place delete API calls
     console.group('handlePlaceRename()');
-    console.log('placeName:', this.state.placeName);
+    console.log('name:', name);
     console.groupEnd();
 
-    this.props.renamePlace(this.state.placeName, this.state.marker);
+    this.props.renamePlace(name, this.state.marker);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -139,7 +135,7 @@ class PlaceControls extends Component {
   };
 
   render() {
-    const { classes, projectPlaces } = this.props;
+    const { classes, isCreating, projectPlaces } = this.props;
     const { editStep, isDeleting, isHovering, isProcessing } = this.state;
 
     const readModeLabel = (
@@ -187,18 +183,14 @@ class PlaceControls extends Component {
       } else if (editStep === 1) {
         return (
           <EntityNameField
-            handleRename={
-              this.props.isCreating
-                ? this.startReposition
-                : this.handlePlaceRename
+            name={this.props.clipName}
+            onCancel={
+              isCreating ? this.props.stopNewPlace : this.stopPlaceRename
             }
-            isCreating={this.props.isCreating}
-            newName={this.state.placeName}
-            oldName={this.props.placeName}
+            onSubmit={
+              isCreating ? this.startReposition : this.handlePlaceRename
+            }
             suggestions={projectPlaces}
-            stopNew={this.props.stopNewPlace}
-            stopRename={this.stopPlaceRename}
-            onChange={this.placeRename}
           />
         );
       } else if (editStep === 2) {
