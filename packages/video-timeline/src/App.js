@@ -132,18 +132,18 @@ class App extends Component {
     map: false,
   };
 
-  static getDerivedStateFromProps(props, state) {
-    // FIXME:
-    // if (props.$scope) {
-    //   const data = props.$scope.$parent.ctrl;
-    //   return {
-    //     data,
-    //     duration: data.gdVideoData.duration,
-    //   };
-    // }
-
-    return {};
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   // FIXME:
+  //   // if (props.$scope) {
+  //   //   const data = props.$scope.$parent.ctrl;
+  //   //   return {
+  //   //     data,
+  //   //     duration: data.gdVideoData.duration,
+  //   //   };
+  //   // }
+  //
+  //   return {};
+  // }
 
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
