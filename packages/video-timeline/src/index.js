@@ -6,8 +6,13 @@ import { configureAppStore } from './configureStore';
 
 import App from './App';
 
-
-const store = configureAppStore();
+const store = configureAppStore({ foo: 7 });
 
 const root = document.getElementById('react-root');
-if (root) ReactDOM.render(<Provider store={store}><App /></Provider>, root);
+if (root)
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    root
+  );

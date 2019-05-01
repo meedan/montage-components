@@ -1,7 +1,10 @@
 import { createSlice } from 'redux-starter-kit';
 
 const initialState = {
-  duration: -1,
+  state: null, // https://developers.google.com/youtube/iframe_api_reference#Playback_status
+  playbackRates: [1], // available playback rates
+  playbackRate: 1,
+  duration: 0,
   currentTime: 0,
   playing: false,
   seeking: false,
@@ -15,13 +18,34 @@ const playerSlice = createSlice({
     play: state => ({ ...state, playing: true }),
     pause: state => ({ ...state, playing: false }),
 
-    seekTo: (state, { payload: seekTo }) => ({...state, seekTo }),
+    seekTo: (state, { payload: seekTo }) => ({ ...state, seekTo }),
+    playbackRate: (state, { payload: playbackRate }) => ({
+      ...state,
+      playbackRate,
+    }),
 
-    update: (state, { payload }) => ({...state, ...payload }),
+    duration: (state, { payload: duration }) => ({ ...state, duration }),
+    timeupdate: (state, { payload: currentTime }) => ({
+      ...state,
+      currentTime,
+    }),
+
+    update: (state, { payload }) => ({ ...state, ...payload }),
     reset: () => initialState,
   },
-})
+});
+
+console.log(playerSlice);
 
 const { actions, reducer } = playerSlice;
-export const { play, pause, seekTo, update, reset } = actions;
+export const {
+  play,
+  pause,
+  seekTo,
+  playbackRate,
+  duration,
+  timeupdate,
+  update,
+  reset,
+} = actions;
 export default reducer;

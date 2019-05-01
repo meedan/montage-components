@@ -52,8 +52,6 @@ const styles = {
 };
 
 function InfoCard(props) {
-  // const [map, setMap] = useState(false);
-
   const { classes, data, currentTime, map, setMap } = props;
   const { archived_at, favourited } = data.gdVideoData;
   const isArchived = archived_at !== null && archived_at !== undefined;
