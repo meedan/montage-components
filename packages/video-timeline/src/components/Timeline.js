@@ -150,7 +150,7 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / (endPos - pxOffset);
 
-    if ( e.clientX > startPos) {
+    if (e.clientX > startPos) {
       this.setState({ time: newTime, skip: false, disjoint: true });
 
       console.log(`seeking to ${newTime}`);
@@ -280,5 +280,7 @@ class Timeline extends Component {
   }
 }
 
-// export default withStyles(styles)(Timeline);
-export default connect(null, { play, pause, seekTo })(withStyles(styles)(Timeline));
+export default connect(
+  null,
+  { play, pause, seekTo }
+)(withStyles(styles)(Timeline));

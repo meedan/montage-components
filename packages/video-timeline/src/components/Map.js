@@ -84,7 +84,7 @@ class Map extends Component {
           match.type === 'marker' ? match : match.polygon[0];
         this.map.panTo({ lat, lng });
         viewport && this.map.fitBounds(viewport);
-        this.setState({center: { lat, lng }});
+        this.setState({ center: { lat, lng } });
       }
     }
 
@@ -298,8 +298,9 @@ class Map extends Component {
       .pop();
 
     if (this.state.center) center = this.state.center;
-    if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
-  // console.log(center, marker);
+    if (marker && marker.lat && marker.lng)
+      center = { lat: marker.lat, lng: marker.lng };
+    // console.log(center, marker);
 
     if (this.map && this.map.center) center = this.map.center;
 
@@ -483,5 +484,7 @@ class Map extends Component {
   }
 }
 
-// export default withStyles(styles)(Map);
-export default connect(null, { seekTo })(withStyles(styles)(Map));
+export default connect(
+  null,
+  { seekTo }
+)(withStyles(styles)(Map));

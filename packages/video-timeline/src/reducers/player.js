@@ -15,12 +15,14 @@ const playerSlice = createSlice({
     play: state => ({ ...state, playing: true }),
     pause: state => ({ ...state, playing: false }),
 
-    seekTo: (state, { payload: seekTo }) => ({...state, seekTo }),
+    seekTo: (state, { payload: seekTo }) => ({ ...state, seekTo }),
 
-    update: (state, { payload }) => ({...state, ...payload }),
+    update: (state, { payload }) => ({ ...state, ...payload }),
     reset: () => initialState,
   },
-})
+});
+
+console.log(playerSlice);
 
 const { actions, reducer } = playerSlice;
 export const { play, pause, seekTo, update, reset } = actions;

@@ -5,10 +5,9 @@ import ReactPlayer from 'react-player';
 
 import { update } from '../reducers/player';
 
-
 class Player extends Component {
   ref = player => {
-    this.player = player
+    this.player = player;
   };
 
   componentDidUpdate(prevProps) {
@@ -35,25 +34,23 @@ class Player extends Component {
             preload: true,
           },
         }}
-
-        url={`https://www.youtube.com/watch?v=${this.props.data.ytVideoData.id}`}
-
+        url={`https://www.youtube.com/watch?v=${
+          this.props.data.ytVideoData.id
+        }`}
         progressInterval={200}
         controls
         volume={null}
         muted
         width="100%"
         height="100%"
-
         playing={playing}
-
         onPlay={() => update({ playing: true })}
         onPause={() => update({ playing: false })}
         onEnded={() => update({ playing: false })}
-
         onDuration={duration => update({ duration })}
-        onProgress={({ playedSeconds }) => update({ currentTime: playedSeconds })}
-
+        onProgress={({ playedSeconds }) =>
+          update({ currentTime: playedSeconds })
+        }
         onReady={() => console.info('onReady')}
         onStart={() => console.info('onStart')}
         onSeek={e => console.info('onSeek', e)}
@@ -63,4 +60,7 @@ class Player extends Component {
   }
 }
 
-export default connect(null, { update })(withTheme()(Player));
+export default connect(
+  null,
+  { update }
+)(withTheme()(Player));
