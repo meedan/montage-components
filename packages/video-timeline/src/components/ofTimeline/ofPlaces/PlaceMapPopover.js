@@ -255,7 +255,7 @@ class PlaceMap extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, data } = this.props;
     const { dropPin, drawPolygon, marker } = this.state;
 
     const polygonOptions = {
@@ -276,7 +276,7 @@ class PlaceMap extends Component {
     console.log('state', this.state);
     console.groupEnd();
 
-    const center = this.props.data
+    let center = data
       .reduce(
         (acc, d) => {
           const coords =
@@ -287,6 +287,13 @@ class PlaceMap extends Component {
       )
       .reverse()
       .pop();
+
+    if (this.state.center) center = this.state.center;
+    if (marker && marker.lat && marker.lng)
+      center = { lat: marker.lat, lng: marker.lng };
+    // console.log(center, marker);
+
+    if (this.map && this.map.center) center = this.map.center;
 
     return (
       <Popper
