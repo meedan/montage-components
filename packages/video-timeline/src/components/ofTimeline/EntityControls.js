@@ -1,15 +1,56 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Popover from 'material-ui-popup-state/HoverPopover';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import EntityDeleteModal from '../EntityDeleteModal';
-import EntityNameField from '../EntityNameField';
-import TagControlsPopover from './TagControlsPopover';
+import EntityDeleteModal from './EntityDeleteModal';
+import EntityNameField from './EntityNameField';
+
+function renderControlsPopover(onStartRename, onStartDelete) {
+  return (
+    <PopupState variant="popover" popupId="moreTagOptionsPopover">
+      {popupState => (
+        <div>
+          <IconButton {...bindHover(popupState)} aria-label="Options…">
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            disableRestoreFocus
+          >
+            <List dense>
+              <ListItem button onClick={onStartRename}>
+                <ListItemText>Rename</ListItemText>
+              </ListItem>
+              <ListItem button onClick={onStartDelete}>
+                <ListItemText>Delete</ListItemText>
+              </ListItem>
+            </List>
+          </Popover>
+        </div>
+      )}
+    </PopupState>
+  );
+}
 
 const styles = {
   Grid: {
@@ -42,7 +83,7 @@ const El = styled.div`
       : ''};
 `;
 
-class TagControls extends Component {
+class EntityControls extends Component {
   constructor(props) {
     super(props);
 
@@ -142,10 +183,7 @@ class TagControls extends Component {
                 className={classes.CircularProgress}
               />
             ) : (
-              <TagControlsPopover
-                onStartRename={this.startTagRename}
-                onStartDelete={this.startTagDelete}
-              />
+              renderControlsPopover(this.startTagRename, this.startTagDelete)
             )}
           </ElSideControls>
         </Grid>
@@ -182,4 +220,4 @@ class TagControls extends Component {
   }
 }
 
-export default withStyles(styles)(TagControls);
+export default withStyles(styles)(EntityControls);
