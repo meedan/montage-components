@@ -308,6 +308,7 @@ class Timeline extends Component {
           <TimelinePlaces
             {...this.props}
             currentTime={time}
+            duplicateAsClip={(place, instance) => console.log(place, instance)}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }

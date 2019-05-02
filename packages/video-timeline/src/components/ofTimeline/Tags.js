@@ -340,22 +340,6 @@ class TimelineTags extends Component {
       }
     };
 
-    // console.group('leMenu()');
-    // console.log(e);
-    // console.log(mousePos);
-    // if (isOverHandle) console.log('isOverHandle');
-    // if (handleOverStart) console.log('handleOverStart');
-    // if (handleOverEnd) console.log('handleOverEnd');
-    // if (handleOverStart) console.log('handleOverStart');
-    // if (handleOverEnd) console.log('handleOverEnd');
-    // if (isOnStartHandle) console.log({ isOnStartHandle });
-    // if (isOnEndHandle) console.log({ isOnEndHandle });
-    // console.log(e.currentTarget);
-    // console.log(e.currentTarget.getBoundingClientRect());
-    // console.log(targetTag);
-    // console.log({ targetInstance });
-    // console.groupEnd();
-
     this.setState({
       choords: {
         x: getXChoord() + rect.left,
@@ -443,8 +427,6 @@ class TimelineTags extends Component {
     const { currentTime, duration, data } = this.props;
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
-
-    console.log(this.state.choords);
 
     return (
       <TableSection
@@ -556,8 +538,6 @@ class TimelineTags extends Component {
                         onDelete={() => this.deleteInstance(tag.id)}
                         onExit={this.leMenuOff}
                         onExtend={() => this.expandInstance(tag.id)}
-                        tag={this.state.targetTag}
-                        tagId={tag.id}
                       >
                         <Tooltip title="Copy to Clips">
                           <IconButton
