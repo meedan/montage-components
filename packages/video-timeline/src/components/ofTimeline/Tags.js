@@ -486,14 +486,14 @@ class TimelineTags extends Component {
                   leftColContent={
                     <EntityControls
                       currentTime={currentTime}
-                      deleteTag={() => this.deleteTag(tag.id)}
+                      deleteEntity={() => this.deleteTag(tag.id)}
+                      entityId={tag.id}
+                      entityName={project_tag.name}
                       isCreating={tag.isCreating}
-                      projectTags={projecttags}
-                      renameTag={name => this.renameTag(tag.id, name)}
+                      renameEntity={name => this.renameTag(tag.id, name)}
                       startNewInstance={() => this.startNewInstance(tag.id)}
-                      stopNewTag={this.stopNewTag}
-                      tagId={tag.id}
-                      tagName={project_tag.name}
+                      stopNewEntity={this.stopNewTag}
+                      suggestions={projecttags}
                     />
                   }
                   rightColContent={
