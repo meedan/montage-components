@@ -175,7 +175,8 @@ class EntityNameField extends Component {
                   }
                 },
                 InputProps: getInputProps({
-                  placeholder: name.length > 0 ? name : 'Enter new name…',
+                  placeholder:
+                    name && name.length > 0 ? name : 'Enter new name…',
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Cancel">
