@@ -13,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
 
-import ClipControls from './ofClips/ClipControls';
+import EntityControls from './EntityControls';
 import EntityInstanceHandle from './EntityInstanceHandle';
 import EntityInstancePopover from './EntityInstancePopover';
 import SliderWrapper from './SliderWrapper';
@@ -556,16 +556,16 @@ class TimelineClips extends Component {
                   key={clip.id}
                   plain={i < videoClips.length - 1}
                   leftColContent={
-                    <ClipControls
+                    <EntityControls
                       currentTime={currentTime}
-                      deleteClip={() => this.deleteClip(clip.id)}
+                      deleteEntity={() => this.deleteClip(clip.id)}
+                      entityId={clip.id}
+                      entityName={project_clip.name}
                       isCreating={clip.isCreating}
-                      projectClips={projectclips}
-                      renameClip={name => this.renameClip(clip.id, name)}
+                      renameEntity={name => this.renameClip(clip.id, name)}
                       startNewInstance={() => this.startNewInstance(clip.id)}
-                      stopNewClip={this.stopNewClip}
-                      clipId={clip.id}
-                      clipName={project_clip.name}
+                      stopNewEntity={this.stopNewClip}
+                      suggestions={projectclips}
                     />
                   }
                   rightColContent={

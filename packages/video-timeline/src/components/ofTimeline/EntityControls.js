@@ -100,23 +100,23 @@ class EntityControls extends Component {
     this.setState({ isEditing: this.props.isCreating });
   }
 
-  startTagRename = () => {
+  startRename = () => {
     this.setState({ isHovering: false, isEditing: true });
   };
 
-  stopTagRename = () => {
+  stopRename = () => {
     if (this.state.isEditing)
       this.setState({ isEditing: false, isHovering: false });
   };
 
-  handleTagRename = name => {
+  handleRename = name => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
-    console.group('handleTagRename()');
+    console.group('handleRename()');
     console.log('tagName:', name);
     console.groupEnd();
 
-    this.props.renameTag(name);
+    this.props.renameEntity(name);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -133,10 +133,10 @@ class EntityControls extends Component {
     this.setState({ isProcessing: true, isDeleting: false });
     // TODO: wire tag delete API calls
     console.group('handleTagDelete()');
-    console.log('tagId:', this.props.tagId);
+    console.log('tagId:', this.props.entityId);
     console.groupEnd();
 
-    this.props.deleteTag();
+    this.props.deleteEntity();
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -144,7 +144,7 @@ class EntityControls extends Component {
   startNewInstance = () => {
     // TODO: wire create new instance API calls
     console.group('startNewInstance()');
-    console.log('tagId:', this.props.tagId);
+    console.log('tagId:', this.props.entityId);
     console.log('start_seconds:', this.props.currentTime);
     console.groupEnd();
 
@@ -152,7 +152,13 @@ class EntityControls extends Component {
   };
 
   render() {
-    const { classes, isCreating, projectTags } = this.props;
+    const {
+      classes,
+      isCreating,
+      suggestions,
+      entityName,
+      stopNewEntity,
+    } = this.props;
     const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
     const readMode = (
@@ -164,14 +170,14 @@ class EntityControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Tooltip title={this.props.tagName} enterDelay={750}>
+          <Tooltip title={entityName} enterDelay={750}>
             <Typography
               className={classes.Typography}
               color="textSecondary"
               noWrap
               variant="body2"
             >
-              {this.props.tagName}
+              {entityName}
             </Typography>
           </Tooltip>
         </Grid>
@@ -183,7 +189,7 @@ class EntityControls extends Component {
                 className={classes.CircularProgress}
               />
             ) : (
-              renderControlsPopover(this.startTagRename, this.startTagDelete)
+              renderControlsPopover(this.startRename, this.startTagDelete)
             )}
           </ElSideControls>
         </Grid>
@@ -199,17 +205,17 @@ class EntityControls extends Component {
       >
         {isEditing ? (
           <EntityNameField
-            name={this.props.tagName}
-            onCancel={isCreating ? this.props.stopNewTag : this.stopTagRename}
-            onSubmit={this.handleTagRename}
-            suggestions={projectTags}
+            name={entityName}
+            onCancel={isCreating ? stopNewEntity : this.stopRename}
+            onSubmit={this.handleRename}
+            suggestions={suggestions}
           />
         ) : (
           readMode
         )}
         {isDeleting ? (
           <EntityDeleteModal
-            name={this.props.tagName}
+            name={entityName}
             onCancel={this.stopTagDelete}
             onConfirm={this.handleTagDelete}
             title="Delete tag"
