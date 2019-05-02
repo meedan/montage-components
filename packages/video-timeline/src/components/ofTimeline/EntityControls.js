@@ -1,15 +1,56 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Popover from 'material-ui-popup-state/HoverPopover';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import ClipControlsPopover from './ClipControlsPopover';
-import EntityDeleteModal from '../EntityDeleteModal';
-import EntityNameField from '../EntityNameField';
+import EntityDeleteModal from './EntityDeleteModal';
+import EntityNameField from './EntityNameField';
+
+function renderControlsPopover(onStartRename, onStartDelete) {
+  return (
+    <PopupState variant="popover" popupId="moreTagOptionsPopover">
+      {popupState => (
+        <div>
+          <IconButton {...bindHover(popupState)} aria-label="Options…">
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            disableRestoreFocus
+          >
+            <List dense>
+              <ListItem button onClick={onStartRename}>
+                <ListItemText>Rename</ListItemText>
+              </ListItem>
+              <ListItem button onClick={onStartDelete}>
+                <ListItemText>Delete</ListItemText>
+              </ListItem>
+            </List>
+          </Popover>
+        </div>
+      )}
+    </PopupState>
+  );
+}
 
 const styles = {
   Grid: {
@@ -42,7 +83,7 @@ const El = styled.div`
       : ''};
 `;
 
-class ClipControls extends Component {
+class EntityControls extends Component {
   constructor(props) {
     super(props);
 
@@ -59,42 +100,43 @@ class ClipControls extends Component {
     this.setState({ isEditing: this.props.isCreating });
   }
 
-  startClipRename = () => {
+  startRename = () => {
     this.setState({ isHovering: false, isEditing: true });
   };
 
-  stopClipRename = () => {
+  stopRename = () => {
     if (this.state.isEditing)
       this.setState({ isEditing: false, isHovering: false });
   };
 
-  handleClipRename = name => {
+  handleRename = name => {
     this.setState({ isProcessing: true, isEditing: false });
     // TODO: wire tag delete API calls
-    console.group('handleClipRename()');
-    console.log('name:', name);
+    console.group('handleRename()');
+    console.log('tagName:', name);
     console.groupEnd();
-    this.props.renameClip(name);
+
+    this.props.renameEntity(name);
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
 
-  startClipDelete = () => {
+  startTagDelete = () => {
     this.setState({ isDeleting: true });
   };
 
-  stopClipDelete = () => {
+  stopTagDelete = () => {
     this.setState({ isDeleting: false });
   };
 
-  handleClipDelete = () => {
+  handleTagDelete = () => {
     this.setState({ isProcessing: true, isDeleting: false });
     // TODO: wire tag delete API calls
-    console.group('handleClipDelete()');
-    console.log('clipId:', this.props.clipId);
+    console.group('handleTagDelete()');
+    console.log('tagId:', this.props.entityId);
     console.groupEnd();
 
-    this.props.deleteClip();
+    this.props.deleteEntity();
 
     setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
   };
@@ -102,7 +144,7 @@ class ClipControls extends Component {
   startNewInstance = () => {
     // TODO: wire create new instance API calls
     console.group('startNewInstance()');
-    console.log('clipId:', this.props.clipId);
+    console.log('tagId:', this.props.entityId);
     console.log('start_seconds:', this.props.currentTime);
     console.groupEnd();
 
@@ -110,7 +152,13 @@ class ClipControls extends Component {
   };
 
   render() {
-    const { classes, isCreating, projectClips } = this.props;
+    const {
+      classes,
+      isCreating,
+      suggestions,
+      entityName,
+      stopNewEntity,
+    } = this.props;
     const { isDeleting, isEditing, isHovering, isProcessing } = this.state;
 
     const readMode = (
@@ -122,14 +170,14 @@ class ClipControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Tooltip title={this.props.clipName} enterDelay={750}>
+          <Tooltip title={entityName} enterDelay={750}>
             <Typography
               className={classes.Typography}
               color="textSecondary"
               noWrap
               variant="body2"
             >
-              {this.props.clipName}
+              {entityName}
             </Typography>
           </Tooltip>
         </Grid>
@@ -141,10 +189,7 @@ class ClipControls extends Component {
                 className={classes.CircularProgress}
               />
             ) : (
-              <ClipControlsPopover
-                onStartRename={this.startClipRename}
-                onStartDelete={this.startClipDelete}
-              />
+              renderControlsPopover(this.startRename, this.startTagDelete)
             )}
           </ElSideControls>
         </Grid>
@@ -160,20 +205,20 @@ class ClipControls extends Component {
       >
         {isEditing ? (
           <EntityNameField
-            name={this.props.clipName}
-            onCancel={isCreating ? this.props.stopNewClip : this.stopClipRename}
-            onSubmit={this.handleClipRename}
-            suggestions={projectClips}
+            name={entityName}
+            onCancel={isCreating ? stopNewEntity : this.stopRename}
+            onSubmit={this.handleRename}
+            suggestions={suggestions}
           />
         ) : (
           readMode
         )}
         {isDeleting ? (
           <EntityDeleteModal
-            name={this.props.clipName}
-            onCancel={this.stopClipDelete}
-            onConfirm={this.handleClipDelete}
-            title="Delete clip"
+            name={entityName}
+            onCancel={this.stopTagDelete}
+            onConfirm={this.handleTagDelete}
+            title="Delete tag"
           />
         ) : null}
       </El>
@@ -181,4 +226,4 @@ class ClipControls extends Component {
   }
 }
 
-export default withStyles(styles)(ClipControls);
+export default withStyles(styles)(EntityControls);
