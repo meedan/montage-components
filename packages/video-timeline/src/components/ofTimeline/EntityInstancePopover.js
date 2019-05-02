@@ -16,14 +16,7 @@ const styles = theme => ({
   },
 });
 
-class InstancePopover extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-  // shouldComponentUpdate(nextProps) {
-  //   return this.props.mousePos !== nextProps.mousePos;
-  // }
-
+class EntityInstancePopover extends Component {
   render() {
     const {
       classes,
@@ -34,13 +27,13 @@ class InstancePopover extends Component {
       onDelete,
       onExit,
       onExtend,
-      tag,
-      tagId,
+      entity,
+      entityId,
     } = this.props;
 
-    if (!tag || !instance || tag.id !== tagId) return null;
+    if (!entity || !instance || entity.id !== entityId) return null;
 
-    const renderHandlePopover = (
+    const handlePopover = (
       <>
         <Tooltip title="Move backward">
           <IconButton
@@ -58,7 +51,7 @@ class InstancePopover extends Component {
         </Tooltip>
       </>
     );
-    const renderInstancePopover = (
+    const trackPopover = (
       <>
         <Tooltip title="Match length of the video">
           <IconButton onClick={onExtend}>
@@ -82,11 +75,11 @@ class InstancePopover extends Component {
         }}
         anchorPosition={{ left: choords.x, top: choords.y }}
         anchorReference="anchorPosition"
-        id="instanceControlsPopover"
-        onEscapeKeyDown={onExit}
-        onBackdropClick={onExit}
         disablePortal
         hideBackdrop
+        id="instanceControlsPopover"
+        onBackdropClick={onExit}
+        onEscapeKeyDown={onExit}
         open
         transformOrigin={{
           vertical: 'top',
@@ -94,11 +87,11 @@ class InstancePopover extends Component {
         }}
       >
         <div className={classes.Toolbar} onClick={e => e.stopPropagation()}>
-          {isOverHandle ? renderHandlePopover : renderInstancePopover}
+          {isOverHandle ? handlePopover : trackPopover}
         </div>
       </Popover>
     );
   }
 }
 
-export default withStyles(styles)(InstancePopover);
+export default withStyles(styles)(EntityInstancePopover);

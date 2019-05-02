@@ -11,7 +11,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import InstanceHandle from './InstanceHandle';
+import EntityInstanceHandle from './EntityInstanceHandle';
 import PlaceControls from './ofPlaces/PlaceControls';
 import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 import SliderWrapper from './SliderWrapper';
@@ -504,7 +504,7 @@ class TimelinePlaces extends Component {
                           defaultValue={arr}
                           value={arr}
                           handle={handleProps => (
-                            <InstanceHandle {...handleProps} />
+                            <EntityInstanceHandle {...handleProps} />
                           )}
                           max={duration}
                           min={0}
