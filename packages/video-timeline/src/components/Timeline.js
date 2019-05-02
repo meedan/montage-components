@@ -240,7 +240,7 @@ class Timeline extends Component {
     // );
     const currentTime = skip ? ffTime : time;
 
-    console.log('ffTime', currentTime);
+    // console.log('ffTime', currentTime);
 
     return (
       <TimelinePlayheadWrapper
@@ -316,7 +316,6 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             pxOffset={pxOffset}
-            setMap={this.props.setMap}
             skip={skip}
             timelineOffset={this.state.timelineOffset}
           />

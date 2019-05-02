@@ -220,7 +220,6 @@ class TimelinePlaces extends Component {
   };
 
   startNewPlace = () => {
-    this.props.setMap(false);
     const { currentTime, duration } = this.props;
     const id = Math.random()
       .toString(36)
@@ -582,4 +581,7 @@ const recomputeSegments = (videoPlaces, duration) => {
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
 // export default React.memo(props => <TimelinePlaces {...props} />);
-export default connect(null, { play, pause, seekTo }) ( React.memo(props => <TimelinePlaces {...props} />) );
+export default connect(
+  null,
+  { play, pause, seekTo }
+)(React.memo(props => <TimelinePlaces {...props} />));
