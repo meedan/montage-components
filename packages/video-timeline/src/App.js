@@ -263,7 +263,6 @@ class App extends Component {
                         data={data}
                         duration={duration}
                         playing={playing}
-                        setMap={this.setMap}
                       />
                     </TimelineWrapper>
                   ) : (
