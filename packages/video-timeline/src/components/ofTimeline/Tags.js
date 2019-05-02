@@ -556,11 +556,20 @@ class TimelineTags extends Component {
                         isOverHandle={this.state.isOverHandle}
                         onDelete={i => this.deleteInstance(tag.id, i)}
                         onExit={this.leMenuOff}
-                        onExtend={i => this.expandInstance(tag.id, i)}
+                        onExtend={() =>
+                          this.expandInstance(tag.id, this.state.targetInstance)
+                        }
+                        tag={this.state.targetTag}
+                        tagId={tag.id}
                       >
                         <Tooltip title="Copy to Clips">
                           <IconButton
-                            onClick={i => this.duplicateAsClip(tag.id, i)}
+                            onClick={() =>
+                              this.duplicateAsClip(
+                                tag.id,
+                                this.state.targetInstance
+                              )
+                            }
                           >
                             <ContentCutIcon fontSize="small" />
                           </IconButton>
