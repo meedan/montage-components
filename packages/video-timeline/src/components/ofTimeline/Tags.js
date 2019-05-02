@@ -13,12 +13,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
+import EntityControls from './EntityControls';
 import EntityInstanceHandle from './EntityInstanceHandle';
 import EntityInstancePopover from './EntityInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
-import TagControls from './ofTags/TagControls';
 
 import { play, pause, seekTo } from '../../reducers/player';
 
@@ -484,7 +484,7 @@ class TimelineTags extends Component {
                   key={tag.id}
                   plain={i < videoTags.length - 1}
                   leftColContent={
-                    <TagControls
+                    <EntityControls
                       currentTime={currentTime}
                       deleteTag={() => this.deleteTag(tag.id)}
                       isCreating={tag.isCreating}
