@@ -442,44 +442,57 @@ class TimelineClips extends Component {
     this.setState({ videoClips });
   };
 
-  deleteInstance(id, instance) {
-    console.group('deleteInstance()');
-    console.log(instance);
-    console.groupEnd();
+  deleteInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoClips = produce(this.state.videoClips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
       const ii = nextVideoClips[ti].instances.findIndex(
-        i => i.id === instance.id
+        i => i.id === targetInstance.id
       );
       nextVideoClips[ti].instances.splice(ii, 1);
     });
 
     const segments = recomputeSegments(videoClips, this.props.duration);
-    this.setState({ videoClips, segments });
+    this.setState({
+      videoClips,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
-  share2Check = (id, instance) => {
-    console.group('share2Check');
-    console.log(instance);
+  openInCheck = id => {
+    const { targetInstance } = this.state;
+    console.group('openInCheck');
+    console.log('targetInstance', targetInstance);
     console.groupEnd();
+    this.setState({
+      targetInstance: null,
+      targetTag: null,
+    });
   };
 
-  expandInstance(id, instance) {
-    console.group('expandInstance()');
-    console.log(instance);
-    console.groupEnd();
+  expandInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoClips = produce(this.state.videoClips, nextVideoClips => {
       const ti = nextVideoClips.findIndex(t => t.id === id);
-      const i = nextVideoClips[ti].instances.find(i => i.id === instance.id);
+      const i = nextVideoClips[ti].instances.find(
+        i => i.id === targetInstance.id
+      );
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
       nextVideoClips[ti].instances = [i];
     });
 
     const segments = recomputeSegments(videoClips, this.props.duration);
-    this.setState({ videoClips, segments });
+    this.setState({
+      videoClips,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
   render() {
@@ -594,14 +607,12 @@ class TimelineClips extends Component {
                         entityId={clip.id}
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
-                        onDelete={i => this.deleteInstance(clip.id, i)}
+                        onDelete={() => this.deleteInstance(clip.id)}
                         onExit={this.leMenuOff}
-                        onExtend={i => this.expandInstance(clip.id, i)}
+                        onExtend={() => this.expandInstance(clip.id)}
                       >
-                        <Tooltip title="Copy to Clips">
-                          <IconButton
-                            onClick={i => this.duplicateAsClip(clip.id, i)}
-                          >
+                        <Tooltip title="Open in Check">
+                          <IconButton onClick={() => this.openInCheck(clip.id)}>
                             <CheckIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
