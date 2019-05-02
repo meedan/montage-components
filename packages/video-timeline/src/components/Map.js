@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
+import { GoogleMap, Marker, Polygon } from '@react-google-maps/api';
 import equal from 'fast-deep-equal';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -91,14 +91,6 @@ class Map extends Component {
     return !equal(this.state, nextState);
   }
 
-  onScriptLoad = () => {
-    this.autocomplete = new window.google.maps.places.Autocomplete(
-      this.searchRef.current,
-      {}
-    );
-    this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
-  };
-
   handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
     console.log(place);
@@ -119,9 +111,14 @@ class Map extends Component {
     }
   };
 
-  onLoad = autocomplete => {
-    console.log('autocomplete: ', autocomplete);
-    this.autocomplete = autocomplete;
+  onLoad = map => {
+    this.map = map;
+
+    this.autocomplete = new window.google.maps.places.Autocomplete(
+      this.searchRef.current,
+      {}
+    );
+    this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
   };
 
   onPlaceChanged = () => {
@@ -398,87 +395,78 @@ class Map extends Component {
             ),
           }}
         />
-        <LoadScript
-          id={`gm-${id}`}
-          key={`gm-${id}`}
-          googleMapsApiKey="***REMOVED***"
-          libraries={['places', 'drawing', 'geometry']}
-          onLoad={this.onScriptLoad}
+        <GoogleMap
+          id={`map-${id}`}
+          key={`map-${id}`}
+          mapContainerStyle={{
+            height: '334px',
+            width: '100%',
+          }}
+          zoom={2.5}
+          center={center}
+          onClick={this.handleMapClick}
+          onLoad={this.onLoad}
+          options={{
+            draggableCursor:
+              this.state.dropPin || this.state.drawPolygon
+                ? 'crosshair'
+                : 'grab',
+            mapTypeControl: false,
+            streetViewControl: true,
+            streetViewControlOptions: {
+              position:
+                window.google && window.google.maps.ControlPosition.LEFT_BOTTOM,
+            },
+          }}
         >
-          <GoogleMap
-            id={`map-${id}`}
-            key={`map-${id}`}
-            mapContainerStyle={{
-              height: '334px',
-              width: '100%',
-            }}
-            zoom={2.5}
-            center={center}
-            onClick={this.handleMapClick}
-            onLoad={map => (this.map = map)}
-            options={{
-              draggableCursor:
-                this.state.dropPin || this.state.drawPolygon
-                  ? 'crosshair'
-                  : 'grab',
-              mapTypeControl: false,
-              streetViewControl: true,
-              streetViewControlOptions: {
-                position:
-                  window.google &&
-                  window.google.maps.ControlPosition.LEFT_BOTTOM,
-              },
-            }}
-          >
-            {this.state.marker.type === 'polygon' &&
-            this.state.marker.polygon.length > 0 ? (
-              <Polygon
-                key="poly"
-                editable={this.state.drawPolygon}
-                path={this.state.marker.polygon}
-                onLoad={polygon => (this.polygon = polygon)}
-                options={polygonOptions}
-              />
-            ) : null}
-            {this.state.marker.type === 'marker' ? (
+          {this.state.marker.type === 'polygon' &&
+          this.state.marker.polygon.length > 0 ? (
+            <Polygon
+              key="poly"
+              editable={this.state.drawPolygon}
+              path={this.state.marker.polygon}
+              onLoad={polygon => (this.polygon = polygon)}
+              options={polygonOptions}
+            />
+          ) : null}
+          {this.state.marker.type === 'marker' ? (
+            <Marker
+              key="marker"
+              draggable={this.state.dropPin}
+              animation={window.google && window.google.maps.Animation.DROP}
+              position={{
+                lat: this.state.marker.lat,
+                lng: this.state.marker.lng,
+              }}
+              onLoad={marker => (this.marker = marker)}
+              onPositionChanged={this.handleMarkerUpdate}
+            />
+          ) : null}
+          {this.props.data
+            .filter(d => d.type === 'marker')
+            .map(({ lat, lng, time }, i) => (
               <Marker
-                key="marker"
-                draggable={this.state.dropPin}
+                key={`m-${i}`}
+                draggable
                 animation={window.google && window.google.maps.Animation.DROP}
-                position={{
-                  lat: this.state.marker.lat,
-                  lng: this.state.marker.lng,
-                }}
-                onLoad={marker => (this.marker = marker)}
-                onPositionChanged={this.handleMarkerUpdate}
+                position={{ lat, lng }}
+                onClick={() => this.handleMarkerClick(time)}
               />
-            ) : null}
-            {this.props.data
-              .filter(d => d.type === 'marker')
-              .map(({ lat, lng, time }, i) => (
-                <Marker
-                  key={`m-${i}`}
-                  draggable
-                  animation={window.google && window.google.maps.Animation.DROP}
-                  position={{ lat, lng }}
-                  onClick={() => this.handleMarkerClick(time)}
-                />
-              ))}
-            {this.props.data
-              .filter(d => d.type === 'polygon')
-              .map((polygon, i) => (
-                <Polygon
-                  key={`p-${i}`}
-                  onLoad={polygon => {
-                    console.log('polygon: ', polygon);
-                  }}
-                  path={polygon.polygon}
-                  options={polygonOptions}
-                  onClick={() => this.handleMarkerClick(polygon.time)}
-                />
-              ))}
-          </GoogleMap>
-        </LoadScript>
+            ))}
+          {this.props.data
+            .filter(d => d.type === 'polygon')
+            .map((polygon, i) => (
+              <Polygon
+                key={`p-${i}`}
+                onLoad={polygon => {
+                  console.log('polygon: ', polygon);
+                }}
+                path={polygon.polygon}
+                options={polygonOptions}
+                onClick={() => this.handleMarkerClick(polygon.time)}
+              />
+            ))}
+        </GoogleMap>
       </MapWrapper>
     );
   }
