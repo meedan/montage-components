@@ -11,9 +11,11 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
+
 import EntityInstanceHandle from './EntityInstanceHandle';
+import EntityInstancePopover from './EntityInstancePopover';
 import PlaceControls from './ofPlaces/PlaceControls';
-import PlaceInstancePopover from './ofPlaces/PlaceInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
@@ -24,12 +26,9 @@ const Range = Slider.Range;
 
 class TimelinePlaces extends Component {
   state = {
+    choords: { x: 0, y: 0 },
     playlist: false,
     values: {},
-    targetTrack: null,
-    trackRect: null,
-    targetInstanceStartX: 0,
-    targetInstanceEndX: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -277,14 +276,6 @@ class TimelinePlaces extends Component {
     }
   };
 
-  leMenuClose = () => {
-    console.log('leMenuClose()');
-    this.setState({
-      targetInstance: null,
-      targetPlace: null,
-    });
-  };
-
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
@@ -294,21 +285,18 @@ class TimelinePlaces extends Component {
       return;
     }
 
-    const pxOffset = 0;
     const { videoPlaces } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const startPos = rect.left + pxOffset;
-    const endPos = rect.width;
-    const mousePos = e.clientX - startPos;
-    const mousePosFlat = mousePos > 0 ? mousePos : 0;
-    const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
+    const mousePos = e.clientX - rect.left;
+    const relativeMousePos = mousePos > 0 ? mousePos : 0;
+    const mouseTime = (duration * relativeMousePos) / rect.width;
 
     const targetPlace = videoPlaces.find(t => t.id === id);
     if (!targetPlace) {
       this.setState({
-        mousePosFlat,
+        mousePos,
         mouseTime,
         targetInstance: null,
         targetPlace: null,
@@ -316,29 +304,61 @@ class TimelinePlaces extends Component {
       return;
     }
 
+    const pxs = rect.width / duration;
+
+    // 4px handle -> time
+    const handle = 4 / pxs;
     const targetInstance = targetPlace.instances.find(
-      i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
+      i =>
+        i.start_seconds - handle <= mouseTime &&
+        mouseTime < i.end_seconds + handle
     );
 
-    const pxs = endPos / duration;
+    const instanceStartX = targetInstance
+      ? pxs * targetInstance.start_seconds - 2
+      : 0;
+    const instanceEndX = targetInstance
+      ? pxs * targetInstance.end_seconds + 2
+      : 0;
 
-    // console.group('leMenu');
-    // // console.log('rect', rect);
-    // console.log('e.currentTarget', e.currentTarget);
-    // console.log('targetPlace', targetPlace);
-    // console.log('targetInstance', targetInstance);
-    // console.groupEnd();
+    const isOverHandle =
+      !targetPlace.instances.find(
+        i =>
+          i.start_seconds + handle <= mouseTime &&
+          mouseTime < i.end_seconds - handle
+      ) &&
+      !!targetPlace.instances.find(
+        i =>
+          i.start_seconds - handle <= mouseTime &&
+          mouseTime < i.end_seconds + handle
+      );
+
+    const handleOverStart = targetPlace.instances.find(
+      i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
+    );
+
+    const handleOverEnd = targetPlace.instances.find(
+      i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
+    );
+
+    // get x choords
+    const getXChoord = () => {
+      if (handleOverStart) {
+        return instanceStartX;
+      } else if (handleOverEnd) {
+        return instanceEndX;
+      } else {
+        return instanceStartX + (instanceEndX - instanceStartX) / 2;
+      }
+    };
 
     this.setState({
-      targetTrack: e.currentTarget,
-      trackRect: rect,
-      mousePosFlat,
-      mouseTime,
+      choords: {
+        x: getXChoord() + rect.left,
+        y: rect.top + rect.height,
+      },
+      isOverHandle,
       targetInstance,
-      targetInstanceStartX: targetInstance
-        ? pxs * targetInstance.start_seconds
-        : 0,
-      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetPlace,
     });
   };
@@ -367,47 +387,58 @@ class TimelinePlaces extends Component {
     this.setState({ videoPlaces });
   };
 
-  deleteInstance(id, instance) {
-    console.group('deleteInstance()');
-    console.log(instance);
-    console.groupEnd();
+  deleteInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
       const ii = nextVideoPlaces[ti].instances.findIndex(
-        i => i.id === instance.id
+        i => i.id === targetInstance.id
       );
       nextVideoPlaces[ti].instances.splice(ii, 1);
     });
 
     const segments = recomputeSegments(videoPlaces, this.props.duration);
-    this.setState({ videoPlaces, segments });
+    this.setState({
+      videoPlaces,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
-  duplicateAsClip = (id, instance) => {
-    console.group('duplicateAsClip()');
-    console.log(instance);
-    console.groupEnd();
+  duplicateAsClip = id => {
+    const { targetInstance } = this.state;
 
     const place = this.state.videoPlaces.find(t => t.id === id);
-    this.props.duplicateAsClip(place, instance);
+    this.props.duplicateAsClip(place, targetInstance);
+
+    this.setState({
+      targetInstance: null,
+      targetTag: null,
+    });
   };
 
-  expandInstance(id, instance) {
-    console.group('expandInstance()');
-    console.log(instance);
-    console.groupEnd();
+  expandInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoPlaces = produce(this.state.videoPlaces, nextVideoPlaces => {
       const ti = nextVideoPlaces.findIndex(t => t.id === id);
-      const i = nextVideoPlaces[ti].instances.find(i => i.id === instance.id);
+      const i = nextVideoPlaces[ti].instances.find(
+        i => i.id === targetInstance.id
+      );
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
       nextVideoPlaces[ti].instances = [i];
     });
 
     const segments = recomputeSegments(videoPlaces, this.props.duration);
-    this.setState({ videoPlaces, segments });
+    this.setState({
+      videoPlaces,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
   render() {
@@ -437,7 +468,7 @@ class TimelinePlaces extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.leMenuClose}
+        onMouseLeave={this.leMenuOff}
       >
         {videoPlaces
           ? videoPlaces.map((place, i) => {
@@ -515,21 +546,27 @@ class TimelinePlaces extends Component {
                           onChange={v => this.onChange(v, place.id)}
                         />
                       </SliderWrapper>
-                      <PlaceInstancePopover
-                        deleteInstance={i => this.deleteInstance(place.id, i)}
-                        duplicateAsClip={i => this.duplicateAsClip(place.id, i)}
-                        expandInstance={i => this.expandInstance(place.id, i)}
-                        id={place.id}
+                      <EntityInstancePopover
+                        choords={{
+                          x: this.state.choords.x,
+                          y: this.state.choords.y,
+                        }}
+                        entity={this.state.targetPlace}
+                        entityId={place.id}
                         instance={this.state.targetInstance}
-                        instanceEndX={this.state.targetInstanceEndX}
-                        instanceStartX={this.state.targetInstanceStartX}
-                        onClose={this.leMenuClose}
-                        onExit={e => this.leMenuOff(e)}
-                        place={this.state.targetPlace}
-                        timelineOffset={this.props.timelineOffset}
-                        track={this.state.targetTrack}
-                        trackRect={this.state.trackRect}
-                      />
+                        isOverHandle={this.state.isOverHandle}
+                        onDelete={() => this.deleteInstance(place.id)}
+                        onExit={this.leMenuOff}
+                        onExtend={() => this.expandInstance(place.id)}
+                      >
+                        <Tooltip title="Copy to Clips">
+                          <IconButton
+                            onClick={() => this.duplicateAsClip(place.id)}
+                          >
+                            <ContentCutIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </EntityInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
                       </style>
