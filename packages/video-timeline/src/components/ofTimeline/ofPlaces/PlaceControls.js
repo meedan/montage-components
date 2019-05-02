@@ -8,9 +8,9 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import EntityDeleteModal from '../EntityDeleteModal';
 import EntityNameField from '../EntityNameField';
 import PlaceControlsPopover from './PlaceControlsPopover';
-import PlaceDeleteModal from './PlaceDeleteModal';
 
 import PlaceMapPopover from './PlaceMapPopover';
 
@@ -223,10 +223,11 @@ class PlaceControls extends Component {
       >
         {displayControls()}
         {isDeleting ? (
-          <PlaceDeleteModal
-            handleClose={() => this.setState({ isDeleting: false })}
-            handleRemove={this.handlePlaceDelete}
-            placeName={this.state.placeName}
+          <EntityDeleteModal
+            name={this.state.placeName}
+            onCancel={() => this.setState({ isDeleting: false })}
+            onConfirm={this.handlePlaceDelete}
+            title="Delete place"
           />
         ) : null}
       </El>
