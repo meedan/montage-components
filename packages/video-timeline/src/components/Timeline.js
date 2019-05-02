@@ -250,11 +250,13 @@ class Timeline extends Component {
         <TimelinePlayhead pxOffset={pxOffset}>
           <Slider
             defaultValue={0}
-            handle={props => (
-              <Tooltip title={formatTime(time)} placement="top">
+            handle={props => {
+              // <Tooltip title={formatTime(time)} placement="top">
+              // </Tooltip>
+              return (
                 <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
-              </Tooltip>
-            )}
+              );
+            }}
             max={duration}
             min={0}
             onAfterChange={this.onDragEnd}
