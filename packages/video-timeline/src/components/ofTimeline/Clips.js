@@ -11,9 +11,11 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
+
 import ClipControls from './ofClips/ClipControls';
-import ClipInstancePopover from './ofClips/ClipInstancePopover';
-import InstanceHandle from './InstanceHandle';
+import EntityInstanceHandle from './EntityInstanceHandle';
+import EntityInstancePopover from './EntityInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
@@ -24,12 +26,9 @@ const Range = Slider.Range;
 
 class TimelineClips extends Component {
   state = {
+    choords: { x: 0, y: 0 },
     playlist: false,
     values: {},
-    targetTrack: null,
-    trackRect: null,
-    targetInstanceStartX: 0,
-    targetInstanceEndX: 0,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -338,38 +337,27 @@ class TimelineClips extends Component {
     }
   };
 
-  leMenuClose = () => {
-    console.log('leMenuClose()');
-    this.setState({
-      targetInstance: null,
-      targetClip: null,
-    });
-  };
-
   leMenu = (e, id) => {
     if (!e) {
       this.setState({
         targetInstance: null,
-        targetClip: null,
+        targetTag: null,
       });
       return;
     }
 
-    const pxOffset = 0;
     const { videoClips } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const startPos = rect.left + pxOffset;
-    const endPos = rect.width;
-    const mousePos = e.clientX - startPos;
-    const mousePosFlat = mousePos > 0 ? mousePos : 0;
-    const mouseTime = (duration * mousePosFlat) / (endPos - pxOffset);
+    const mousePos = e.clientX - rect.left;
+    const relativeMousePos = mousePos > 0 ? mousePos : 0;
+    const mouseTime = (duration * relativeMousePos) / rect.width;
 
     const targetClip = videoClips.find(t => t.id === id);
     if (!targetClip) {
       this.setState({
-        mousePosFlat,
+        mousePos,
         mouseTime,
         targetInstance: null,
         targetClip: null,
@@ -377,29 +365,61 @@ class TimelineClips extends Component {
       return;
     }
 
+    const pxs = rect.width / duration;
+
+    // 4px handle -> time
+    const handle = 4 / pxs;
     const targetInstance = targetClip.instances.find(
-      i => i.start_seconds <= mouseTime && mouseTime < i.end_seconds
+      i =>
+        i.start_seconds - handle <= mouseTime &&
+        mouseTime < i.end_seconds + handle
     );
 
-    const pxs = endPos / duration;
+    const instanceStartX = targetInstance
+      ? pxs * targetInstance.start_seconds - 2
+      : 0;
+    const instanceEndX = targetInstance
+      ? pxs * targetInstance.end_seconds + 2
+      : 0;
 
-    // console.group('leMenu');
-    // // console.log('rect', rect);
-    // console.log('e.currentTarget', e.currentTarget);
-    // console.log('targetClip', targetClip);
-    // console.log('targetInstance', targetInstance);
-    // console.groupEnd();
+    const isOverHandle =
+      !targetClip.instances.find(
+        i =>
+          i.start_seconds + handle <= mouseTime &&
+          mouseTime < i.end_seconds - handle
+      ) &&
+      !!targetClip.instances.find(
+        i =>
+          i.start_seconds - handle <= mouseTime &&
+          mouseTime < i.end_seconds + handle
+      );
+
+    const handleOverStart = targetClip.instances.find(
+      i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
+    );
+
+    const handleOverEnd = targetClip.instances.find(
+      i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
+    );
+
+    // get x choords
+    const getXChoord = () => {
+      if (handleOverStart) {
+        return instanceStartX;
+      } else if (handleOverEnd) {
+        return instanceEndX;
+      } else {
+        return instanceStartX + (instanceEndX - instanceStartX) / 2;
+      }
+    };
 
     this.setState({
-      targetTrack: e.currentTarget,
-      trackRect: rect,
-      mousePosFlat,
-      mouseTime,
+      choords: {
+        x: getXChoord() + rect.left,
+        y: rect.top + rect.height,
+      },
+      isOverHandle,
       targetInstance,
-      targetInstanceStartX: targetInstance
-        ? pxs * targetInstance.start_seconds
-        : 0,
-      targetInstanceEndX: targetInstance ? pxs * targetInstance.end_seconds : 0,
       targetClip,
     });
   };
@@ -489,7 +509,7 @@ class TimelineClips extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.leMenuClose}
+        onMouseLeave={this.leMenuOff}
       >
         {videoClips
           ? videoClips.map((clip, i) => {
@@ -554,7 +574,7 @@ class TimelineClips extends Component {
                           defaultValue={arr}
                           value={arr}
                           handle={handleProps => (
-                            <InstanceHandle {...handleProps} />
+                            <EntityInstanceHandle {...handleProps} />
                           )}
                           max={duration}
                           min={0}
@@ -565,21 +585,27 @@ class TimelineClips extends Component {
                           onChange={v => this.onChange(v, clip.id)}
                         />
                       </SliderWrapper>
-                      <ClipInstancePopover
-                        clip={this.state.targetClip}
-                        deleteInstance={i => this.deleteInstance(clip.id, i)}
-                        duplicateAsClip={i => this.share2Check(clip.id, i)}
-                        expandInstance={i => this.expandInstance(clip.id, i)}
-                        id={clip.id}
+                      <EntityInstancePopover
+                        choords={{
+                          x: this.state.choords.x,
+                          y: this.state.choords.y,
+                        }}
+                        entity={this.state.targetClip}
+                        entityId={clip.id}
                         instance={this.state.targetInstance}
-                        instanceEndX={this.state.targetInstanceEndX}
-                        instanceStartX={this.state.targetInstanceStartX}
-                        onClose={this.leMenuClose}
-                        onExit={e => this.leMenuOff(e)}
-                        timelineOffset={this.props.timelineOffset}
-                        track={this.state.targetTrack}
-                        trackRect={this.state.trackRect}
-                      />
+                        isOverHandle={this.state.isOverHandle}
+                        onDelete={i => this.deleteInstance(clip.id, i)}
+                        onExit={this.leMenuOff}
+                        onExtend={i => this.expandInstance(clip.id, i)}
+                      >
+                        <Tooltip title="Copy to Clips">
+                          <IconButton
+                            onClick={i => this.duplicateAsClip(clip.id, i)}
+                          >
+                            <CheckIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </EntityInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
                       </style>
@@ -631,4 +657,7 @@ const recomputeSegments = (videoClips, duration) => {
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
 // export default React.memo(props => <TimelineClips {...props} />);
-export default connect(null, { play, pause, seekTo }) ( React.memo(props => <TimelineClips {...props} />) );
+export default connect(
+  null,
+  { play, pause, seekTo }
+)(React.memo(props => <TimelineClips {...props} />));

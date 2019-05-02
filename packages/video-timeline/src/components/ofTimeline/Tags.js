@@ -13,8 +13,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
-import InstanceHandle from './InstanceHandle';
-import InstancePopover from './InstancePopover';
+import EntityInstanceHandle from './EntityInstanceHandle';
+import EntityInstancePopover from './EntityInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
@@ -532,7 +532,7 @@ class TimelineTags extends Component {
                         <MemoizedRange
                           defaultValue={arr}
                           handle={handleProps => (
-                            <InstanceHandle {...handleProps} />
+                            <EntityInstanceHandle {...handleProps} />
                           )}
                           key={tag.id}
                           max={duration}
@@ -545,18 +545,18 @@ class TimelineTags extends Component {
                           value={arr}
                         />
                       </SliderWrapper>
-                      <InstancePopover
+                      <EntityInstancePopover
                         choords={{
                           x: this.state.choords.x,
                           y: this.state.choords.y,
                         }}
+                        entity={this.state.targetTag}
+                        entityId={tag.id}
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
                         onDelete={i => this.deleteInstance(tag.id, i)}
                         onExit={this.leMenuOff}
                         onExtend={i => this.expandInstance(tag.id, i)}
-                        tag={this.state.targetTag}
-                        tagId={tag.id}
                       >
                         <Tooltip title="Copy to Clips">
                           <IconButton
@@ -565,7 +565,7 @@ class TimelineTags extends Component {
                             <ContentCutIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                      </InstancePopover>
+                      </EntityInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
                       </style>

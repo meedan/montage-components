@@ -16,10 +16,7 @@ const styles = theme => ({
   },
 });
 
-class InstanceHandle extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+class EntityInstanceHandle extends Component {
   shouldComponentUpdate(nextProps) {
     return this.props.value !== nextProps.value ? true : false;
   }
@@ -67,4 +64,4 @@ class InstanceHandle extends Component {
   }
 }
 
-export default withStyles(styles)(InstanceHandle);
+export default withStyles(styles)(EntityInstanceHandle);
