@@ -385,59 +385,58 @@ class TimelineTags extends Component {
     this.setState({ videoTags });
   };
 
-  deleteInstance(id, instance) {
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
-    console.group('deleteInstance()');
-    console.log(instance);
-    console.groupEnd();
+  deleteInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoTags = produce(this.state.videoTags, nextVideoTags => {
       const ti = nextVideoTags.findIndex(t => t.id === id);
       const ii = nextVideoTags[ti].instances.findIndex(
-        i => i.id === instance.id
+        i => i.id === targetInstance.id
       );
       nextVideoTags[ti].instances.splice(ii, 1);
     });
 
     const segments = recomputeSegments(videoTags, this.props.duration);
-    this.setState({ videoTags, segments });
+    this.setState({
+      videoTags,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
-  duplicateAsClip = (id, instance) => {
-    this.setState({
-      targetInstance: null,
-      targetTag: null,
-    });
-    console.group('duplicateAsClip()');
-    console.log(instance);
-    console.groupEnd();
+  duplicateAsClip = id => {
+    const { targetInstance } = this.state;
 
     const tag = this.state.videoTags.find(t => t.id === id);
-    this.props.duplicateAsClip(tag, instance);
-  };
+    this.props.duplicateAsClip(tag, targetInstance);
 
-  expandInstance(id, instance) {
     this.setState({
       targetInstance: null,
       targetTag: null,
     });
-    console.group('expandInstance()');
-    console.log(instance);
-    console.groupEnd();
+  };
+
+  expandInstance(id) {
+    const { targetInstance } = this.state;
 
     const videoTags = produce(this.state.videoTags, nextVideoTags => {
       const ti = nextVideoTags.findIndex(t => t.id === id);
-      const i = nextVideoTags[ti].instances.find(i => i.id === instance.id);
+      const i = nextVideoTags[ti].instances.find(
+        i => i.id === targetInstance.id
+      );
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
       nextVideoTags[ti].instances = [i];
     });
 
     const segments = recomputeSegments(videoTags, this.props.duration);
-    this.setState({ videoTags, segments });
+    this.setState({
+      videoTags,
+      segments,
+      targetInstance: null,
+      targetTag: null,
+    });
   }
 
   render() {
@@ -554,22 +553,15 @@ class TimelineTags extends Component {
                         entityId={tag.id}
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
-                        onDelete={i => this.deleteInstance(tag.id, i)}
+                        onDelete={() => this.deleteInstance(tag.id)}
                         onExit={this.leMenuOff}
-                        onExtend={() =>
-                          this.expandInstance(tag.id, this.state.targetInstance)
-                        }
+                        onExtend={() => this.expandInstance(tag.id)}
                         tag={this.state.targetTag}
                         tagId={tag.id}
                       >
                         <Tooltip title="Copy to Clips">
                           <IconButton
-                            onClick={() =>
-                              this.duplicateAsClip(
-                                tag.id,
-                                this.state.targetInstance
-                              )
-                            }
+                            onClick={() => this.duplicateAsClip(tag.id)}
                           >
                             <ContentCutIcon fontSize="small" />
                           </IconButton>
