@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Flatted from 'flatted/esm';
+import Popover from 'material-ui-popup-state/HoverPopover';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import EntityDeleteModal from '../EntityDeleteModal';
-import EntityNameField from '../EntityNameField';
-import PlaceControlsPopover from './PlaceControlsPopover';
+import EntityDeleteModal from './EntityDeleteModal';
+import EntityNameField from './EntityNameField';
 
-import PlaceMapPopover from './PlaceMapPopover';
+import PlaceMapPopover from './ofPlaces/PlaceMapPopover';
 
 const styles = {
   Grid: {
@@ -44,6 +50,48 @@ const El = styled.div`
   `
       : ''};
 `;
+
+function renderControlsPopover(
+  onStartRename,
+  onStartDelete,
+  onStartReposition
+) {
+  return (
+    <PopupState variant="popover" popupId="moreTagOptionsPopover">
+      {popupState => (
+        <div>
+          <IconButton {...bindHover(popupState)} aria-label="Options…">
+            <MoreVertIcon />
+          </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            disableRestoreFocus
+          >
+            <List dense>
+              <ListItem button onClick={onStartRename}>
+                <ListItemText>Rename</ListItemText>
+              </ListItem>
+              <ListItem button onClick={onStartReposition}>
+                <ListItemText>Reposition</ListItemText>
+              </ListItem>
+              <ListItem button onClick={onStartDelete}>
+                <ListItemText>Delete</ListItemText>
+              </ListItem>
+            </List>
+          </Popover>
+        </div>
+      )}
+    </PopupState>
+  );
+}
 
 class PlaceControls extends Component {
   constructor(props) {
@@ -166,11 +214,11 @@ class PlaceControls extends Component {
                 className={classes.CircularProgress}
               />
             ) : (
-              <PlaceControlsPopover
-                onStartRename={this.startPlaceRename}
-                onStartDelete={() => this.setState({ isDeleting: true })}
-                onStartReposition={this.startReposition}
-              />
+              renderControlsPopover(
+                this.startPlaceRename,
+                this.handlePlaceDelete,
+                this.startReposition
+              )
             )}
           </ElSideControls>
         </Grid>
