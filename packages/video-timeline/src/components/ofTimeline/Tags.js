@@ -16,7 +16,7 @@ import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
-import SliderWrapper from './SliderWrapper';
+import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
@@ -498,7 +498,7 @@ class TimelineTags extends Component {
                   }
                   rightColContent={
                     <>
-                      <SliderWrapper
+                      <EntitySliderWrapper
                         onMouseMove={
                           !this.state.isDragging
                             ? e => this.leMenu(e, tag.id)
@@ -525,7 +525,7 @@ class TimelineTags extends Component {
                           trackStyle={trackStyle}
                           value={arr}
                         />
-                      </SliderWrapper>
+                      </EntitySliderWrapper>
                       <EntityInstancePopover
                         choords={{
                           x: this.state.choords.x,

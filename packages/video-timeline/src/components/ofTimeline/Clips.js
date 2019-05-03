@@ -16,7 +16,7 @@ import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
 import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
-import SliderWrapper from './SliderWrapper';
+import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
@@ -570,7 +570,7 @@ class TimelineClips extends Component {
                   }
                   rightColContent={
                     <>
-                      <SliderWrapper
+                      <EntitySliderWrapper
                         onMouseMove={
                           !this.state.isDragging
                             ? e => this.leMenu(e, clip.id)
@@ -597,7 +597,7 @@ class TimelineClips extends Component {
                           onBeforeChange={v => this.onBeforeChange(v, clip.id)}
                           onChange={v => this.onChange(v, clip.id)}
                         />
-                      </SliderWrapper>
+                      </EntitySliderWrapper>
                       <EntityInstancePopover
                         choords={{
                           x: this.state.choords.x,
