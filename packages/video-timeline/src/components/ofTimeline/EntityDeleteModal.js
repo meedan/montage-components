@@ -21,8 +21,8 @@ function EntityDeleteModal(props) {
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Do you wish to remove all instances of <strong>{name}</strong>{' '}
-          assigned to this video? This can’t be undone.
+          Do you wish to remove all instances of <strong>{name}</strong>? This
+          can’t be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
