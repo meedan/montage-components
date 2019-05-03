@@ -101,6 +101,13 @@ class TimelineTags extends Component {
       }
     }
 
+    // if (
+    //   nextProps.currentTime !== this.props.currentTime &&
+    //   !this.state.playlist &&
+    //   nextState === this.state
+    // )
+    //   return false;
+
     // TODO handle extenal video override, like end of video, buffering, etc
 
     return true;
@@ -424,7 +431,7 @@ class TimelineTags extends Component {
   }
 
   render() {
-    const { currentTime, duration, data } = this.props;
+    const { duration, data } = this.props;
     const { videoTags, playlist } = this.state;
     const { projecttags } = data.project;
 
@@ -485,7 +492,6 @@ class TimelineTags extends Component {
                   plain={i < videoTags.length - 1}
                   leftColContent={
                     <EntityControls
-                      currentTime={currentTime}
                       deleteEntity={() => this.deleteTag(tag.id)}
                       entityId={tag.id}
                       entityName={project_tag.name}
