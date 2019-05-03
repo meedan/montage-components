@@ -17,7 +17,7 @@ import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
-import TableBlock from './TableBlock';
+import EntityTableBlock from './ofEntities/EntityTableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
@@ -552,7 +552,7 @@ class TimelineClips extends Component {
               // console.log(clip.id, arr);
 
               return (
-                <TableBlock
+                <EntityTableBlock
                   key={clip.id}
                   plain={i < videoClips.length - 1}
                   leftColContent={
