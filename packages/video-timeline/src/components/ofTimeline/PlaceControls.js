@@ -107,8 +107,10 @@ class NameControls extends Component {
   };
   onDelete = name => {
     this.setState({ flow: 'processing' });
-    this.props.deleteEntity();
-    setTimeout(() => this.setState({ flow: null }), 1000);
+    setTimeout(() => {
+      this.props.deleteEntity();
+      this.setState({ flow: null });
+    }, 1000);
   };
 
   render() {
