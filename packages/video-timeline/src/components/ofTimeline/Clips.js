@@ -77,11 +77,12 @@ class TimelineClips extends Component {
   };
 
   duplicateAsClip = (tag, instance) => {
-    console.log(tag, instance);
-
+    // console.log(tag, instance);
     const videoClips = produce(this.state.videoClips, nextVideoClips => {
       let clip = this.state.videoClips.find(
-        c => c.project_clip.name === tag.project_tag.name
+        c =>
+          c.project_clip.name ===
+          (tag.project_tag ? tag.project_tag.name : tag.project_location.name)
       );
 
       if (!clip) {
@@ -101,7 +102,9 @@ class TimelineClips extends Component {
             },
           ],
           project_clip: {
-            name: tag.project_tag.name,
+            name: tag.project_tag
+              ? tag.project_tag.name
+              : tag.project_location.name,
           },
         };
 

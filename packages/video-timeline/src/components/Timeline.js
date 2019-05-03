@@ -224,6 +224,7 @@ class Timeline extends Component {
   };
 
   relayDuplicateAsClip = (tag, instance) => {
+    // console.log(tag, instance);
     if (this.duplicateAsClip) this.duplicateAsClip(tag, instance);
   };
 
@@ -308,7 +309,7 @@ class Timeline extends Component {
           <TimelinePlaces
             {...this.props}
             currentTime={time}
-            duplicateAsClip={(place, instance) => console.log(place, instance)}
+            duplicateAsClip={this.relayDuplicateAsClip}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
