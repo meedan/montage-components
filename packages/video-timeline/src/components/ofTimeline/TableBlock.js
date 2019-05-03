@@ -18,7 +18,7 @@ const styles = theme => ({
   },
 });
 
-function EntityTableBlock(props) {
+function TableBlock(props) {
   const { classes, leftColContent, rightColContent } = props;
   return (
     <TableRow>
@@ -37,4 +37,4 @@ function EntityTableBlock(props) {
   );
 }
 
-export default withStyles(styles)(EntityTableBlock);
+export default withStyles(styles)(TableBlock);
