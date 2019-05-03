@@ -562,10 +562,10 @@ class TimelineClips extends Component {
                       entityId={clip.id}
                       entityName={project_clip.name}
                       isCreating={clip.isCreating}
-                      renameEntity={name => this.renameClip(clip.id, name)}
                       startNewInstance={() => this.startNewInstance(clip.id)}
                       stopNewEntity={this.stopNewClip}
                       suggestions={projectclips}
+                      updateEntity={name => this.renameClip(clip.id, name)}
                     />
                   }
                   rightColContent={

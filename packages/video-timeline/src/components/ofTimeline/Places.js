@@ -505,15 +505,13 @@ class TimelinePlaces extends Component {
                     <PlaceControls
                       currentTime={currentTime}
                       deletePlace={() => this.deletePlace(place.id)}
+                      entityId={place.id}
+                      entityName={project_location.name}
                       isCreating={place.isCreating}
-                      placeId={place.id}
-                      placeName={project_location.name}
-                      projectPlaces={projectplaces}
-                      renamePlace={(name, marker) =>
-                        this.renamePlace(place.id, name, marker)
-                      }
                       startNewInstance={() => this.startNewInstance(place.id)}
                       stopNewPlace={this.stopNewPlace}
+                      suggestions={projectplaces}
+                      updateEntity={name => this.renamePlace(place.id, name)}
                     />
                   }
                   rightColContent={

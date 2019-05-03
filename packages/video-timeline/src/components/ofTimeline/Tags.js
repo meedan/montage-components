@@ -490,10 +490,10 @@ class TimelineTags extends Component {
                       entityId={tag.id}
                       entityName={project_tag.name}
                       isCreating={tag.isCreating}
-                      renameEntity={name => this.renameTag(tag.id, name)}
                       startNewInstance={() => this.startNewInstance(tag.id)}
                       stopNewEntity={this.stopNewTag}
                       suggestions={projecttags}
+                      updateEntity={name => this.renameTag(tag.id, name)}
                     />
                   }
                   rightColContent={

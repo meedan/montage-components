@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
 import Flatted from 'flatted/esm';
 import Popover from 'material-ui-popup-state/HoverPopover';
 import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
+import React, { Component } from 'react';
+import styled from 'styled-components';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import EntityDeleteModal from './EntityDeleteModal';
 import EntityNameField from './EntityNameField';
 
-import PlaceMapPopover from './ofPlaces/PlaceMapPopover';
+import PlaceMapPopover from './PlaceMapPopover';
 
 const styles = {
   Grid: {
@@ -35,158 +35,97 @@ const styles = {
   },
 };
 
-const ElSideControls = styled.div`
+const ElementAdornment = styled.div`
   visibility: hidden;
 `;
-const El = styled.div`
+const Element = styled.div`
   cursor: pointer;
   width: 224px;
   ${({ hasAdornment }) =>
     hasAdornment
       ? `
-    ${ElSideControls} {
+    ${ElementAdornment} {
       visibility: visible;
     }
   `
       : ''};
 `;
 
-function renderControlsPopover(
-  onStartRename,
-  onStartDelete,
-  onStartReposition
-) {
-  return (
-    <PopupState variant="popover" popupId="moreTagOptionsPopover">
-      {popupState => (
-        <div>
-          <IconButton {...bindHover(popupState)} aria-label="Options…">
-            <MoreVertIcon />
-          </IconButton>
-          <Popover
-            {...bindPopover(popupState)}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            disableRestoreFocus
-          >
-            <List dense>
-              <ListItem button onClick={onStartRename}>
-                <ListItemText>Rename</ListItemText>
-              </ListItem>
-              <ListItem button onClick={onStartReposition}>
-                <ListItemText>Reposition</ListItemText>
-              </ListItem>
-              <ListItem button onClick={onStartDelete}>
-                <ListItemText>Delete</ListItemText>
-              </ListItem>
-            </List>
-          </Popover>
-        </div>
-      )}
-    </PopupState>
-  );
-}
-
-class PlaceControls extends Component {
+class NameControls extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      editStep: 0,
-      isHovering: false,
-      isProcessing: false,
-      isDeleting: false,
-      isCreating: false,
-      placeName: this.props.placeName,
+      flow: null,
     };
     this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
-    return this.props.isCreating ? this.setState({ editStep: 1 }) : null;
+    this.setState({ flow: this.props.isCreating ? 'edit' : null });
   }
 
-  startPlaceRename = () => {
-    this.setState({ isHovering: false, editStep: 1 });
+  startHover = () => {
+    const { flow } = this.state;
+    if (flow) return null;
+    this.setState({ flow: 'hover' });
+  };
+  startRename = () => {
+    this.setState({ flow: 'edit' });
+  };
+  startDelete = () => {
+    this.setState({ flow: 'delete' });
+  };
+  startReposition = () => {
+    this.setState({ flow: 'reposition' });
+  };
+  stop = () => {
+    this.setState({ flow: null });
   };
 
-  stopPlaceRename = () => {
-    if (this.state.editStep === 1)
-      this.setState({ editStep: 0, isHovering: false });
-  };
-
-  placeRename2 = (marker, placeName) => {
-    console.log(marker, placeName);
-    this.setState({ marker, placeName });
-    // this.props.renamePlace(this.state.placeName, this.state.marker);
+  onReposition = marker => {
+    this.setState({ marker });
+    // this.props.renamePlace(this.state.entityName, this.state.marker);
     // setTimeout(() => this.setState({ isProcessing: false }), 1000);
 
     // if (!window.BIGNONO) window.BIGNONO = {};
-    // window.BIGNONO[this.props.placeId] = marker;
+    // window.BIGNONO[this.props.entityId] = marker;
     let videoPlacesData = window.localStorage.getItem('videoPlacesData');
     if (videoPlacesData) {
       videoPlacesData = Flatted.parse(videoPlacesData);
     } else videoPlacesData = {};
-    videoPlacesData[this.props.placeId] = marker;
+    videoPlacesData[this.props.entityId] = marker;
     window.localStorage.setItem(
       'videoPlacesData',
       Flatted.stringify(videoPlacesData)
     );
   };
 
-  startReposition = () => {
-    this.setState({ isHovering: false, editStep: 2 });
+  onUpdate = name => {
+    this.setState({ flow: 'processing' });
+    this.props.updateEntity(name, this.state.marker);
+    setTimeout(() => this.setState({ flow: null }), 1000);
   };
-
-  endReposition = () => {
-    this.setState({ editStep: 0, isHovering: false });
-  };
-
-  handlePlaceRename = name => {
-    this.setState({ isProcessing: true, editStep: 0 });
-    // TODO: wire place delete API calls
-    console.group('handlePlaceRename()');
-    console.log('name:', name);
-    console.groupEnd();
-
-    this.props.renamePlace(name, this.state.marker);
-
-    setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
-  };
-
-  handlePlaceDelete = () => {
-    this.setState({ isProcessing: true, isDeleting: false });
-    // TODO: wire place delete API calls
-    console.group('handlePlaceDelete()');
-    console.log('placeId:', this.props.placeId);
-    console.groupEnd();
-
-    this.props.deletePlace();
-
-    setTimeout(() => this.setState({ isProcessing: false }), 1000); // TODO: fix this faked error/success event
-  };
-
-  startNewInstance = () => {
-    // TODO: wire create new instance API calls
-    console.group('startNewInstance()');
-    console.log('placeId:', this.props.placeId);
-    console.log('start_seconds:', this.props.currentTime);
-    console.groupEnd();
-
-    this.props.startNewInstance();
+  onDelete = name => {
+    this.setState({ flow: 'processing' });
+    this.props.deleteEntity();
+    setTimeout(() => this.setState({ flow: null }), 1000);
   };
 
   render() {
-    const { classes, isCreating, projectPlaces } = this.props;
-    const { editStep, isDeleting, isHovering, isProcessing } = this.state;
+    const {
+      classes,
+      entityId,
+      entityName,
+      isCreating,
+      startNewInstance,
+      stopNewEntity,
+      suggestions,
+    } = this.props;
+    const { flow } = this.state;
 
-    const readModeLabel = (
+    const allowNewInstance = flow !== 'edit' || flow !== 'processing';
+
+    const read = (
       <Grid
         alignItems="center"
         className={classes.Grid}
@@ -195,92 +134,108 @@ class PlaceControls extends Component {
         wrap="nowrap"
       >
         <Grid item>
-          <Tooltip title={this.state.placeName} enterDelay={750}>
+          <Tooltip title={entityName} enterDelay={750}>
             <Typography
               className={classes.Typography}
-              color={editStep === 2 ? 'primary' : 'textSecondary'}
+              color={flow === 'reposition' ? 'primary' : 'textSecondary'}
               noWrap
               variant="body2"
             >
-              {this.state.placeName}
+              {entityName}
             </Typography>
           </Tooltip>
         </Grid>
         <Grid item>
-          <ElSideControls onClick={e => e.stopPropagation()}>
-            {isProcessing ? (
+          <ElementAdornment onClick={e => e.stopPropagation()}>
+            {flow === 'processing' ? (
               <CircularProgress
                 size={18}
                 className={classes.CircularProgress}
               />
             ) : (
-              renderControlsPopover(
-                this.startPlaceRename,
-                this.handlePlaceDelete,
-                this.startReposition
-              )
+              <PopupState variant="popover" popupId="moreEntityControls">
+                {popupState => (
+                  <div>
+                    <IconButton
+                      {...bindHover(popupState)}
+                      aria-label="Options…"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Popover
+                      {...bindPopover(popupState)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      disableRestoreFocus
+                    >
+                      <List dense onClick={popupState.close}>
+                        <ListItem button onClick={() => this.startRename()}>
+                          <ListItemText>Rename</ListItemText>
+                        </ListItem>
+                        <ListItem button onClick={() => this.startReposition()}>
+                          <ListItemText>Reposition</ListItemText>
+                        </ListItem>
+                        <ListItem button onClick={() => this.startDelete()}>
+                          <ListItemText>Delete</ListItemText>
+                        </ListItem>
+                      </List>
+                    </Popover>
+                  </div>
+                )}
+              </PopupState>
             )}
-          </ElSideControls>
+          </ElementAdornment>
         </Grid>
       </Grid>
     );
-
-    const displayControls = () => {
-      if (editStep === 0) {
-        return readModeLabel;
-      } else if (editStep === 1) {
-        return (
-          <EntityNameField
-            name={this.props.clipName}
-            onCancel={
-              isCreating ? this.props.stopNewPlace : this.stopPlaceRename
-            }
-            onSubmit={
-              isCreating ? this.startReposition : this.handlePlaceRename
-            }
-            suggestions={projectPlaces}
-          />
-        );
-      } else if (editStep === 2) {
-        return (
-          <>
-            {readModeLabel}
-            <PlaceMapPopover
-              anchorRef={this.anchorRef.current}
-              data={[]}
-              isCreating={this.props.isCreating}
-              onClose={this.endReposition}
-              onSave={marker => this.placeRename2(marker, this.state.placeName)}
-              placeId={this.props.placeId}
-              placeName={this.state.placeName}
-              startPlaceRename={this.startPlaceRename}
-              stopNewPlace={this.props.stopNewPlace}
-            />
-          </>
-        );
-      } else return null;
-    };
+    const edit = (
+      <EntityNameField
+        name={entityName}
+        onCancel={isCreating ? stopNewEntity : this.stop}
+        onSubmit={this.onUpdate}
+        suggestions={suggestions}
+      />
+    );
 
     return (
-      <El
-        hasAdornment={editStep === 1 || isHovering || isProcessing}
-        onClick={editStep === 0 ? this.startNewInstance : null}
-        onMouseEnter={() => this.setState({ isHovering: true })}
-        onMouseLeave={() => this.setState({ isHovering: false })}
+      <Element
+        hasAdornment={flow && flow !== 'reposition' && flow !== 'delete'}
+        onClick={allowNewInstance ? startNewInstance : null}
+        onMouseEnter={this.startHover}
+        onMouseLeave={flow === 'hover' ? this.stop : null}
         ref={this.anchorRef}
       >
-        {displayControls()}
-        {isDeleting ? (
-          <EntityDeleteModal
-            name={this.state.placeName}
-            onCancel={() => this.setState({ isDeleting: false })}
-            onConfirm={this.handlePlaceDelete}
-            title="Delete place"
+        {flow !== 'edit' ? read : edit}
+        {flow === 'reposition' ? (
+          <PlaceMapPopover
+            anchorRef={this.anchorRef.current}
+            data={[]}
+            isCreating={isCreating}
+            onClose={this.stop}
+            onSave={marker => this.onReposition(marker)}
+            placeId={entityId}
+            placeName={entityName}
+            startPlaceRename={this.startRename}
+            stopNewPlace={stopNewEntity}
           />
         ) : null}
-      </El>
+        {flow === 'delete' ? (
+          <EntityDeleteModal
+            name={entityName}
+            onCancel={this.stop}
+            onConfirm={this.onDelete}
+            title="Delete tag"
+          />
+        ) : null}
+      </Element>
     );
   }
 }
 
-export default withStyles(styles)(PlaceControls);
+export default withStyles(styles)(NameControls);
