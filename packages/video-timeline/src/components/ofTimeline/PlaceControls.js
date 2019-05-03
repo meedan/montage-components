@@ -100,10 +100,11 @@ class NameControls extends Component {
     );
   };
 
-  onUpdate = name => {
+  onUpdate = (name, callback) => {
     this.setState({ flow: 'processing' });
     this.props.updateEntity(name, this.state.marker);
-    setTimeout(() => this.setState({ flow: null }), 1000);
+    if (!callback) setTimeout(() => this.setState({ flow: null }), 1000);
+    callback();
   };
   onDelete = name => {
     this.setState({ flow: 'processing' });
@@ -200,7 +201,9 @@ class NameControls extends Component {
       <EntityNameField
         name={entityName}
         onCancel={isCreating ? stopNewEntity : this.stop}
-        onSubmit={this.onUpdate}
+        onSubmit={name =>
+          this.onUpdate(name, isCreating ? this.startReposition : null)
+        }
         suggestions={suggestions}
       />
     );
