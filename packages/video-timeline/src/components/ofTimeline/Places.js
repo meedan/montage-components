@@ -15,7 +15,7 @@ import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 import EntityInstanceHandle from './EntityInstanceHandle';
 import EntityInstancePopover from './EntityInstancePopover';
-import PlaceControls from './ofPlaces/PlaceControls';
+import PlaceControls from './PlaceControls';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
