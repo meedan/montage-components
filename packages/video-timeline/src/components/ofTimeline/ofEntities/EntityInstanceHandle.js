@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import formatTime from './formatTime';
+import formatTime from '../formatTime';
 
 const styles = theme => ({
   Toolbar: {

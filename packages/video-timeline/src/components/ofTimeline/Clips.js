@@ -13,9 +13,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
 
-import EntityControls from './EntityControls';
-import EntityInstanceHandle from './EntityInstanceHandle';
-import EntityInstancePopover from './EntityInstancePopover';
+import EntityControls from './ofEntities/EntityControls';
+import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
+import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';

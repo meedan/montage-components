@@ -13,8 +13,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
-import EntityInstanceHandle from './EntityInstanceHandle';
-import EntityInstancePopover from './EntityInstancePopover';
+import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
+import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import PlaceControls from './PlaceControls';
 import SliderWrapper from './SliderWrapper';
 import TableBlock from './TableBlock';

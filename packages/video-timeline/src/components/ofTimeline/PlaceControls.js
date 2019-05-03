@@ -15,8 +15,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import EntityDeleteModal from './EntityDeleteModal';
-import EntityNameField from './EntityNameField';
+import EntityDeleteModal from './ofEntities/EntityDeleteModal';
+import EntityNameField from './ofEntities/EntityNameField';
 
 import PlaceMapPopover from './PlaceMapPopover';
 
