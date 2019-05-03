@@ -16,8 +16,8 @@ import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
+import EntityTableBlock from './ofEntities/EntityTableBlock';
 import PlaceControls from './PlaceControls';
-import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
@@ -498,7 +498,7 @@ class TimelinePlaces extends Component {
               // console.log(place.id, arr);
 
               return (
-                <TableBlock
+                <EntityTableBlock
                   key={place.id}
                   plain={i < videoPlaces.length - 1}
                   leftColContent={

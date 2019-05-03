@@ -17,7 +17,7 @@ import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
-import TableBlock from './TableBlock';
+import EntityTableBlock from './ofEntities/EntityTableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
@@ -480,7 +480,7 @@ class TimelineTags extends Component {
               // console.log(tag.id, arr);
 
               return (
-                <TableBlock
+                <EntityTableBlock
                   key={tag.id}
                   plain={i < videoTags.length - 1}
                   leftColContent={
