@@ -1,9 +1,9 @@
-import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { react2angular } from 'react2angular';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import hamock from './hamock.png';
 
@@ -31,8 +31,6 @@ import baseData from './data/baseData';
 import timelineData from './data/timelineData';
 import moreData from './data/moreData';
 import newData from './data/newData';
-
-import './styles.css';
 
 const DATA = produce(
   {
