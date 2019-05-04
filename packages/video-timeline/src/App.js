@@ -1,14 +1,10 @@
+import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { react2angular } from 'react2angular';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import hamock from './hamock.png';
-
 import produce from 'immer';
-
+import React, { createRef, Component } from 'react';
 import styled from 'styled-components';
 
 import { MUIThemeProvider } from '@montage/ui';
@@ -31,6 +27,8 @@ import baseData from './data/baseData';
 import timelineData from './data/timelineData';
 import moreData from './data/moreData';
 import newData from './data/newData';
+
+import hamock from './hamock.png';
 
 const DATA = produce(
   {
@@ -96,18 +94,6 @@ const TimelineWrapper = styled.div`
   min-height: 500px;
   padding-bottom: 300px;
   position: relative;
-  &:before {
-    border-left: 1px solid ${grey[300]};
-    content: ' ';
-    display: block;
-    height: 100%;
-    left: 224px;
-    min-height: 500px;
-    pointer-events: none;
-    position: absolute;
-    width: 1px;
-    z-index: 1;
-  }
 `;
 
 const styles = {
@@ -124,12 +110,14 @@ const styles = {
 };
 
 class App extends Component {
+  timelineRef = createRef();
+
   state = {
-    anchorElPrev: null,
     anchorElNext: null,
+    anchorElPrev: null,
     data: DATA,
-    mode: 'timeline',
     map: false,
+    mode: 'timeline',
   };
 
   // static getDerivedStateFromProps(props, state) {
@@ -144,6 +132,29 @@ class App extends Component {
   //
   //   return {};
   // }
+  componentDidMount = () => {
+    window.addEventListener('resize', this.updateDimensions.bind(this));
+    this.updateDimensions();
+  };
+  componentWillUnmount = () => {
+    window.addEventListener('resize', this.updateDimensions.bind(this));
+  };
+
+  updateDimensions = () => {
+    const rect = this.timelineRef.current;
+    if (!rect) return null;
+    const rectBox = rect.getBoundingClientRect();
+    this.setState({
+      timelineBox: {
+        height: rectBox.height,
+        width: rectBox.width,
+        x1: rectBox.x,
+        x2: rectBox.x + rectBox.width,
+        y1: rectBox.y,
+        y2: rectBox.y + rectBox.height,
+      },
+    });
+  };
 
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
@@ -257,8 +268,9 @@ class App extends Component {
                 </TopWrapper>
                 <BottomWrapper>
                   {this.state.mode === 'timeline' ? (
-                    <TimelineWrapper>
+                    <TimelineWrapper ref={this.timelineRef}>
                       <Timeline
+                        box={this.state.timelineBox}
                         currentTime={currentTime}
                         data={data}
                         duration={duration}
