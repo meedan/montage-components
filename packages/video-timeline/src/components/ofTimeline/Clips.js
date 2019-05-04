@@ -564,6 +564,7 @@ class TimelineClips extends Component {
                       deleteEntity={() => this.deleteClip(clip.id)}
                       entityId={clip.id}
                       entityName={project_clip.name}
+                      entityType="clip"
                       isCreating={clip.isCreating}
                       startNewInstance={() => this.startNewInstance(clip.id)}
                       stopNewEntity={this.stopNewClip}

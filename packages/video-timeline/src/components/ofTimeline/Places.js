@@ -16,7 +16,7 @@ import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
-import PlaceControls from './PlaceControls';
+import EntityControls from './ofEntities/EntityControls';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
@@ -502,11 +502,12 @@ class TimelinePlaces extends Component {
                   key={place.id}
                   plain={i < videoPlaces.length - 1}
                   leftColContent={
-                    <PlaceControls
+                    <EntityControls
                       currentTime={currentTime}
                       deleteEntity={() => this.deletePlace(place.id)}
                       entityId={place.id}
                       entityName={project_location.name}
+                      entityType="place"
                       isCreating={place.isCreating}
                       startNewInstance={() => this.startNewInstance(place.id)}
                       stopNewPlace={this.stopNewPlace}

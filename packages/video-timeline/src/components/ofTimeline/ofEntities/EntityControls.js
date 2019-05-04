@@ -1,3 +1,4 @@
+import Flatted from 'flatted/esm';
 import Popover from 'material-ui-popup-state/HoverPopover';
 import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import React, { Component } from 'react';
@@ -15,6 +16,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import EntityDeleteModal from './EntityDeleteModal';
+import EntityMapPopover from './EntityMapPopover';
 import EntityNameField from './EntityNameField';
 
 const styles = {
@@ -54,45 +56,63 @@ class NameControls extends Component {
     this.state = {
       flow: null,
     };
+    if (this.props.entityType === 'place') this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
     this.setState({ flow: this.props.isCreating ? 'edit' : null });
   }
 
-  stopNewEntity = () => {
-    this.props.stopNewEntity();
-  };
-  startRename = popupState => {
-    this.setState({ flow: 'edit' });
-    if (!popupState) return null;
-    popupState.close();
-  };
-  stopRename = () => {
-    this.setState({ flow: null });
-  };
-  startDelete = popupState => {
-    this.setState({ flow: 'delete' });
-    if (!popupState) return null;
-    popupState.close();
-  };
-  stopDelete = () => {
-    this.setState({ flow: null });
-  };
   startHover = () => {
     const { flow } = this.state;
     if (flow) return null;
     this.setState({ flow: 'hover' });
   };
-  stopHover = () => {
-    const { flow } = this.state;
-    if (flow !== 'hover') return null;
+  startRename = () => {
+    this.setState({ flow: 'edit' });
+  };
+  startDelete = () => {
+    this.setState({ flow: 'delete' });
+  };
+  startReposition = () => {
+    this.setState({ flow: 'reposition' });
+  };
+  stop = () => {
     this.setState({ flow: null });
   };
 
+  onReposition = marker => {
+    this.setState({ marker });
+    // this.props.renamePlace(this.state.entityName, this.state.marker);
+    // setTimeout(() => this.setState({ isProcessing: false }), 1000);
+
+    // if (!window.BIGNONO) window.BIGNONO = {};
+    // window.BIGNONO[this.props.entityId] = marker;
+    let videoPlacesData = window.localStorage.getItem('videoPlacesData');
+    if (videoPlacesData) {
+      videoPlacesData = Flatted.parse(videoPlacesData);
+    } else videoPlacesData = {};
+    videoPlacesData[this.props.entityId] = marker;
+    window.localStorage.setItem(
+      'videoPlacesData',
+      Flatted.stringify(videoPlacesData)
+    );
+  };
+
+  onRename = name => {
+    this.setState({ flow: 'processing' });
+    const { entityType, isCreating } = this.props;
+    this.props.updateEntity(name);
+    console.log('onRename()', { isCreating });
+    if (isCreating && entityType === 'place') {
+      this.startReposition();
+    } else {
+      setTimeout(() => this.setState({ flow: null }), 1000);
+    }
+  };
   onUpdate = name => {
     this.setState({ flow: 'processing' });
-    this.props.updateEntity(name);
+    this.props.updateEntity(name, this.state.marker);
     setTimeout(() => this.setState({ flow: null }), 1000);
   };
   onDelete = name => {
@@ -106,7 +126,9 @@ class NameControls extends Component {
   render() {
     const {
       classes,
+      entityId,
       entityName,
+      entityType,
       isCreating,
       startNewInstance,
       stopNewEntity,
@@ -114,7 +136,7 @@ class NameControls extends Component {
     } = this.props;
     const { flow } = this.state;
 
-    const allowNewInstance = flow !== 'edit' || flow !== 'processing';
+    const allowNewInstance = flow !== 'edit' && flow !== 'processing';
 
     const read = (
       <Grid
@@ -128,7 +150,7 @@ class NameControls extends Component {
           <Tooltip title={entityName} enterDelay={750}>
             <Typography
               className={classes.Typography}
-              color="textSecondary"
+              color={flow === 'reposition' ? 'primary' : 'textSecondary'}
               noWrap
               variant="body2"
             >
@@ -166,16 +188,18 @@ class NameControls extends Component {
                       disableRestoreFocus
                     >
                       <List dense onClick={popupState.close}>
-                        <ListItem
-                          button
-                          onClick={() => this.startRename(popupState)}
-                        >
+                        <ListItem button onClick={() => this.startRename()}>
                           <ListItemText>Rename</ListItemText>
                         </ListItem>
-                        <ListItem
-                          button
-                          onClick={() => this.startDelete(popupState)}
-                        >
+                        {entityType === 'place' ? (
+                          <ListItem
+                            button
+                            onClick={() => this.startReposition()}
+                          >
+                            <ListItemText>Reposition</ListItemText>
+                          </ListItem>
+                        ) : null}
+                        <ListItem button onClick={() => this.startDelete()}>
                           <ListItemText>Delete</ListItemText>
                         </ListItem>
                       </List>
@@ -191,8 +215,8 @@ class NameControls extends Component {
     const edit = (
       <EntityNameField
         name={entityName}
-        onCancel={isCreating ? stopNewEntity : this.stopRename}
-        onSubmit={this.onUpdate}
+        onCancel={isCreating ? stopNewEntity : this.stop}
+        onSubmit={this.onRename}
         suggestions={suggestions}
       />
     );
@@ -202,15 +226,29 @@ class NameControls extends Component {
         hasAdornment={flow && flow !== 'reposition' && flow !== 'delete'}
         onClick={allowNewInstance ? startNewInstance : null}
         onMouseEnter={this.startHover}
-        onMouseLeave={this.stopHover}
+        onMouseLeave={flow === 'hover' ? this.stop : null}
+        ref={this.anchorRef}
       >
-        {flow === 'edit' ? edit : read}
+        {flow !== 'edit' ? read : edit}
+        {flow === 'reposition' ? (
+          <EntityMapPopover
+            anchorRef={this.anchorRef.current}
+            data={[]}
+            isCreating={isCreating}
+            onClose={this.stop}
+            onSave={marker => this.onReposition(marker)}
+            placeId={entityId}
+            placeName={entityName}
+            startPlaceRename={this.startRename}
+            stopNewPlace={stopNewEntity}
+          />
+        ) : null}
         {flow === 'delete' ? (
           <EntityDeleteModal
             name={entityName}
-            onCancel={this.stopDelete}
+            onCancel={this.stop}
             onConfirm={this.onDelete}
-            title="Delete tag"
+            title={`Delete ${entityType}`}
           />
         ) : null}
       </Element>
