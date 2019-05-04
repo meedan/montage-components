@@ -31,8 +31,9 @@ const Playhead = styled(({ box, ...props }) => <div {...props} />)`
     width: ${box.width - TIMELINE_OFFSET}px;
   `}
   border-left: 1px solid ${grey[300]};
+  pointer-events: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 100;
   .rc-slider {
     height: 100%;
     padding: 0;
@@ -142,6 +143,8 @@ class Timeline extends Component {
     //   return;
     // }
 
+    console.log('onTrackClick()');
+
     const eventPosition = e.clientX - (box.x1 + TIMELINE_OFFSET);
     const eventTime = (duration * eventPosition) / box.width - TIMELINE_OFFSET;
 
@@ -231,8 +234,8 @@ class Timeline extends Component {
     // console.log('ffTime', currentTime);
 
     return (
-      <div style={{ userSelect: 'none' }}>
-        <Playhead box={this.props.box} onClick={e => this.onTrackClick(e)}>
+      <div style={{ userSelect: 'none' }} onClick={e => this.onTrackClick(e)}>
+        <Playhead box={this.props.box}>
           <Slider
             defaultValue={0}
             handle={props => {
