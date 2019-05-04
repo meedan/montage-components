@@ -136,23 +136,25 @@ class Timeline extends Component {
   }
 
   onTrackClick = e => {
-    const { box, duration, play, playing, seekTo } = this.props;
-
     // if (this.state.skip || this.state.clip) {
     //   console.log('skipping click due to drag state on');
     //   return;
     // }
 
+    const { box, seekTo, play, duration, playing } = this.props;
+    const startPos = box.x1 + TIMELINE_OFFSET;
+    const endPos = box.width;
+    const newPos = e.clientX - startPos;
+    const newPosFlat = newPos > 0 ? newPos : 0;
+    const newTime = (duration * newPosFlat) / (endPos - TIMELINE_OFFSET);
     console.log('onTrackClick()');
-
-    const eventPosition = e.clientX - (box.x1 + TIMELINE_OFFSET);
-    const eventTime = (duration * eventPosition) / box.width - TIMELINE_OFFSET;
-
-    if (!DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: eventTime, disjoint: true });
-      console.log(`seeking to ${eventTime}`);
+    console.log(newPos);
+    console.log(newTime);
+    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+      this.setState({ time: newTime, disjoint: true });
+      console.log(`seeking to ${newTime}`);
       if (!playing) play();
-      seekTo(eventTime);
+      seekTo(newTime);
     }
     return null;
   };
