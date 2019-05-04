@@ -495,6 +495,7 @@ class TimelineTags extends Component {
                       deleteEntity={() => this.deleteTag(tag.id)}
                       entityId={tag.id}
                       entityName={project_tag.name}
+                      entityType="tag"
                       isCreating={tag.isCreating}
                       startNewInstance={() => this.startNewInstance(tag.id)}
                       stopNewEntity={this.stopNewTag}
