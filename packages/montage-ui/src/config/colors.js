@@ -1,7 +1,7 @@
 export const colors = {
   white: "#fff",
   black: "#0d0d0d",
-  brand: "#ff6d01"
+  brand: "#ff6d01",
 
   // mono100: lighten(0.48, "#767269"),
   // mono200: lighten(0.36, "#767269"),
@@ -23,15 +23,15 @@ export const colors = {
   // flare800: "rgba(255,255,255,.79625)",
   // flare900: "rgba(255,255,255,.9)",
   //
-  // shadow100: "rgba(0,0,0,.07)",
-  // shadow200: "rgba(0,0,0,.17375)", // 0,07+((0,83/8)*1)
-  // shadow300: "rgba(0,0,0,.2775)",
-  // shadow400: "rgba(0,0,0,.38125)",
-  // shadow500: "rgba(0,0,0,.485)",
-  // shadow600: "rgba(0,0,0,.58875)",
-  // shadow700: "rgba(0,0,0,.6925)",
-  // shadow800: "rgba(0,0,0,.79625)",
-  // shadow900: "rgba(0,0,0,.9)"
+  shadow100: "rgba(0,0,0,.07)",
+  shadow200: "rgba(0,0,0,.17375)", // 0,07+((0,83/8)*1)
+  shadow300: "rgba(0,0,0,.2775)",
+  shadow400: "rgba(0,0,0,.38125)",
+  shadow500: "rgba(0,0,0,.485)",
+  shadow600: "rgba(0,0,0,.58875)",
+  shadow700: "rgba(0,0,0,.6925)",
+  shadow800: "rgba(0,0,0,.79625)",
+  shadow900: "rgba(0,0,0,.9)"
 };
 
 export const color = colors;

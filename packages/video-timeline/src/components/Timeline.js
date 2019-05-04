@@ -1,12 +1,13 @@
 import 'rc-slider/assets/index.css';
+import { connect } from 'react-redux';
+import { number, shape } from 'prop-types';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import Tooltip from '@material-ui/core/Tooltip';
+import grey from '@material-ui/core/colors/grey';
+import Typography from '@material-ui/core/Typography';
 
 import formatTime from './ofTimeline/formatTime';
 import TimelineClips from './ofTimeline/Clips';
@@ -20,19 +21,19 @@ import { play, pause, seekTo } from '../reducers/player';
 
 const DISABLE_TIMELINE_TRANSPORT = true;
 const DISABLE_TRACK_TRANSPORT = true;
+const TIMELINE_OFFSET = 224;
 
-const TimelinePlayheadWrapper = styled.div`
-  user-select: none;
-`;
-
-const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
-  bottom: 0;
-  left: ${({ pxOffset }) => pxOffset + 'px'};
+const Playhead = styled(({ box, ...props }) => <div {...props} />)`
+  ${({ box }) => `
+    height: ${box.height}px;
+    left: ${box.x1 + TIMELINE_OFFSET}px;
+    top: ${box.y1}px;
+    width: ${box.width - TIMELINE_OFFSET}px;
+  `}
+  border-left: 1px solid ${grey[300]};
   pointer-events: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 1000;
+  position: fixed;
+  z-index: 100;
   .rc-slider {
     height: 100%;
     padding: 0;
@@ -49,30 +50,45 @@ const TimelinePlayhead = styled(({ pxOffset, ...props }) => <div {...props} />)`
   }
 `;
 
-const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
-  <div {...props} />
-))`
-  background: rgba(0, 0, 0, 0.033);
-  cursor: col-resize;
+const PlayheadMarker = styled.div`
+  background: ${color.shadow100};
   cursor: -webkit-grab;
+  cursor: col-resize;
   cursor: grab;
   height: 100%;
   pointer-events: all;
   position: absolute;
   touch-action: pan-x;
   transform: translateX(-50%);
-  width: 7px;
+  width: 6px;
+`;
+const PlayheadTimestamp = styled.div`
+  background: ${color.shadow600};
+  border-radius: 3px;
+  bottom: 100%;
+  color: ${grey[50]};
+  display: ${({ hide }) => (hide ? 'none' : 'block')};
+  left: 50%;
+  padding: 3px 6px;
+  position: absolute;
+  transform: translate(-50%, -66%);
+  z-index: 10001;
+`;
+
+const PlayheadThumb = styled(({ pxOffset, position, ...props }) => (
+  <div {...props} />
+))`
   &:before {
     background: ${color.brand};
     border-radius: 100%;
     content: ' ';
     display: block;
-    height: 9px;
+    height: 6px;
     left: 50%;
     position: absolute;
     top: 0;
     transform: translate(-50%, -50%);
-    width: 5px;
+    width: 6px;
   }
   &:after {
     border-left: 1px solid ${color.brand};
@@ -87,28 +103,19 @@ const TimelinePlayheadThumb = styled(({ pxOffset, position, ...props }) => (
   }
 `;
 
-const styles = theme => ({});
-
-const pxOffset = 224;
-
 class Timeline extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      ffTime: 0,
       clip: false,
-      time: 0,
-      skip: false,
       disjoint: false,
+      ffTime: 0,
       playing: false,
-      timelineOffset: 0,
       seekTo: null,
+      showTimestamp: false,
+      skip: false,
+      time: 0,
     };
-
-    this.timelineRef = React.createRef();
-
-    this.updateDimensions = this.updateDimensions.bind(this);
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -122,66 +129,42 @@ class Timeline extends Component {
     return { time, events, skip, disjoint };
   }
 
-  componentDidMount() {
-    this.updateDimensions();
-    window.addEventListener('resize', this.updateDimensions.bind(this));
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (prevState.seekTo !== this.state.seekTo) {
       // this.props.seekTo(this.state.seekTo);
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions.bind(this));
-  }
-
-  updateDimensions() {
-    const rect = this.timelineRef.current;
-    if (rect) {
-      const rectBox = rect ? rect.getBoundingClientRect() : null;
-      console.group('updateDimensions()');
-      console.log({ rect });
-      console.log({ rectBox });
-      console.groupEnd();
-      this.setState({ timelineOffset: rectBox.left });
-    }
-  }
-
   onTrackClick = e => {
-    if (this.state.skip || this.state.clip) {
-      console.log('skipping click due to drag state on');
-      return;
-    }
+    // if (this.state.skip || this.state.clip) {
+    //   console.log('skipping click due to drag state on');
+    //   return;
+    // }
+    const { box, seekTo, play, duration, playing } = this.props;
 
-    const { seekTo, play, duration, playing } = this.props;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const startPos = rect.left + pxOffset;
-    const endPos = rect.width;
+    const startPos = box.x1 + TIMELINE_OFFSET;
+    const endPos = box.width - TIMELINE_OFFSET;
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
-    const newTime = (duration * newPosFlat) / (endPos - pxOffset);
-
+    const newTime = (duration * newPosFlat) / endPos;
+    console.log('onTrackClick()');
     if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
       this.setState({ time: newTime, disjoint: true });
-
       console.log(`seeking to ${newTime}`);
       if (!playing) play();
       seekTo(newTime);
     }
-
     return null;
   };
 
   onDragStart = (val, skip = true) => {
     console.log('dragStart');
     this.setState({
-      skip,
-      ffTime: val,
       disjoint: true,
+      dragging: true,
+      ffTime: val,
       playing: this.props.playing,
+      skip,
     });
 
     // pause
@@ -197,6 +180,7 @@ class Timeline extends Component {
       clip,
       skip,
       seekTo: val,
+      dragging: true,
       disjoint: true,
       playing: playing || this.state.playing,
     });
@@ -214,7 +198,13 @@ class Timeline extends Component {
     console.log('dragEnd');
     // if (this.state.playing && !this.props.playing) this.props.play();
     setTimeout(
-      () => this.setState({ skip: false, playing: false, clip: false }),
+      () =>
+        this.setState({
+          clip: false,
+          dragging: false,
+          playing: false,
+          skip: false,
+        }),
       300
     );
   };
@@ -244,18 +234,34 @@ class Timeline extends Component {
     // console.log('ffTime', currentTime);
 
     return (
-      <TimelinePlayheadWrapper
-        onClick={e => this.onTrackClick(e)}
-        ref={this.timelineRef}
-      >
-        <TimelinePlayhead pxOffset={pxOffset}>
+      <div style={{ userSelect: 'none' }} onClick={e => this.onTrackClick(e)}>
+        <Playhead box={this.props.box}>
           <Slider
             defaultValue={0}
             handle={props => {
               // <Tooltip title={formatTime(time)} placement="top">
               // </Tooltip>
               return (
-                <TimelinePlayheadThumb style={{ left: `${props.offset}%` }} />
+                <PlayheadMarker
+                  style={{ left: `${props.offset}%` }}
+                  onMouseEnter={() => this.setState({ showTimestamp: true })}
+                  onMouseLeave={() => this.setState({ showTimestamp: false })}
+                >
+                  <PlayheadTimestamp
+                    hide={!this.state.showTimestamp && !this.state.dragging}
+                  >
+                    <Typography
+                      variant="overline"
+                      style={{
+                        color: 'white',
+                        lineHeight: '1.3em',
+                      }}
+                    >
+                      {formatTime(time)}
+                    </Typography>
+                  </PlayheadTimestamp>
+                  <PlayheadThumb />
+                </PlayheadMarker>
               );
             }}
             max={duration}
@@ -265,7 +271,7 @@ class Timeline extends Component {
             onChange={this.onDrag}
             value={this.state.time}
           />
-        </TimelinePlayhead>
+        </Playhead>
         <Table padding="dense">
           <TimelineComments
             {...this.props}
@@ -284,10 +290,9 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
-            pxOffset={pxOffset}
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
             skip={skip}
-            timelineOffset={this.state.timelineOffset}
+            timelineOffset={this.props.x1}
           />
           <TimelineTags
             {...this.props}
@@ -302,9 +307,8 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
-            pxOffset={pxOffset}
             skip={skip}
-            timelineOffset={this.state.timelineOffset}
+            timelineOffset={this.props.x1}
           />
           <TimelinePlaces
             {...this.props}
@@ -319,17 +323,38 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
-            pxOffset={pxOffset}
             skip={skip}
-            timelineOffset={this.state.timelineOffset}
+            timelineOffset={this.props.x1}
           />
         </Table>
-      </TimelinePlayheadWrapper>
+      </div>
     );
   }
 }
 
+Timeline.defaultProps = {
+  box: {
+    height: 0,
+    width: 0,
+    x1: 0,
+    x2: 0,
+    x3: 0,
+    x4: 0,
+  },
+};
+
+Timeline.propTypes = {
+  box: shape({
+    height: number,
+    width: number,
+    x1: number,
+    x2: number,
+    x3: number,
+    x4: number,
+  }),
+};
+
 export default connect(
   null,
   { play, pause, seekTo }
-)(withStyles(styles)(Timeline));
+)(Timeline);
