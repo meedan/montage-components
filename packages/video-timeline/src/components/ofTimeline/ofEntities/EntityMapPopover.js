@@ -89,7 +89,6 @@ class PlaceMap extends Component {
     console.log(place);
     if (place && place.geometry) {
       this.map.fitBounds(place.geometry.viewport.toJSON());
-
       const { lat, lng } = place.geometry.location;
       this.setState({
         dropPin: false,
@@ -100,13 +99,13 @@ class PlaceMap extends Component {
           type: 'marker',
           time: this.props.currentTime || 0,
         },
+        saved: false,
       });
     }
   };
 
   onLoad = map => {
     this.map = map;
-
     this.autocomplete = new window.google.maps.places.Autocomplete(
       this.searchRef.current,
       {}
