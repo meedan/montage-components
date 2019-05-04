@@ -503,14 +503,13 @@ class TimelinePlaces extends Component {
                   plain={i < videoPlaces.length - 1}
                   leftColContent={
                     <EntityControls
-                      currentTime={currentTime}
                       deleteEntity={() => this.deletePlace(place.id)}
                       entityId={place.id}
                       entityName={project_location.name}
                       entityType="place"
                       isCreating={place.isCreating}
                       startNewInstance={() => this.startNewInstance(place.id)}
-                      stopNewPlace={this.stopNewPlace}
+                      stopNewEntity={this.stopNewPlace}
                       suggestions={projectplaces}
                       updateEntity={name => this.renamePlace(place.id, name)}
                     />
