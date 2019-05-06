@@ -25,7 +25,6 @@ import Transport from './components/Transport';
 
 import baseData from './data/baseData';
 import timelineData from './data/timelineData';
-import moreData from './data/moreData';
 import newData from './data/newData';
 
 import hamock from './hamock.png';
@@ -34,7 +33,6 @@ const DATA = produce(
   {
     ...baseData, // Base data from Laurian’s account
     ...timelineData, // Base data from Laurian’s account
-    ...moreData, // Extend with more data missing from Laurian’s export
     ...newData, // Add new data missing in the API
     project: {
       ...baseData.project,
@@ -44,13 +42,6 @@ const DATA = produce(
   },
   () => {}
 );
-
-// const DATA = {
-//   ...baseData, // Base data from Laurian’s account
-//   ...timelineData, // Base data from Laurian’s account
-//   ...moreData, // Extend with more data missing from Laurian’s export
-//   newData, // Add new data missing in the API
-// };
 
 console.group('Data:');
 console.log(DATA);
