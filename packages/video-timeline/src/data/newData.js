@@ -112,45 +112,6 @@ const newData = {
   },
   videoPlaces: [],
   videoClips: [],
-  // videoPlaces: [
-  //   {
-  //     id: 2070,
-  //     instances: [{
-  //       end_seconds: 460.578651685393,
-  //       id: 23924,
-  //       project_id: 1161,
-  //       project_tag_id: 3938,
-  //       start_seconds: 411.578651685393
-  //     }],
-  //     project_id: 1161,
-  //     project_location: {
-  //       id: 3938,
-  //       name: "Syria",
-  //       project_id: 1161,
-  //       video_tag_instance_count: 1
-  //     },
-  //   },
-  //   ...locations,
-  // ],
-  // videoClips: [
-  //   {
-  //     id: 20743,
-  //     instances: [{
-  //       end_seconds: 460.578651685393,
-  //       id: 23929,
-  //       project_id: 1161,
-  //       project_tag_id: 3938,
-  //       start_seconds: 411.578651685393
-  //     }],
-  //     project_id: 1161,
-  //     project_clip: {
-  //       id: 3938,
-  //       name: "Shareable",
-  //       project_id: 1161,
-  //       video_tag_instance_count: 1
-  //     },
-  //   }
-  // ]
 };
 
 export default newData;
