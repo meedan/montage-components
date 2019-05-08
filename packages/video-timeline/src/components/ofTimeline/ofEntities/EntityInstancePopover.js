@@ -20,7 +20,7 @@ const styles = theme => ({
 class EntityInstancePopover extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      prevProps.coords.x !== this.props.coords.x &&
+      prevProps.anchorPosition.left !== this.props.anchorPosition.left &&
       prevProps.isOverHandle !== this.props.isOverHandle
     ) {
       this.props.onExit();
@@ -31,7 +31,7 @@ class EntityInstancePopover extends Component {
     const {
       classes,
       children,
-      coords,
+      anchorPosition,
       instance,
       isOverHandle,
       onDelete,
@@ -83,10 +83,12 @@ class EntityInstancePopover extends Component {
           vertical: 'bottom',
           horizontal: 'center',
         }}
-        anchorPosition={{ left: coords.x, top: coords.y }}
+        anchorPosition={anchorPosition}
         anchorReference="anchorPosition"
+        disableAutoFocus
+        disableEnforceFocus
         disablePortal
-        hideBackdrop
+        disableRestoreFocus
         id="instanceControlsPopover"
         onBackdropClick={onExit}
         onEscapeKeyDown={onExit}
@@ -107,12 +109,12 @@ class EntityInstancePopover extends Component {
 export default withStyles(styles)(EntityInstancePopover);
 
 EntityInstancePopover.defaultProps = {
-  coords: { x: 0, y: 0 },
+  anchorPosition: { left: 0, top: 0 },
 }
 
 EntityInstancePopover.propTypes = {
-  coords: shape({
-    x: number,
-    y: number,
+  anchorPosition: shape({
+    left: number,
+    top: number,
   }),
 }
