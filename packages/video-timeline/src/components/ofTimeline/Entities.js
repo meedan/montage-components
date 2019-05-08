@@ -436,9 +436,9 @@ class Entities extends Component {
     })();
 
     this.setState({
-      coords: {
-        x: x + rect.left,
-        y: rect.height + rect.top,
+      anchorPosition: {
+        left: x + rect.left,
+        top: rect.height + rect.top,
       },
       isOverHandle: isOverStartHandle || isOverEndHandle,
       targetInstance,
@@ -630,7 +630,7 @@ class Entities extends Component {
                         />
                       </EntitySliderWrapper>
                       <EntityInstancePopover
-                        coords={this.state.coords}
+                        anchorPosition={this.state.anchorPosition}
                         entity={this.state.targetEntity}
                         entityId={entity.id}
                         instance={this.state.targetInstance}
