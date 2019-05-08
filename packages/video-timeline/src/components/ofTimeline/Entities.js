@@ -11,6 +11,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
 import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
 
 import EntityControls from './ofEntities/EntityControls';
@@ -24,7 +25,7 @@ import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
 
-class TimelineTags extends Component {
+class Entities extends Component {
   state = {
     choords: { x: 0, y: 0 },
     playlist: false,
@@ -32,20 +33,20 @@ class TimelineTags extends Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { data, duration, skip } = props;
-    let { videoTags } = data;
+    const { duration, skip, entityType } = props;
+    let { entities } = props;
 
     if (skip) return null;
 
-    const persisted = window.localStorage.getItem('videoTags');
-    if (persisted) videoTags = Flatted.parse(persisted);
+    const persisted = window.localStorage.getItem(entityType);
+    if (persisted) entities = Flatted.parse(persisted);
 
-    if (state.videoTags && state.segments) return null;
+    if (state.entities && state.segments) return null;
 
     // merge overlapping tag instances
-    videoTags.forEach(t => {
-      t.isCreating = false;
-      t.instances = t.instances
+    entities.forEach(e => {
+      e.isCreating = false;
+      e.instances = e.instances
         .sort((j, i) => j.start_seconds - i.start_seconds)
         .reduce((acc = [], i) => {
           const j = acc.pop();
@@ -68,15 +69,15 @@ class TimelineTags extends Component {
         }, []);
     });
 
-    const segments = recomputeSegments(videoTags, duration);
-    return { videoTags, segments };
+    const segments = recomputeSegments(entities, duration);
+    return { entities, segments };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState !== this.state)
       window.localStorage.setItem(
-        'videoTags',
-        Flatted.stringify(nextState.videoTags)
+        this.props.entityType,
+        Flatted.stringify(nextState.entities)
       );
 
     if (nextProps.skip) return false;
@@ -112,6 +113,80 @@ class TimelineTags extends Component {
 
     return true;
   }
+
+  duplicateAsClip = (entity, instance) => {
+    // console.log(tag, instance);
+    const entities = produce(this.state.entities, nextVideoClips => {
+      let clip = this.state.entities.find(
+        c =>
+          c.project_clip.name ===
+          (entity.project_tag
+            ? entity.project_tag.name
+            : entity.project_location.name)
+      );
+
+      if (!clip) {
+        // this.startNewClip(null, tag.project_tag.name);
+        clip = {
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          isCreating: false,
+          instances: [
+            {
+              id: Math.random()
+                .toString(36)
+                .substring(2),
+              start_seconds: instance.start_seconds,
+              end_seconds: instance.end_seconds,
+            },
+          ],
+          project_clip: {
+            name: entity.project_tag
+              ? entity.project_tag.name
+              : entity.project_location.name,
+          },
+        };
+
+        nextVideoClips.splice(0, 0, clip);
+      } else {
+        const j = {
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          start_seconds: instance.start_seconds,
+          end_seconds: instance.end_seconds,
+        };
+
+        const overlappingInstance = clip.instances.find(
+          i =>
+            (j.start_seconds <= i.start_seconds &&
+              i.start_seconds <= j.end_seconds) ||
+            (j.start_seconds <= i.end_seconds &&
+              i.end_seconds <= j.end_seconds) ||
+            (i.start_seconds <= j.start_seconds &&
+              j.start_seconds <= i.end_seconds) ||
+            (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
+        );
+
+        if (overlappingInstance) {
+          overlappingInstance.start_seconds = Math.min(
+            overlappingInstance.start_seconds,
+            j.start_seconds
+          );
+          overlappingInstance.end_seconds = Math.max(
+            overlappingInstance.end_seconds,
+            j.end_seconds
+          );
+        } else {
+          clip.instances.push(j);
+        }
+      }
+    });
+
+    const segments = recomputeSegments(entities, this.props.duration);
+    this.setState({ entities, segments });
+  };
 
   handlePlayPause = () => {
     const { playlist } = this.state;
@@ -152,7 +227,7 @@ class TimelineTags extends Component {
     this.setState({
       values,
       targetInstance: null,
-      targetTag: null,
+      targetEntity: null,
       isDragging: true,
     });
   };
@@ -170,9 +245,9 @@ class TimelineTags extends Component {
 
     const j = v.findIndex(d => d === val);
 
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const ti = nextVideoTags.findIndex(t => t.id === id);
-      const t = nextVideoTags[ti];
+    const entities = produce(this.state.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === id);
+      const t = nextEntities[ti];
 
       const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
         (j - (j % 2)) / 2
@@ -183,16 +258,16 @@ class TimelineTags extends Component {
     });
 
     values[id] = v;
-    const segments = recomputeSegments(videoTags, duration);
-    this.setState({ videoTags, segments, values });
+    const segments = recomputeSegments(entities, duration);
+    this.setState({ entities, segments, values });
   };
 
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const ti = nextVideoTags.findIndex(t => t.id === id);
-      const t = nextVideoTags[ti];
+    const entities = produce(this.state.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === id);
+      const t = nextEntities[ti];
 
       const i = t.instances.find(
         i => i.start_seconds <= currentTime && currentTime < i.end_seconds
@@ -210,18 +285,32 @@ class TimelineTags extends Component {
       }
     });
 
-    const segments = recomputeSegments(videoTags, duration);
-    this.setState({ videoTags, segments });
+    const segments = recomputeSegments(entities, duration);
+    this.setState({ entities, segments });
   };
 
-  startNewTag = () => {
+  startNewEntity = () => {
     const { currentTime, duration } = this.props;
     const id = Math.random()
       .toString(36)
       .substring(2);
 
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      nextVideoTags.splice(0, 0, {
+    const entityName =
+      this.props.entityType === 'tag'
+        ? {
+            project_tag: {
+              name: '',
+            },
+          }
+        : {
+            project_location: {
+              name: '',
+            },
+          };
+
+    const entities = produce(this.state.entities, nextEntities => {
+      nextEntities.splice(0, 0, {
+        ...entityName,
         id,
         isCreating: true,
         instances: [
@@ -233,22 +322,30 @@ class TimelineTags extends Component {
             end_seconds: currentTime + 5,
           },
         ],
-        project_tag: {
-          name: '',
-        },
       });
     });
 
-    const segments = recomputeSegments(videoTags, duration);
-    this.setState({ videoTags, segments });
+    const segments = recomputeSegments(entities, duration);
+    this.setState({ entities, segments });
   };
 
-  stopNewTag = () => {
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      nextVideoTags.splice(0, 1);
+  stopNewEntity = () => {
+    const entities = produce(this.state.entities, nextEntities => {
+      nextEntities.splice(0, 1);
     });
 
-    this.setState({ videoTags });
+    this.setState({ entities });
+  };
+
+  openInCheck = id => {
+    const { targetInstance } = this.state;
+    console.group('openInCheck');
+    console.log('targetInstance', targetInstance);
+    console.groupEnd();
+    this.setState({
+      targetInstance: null,
+      targetEntity: null,
+    });
   };
 
   leMenuOff = ({ clientX, clientY, currentTarget }) => {
@@ -266,7 +363,7 @@ class TimelineTags extends Component {
       // console.log('outside', rect, clientX, clientY);
       this.setState({
         targetInstance: null,
-        targetTag: null,
+        targetEntity: null,
       });
     }
   };
@@ -275,12 +372,12 @@ class TimelineTags extends Component {
     if (!e) {
       this.setState({
         targetInstance: null,
-        targetTag: null,
+        targetEntity: null,
       });
       return;
     }
 
-    const { videoTags } = this.state;
+    const { entities } = this.state;
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -288,13 +385,13 @@ class TimelineTags extends Component {
     const relativeMousePos = mousePos > 0 ? mousePos : 0;
     const mouseTime = (duration * relativeMousePos) / rect.width;
 
-    const targetTag = videoTags.find(t => t.id === id);
-    if (!targetTag) {
+    const targetEntity = entities.find(t => t.id === id);
+    if (!targetEntity) {
       this.setState({
         mousePos,
         mouseTime,
         targetInstance: null,
-        targetTag: null,
+        targetEntity: null,
       });
       return;
     }
@@ -303,7 +400,7 @@ class TimelineTags extends Component {
 
     // 4px handle -> time
     const handle = 4 / pxs;
-    const targetInstance = targetTag.instances.find(
+    const targetInstance = targetEntity.instances.find(
       i =>
         i.start_seconds - handle <= mouseTime &&
         mouseTime < i.end_seconds + handle
@@ -317,22 +414,22 @@ class TimelineTags extends Component {
       : 0;
 
     const isOverHandle =
-      !targetTag.instances.find(
+      !targetEntity.instances.find(
         i =>
           i.start_seconds + handle <= mouseTime &&
           mouseTime < i.end_seconds - handle
       ) &&
-      !!targetTag.instances.find(
+      !!targetEntity.instances.find(
         i =>
           i.start_seconds - handle <= mouseTime &&
           mouseTime < i.end_seconds + handle
       );
 
-    const handleOverStart = targetTag.instances.find(
+    const handleOverStart = targetEntity.instances.find(
       i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
     );
 
-    const handleOverEnd = targetTag.instances.find(
+    const handleOverEnd = targetEntity.instances.find(
       i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
     );
 
@@ -354,94 +451,95 @@ class TimelineTags extends Component {
       },
       isOverHandle,
       targetInstance,
-      targetTag,
+      targetEntity,
     });
   };
 
-  deleteTag = id => {
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const i = nextVideoTags.findIndex(t => t.id === id);
-      nextVideoTags.splice(i, 1);
+  deleteEntity = id => {
+    const entities = produce(this.state.entities, nextEntities => {
+      const i = nextEntities.findIndex(t => t.id === id);
+      nextEntities.splice(i, 1);
     });
 
-    this.setState({ videoTags });
+    this.setState({ entities });
   };
 
-  renameTag = (id, name) => {
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const i = nextVideoTags.findIndex(t => t.id === id);
-      nextVideoTags[i].project_tag.name = name;
+  renameEntity = (id, name) => {
+    const entities = produce(this.state.entities, nextEntities => {
+      const i = nextEntities.findIndex(t => t.id === id);
+      this.props.entityType === 'tag'
+        ? (nextEntities[i].project_tag.name = name)
+        : (nextEntities[i].project_location.name = name);
     });
 
-    this.setState({ videoTags });
+    this.setState({ entities });
   };
 
   deleteInstance(id) {
     const { targetInstance } = this.state;
 
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const ti = nextVideoTags.findIndex(t => t.id === id);
-      const ii = nextVideoTags[ti].instances.findIndex(
+    const entities = produce(this.state.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === id);
+      const ii = nextEntities[ti].instances.findIndex(
         i => i.id === targetInstance.id
       );
-      nextVideoTags[ti].instances.splice(ii, 1);
+      nextEntities[ti].instances.splice(ii, 1);
     });
 
-    const segments = recomputeSegments(videoTags, this.props.duration);
+    const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      videoTags,
+      entities,
       segments,
       targetInstance: null,
-      targetTag: null,
+      targetEntity: null,
     });
   }
 
   duplicateAsClip = id => {
     const { targetInstance } = this.state;
 
-    const tag = this.state.videoTags.find(t => t.id === id);
-    this.props.duplicateAsClip(tag, targetInstance);
+    const entity = this.state.entities.find(t => t.id === id);
+    this.props.duplicateAsClip(entity, targetInstance);
 
     this.setState({
       targetInstance: null,
-      targetTag: null,
+      targetEntity: null,
     });
   };
 
   expandInstance(id) {
     const { targetInstance } = this.state;
 
-    const videoTags = produce(this.state.videoTags, nextVideoTags => {
-      const ti = nextVideoTags.findIndex(t => t.id === id);
-      const i = nextVideoTags[ti].instances.find(
+    const entities = produce(this.state.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === id);
+      const i = nextEntities[ti].instances.find(
         i => i.id === targetInstance.id
       );
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
-      nextVideoTags[ti].instances = [i];
+      nextEntities[ti].instances = [i];
     });
 
-    const segments = recomputeSegments(videoTags, this.props.duration);
+    const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      videoTags,
+      entities,
       segments,
       targetInstance: null,
-      targetTag: null,
+      targetEntity: null,
     });
   }
 
   render() {
-    const { duration, data } = this.props;
-    const { videoTags, playlist } = this.state;
-    const { projecttags } = data.project;
+    const { duration, suggestions, entityType } = this.props;
+    const { entities, playlist } = this.state;
 
     return (
       <TableSection
-        plain={videoTags ? videoTags.length > 0 : false}
-        title="Tags"
+        plain={entities ? entities.length > 0 : false}
+        title={this.props.title}
         actions={
           <>
-            <Tooltip title={playlist ? 'Pause tags' : 'Play tags'}>
+            <Tooltip title={playlist ? 'Pause all' : 'Play all'}>
               <IconButton onClick={this.handlePlayPause}>
                 {playlist ? (
                   <PauseIcon fontSize="small" />
@@ -450,8 +548,8 @@ class TimelineTags extends Component {
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip title="New Tag">
-              <IconButton onClick={this.startNewTag}>
+            <Tooltip title="New…">
+              <IconButton onClick={this.startNewEntity}>
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -459,9 +557,10 @@ class TimelineTags extends Component {
         }
         onMouseLeave={this.leMenuOff}
       >
-        {videoTags
-          ? videoTags.map((tag, i) => {
-              const { project_tag, instances } = tag;
+        {entities
+          ? entities.map((entity, i) => {
+              const { instances } = entity;
+
               const arr = [];
 
               Array.from(instances)
@@ -488,19 +587,23 @@ class TimelineTags extends Component {
 
               return (
                 <TableBlock
-                  key={tag.id}
-                  plain={i < videoTags.length - 1}
+                  key={entity.id}
+                  plain={i < entities.length - 1}
                   leftColContent={
                     <EntityControls
-                      deleteEntity={() => this.deleteTag(tag.id)}
-                      entityId={tag.id}
-                      entityName={project_tag.name}
-                      entityType="tag"
-                      isCreating={tag.isCreating}
-                      startNewInstance={() => this.startNewInstance(tag.id)}
-                      stopNewEntity={this.stopNewTag}
-                      suggestions={projecttags}
-                      updateEntity={name => this.renameTag(tag.id, name)}
+                      deleteEntity={() => this.deleteEntity(entity.id)}
+                      entityId={entity.id}
+                      entityName={
+                        entity.project_tag
+                          ? entity.project_tag.name
+                          : entity.project_location.name
+                      }
+                      entityType={entityType}
+                      isCreating={entity.isCreating}
+                      startNewInstance={() => this.startNewInstance(entity.id)}
+                      stopNewEntity={this.stopNewEntity}
+                      suggestions={suggestions}
+                      updateEntity={name => this.renameEntity(entity.id, name)}
                     />
                   }
                   rightColContent={
@@ -508,12 +611,12 @@ class TimelineTags extends Component {
                       <EntitySliderWrapper
                         onMouseMove={
                           !this.state.isDragging
-                            ? e => this.leMenu(e, tag.id)
+                            ? e => this.leMenu(e, entity.id)
                             : this.leMenuOff
                         }
                         onMouseOver={
                           !this.state.isDragging
-                            ? e => this.leMenu(e, tag.id)
+                            ? e => this.leMenu(e, entity.id)
                             : this.leMenuOff
                         }
                       >
@@ -522,12 +625,14 @@ class TimelineTags extends Component {
                           handle={handleProps => (
                             <EntityInstanceHandle {...handleProps} />
                           )}
-                          key={tag.id}
+                          key={entity.id}
                           max={duration}
                           min={0}
-                          onAfterChange={v => this.onAfterChange(v, tag.id)}
-                          onBeforeChange={v => this.onBeforeChange(v, tag.id)}
-                          onChange={v => this.onChange(v, tag.id)}
+                          onAfterChange={v => this.onAfterChange(v, entity.id)}
+                          onBeforeChange={v =>
+                            this.onBeforeChange(v, entity.id)
+                          }
+                          onChange={v => this.onChange(v, entity.id)}
                           pushable
                           trackStyle={trackStyle}
                           value={arr}
@@ -538,21 +643,31 @@ class TimelineTags extends Component {
                           x: this.state.choords.x,
                           y: this.state.choords.y,
                         }}
-                        entity={this.state.targetTag}
-                        entityId={tag.id}
+                        entity={this.state.targetEntity}
+                        entityId={entity.id}
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
-                        onDelete={() => this.deleteInstance(tag.id)}
+                        onDelete={() => this.deleteInstance(entity.id)}
                         onExit={this.leMenuOff}
-                        onExtend={() => this.expandInstance(tag.id)}
+                        onExtend={() => this.expandInstance(entity.id)}
                       >
-                        <Tooltip title="Copy to Clips">
-                          <IconButton
-                            onClick={() => this.duplicateAsClip(tag.id)}
-                          >
-                            <ContentCutIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                        {entityType !== 'clip' ? (
+                          <Tooltip title="Copy to Clips">
+                            <IconButton
+                              onClick={() => this.duplicateAsClip(entity.id)}
+                            >
+                              <ContentCutIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Open in Check">
+                            <IconButton
+                              onClick={() => this.openInCheck(entity.id)}
+                            >
+                              <CheckIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </EntityInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
@@ -568,8 +683,8 @@ class TimelineTags extends Component {
   }
 }
 
-const recomputeSegments = (videoTags, duration) => {
-  const instances = videoTags
+const recomputeSegments = (entities, duration) => {
+  const instances = entities
     .reduce((acc, t) => [...acc, ...t.instances], [])
     .sort((j, i) => j.start_seconds - i.start_seconds);
 
@@ -604,8 +719,8 @@ const recomputeSegments = (videoTags, duration) => {
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
-// export default React.memo(props => <TimelineTags {...props} />);
+// export default React.memo(props => <Entities {...props} />);
 export default connect(
   null,
   { play, pause, seekTo }
-)(React.memo(props => <TimelineTags {...props} />));
+)(React.memo(props => <Entities {...props} />));
