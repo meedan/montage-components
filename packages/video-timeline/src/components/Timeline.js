@@ -9,11 +9,10 @@ import Table from '@material-ui/core/Table';
 import grey from '@material-ui/core/colors/grey';
 import Typography from '@material-ui/core/Typography';
 
+import Entities from './ofTimeline/Entities';
 import formatTime from './ofTimeline/formatTime';
 import TimelineClips from './ofTimeline/Clips';
 import TimelineComments from './ofTimeline/Comments';
-import TimelinePlaces from './ofTimeline/Places';
-import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
@@ -294,10 +293,12 @@ class Timeline extends Component {
             skip={skip}
             timelineOffset={this.props.x1}
           />
-          <TimelineTags
-            {...this.props}
+          <Entities
+            title="Tags"
+            entityType="tag"
             currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
+            duration={this.props.duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -307,13 +308,21 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
+            entities={this.props.data.videoTags}
+            pause={this.props.pause}
+            play={this.props.play}
+            playing={this.props.playing}
+            seekTo={this.props.seekTo}
+            suggestions={this.props.data.project.projecttags}
             skip={skip}
             timelineOffset={this.props.x1}
           />
-          <TimelinePlaces
-            {...this.props}
-            currentTime={time}
+          <Entities
+            title="Places"
+            entityType="place"
+            currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
+            duration={this.props.duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -323,6 +332,12 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
+            entities={this.props.data.videoPlaces}
+            pause={this.props.pause}
+            play={this.props.play}
+            playing={this.props.playing}
+            seekTo={this.props.seekTo}
+            suggestions={this.props.data.project.projectplaces}
             skip={skip}
             timelineOffset={this.props.x1}
           />
