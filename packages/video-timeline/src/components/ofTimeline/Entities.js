@@ -27,7 +27,6 @@ const Range = Slider.Range;
 
 class Entities extends Component {
   state = {
-    choords: { x: 0, y: 0 },
     playlist: false,
     values: {},
   };
@@ -348,7 +347,7 @@ class Entities extends Component {
     });
   };
 
-  leMenuOff = ({ clientX, clientY, currentTarget }) => {
+  detecInstancePopoverOff = ({ clientX, clientY, currentTarget }) => {
     const rect = currentTarget.getBoundingClientRect();
     // console.log(rect, clientX, clientY);
 
@@ -366,9 +365,16 @@ class Entities extends Component {
         targetEntity: null,
       });
     }
+  }
+
+  hideInstancePopover = () => {
+    this.setState({
+      targetInstance: null,
+      targetEntity: null,
+    });
   };
 
-  leMenu = (e, id) => {
+  showInstancePopover = (e, id) => {
     if (!e) {
       this.setState({
         targetInstance: null,
@@ -381,75 +387,60 @@ class Entities extends Component {
     const { duration } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const mousePos = e.clientX - rect.left;
-    const relativeMousePos = mousePos > 0 ? mousePos : 0;
-    const mouseTime = (duration * relativeMousePos) / rect.width;
+
+    const s2px = rect.width / duration;
+    const px2s = duration / rect.width;
+
+    const relativeMousePos = e.clientX - rect.left;
+    const normalzdMousePos = relativeMousePos > 0 ? relativeMousePos : 0;
+    const mouseTime = normalzdMousePos * px2s;
 
     const targetEntity = entities.find(t => t.id === id);
     if (!targetEntity) {
       this.setState({
-        mousePos,
-        mouseTime,
         targetInstance: null,
         targetEntity: null,
       });
       return;
     }
 
-    const pxs = rect.width / duration;
+    const handleTime = 4 * px2s;
 
-    // 4px handle -> time
-    const handle = 4 / pxs;
     const targetInstance = targetEntity.instances.find(
       i =>
-        i.start_seconds - handle <= mouseTime &&
-        mouseTime < i.end_seconds + handle
+        mouseTime >= i.start_seconds - handleTime / 2 &&
+        mouseTime < i.end_seconds
     );
 
-    const instanceStartX = targetInstance
-      ? pxs * targetInstance.start_seconds - 2
-      : 0;
-    const instanceEndX = targetInstance
-      ? pxs * targetInstance.end_seconds + 2
-      : 0;
+    const instanceX1 = targetInstance ? targetInstance.start_seconds * s2px : 0;
+    const instanceX2 = targetInstance ? targetInstance.end_seconds * s2px : 0;
 
-    const isOverHandle =
-      !targetEntity.instances.find(
-        i =>
-          i.start_seconds + handle <= mouseTime &&
-          mouseTime < i.end_seconds - handle
-      ) &&
-      !!targetEntity.instances.find(
-        i =>
-          i.start_seconds - handle <= mouseTime &&
-          mouseTime < i.end_seconds + handle
-      );
-
-    const handleOverStart = targetEntity.instances.find(
-      i => i.start_seconds - handle <= mouseTime && mouseTime < i.start_seconds
+    const isOverStartHandle = !!targetEntity.instances.find(
+      i =>
+        mouseTime >= i.start_seconds - handleTime &&
+        mouseTime <= i.start_seconds + handleTime
     );
 
-    const handleOverEnd = targetEntity.instances.find(
-      i => i.end_seconds <= mouseTime && mouseTime < i.end_seconds + handle
+    const isOverEndHandle = !!targetEntity.instances.find(
+      i => mouseTime >= i.end_seconds - handleTime && mouseTime <= i.end_seconds + handleTime
     );
 
-    // get x choords
-    const getXChoord = () => {
-      if (handleOverStart) {
-        return instanceStartX;
-      } else if (handleOverEnd) {
-        return instanceEndX;
+    const x = (function() {
+      if (isOverStartHandle) {
+        return instanceX1;
+      } else if (isOverEndHandle) {
+        return instanceX2;
       } else {
-        return instanceStartX + (instanceEndX - instanceStartX) / 2;
+        return instanceX1 + (instanceX2 - instanceX1) / 2;
       }
-    };
+    })();
 
     this.setState({
-      choords: {
-        x: getXChoord() + rect.left,
-        y: rect.top + rect.height,
+      coords: {
+        x: x + rect.left,
+        y: rect.height + rect.top,
       },
-      isOverHandle,
+      isOverHandle: isOverStartHandle || isOverEndHandle,
       targetInstance,
       targetEntity,
     });
@@ -555,7 +546,7 @@ class Entities extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.leMenuOff}
+        onMouseLeave={this.hideInstancePopover}
       >
         {entities
           ? entities.map((entity, i) => {
@@ -611,13 +602,13 @@ class Entities extends Component {
                       <EntitySliderWrapper
                         onMouseMove={
                           !this.state.isDragging
-                            ? e => this.leMenu(e, entity.id)
-                            : this.leMenuOff
+                            ? e => this.showInstancePopover(e, entity.id)
+                            : this.detecInstancePopoverOff
                         }
                         onMouseOver={
                           !this.state.isDragging
-                            ? e => this.leMenu(e, entity.id)
-                            : this.leMenuOff
+                            ? e => this.showInstancePopover(e, entity.id)
+                            : this.detecInstancePopoverOff
                         }
                       >
                         <MemoizedRange
@@ -639,16 +630,13 @@ class Entities extends Component {
                         />
                       </EntitySliderWrapper>
                       <EntityInstancePopover
-                        choords={{
-                          x: this.state.choords.x,
-                          y: this.state.choords.y,
-                        }}
+                        coords={this.state.coords}
                         entity={this.state.targetEntity}
                         entityId={entity.id}
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
                         onDelete={() => this.deleteInstance(entity.id)}
-                        onExit={this.leMenuOff}
+                        onExit={this.hideInstancePopover}
                         onExtend={() => this.expandInstance(entity.id)}
                       >
                         {entityType !== 'clip' ? (
