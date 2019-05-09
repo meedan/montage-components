@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 
 import Entities from './ofTimeline/Entities';
 import formatTime from './ofTimeline/formatTime';
-import TimelineClips from './ofTimeline/Clips';
 import TimelineComments from './ofTimeline/Comments';
 
 import { color } from '@montage/ui';
@@ -212,9 +211,9 @@ class Timeline extends Component {
     this.duplicateAsClip = fn;
   };
 
-  relayDuplicateAsClip = (tag, instance) => {
+  relayDuplicateAsClip = (entity, instance) => {
     // console.log(tag, instance);
-    if (this.duplicateAsClip) this.duplicateAsClip(tag, instance);
+    if (this.duplicateAsClip) this.duplicateAsClip(entity, instance);
   };
 
   render() {
@@ -277,9 +276,12 @@ class Timeline extends Component {
             currentTime={currentTime}
             skip={skip}
           />
-          <TimelineClips
-            {...this.props}
+          <Entities
+            title="Clips"
+            entityType="clip"
             currentTime={currentTime}
+            registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
+            duration={this.props.duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -289,7 +291,12 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
-            registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
+            entities={this.props.data.videoClips}
+            pause={this.props.pause}
+            play={this.props.play}
+            playing={this.props.playing}
+            seekTo={this.props.seekTo}
+            suggestions={this.props.data.project.projectclips}
             skip={skip}
             timelineOffset={this.props.x1}
           />
@@ -319,7 +326,7 @@ class Timeline extends Component {
           />
           <Entities
             title="Places"
-            entityType="place"
+            entityType="location"
             currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
             duration={this.props.duration}

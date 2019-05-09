@@ -56,7 +56,7 @@ class NameControls extends Component {
     this.state = {
       flow: null,
     };
-    if (this.props.entityType === 'place') this.anchorRef = React.createRef();
+    if (this.props.entityType === 'location') this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -104,7 +104,7 @@ class NameControls extends Component {
     const { entityType, isCreating } = this.props;
     this.props.updateEntity(name);
     console.log('onRename()', { isCreating });
-    if (isCreating && entityType === 'place') {
+    if (isCreating && entityType === 'location') {
       this.startReposition();
     } else {
       setTimeout(() => this.setState({ flow: null }), 1000);
@@ -191,7 +191,7 @@ class NameControls extends Component {
                         <ListItem button onClick={() => this.startRename()}>
                           <ListItemText>Rename</ListItemText>
                         </ListItem>
-                        {entityType === 'place' ? (
+                        {entityType === 'location' ? (
                           <ListItem
                             button
                             onClick={() => this.startReposition()}
