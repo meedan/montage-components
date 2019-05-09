@@ -25,6 +25,25 @@ import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
 
+function getName(obj) {
+  // console.log('obj', obj);
+  // console.log('obj.tag', obj.project_tag);
+  // console.log('obj.loc', obj.project_location);
+  // console.log('obj.cli', obj.project_clip);
+  // console.log(obj);
+  if (obj.project_tag) {
+    // console.log('obj.project_tag', obj.project_tag.name)
+    return obj.project_tag.name;
+  } else if (obj.project_location) {
+    // console.log('obj.project_location', obj.project_location.name)
+    return obj.project_location.name;
+  } else if (obj.project_clip) {
+    // console.log('obj.project_clip', obj.project_clip.name)
+    return obj.project_clip.name;
+  }
+  return null;
+}
+
 class Entities extends Component {
   state = {
     playlist: false,
@@ -113,15 +132,18 @@ class Entities extends Component {
     return true;
   }
 
+  componentDidMount = () => {
+    if (this.props.registerDuplicateAsClip) {
+      this.props.registerDuplicateAsClip(this.duplicateAsClip);
+    }
+  };
+
   duplicateAsClip = (entity, instance) => {
     // console.log(tag, instance);
-    const entities = produce(this.state.entities, nextVideoClips => {
+    const entities = produce(this.state.entities, nextEntities => {
       let clip = this.state.entities.find(
         c =>
-          c.project_clip.name ===
-          (entity.project_tag
-            ? entity.project_tag.name
-            : entity.project_location.name)
+          c.project_clip.name === getName(entity)
       );
 
       if (!clip) {
@@ -141,13 +163,11 @@ class Entities extends Component {
             },
           ],
           project_clip: {
-            name: entity.project_tag
-              ? entity.project_tag.name
-              : entity.project_location.name,
+            name: getName(entity),
           },
         };
 
-        nextVideoClips.splice(0, 0, clip);
+        nextEntities.splice(0, 0, clip);
       } else {
         const j = {
           id: Math.random()
@@ -289,23 +309,21 @@ class Entities extends Component {
   };
 
   startNewEntity = () => {
-    const { currentTime, duration } = this.props;
+    const { currentTime, entityType, duration } = this.props;
     const id = Math.random()
       .toString(36)
       .substring(2);
 
-    const entityName =
-      this.props.entityType === 'tag'
-        ? {
-            project_tag: {
-              name: '',
-            },
-          }
-        : {
-            project_location: {
-              name: '',
-            },
-          };
+    const entityName = function(){
+      if (entityType === 'tag') {
+        return {project_tag: {name: ''}};
+      }else if (entityType === 'location') {
+        return {project_location: {name: ''}};
+      }else if (entityType === 'clip') {
+        return {project_clip: {name: ''}};
+      }
+      return null;
+    }();
 
     const entities = produce(this.state.entities, nextEntities => {
       nextEntities.splice(0, 0, {
@@ -455,12 +473,20 @@ class Entities extends Component {
     this.setState({ entities });
   };
 
-  renameEntity = (id, name) => {
+  updateEntity = (id, name) => {
+    const {entityType} = this.props;
+
     const entities = produce(this.state.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
-      this.props.entityType === 'tag'
-        ? (nextEntities[i].project_tag.name = name)
-        : (nextEntities[i].project_location.name = name);
+      nextEntities[i][`project_${entityType}`].name = name
+      //
+      // if (this.props.entityType === 'tag') {
+      //   nextEntities[i].project_tag.name = name
+      // } else if (this.props.entityType === 'place') {
+      //   nextEntities[i].project_location.name = name
+      // } else if (this.props.entityType === 'clip') {
+      //   nextEntities[i].project_clip.name = name
+      // }
     });
 
     this.setState({ entities });
@@ -488,10 +514,8 @@ class Entities extends Component {
 
   duplicateAsClip = id => {
     const { targetInstance } = this.state;
-
     const entity = this.state.entities.find(t => t.id === id);
     this.props.duplicateAsClip(entity, targetInstance);
-
     this.setState({
       targetInstance: null,
       targetEntity: null,
@@ -584,17 +608,13 @@ class Entities extends Component {
                     <EntityControls
                       deleteEntity={() => this.deleteEntity(entity.id)}
                       entityId={entity.id}
-                      entityName={
-                        entity.project_tag
-                          ? entity.project_tag.name
-                          : entity.project_location.name
-                      }
+                      entityName={getName(entity)}
                       entityType={entityType}
                       isCreating={entity.isCreating}
                       startNewInstance={() => this.startNewInstance(entity.id)}
                       stopNewEntity={this.stopNewEntity}
                       suggestions={suggestions}
-                      updateEntity={name => this.renameEntity(entity.id, name)}
+                      updateEntity={name => this.updateEntity(entity.id, name)}
                     />
                   }
                   rightColContent={
