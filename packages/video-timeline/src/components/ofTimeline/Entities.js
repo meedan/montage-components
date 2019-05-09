@@ -25,23 +25,8 @@ import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
 
-function getName(obj) {
-  // console.log('obj', obj);
-  // console.log('obj.tag', obj.project_tag);
-  // console.log('obj.loc', obj.project_location);
-  // console.log('obj.cli', obj.project_clip);
-  // console.log(obj);
-  if (obj.project_tag) {
-    // console.log('obj.project_tag', obj.project_tag.name)
-    return obj.project_tag.name;
-  } else if (obj.project_location) {
-    // console.log('obj.project_location', obj.project_location.name)
-    return obj.project_location.name;
-  } else if (obj.project_clip) {
-    // console.log('obj.project_clip', obj.project_clip.name)
-    return obj.project_clip.name;
-  }
-  return null;
+function getName(entity, entityType) {
+  return entity[`project_${entityType}`].name;
 }
 
 class Entities extends Component {
@@ -143,7 +128,7 @@ class Entities extends Component {
     const entities = produce(this.state.entities, nextEntities => {
       let clip = this.state.entities.find(
         c =>
-          c.project_clip.name === getName(entity)
+          c.project_clip.name === getName(entity, this.props.entityType)
       );
 
       if (!clip) {
@@ -163,7 +148,7 @@ class Entities extends Component {
             },
           ],
           project_clip: {
-            name: getName(entity),
+            name: getName(entity, this.props.entityType),
           },
         };
 
@@ -608,7 +593,7 @@ class Entities extends Component {
                     <EntityControls
                       deleteEntity={() => this.deleteEntity(entity.id)}
                       entityId={entity.id}
-                      entityName={getName(entity)}
+                      entityName={getName(entity, entityType)}
                       entityType={entityType}
                       isCreating={entity.isCreating}
                       startNewInstance={() => this.startNewInstance(entity.id)}
