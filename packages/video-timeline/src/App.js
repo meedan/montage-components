@@ -169,7 +169,7 @@ class App extends Component {
 
   render() {
     const { classes, player } = this.props;
-    const { currentTime, duration, playing } = player;
+    const { currentTime, duration, playing, transport } = player;
     const { data, map } = this.state;
 
     return (
@@ -263,6 +263,7 @@ class App extends Component {
                       <Timeline
                         box={this.state.timelineBox}
                         currentTime={currentTime}
+                        transport={transport}
                         data={data}
                         duration={duration}
                         playing={playing}

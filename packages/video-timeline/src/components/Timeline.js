@@ -129,7 +129,7 @@ class Timeline extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.seekTo !== this.state.seekTo) {
-      // this.props.seekTo(this.state.seekTo);
+      // this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
     }
   }
 
@@ -149,8 +149,8 @@ class Timeline extends Component {
     if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
       this.setState({ time: newTime, disjoint: true });
       console.log(`seeking to ${newTime}`);
-      if (!playing) play();
-      seekTo(newTime);
+      if (!playing) play({ transport: 'timeline' });
+      seekTo({ seekTo: newTime, transport: 'timeline' });
     }
     return null;
   };
@@ -166,7 +166,7 @@ class Timeline extends Component {
     });
 
     // pause
-    if (this.props.playing) this.props.pause();
+    if (this.props.playing) this.props.pause({ transport: 'timeline' });
   };
 
   onDrag = (val, skip = true, clip = false) => {
@@ -185,11 +185,11 @@ class Timeline extends Component {
 
     // setTimeout(() => {
     //   console.log(`seeking to ${val}`);
-    //   seekTo(val);
+    //   seekTo({ seekTo: val, transport: 'timeline' });
     // }, 0);
 
     // pause
-    if (playing) pause();
+    if (playing) pause({ transport: 'timeline' });
   };
 
   onDragEnd = val => {
@@ -218,18 +218,9 @@ class Timeline extends Component {
 
   render() {
     const { time, skip, ffTime } = this.state;
-    const { duration } = this.props;
+    const { duration, transport, playing } = this.props;
 
-    // const props = Object.keys(this.props).reduce(
-    //   (acc, k) => {
-    //     if (!acc[k]) acc[k] = this.props[k];
-    //     return acc;
-    //   },
-    //   { currentTime: skip ? ffTime : time }
-    // );
     const currentTime = skip ? ffTime : time;
-
-    // console.log('ffTime', currentTime);
 
     return (
       <div style={{ userSelect: 'none' }} onClick={e => this.onTrackClick(e)}>
@@ -281,7 +272,7 @@ class Timeline extends Component {
             entityType="clip"
             currentTime={currentTime}
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
-            duration={this.props.duration}
+            duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -292,7 +283,8 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoClips}
-            playing={this.props.playing}
+            playing={playing}
+            transport={transport}
             suggestions={this.props.data.project.projectclips}
             skip={skip}
             timelineOffset={this.props.x1}
@@ -302,7 +294,7 @@ class Timeline extends Component {
             entityType="tag"
             currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
-            duration={this.props.duration}
+            duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -313,7 +305,8 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoTags}
-            playing={this.props.playing}
+            playing={playing}
+            transport={transport}
             suggestions={this.props.data.project.projecttags}
             skip={skip}
             timelineOffset={this.props.x1}
@@ -323,7 +316,7 @@ class Timeline extends Component {
             entityType="location"
             currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
-            duration={this.props.duration}
+            duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -334,7 +327,8 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoPlaces}
-            playing={this.props.playing}
+            playing={playing}
+            transport={transport}
             suggestions={this.props.data.project.projectplaces}
             skip={skip}
             timelineOffset={this.props.x1}

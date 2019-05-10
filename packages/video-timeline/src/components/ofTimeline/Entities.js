@@ -31,20 +31,21 @@ function getName(entity, entityType) {
 
 class Entities extends Component {
   state = {
-    playlist: false,
     values: {},
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { duration, skip, entityType } = props;
+    const { duration, skip, entityType, transport } = props;
     let { entities } = props;
 
     if (skip) return null;
 
+    const playlist = transport === entityType;
+
     const persisted = window.localStorage.getItem(entityType);
     if (persisted) entities = Flatted.parse(persisted);
 
-    if (state.entities && state.segments) return null;
+    if (state.entities && state.segments) return { playlist };
 
     // merge overlapping tag instances
     entities.forEach(e => {
@@ -73,7 +74,7 @@ class Entities extends Component {
     });
 
     const segments = recomputeSegments(entities, duration);
-    return { entities, segments };
+    return { entities, segments, playlist };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -97,10 +98,12 @@ class Entities extends Component {
           ([i, s]) => nextProps.currentTime < s
         );
         if (nextSegment) {
-          this.props.seekTo(nextSegment[1]);
+          this.props.seekTo({
+            seekTo: nextSegment[1],
+            transport: this.props.entityType,
+          });
         } else {
-          if (this.props.playing) this.props.pause();
-          this.setState({ playlist: false });
+          this.props.pause({ transport: null });
         }
       }
     }
@@ -127,8 +130,7 @@ class Entities extends Component {
     // console.log(tag, instance);
     const entities = produce(this.state.entities, nextEntities => {
       let clip = this.state.entities.find(
-        c =>
-          c.project_clip.name === getName(entity, this.props.entityType)
+        c => c.project_clip.name === getName(entity, this.props.entityType)
       );
 
       if (!clip) {
@@ -192,17 +194,13 @@ class Entities extends Component {
     this.setState({ entities, segments });
   };
 
-  handlePlayPause = () => {
-    const { playlist } = this.state;
-    console.log(playlist, this.props.playing);
+  handlePlay = () => {
+    console.log(this.props.entityType);
+    this.props.play({ transport: this.props.entityType });
+  };
 
-    if (!playlist) {
-      if (!this.props.playing) this.props.play();
-      this.setState({ playlist: true });
-    } else {
-      if (this.props.playing) this.props.pause();
-      this.setState({ playlist: false });
-    }
+  handlePause = () => {
+    this.props.pause({ transport: this.props.entityType });
   };
 
   onAfterChange = (v, id) => {
@@ -299,16 +297,16 @@ class Entities extends Component {
       .toString(36)
       .substring(2);
 
-    const entityName = function(){
+    const entityName = (function() {
       if (entityType === 'tag') {
-        return {project_tag: {name: ''}};
-      }else if (entityType === 'location') {
-        return {project_location: {name: ''}};
-      }else if (entityType === 'clip') {
-        return {project_clip: {name: ''}};
+        return { project_tag: { name: '' } };
+      } else if (entityType === 'location') {
+        return { project_location: { name: '' } };
+      } else if (entityType === 'clip') {
+        return { project_clip: { name: '' } };
       }
       return null;
-    }();
+    })();
 
     const entities = produce(this.state.entities, nextEntities => {
       nextEntities.splice(0, 0, {
@@ -368,7 +366,7 @@ class Entities extends Component {
         targetEntity: null,
       });
     }
-  }
+  };
 
   hideInstancePopover = () => {
     this.setState({
@@ -425,7 +423,9 @@ class Entities extends Component {
     );
 
     const isOverEndHandle = !!targetEntity.instances.find(
-      i => mouseTime >= i.end_seconds - handleTime && mouseTime <= i.end_seconds + handleTime
+      i =>
+        mouseTime >= i.end_seconds - handleTime &&
+        mouseTime <= i.end_seconds + handleTime
     );
 
     const x = (function() {
@@ -459,11 +459,11 @@ class Entities extends Component {
   };
 
   updateEntity = (id, name) => {
-    const {entityType} = this.props;
+    const { entityType } = this.props;
 
     const entities = produce(this.state.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
-      nextEntities[i][`project_${entityType}`].name = name
+      nextEntities[i][`project_${entityType}`].name = name;
       //
       // if (this.props.entityType === 'tag') {
       //   nextEntities[i].project_tag.name = name
@@ -540,7 +540,11 @@ class Entities extends Component {
         actions={
           <>
             <Tooltip title={playlist ? 'Pause all' : 'Play all'}>
-              <IconButton onClick={this.handlePlayPause}>
+              <IconButton
+                onClick={() =>
+                  playlist ? this.handlePause() : this.handlePlay()
+                }
+              >
                 {playlist ? (
                   <PauseIcon fontSize="small" />
                 ) : (
