@@ -122,15 +122,15 @@ class Entities extends Component {
 
   componentDidMount = () => {
     if (this.props.registerDuplicateAsClip) {
-      this.props.registerDuplicateAsClip(this.duplicateAsClip);
+      this.props.registerDuplicateAsClip(this.duplicateAsClipHook);
     }
   };
 
-  duplicateAsClip = (entity, instance) => {
-    // console.log(tag, instance);
+  duplicateAsClipHook = (entity, instance, entityType = 'tag') => {
+    console.log(entity, instance);
     const entities = produce(this.state.entities, nextEntities => {
       let clip = this.state.entities.find(
-        c => c.project_clip.name === getName(entity, this.props.entityType)
+        c => c.project_clip.name === getName(entity, entityType)
       );
 
       if (!clip) {
@@ -150,7 +150,7 @@ class Entities extends Component {
             },
           ],
           project_clip: {
-            name: getName(entity, this.props.entityType),
+            name: getName(entity, entityType),
           },
         };
 
@@ -500,7 +500,7 @@ class Entities extends Component {
   duplicateAsClip = id => {
     const { targetInstance } = this.state;
     const entity = this.state.entities.find(t => t.id === id);
-    this.props.duplicateAsClip(entity, targetInstance);
+    this.props.duplicateAsClip(entity, targetInstance, this.props.entityType);
     this.setState({
       targetInstance: null,
       targetEntity: null,
@@ -716,7 +716,6 @@ const recomputeSegments = (entities, duration) => {
 
 const MemoizedRange = React.memo(props => <Range {...props} />);
 
-// export default React.memo(props => <Entities {...props} />);
 export default connect(
   null,
   { play, pause, seekTo }

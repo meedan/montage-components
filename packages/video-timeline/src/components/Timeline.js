@@ -129,7 +129,7 @@ class Timeline extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.seekTo !== this.state.seekTo) {
-      // this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
+      this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
     }
   }
 
@@ -146,12 +146,12 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / endPos;
     console.log('onTrackClick()');
-    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: newTime, disjoint: true });
-      console.log(`seeking to ${newTime}`);
-      if (!playing) play({ transport: 'timeline' });
-      seekTo({ seekTo: newTime, transport: 'timeline' });
-    }
+    // if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+    //   this.setState({ time: newTime, disjoint: true });
+    //   console.log(`seeking to ${newTime}`);
+    //   if (!playing) play({ transport: 'timeline' });
+    //   seekTo({ seekTo: newTime, transport: 'timeline' });
+    // }
     return null;
   };
 
@@ -183,10 +183,12 @@ class Timeline extends Component {
       playing: playing || this.state.playing,
     });
 
-    // setTimeout(() => {
-    //   console.log(`seeking to ${val}`);
-    //   seekTo({ seekTo: val, transport: 'timeline' });
-    // }, 0);
+    // if (!DISABLE_TIMELINE_TRANSPORT) {
+    //   setTimeout(() => {
+    //     console.log(`seeking to ${val}`);
+    //     this.props.seekTo({ seekTo: val, transport: 'timeline' });
+    //   }, 0);
+    // }
 
     // pause
     if (playing) pause({ transport: 'timeline' });
@@ -211,9 +213,10 @@ class Timeline extends Component {
     this.duplicateAsClip = fn;
   };
 
-  relayDuplicateAsClip = (entity, instance) => {
+  relayDuplicateAsClip = (entity, instance, entityType = 'tag') => {
     // console.log(tag, instance);
-    if (this.duplicateAsClip) this.duplicateAsClip(entity, instance);
+    if (this.duplicateAsClip)
+      this.duplicateAsClip(entity, instance, entityType);
   };
 
   render() {
