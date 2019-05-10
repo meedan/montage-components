@@ -545,11 +545,7 @@ class Entities extends Component {
                   playlist ? this.handlePause() : this.handlePlay()
                 }
               >
-                {playlist ? (
-                  <PauseIcon fontSize="small" />
-                ) : (
-                  <PlayArrowIcon fontSize="small" />
-                )}
+                <PlayArrowIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title="New…">
