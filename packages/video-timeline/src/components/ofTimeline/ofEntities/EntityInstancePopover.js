@@ -1,3 +1,4 @@
+import { shape, number } from 'prop-types';
 import React, { Component } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -17,11 +18,20 @@ const styles = theme => ({
 });
 
 class EntityInstancePopover extends Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      prevProps.anchorPosition.left !== this.props.anchorPosition.left &&
+      prevProps.isOverHandle !== this.props.isOverHandle
+    ) {
+      this.props.onExit();
+    }
+  }
+
   render() {
     const {
       classes,
       children,
-      choords,
+      anchorPosition,
       instance,
       isOverHandle,
       onDelete,
@@ -73,10 +83,12 @@ class EntityInstancePopover extends Component {
           vertical: 'bottom',
           horizontal: 'center',
         }}
-        anchorPosition={{ left: choords.x, top: choords.y }}
+        anchorPosition={anchorPosition}
         anchorReference="anchorPosition"
+        disableAutoFocus
+        disableEnforceFocus
         disablePortal
-        hideBackdrop
+        disableRestoreFocus
         id="instanceControlsPopover"
         onBackdropClick={onExit}
         onEscapeKeyDown={onExit}
@@ -95,3 +107,14 @@ class EntityInstancePopover extends Component {
 }
 
 export default withStyles(styles)(EntityInstancePopover);
+
+EntityInstancePopover.defaultProps = {
+  anchorPosition: { left: 0, top: 0 },
+}
+
+EntityInstancePopover.propTypes = {
+  anchorPosition: shape({
+    left: number,
+    top: number,
+  }),
+}
