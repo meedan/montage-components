@@ -292,10 +292,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoClips}
-            pause={this.props.pause}
-            play={this.props.play}
             playing={this.props.playing}
-            seekTo={this.props.seekTo}
             suggestions={this.props.data.project.projectclips}
             skip={skip}
             timelineOffset={this.props.x1}
@@ -316,10 +313,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoTags}
-            pause={this.props.pause}
-            play={this.props.play}
             playing={this.props.playing}
-            seekTo={this.props.seekTo}
             suggestions={this.props.data.project.projecttags}
             skip={skip}
             timelineOffset={this.props.x1}
@@ -340,10 +334,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={this.props.data.videoPlaces}
-            pause={this.props.pause}
-            play={this.props.play}
             playing={this.props.playing}
-            seekTo={this.props.seekTo}
             suggestions={this.props.data.project.projectplaces}
             skip={skip}
             timelineOffset={this.props.x1}
