@@ -196,6 +196,12 @@ class Entities extends Component {
 
   handlePlay = () => {
     console.log(this.props.entityType);
+
+    const start =
+      this.state.segments && this.state.segments.length > 0
+        ? this.state.segments[0][1]
+        : 0;
+    this.props.seekTo({ seekTo: start, transport: this.props.entityType });
     this.props.play({ transport: this.props.entityType });
   };
 
