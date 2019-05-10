@@ -9,11 +9,9 @@ import Table from '@material-ui/core/Table';
 import grey from '@material-ui/core/colors/grey';
 import Typography from '@material-ui/core/Typography';
 
+import Entities from './ofTimeline/Entities';
 import formatTime from './ofTimeline/formatTime';
-import TimelineClips from './ofTimeline/Clips';
 import TimelineComments from './ofTimeline/Comments';
-import TimelinePlaces from './ofTimeline/Places';
-import TimelineTags from './ofTimeline/Tags';
 
 import { color } from '@montage/ui';
 
@@ -131,7 +129,7 @@ class Timeline extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.seekTo !== this.state.seekTo) {
-      // this.props.seekTo(this.state.seekTo);
+      this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
     }
   }
 
@@ -148,12 +146,12 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / endPos;
     console.log('onTrackClick()');
-    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: newTime, disjoint: true });
-      console.log(`seeking to ${newTime}`);
-      if (!playing) play();
-      seekTo(newTime);
-    }
+    // if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+    //   this.setState({ time: newTime, disjoint: true });
+    //   console.log(`seeking to ${newTime}`);
+    //   if (!playing) play({ transport: 'timeline' });
+    //   seekTo({ seekTo: newTime, transport: 'timeline' });
+    // }
     return null;
   };
 
@@ -168,7 +166,7 @@ class Timeline extends Component {
     });
 
     // pause
-    if (this.props.playing) this.props.pause();
+    if (this.props.playing) this.props.pause({ transport: 'timeline' });
   };
 
   onDrag = (val, skip = true, clip = false) => {
@@ -185,13 +183,15 @@ class Timeline extends Component {
       playing: playing || this.state.playing,
     });
 
-    // setTimeout(() => {
-    //   console.log(`seeking to ${val}`);
-    //   seekTo(val);
-    // }, 0);
+    // if (!DISABLE_TIMELINE_TRANSPORT) {
+    //   setTimeout(() => {
+    //     console.log(`seeking to ${val}`);
+    //     this.props.seekTo({ seekTo: val, transport: 'timeline' });
+    //   }, 0);
+    // }
 
     // pause
-    if (playing) pause();
+    if (playing) pause({ transport: 'timeline' });
   };
 
   onDragEnd = val => {
@@ -213,25 +213,17 @@ class Timeline extends Component {
     this.duplicateAsClip = fn;
   };
 
-  relayDuplicateAsClip = (tag, instance) => {
+  relayDuplicateAsClip = (entity, instance, entityType = 'tag') => {
     // console.log(tag, instance);
-    if (this.duplicateAsClip) this.duplicateAsClip(tag, instance);
+    if (this.duplicateAsClip)
+      this.duplicateAsClip(entity, instance, entityType);
   };
 
   render() {
     const { time, skip, ffTime } = this.state;
-    const { duration } = this.props;
+    const { duration, transport, playing } = this.props;
 
-    // const props = Object.keys(this.props).reduce(
-    //   (acc, k) => {
-    //     if (!acc[k]) acc[k] = this.props[k];
-    //     return acc;
-    //   },
-    //   { currentTime: skip ? ffTime : time }
-    // );
     const currentTime = skip ? ffTime : time;
-
-    // console.log('ffTime', currentTime);
 
     return (
       <div style={{ userSelect: 'none' }} onClick={e => this.onTrackClick(e)}>
@@ -278,26 +270,34 @@ class Timeline extends Component {
             currentTime={currentTime}
             skip={skip}
           />
-          <TimelineClips
-            {...this.props}
+          <Entities
+            title="Clips"
+            entityType="clip"
             currentTime={currentTime}
-            onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
-            }
-            onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
-            }
-            onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
-            }
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
+            duration={duration}
+            onAfterChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+            }
+            onBeforeChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+            }
+            onChange={v =>
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+            }
+            entities={this.props.data.videoClips}
+            playing={playing}
+            transport={transport}
+            suggestions={this.props.data.project.projectclips}
             skip={skip}
             timelineOffset={this.props.x1}
           />
-          <TimelineTags
-            {...this.props}
+          <Entities
+            title="Tags"
+            entityType="tag"
             currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
+            duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -307,13 +307,19 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
+            entities={this.props.data.videoTags}
+            playing={playing}
+            transport={transport}
+            suggestions={this.props.data.project.projecttags}
             skip={skip}
             timelineOffset={this.props.x1}
           />
-          <TimelinePlaces
-            {...this.props}
-            currentTime={time}
+          <Entities
+            title="Places"
+            entityType="location"
+            currentTime={currentTime}
             duplicateAsClip={this.relayDuplicateAsClip}
+            duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
             }
@@ -323,6 +329,10 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
+            entities={this.props.data.videoPlaces}
+            playing={playing}
+            transport={transport}
+            suggestions={this.props.data.project.projectplaces}
             skip={skip}
             timelineOffset={this.props.x1}
           />
