@@ -27,6 +27,16 @@ class EntityInstancePopover extends Component {
     }
   }
 
+  moveBackward = e => {
+    e.stopPropagation();
+    this.props.moveBackward(this.props.handle);
+  };
+
+  moveForward = e => {
+    e.stopPropagation();
+    this.props.moveForward(this.props.handle);
+  };
+
   render() {
     const {
       classes,
@@ -46,16 +56,12 @@ class EntityInstancePopover extends Component {
     const handlePopover = (
       <>
         <Tooltip title="Move backward">
-          <IconButton
-          // onClick={expandInstance}
-          >
+          <IconButton onClick={this.moveBackward}>
             <ArrowBackIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Move forward">
-          <IconButton
-          // onClick={duplicateAsClip}
-          >
+          <IconButton onClick={this.moveForward}>
             <ArrowForwardIcon fontSize="small" />
           </IconButton>
         </Tooltip>
@@ -110,11 +116,11 @@ export default withStyles(styles)(EntityInstancePopover);
 
 EntityInstancePopover.defaultProps = {
   anchorPosition: { left: 0, top: 0 },
-}
+};
 
 EntityInstancePopover.propTypes = {
   anchorPosition: shape({
     left: number,
     top: number,
   }),
-}
+};
