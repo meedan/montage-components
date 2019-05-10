@@ -204,12 +204,13 @@ class Entities extends Component {
   };
 
   onAfterChange = (v, id) => {
+    // console.log('onAfterChange');
     const { values } = this.state;
     const p = values[id] || [];
 
     if (p.length === v.length) {
       const val = v.find((d, i) => p[i] !== d);
-      if (val) this.props.onAfterChange(val);
+      this.props.onAfterChange(val);
     }
 
     values[id] = v;
@@ -217,12 +218,13 @@ class Entities extends Component {
   };
 
   onBeforeChange = (v, id) => {
+    // console.log('onBeforeChange');
     const { values } = this.state;
     const p = values[id] || [];
 
     if (p.length === v.length) {
       const val = v.find((d, i) => p[i] !== d);
-      if (val) this.props.onBeforeChange(val);
+      this.props.onBeforeChange(val);
     }
 
     values[id] = v;
@@ -235,6 +237,7 @@ class Entities extends Component {
   };
 
   onChange = (v, id) => {
+    // console.log('onChange');
     const { values } = this.state;
     const { duration } = this.props;
     const p = values[id] || [];
@@ -715,4 +718,5 @@ const MemoizedRange = React.memo(props => <Range {...props} />);
 export default connect(
   null,
   { play, pause, seekTo }
-)(React.memo(props => <Entities {...props} />));
+)(Entities);
+// )(React.memo(props => <Entities {...props} />));

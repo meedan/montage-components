@@ -17,8 +17,8 @@ import { color } from '@montage/ui';
 
 import { play, pause, seekTo } from '../reducers/player';
 
-const DISABLE_TIMELINE_TRANSPORT = true;
-const DISABLE_TRACK_TRANSPORT = true;
+const DISABLE_TIMELINE_TRANSPORT = false;
+const DISABLE_TRACK_TRANSPORT = false;
 const TIMELINE_OFFSET = 224;
 
 const Playhead = styled(({ box, ...props }) => <div {...props} />)`
@@ -134,43 +134,43 @@ class Timeline extends Component {
   }
 
   onTrackClick = e => {
-    // if (this.state.skip || this.state.clip) {
-    //   console.log('skipping click due to drag state on');
-    //   return;
-    // }
-    const { box, seekTo, play, duration, playing } = this.props;
+    if (this.state.clip) {
+      return;
+    }
+
+    const { box, play, duration, playing } = this.props;
 
     const startPos = box.x1 + TIMELINE_OFFSET;
     const endPos = box.width - TIMELINE_OFFSET;
     const newPos = e.clientX - startPos;
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / endPos;
-    console.log('onTrackClick()');
+    // console.log('onTrackClick()');
     if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: newTime, disjoint: true });
-      console.log(`seeking to ${newTime}`);
+      this.setState({ time: newTime, disjoint: true, seekTo: newTime });
+      console.log(`seeking to ${newTime} (onTrackClick)`);
       if (!playing) play({ transport: 'timeline' });
-      seekTo({ seekTo: newTime, transport: 'timeline' });
     }
     return null;
   };
 
-  onDragStart = (val, skip = true) => {
-    console.log('dragStart');
+  onDragStart = (val, skip = true, clip = false) => {
+    // console.log('dragStart');
     this.setState({
       disjoint: true,
       dragging: true,
-      ffTime: val,
+      ffTime: this.state.time,
       playing: this.props.playing,
       skip,
     });
 
     // pause
-    if (this.props.playing) this.props.pause({ transport: 'timeline' });
+    if (this.props.playing)
+      this.props.pause({ transport: clip ? 'downstream' : 'timeline' });
   };
 
   onDrag = (val, skip = true, clip = false) => {
-    console.log('dragging');
+    // console.log('dragging');
     const { pause, playing } = this.props;
 
     this.setState({
@@ -183,24 +183,18 @@ class Timeline extends Component {
       playing: playing || this.state.playing,
     });
 
-    // if (!DISABLE_TIMELINE_TRANSPORT) {
-    //   setTimeout(() => {
-    //     console.log(`seeking to ${val}`);
-    //     this.props.seekTo({ seekTo: val, transport: 'timeline' });
-    //   }, 0);
-    // }
-
     // pause
-    if (playing) pause({ transport: 'timeline' });
+    if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
   };
 
-  onDragEnd = val => {
-    console.log('dragEnd');
+  onDragEnd = (val, clip = false) => {
+    // console.log('dragEnd');
     // if (this.state.playing && !this.props.playing) this.props.play();
     setTimeout(
       () =>
         this.setState({
-          clip: false,
+          clip,
+          seekTo: this.state.time,
           dragging: false,
           playing: false,
           skip: false,
@@ -277,13 +271,13 @@ class Timeline extends Component {
             registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
             duration={duration}
             onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoClips}
             playing={playing}
@@ -299,13 +293,13 @@ class Timeline extends Component {
             duplicateAsClip={this.relayDuplicateAsClip}
             duration={duration}
             onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoTags}
             playing={playing}
@@ -321,13 +315,13 @@ class Timeline extends Component {
             duplicateAsClip={this.relayDuplicateAsClip}
             duration={duration}
             onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoPlaces}
             playing={playing}
