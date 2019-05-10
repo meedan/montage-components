@@ -17,13 +17,13 @@ const playerSlice = createSlice({
 
   reducers: {
     // play: state => ({ ...state, playing: true }),
-    play: (state, { payload: { transport = null } = {} }) => ({
+    play: (state, { payload: { transport = state.transport } = {} }) => ({
       ...state,
       transport,
       playing: true,
     }),
     // pause: state => ({ ...state, playing: false }),
-    pause: (state, { payload: { transport = null } = {} }) => ({
+    pause: (state, { payload: { transport = state.transport } = {} }) => ({
       ...state,
       transport,
       playing: false,
@@ -32,7 +32,11 @@ const playerSlice = createSlice({
     // seekTo: (state, { payload: seekTo }) => ({ ...state, seekTo }),
     seekTo: (state, { payload }) => {
       const seekTo = isNaN(payload) ? payload.seekTo : payload;
-      const transport = isNaN(payload) ? null : payload.transport;
+      const transport = isNaN(payload)
+        ? state.transport
+        : payload.transport
+        ? payload.transport
+        : state.transport;
       return { ...state, transport, seekTo };
     },
 
