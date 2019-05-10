@@ -273,6 +273,24 @@ class Entities extends Component {
     this.setState({ entities, segments, values });
   };
 
+  moveHandle = (id, [startHandle, endHandle], unit = Math.PI) => {
+    const { targetInstance } = this.state;
+    const { duration } = this.props;
+
+    const entities = produce(this.state.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === id);
+      const t = nextEntities[ti];
+
+      const i = t.instances.find(i => i.id === targetInstance.id);
+
+      if (startHandle) i.start_seconds += unit;
+      if (endHandle) i.end_seconds += unit;
+    });
+
+    const segments = recomputeSegments(entities, duration);
+    this.setState({ entities, segments });
+  };
+
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
@@ -453,6 +471,8 @@ class Entities extends Component {
         top: rect.height + rect.top,
       },
       isOverHandle: isOverStartHandle || isOverEndHandle,
+      isOverStartHandle,
+      isOverEndHandle,
       targetInstance,
       targetEntity,
     });
@@ -645,6 +665,10 @@ class Entities extends Component {
                       </EntitySliderWrapper>
                       <EntityInstancePopover
                         anchorPosition={this.state.anchorPosition}
+                        handle={[
+                          this.state.isOverStartHandle,
+                          this.state.isOverEndHandle,
+                        ]}
                         entity={this.state.targetEntity}
                         entityId={entity.id}
                         instance={this.state.targetInstance}
@@ -652,6 +676,12 @@ class Entities extends Component {
                         onDelete={() => this.deleteInstance(entity.id)}
                         onExit={this.hideInstancePopover}
                         onExtend={() => this.expandInstance(entity.id)}
+                        moveForward={h =>
+                          this.moveHandle(entity.id, h, Math.PI)
+                        }
+                        moveBackward={h =>
+                          this.moveHandle(entity.id, h, -Math.PI)
+                        }
                       >
                         {entityType !== 'clip' ? (
                           <Tooltip title="Copy to Clips">
