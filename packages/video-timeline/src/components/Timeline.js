@@ -128,7 +128,7 @@ class Timeline extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.seekTo !== this.state.seekTo) {
+    if (prevState.seekTo !== this.state.seekTo && !DISABLE_TIMELINE_TRANSPORT) {
       this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
     }
   }
@@ -146,12 +146,12 @@ class Timeline extends Component {
     const newPosFlat = newPos > 0 ? newPos : 0;
     const newTime = (duration * newPosFlat) / endPos;
     console.log('onTrackClick()');
-    // if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-    //   this.setState({ time: newTime, disjoint: true });
-    //   console.log(`seeking to ${newTime}`);
-    //   if (!playing) play({ transport: 'timeline' });
-    //   seekTo({ seekTo: newTime, transport: 'timeline' });
-    // }
+    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+      this.setState({ time: newTime, disjoint: true });
+      console.log(`seeking to ${newTime}`);
+      if (!playing) play({ transport: 'timeline' });
+      seekTo({ seekTo: newTime, transport: 'timeline' });
+    }
     return null;
   };
 
