@@ -9,16 +9,33 @@ const initialState = {
   playing: false,
   seeking: false,
   seekTo: null,
+  transport: null,
 };
 
 const playerSlice = createSlice({
   initialState: initialState,
 
   reducers: {
-    play: state => ({ ...state, playing: true }),
-    pause: state => ({ ...state, playing: false }),
+    // play: state => ({ ...state, playing: true }),
+    play: (state, { payload: { transport = null } = {} }) => ({
+      ...state,
+      transport,
+      playing: true,
+    }),
+    // pause: state => ({ ...state, playing: false }),
+    pause: (state, { payload: { transport = null } = {} }) => ({
+      ...state,
+      transport,
+      playing: false,
+    }),
 
-    seekTo: (state, { payload: seekTo }) => ({ ...state, seekTo }),
+    // seekTo: (state, { payload: seekTo }) => ({ ...state, seekTo }),
+    seekTo: (state, { payload }) => {
+      const seekTo = isNaN(payload) ? payload.seekTo : payload;
+      const transport = isNaN(payload) ? null : payload.transport;
+      return { ...state, transport, seekTo };
+    },
+
     playbackRate: (state, { payload: playbackRate }) => ({
       ...state,
       playbackRate,
