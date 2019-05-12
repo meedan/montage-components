@@ -23,6 +23,7 @@ import TableSection from './TableSection';
 import { play, pause, seekTo } from '../../reducers/player';
 
 const Range = Slider.Range;
+const FPS = 30;
 
 function getName(entity, entityType) {
   return entity[`project_${entityType}`].name;
@@ -272,7 +273,7 @@ class Entities extends Component {
     this.setState({ entities, segments, values });
   };
 
-  moveHandle = (id, [startHandle, endHandle], unit = Math.PI) => {
+  moveHandle = (id, [startHandle, endHandle], unit = 0) => {
     const { targetInstance } = this.state;
     const { duration } = this.props;
 
@@ -676,10 +677,10 @@ class Entities extends Component {
                         onExit={this.hideInstancePopover}
                         onExtend={() => this.expandInstance(entity.id)}
                         moveForward={h =>
-                          this.moveHandle(entity.id, h, Math.PI)
+                          this.moveHandle(entity.id, h, 1 / FPS)
                         }
                         moveBackward={h =>
-                          this.moveHandle(entity.id, h, -Math.PI)
+                          this.moveHandle(entity.id, h, -1 / FPS)
                         }
                       >
                         {entityType !== 'clip' ? (
