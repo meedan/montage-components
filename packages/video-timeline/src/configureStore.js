@@ -20,10 +20,17 @@ export const configureAppStore = () => {
     middleware: [
       // RavenMiddleware(SENTRY_DSN),
       logger,
-      save(),
+      save({
+        namespace: 'pizza',
+        states: ['data'],
+        debounce: 1000,
+      }),
       ...getDefaultMiddleware(),
     ],
-    preloadedState: load(),
+    preloadedState: load({
+      namespace: 'pizza',
+      states: ['data'],
+    }),
     devTools:
       process.env.NODE_ENV !== 'production'
         ? {
