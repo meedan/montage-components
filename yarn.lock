@@ -9367,6 +9367,11 @@ osenv@^0.1.4:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
+owtj@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/owtj/-/owtj-1.0.3.tgz#5a7b35f46c742a5166ec3d95a637ec07862e4c08"
+  integrity sha512-3Vyldwr3T+8zsCWeiGIg4NS8J92VJWdZtDXp/HrTff53BMYYbXRXU1tXhdAGu3M9yV1oDTB/Jmi4wjXxMXvIIQ==
+
 p-defer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-defer/-/p-defer-1.0.0.tgz#9f6eb182f6c9aa8cd743004a7d4f96b196b0fb0c"
