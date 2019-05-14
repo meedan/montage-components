@@ -19,7 +19,7 @@ const styles = () => ({
   }
 });
 
-class ArchiveMenuItem extends Component {
+class ArchiveStatus extends Component {
   constructor(props) {
     super(props);
     this.state = { processing: null };
@@ -58,14 +58,14 @@ class ArchiveMenuItem extends Component {
   }
 }
 
-export default withStyles(styles)(ArchiveMenuItem);
+export default withStyles(styles)(ArchiveStatus);
 
-ArchiveMenuItem.propTypes = {
-  handleArchive: func.isRequired,
+ArchiveStatus.propTypes = {
+  onArchiveClick: func.isRequired,
   classes: object,
   isArchived: bool
 };
-ArchiveMenuItem.defaultProps = {
+ArchiveStatus.defaultProps = {
   classes: {},
   isArchived: null
 };

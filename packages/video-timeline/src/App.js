@@ -223,6 +223,13 @@ class App extends Component {
                                 );
                                 setTimeout(() => callback(), 1000);
                               }}
+                              onFavouriteClick={(payload, callback) => {
+                                console.log(
+                                  'onFavouriteClick, payload:',
+                                  payload
+                                );
+                                setTimeout(() => callback(), 1000);
+                              }}
                               //
 
                               onRecDateChange={date => console.log(date)}
