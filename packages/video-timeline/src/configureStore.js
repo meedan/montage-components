@@ -1,8 +1,11 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 // import RavenMiddleware from 'redux-raven-middleware';
 import { createLogger } from 'redux-logger';
+import { save, load } from 'redux-localstorage-simple';
 
 import rootReducer from './reducers';
+
+// const SENTRY_DSN = null;
 
 const logger = createLogger({
   predicate: (state, action) => !['update', 'timeupdate'].includes(action.type),
@@ -11,14 +14,23 @@ const logger = createLogger({
   diff: true,
 });
 
-export const configureAppStore = preloadedState => {
+export const configureAppStore = () => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: [
-      /* RavenMiddleware('my-sentry-dsn'),*/ logger,
+      // RavenMiddleware(SENTRY_DSN),
+      logger,
+      save({
+        namespace: 'pizza',
+        states: ['data'],
+        debounce: 1000,
+      }),
       ...getDefaultMiddleware(),
     ],
-    preloadedState,
+    preloadedState: load({
+      namespace: 'pizza',
+      states: ['data'],
+    }),
     devTools:
       process.env.NODE_ENV !== 'production'
         ? {
