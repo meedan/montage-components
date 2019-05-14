@@ -3,30 +3,30 @@ import styled from 'styled-components';
 import Flatted from 'flatted/esm';
 
 import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
 import grey from '@material-ui/core/colors/grey';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
+import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { color } from '@montage/ui/src/config';
 
-import ArchiveMenuItem from './ofInfoCard/ArchiveMenuItem';
-import FavMenuItem from './ofInfoCard/FavMenuItem';
-import KeepListItem from './ofInfoCard/KeepListItem';
-import MoreMenuItem from './ofInfoCard/MoreMenuItem';
-import PublishedDateListItem from './ofInfoCard/PublishedDateListItem';
-import RecordedDateListItem from './ofInfoCard/RecordedDateListItem';
+import ArchiveMenuItem from './of/ArchiveMenuItem';
+import FavMenuItem from './of/FavMenuItem';
+import KeepListItem from './of/KeepListItem';
+import MoreMenuItem from './of/MoreMenuItem';
+import PublishedDateListItem from './of/PublishedDateListItem';
+import RecordedDateListItem from './of/RecordedDateListItem';
 
-import Map from './Map';
+// import Map from './Map';
 
 const MediaDescription = styled(Typography)`
   max-height: 50px;
@@ -85,15 +85,16 @@ function InfoCard(props) {
   // console.log(videoPlaces, videoPlacesData, mapData);
 
   return map ? (
-    <Map
-      id="TopMap"
-      collapseMap={() => setMap(false)}
-      currentTime={currentTime}
-      data={mapData}
-      expandMap={() => setMap(true)}
-      isCompact={!map}
-      onClose={() => setMap(false)}
-    />
+    // <Map
+    //   id="TopMap"
+    //   collapseMap={() => setMap(false)}
+    //   currentTime={currentTime}
+    //   data={mapData}
+    //   expandMap={() => setMap(true)}
+    //   isCompact={!map}
+    //   onClose={() => setMap(false)}
+    // />
+    null
   ) : (
     <Card square elevation={0} className={classes.Card}>
       <CardHeader
