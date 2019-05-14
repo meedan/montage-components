@@ -11,8 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
-import KeepIcon from '@montage/ui/src/components/icons/KeepIcon';
-import CopyToClipboardIcon from '@montage/ui/src/components/icons/CopyToClipboardIcon';
+import { KeepIcon, ClipboardIcon } from '@montage/ui/src/components';
 
 class KeepListItem extends Component {
   constructor(props) {
@@ -117,7 +116,7 @@ class KeepListItem extends Component {
                             <ListItem button={url !== null || undefined}>
                               <ListItemIcon>
                                 <Tooltip title="Copy to Clipboard">
-                                  <CopyToClipboardIcon />
+                                  <ClipboardIcon />
                                 </Tooltip>
                               </ListItemIcon>
                               <ListItemText

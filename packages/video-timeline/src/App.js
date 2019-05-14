@@ -3,11 +3,11 @@ import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { react2angular } from 'react2angular';
 import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
-import produce from 'immer';
+// import produce from 'immer';
 import React, { createRef, Component } from 'react';
 import styled from 'styled-components';
 
-import { MUIThemeProvider } from '@montage/ui';
+import { MUIThemeProvider, VideoMeta } from '@montage/ui';
 
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -17,7 +17,6 @@ import grey from '@material-ui/core/colors/grey';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
-import InfoCard from './components/InfoCard';
 import Player from './components/Player';
 import Preview from './components/Preview';
 import Timeline from './components/Timeline';
@@ -206,7 +205,7 @@ class App extends Component {
                           direction="row-reverse"
                         >
                           <Grid item sm={4}>
-                            <InfoCard
+                            <VideoMeta
                               data={data}
                               currentTime={currentTime}
                               map={map}
