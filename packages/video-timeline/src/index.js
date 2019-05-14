@@ -1,3 +1,4 @@
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -12,7 +13,9 @@ const root = document.getElementById('react-root');
 if (root)
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <SnackbarProvider maxSnack={3}>
+        <App />
+      </SnackbarProvider>
     </Provider>,
     root
   );

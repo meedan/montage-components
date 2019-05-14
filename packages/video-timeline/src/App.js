@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { react2angular } from 'react2angular';
-import { SnackbarProvider } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 // import produce from 'immer';
 import React, { createRef, Component } from 'react';
 import styled from 'styled-components';
+import { withSnackbar } from 'notistack';
 
 import { MUIThemeProvider, VideoMeta } from '@montage/ui';
 
@@ -175,145 +175,140 @@ class App extends Component {
 
     return (
       <>
-        <SnackbarProvider maxSnack={3}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <CssBaseline />
-            <MUIThemeProvider>
-              <style scoped>{'.popover { pointer-events: none; }'}</style>
-              <Layout>
-                <TopWrapper>
-                  <Grid
-                    alignItems="center"
-                    alignContent="space-between"
-                    container
-                    justify="center"
-                    spacing={0}
-                    wrap="nowrap"
-                  >
-                    <Grid item sm={'auto'}>
-                      {data.prevVideo ? (
-                        <Preview data={data.prevVideo} isPrev />
-                      ) : null}
-                    </Grid>
-                    <Grid item sm={12}>
-                      <Paper square>
-                        <Grid
-                          container
-                          justify="center"
-                          alignItems="stretch"
-                          spacing={0}
-                          direction="row-reverse"
-                        >
-                          <Grid item sm={4}>
-                            <VideoMeta
-                              pubDate={data.ytVideoData.snippet.publishedAt}
-                              channelTitle={
-                                data.ytVideoData.snippet.channelTitle
-                              }
-                              videoViewCount={
-                                data.ytVideoData.statistics.viewCount
-                              }
-                              videoDescription={
-                                data.ytVideoData.snippet.description
-                              }
-                              onArchiveClick={(payload, callback) => {
-                                console.log(
-                                  'onArchiveClick, payload:',
-                                  payload
-                                );
-                                setTimeout(() => callback(), 1000);
-                              }}
-                              onFavouriteClick={(payload, callback) => {
-                                console.log(
-                                  'onFavouriteClick, payload:',
-                                  payload
-                                );
-                                setTimeout(() => callback(), 1000);
-                              }}
-                              //
-
-                              onRecDateChange={date => console.log(date)}
-                              //
-                              data={data}
-                              currentTime={currentTime}
-                              map={map}
-                              setMap={this.setMap}
-                            />
-                          </Grid>
-                          <Grid item sm={8}>
-                            <Player data={data} player={player} />
-                          </Grid>
-                        </Grid>
-                      </Paper>
-                    </Grid>
-                    <Grid item sm={'auto'}>
-                      {data.nextVideo ? (
-                        <Preview data={data.nextVideo} isNext />
-                      ) : null}
-                    </Grid>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <CssBaseline />
+          <MUIThemeProvider>
+            <style scoped>{'.popover { pointer-events: none; }'}</style>
+            <Layout>
+              <TopWrapper>
+                <Grid
+                  alignItems="center"
+                  alignContent="space-between"
+                  container
+                  justify="center"
+                  spacing={0}
+                  wrap="nowrap"
+                >
+                  <Grid item sm={'auto'}>
+                    {data.prevVideo ? (
+                      <Preview data={data.prevVideo} isPrev />
+                    ) : null}
                   </Grid>
-                  <Transport
-                    currentTime={currentTime}
-                    duration={duration}
-                    player={this.props.player}
-                    transport={transport}
-                  />
-                  <Tabs
-                    value={this.state.mode}
-                    centered
-                    classes={{ indicator: classes.TabsIndicator }}
+                  <Grid item sm={12}>
+                    <Paper square>
+                      <Grid
+                        container
+                        justify="center"
+                        alignItems="stretch"
+                        spacing={0}
+                        direction="row-reverse"
+                      >
+                        <Grid item sm={4}>
+                          <VideoMeta
+                            pubDate={data.ytVideoData.snippet.publishedAt}
+                            channelTitle={data.ytVideoData.snippet.channelTitle}
+                            videoViewCount={
+                              data.ytVideoData.statistics.viewCount
+                            }
+                            videoDescription={
+                              data.ytVideoData.snippet.description
+                            }
+                            onArchiveClick={(payload, callback) => {
+                              console.log('onArchiveClick, payload:', payload);
+                              // this.props.enqueueSnackbar('Archived');
+                              setTimeout(() => callback(), 1000);
+                            }}
+                            onFavouriteClick={(payload, callback) => {
+                              console.log(
+                                'onFavouriteClick, payload:',
+                                payload
+                              );
+                              // this.props.enqueueSnackbar('Added to favorites');
+                              setTimeout(() => callback(), 1000);
+                            }}
+                            //
+
+                            onRecDateChange={date => console.log(date)}
+                            //
+                            data={data}
+                            currentTime={currentTime}
+                            map={map}
+                            setMap={this.setMap}
+                          />
+                        </Grid>
+                        <Grid item sm={8}>
+                          <Player data={data} player={player} />
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                  <Grid item sm={'auto'}>
+                    {data.nextVideo ? (
+                      <Preview data={data.nextVideo} isNext />
+                    ) : null}
+                  </Grid>
+                </Grid>
+                <Transport
+                  currentTime={currentTime}
+                  duration={duration}
+                  player={this.props.player}
+                  transport={transport}
+                />
+                <Tabs
+                  value={this.state.mode}
+                  centered
+                  classes={{ indicator: classes.TabsIndicator }}
+                >
+                  <Tab
+                    onClick={() => this.setState({ mode: 'transcript' })}
+                    label="Transcript"
+                    selected={this.state.mode === 'transcript'}
+                    classes={{
+                      root: classes.Tab,
+                      selected: classes.TabSelected,
+                    }}
+                    value={'transcript'}
                   >
-                    <Tab
-                      onClick={() => this.setState({ mode: 'transcript' })}
-                      label="Transcript"
-                      selected={this.state.mode === 'transcript'}
-                      classes={{
-                        root: classes.Tab,
-                        selected: classes.TabSelected,
-                      }}
-                      value={'transcript'}
-                    >
-                      Transcript
-                    </Tab>
-                    <Tab
-                      onClick={() => this.setState({ mode: 'timeline' })}
-                      selected={this.state.mode === 'timeline'}
-                      label="Timeline"
-                      classes={{
-                        root: classes.Tab,
-                        selected: classes.TabSelected,
-                      }}
-                      value={'timeline'}
+                    Transcript
+                  </Tab>
+                  <Tab
+                    onClick={() => this.setState({ mode: 'timeline' })}
+                    selected={this.state.mode === 'timeline'}
+                    label="Timeline"
+                    classes={{
+                      root: classes.Tab,
+                      selected: classes.TabSelected,
+                    }}
+                    value={'timeline'}
+                  />
+                </Tabs>
+              </TopWrapper>
+              <BottomWrapper>
+                {this.state.mode === 'timeline' ? (
+                  <TimelineWrapper ref={this.timelineRef}>
+                    <Timeline
+                      box={this.state.timelineBox}
+                      currentTime={currentTime}
+                      transport={transport}
+                      data={data}
+                      duration={duration}
+                      playing={playing}
                     />
-                  </Tabs>
-                </TopWrapper>
-                <BottomWrapper>
-                  {this.state.mode === 'timeline' ? (
-                    <TimelineWrapper ref={this.timelineRef}>
-                      <Timeline
-                        box={this.state.timelineBox}
-                        currentTime={currentTime}
-                        transport={transport}
-                        data={data}
-                        duration={duration}
-                        playing={playing}
-                      />
-                    </TimelineWrapper>
-                  ) : (
-                    <div style={{ textAlign: 'center' }}>
-                      <img
-                        alt=""
-                        src={hamock}
-                        style={{ margin: '0 auto' }}
-                        width="1024px"
-                      />
-                    </div>
-                  )}
-                </BottomWrapper>
-              </Layout>
-            </MUIThemeProvider>
-          </MuiPickersUtilsProvider>
-        </SnackbarProvider>
+                  </TimelineWrapper>
+                ) : (
+                  <div style={{ textAlign: 'center' }}>
+                    <img
+                      alt=""
+                      src={hamock}
+                      style={{ margin: '0 auto' }}
+                      width="1024px"
+                    />
+                  </div>
+                )}
+              </BottomWrapper>
+            </Layout>
+          </MUIThemeProvider>
+        </MuiPickersUtilsProvider>
       </>
     );
   }
@@ -321,7 +316,7 @@ class App extends Component {
 
 // export default withStyles(styles)(App);
 export default connect(({ player, data }) => ({ player, data }))(
-  withStyles(styles)(App)
+  withStyles(styles)(withSnackbar(App))
 );
 
 // FIXME:
