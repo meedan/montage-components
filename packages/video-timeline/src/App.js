@@ -23,29 +23,29 @@ import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
-import baseData from './data/baseData';
-import timelineData from './data/timelineData';
-import newData from './data/newData';
-
 import hamock from './hamock.png';
 
-const DATA = produce(
-  {
-    ...baseData, // Base data from Laurian’s account
-    ...timelineData, // Base data from Laurian’s account
-    ...newData, // Add new data missing in the API
-    project: {
-      ...baseData.project,
-      projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
-      projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
-    },
-  },
-  () => {}
-);
-
-console.group('Data:');
-console.log(DATA);
-console.groupEnd();
+// import baseData from './data/baseData';
+// import timelineData from './data/timelineData';
+// import newData from './data/newData';
+//
+// const DATA = produce(
+//   {
+//     ...baseData, // Base data from Laurian’s account
+//     ...timelineData, // Base data from Laurian’s account
+//     ...newData, // Add new data missing in the API
+//     project: {
+//       ...baseData.project,
+//       projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
+//       projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
+//     },
+//   },
+//   () => {}
+// );
+//
+// console.group('Data:');
+// console.log(DATA);
+// console.groupEnd();
 
 const Layout = styled.div`
   align-items: center;
@@ -106,7 +106,7 @@ class App extends Component {
   state = {
     anchorElNext: null,
     anchorElPrev: null,
-    data: DATA,
+    // data: DATA,
     map: false,
     mode: 'timeline',
   };
@@ -168,9 +168,11 @@ class App extends Component {
   };
 
   render() {
-    const { classes, player } = this.props;
+    // const { classes, player } = this.props;
+    const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
-    const { data, map } = this.state;
+    // const { data, map } = this.state;
+    const { map } = this.state;
 
     return (
       <>
@@ -291,7 +293,7 @@ class App extends Component {
 }
 
 // export default withStyles(styles)(App);
-export default connect(({ player }) => ({ player }))(withStyles(styles)(App));
+export default connect(({ player, data }) => ({ player, data }))(withStyles(styles)(App));
 
 // FIXME:
 export const AngularVideoTimeline = react2angular(
