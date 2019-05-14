@@ -1,57 +1,71 @@
-import React, { useState } from 'react';
+import React, { Component } from "react";
+import { bool, func, object } from "prop-types";
 
-import { withStyles } from '@material-ui/core/styles';
-import ArchiveIcon from '@material-ui/icons/Archive';
-import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import IconicButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from "@material-ui/core/styles";
+import ArchiveIcon from "@material-ui/icons/Archive";
+import ArchiveOutlinedIcon from "@material-ui/icons/ArchiveOutlined";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Fade from "@material-ui/core/Fade";
+import IconicButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
-const styles = theme => ({
+const styles = () => ({
   buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -11,
+    left: "50%",
     marginLeft: -11,
-  },
+    marginTop: -11,
+    position: "absolute",
+    top: "50%"
+  }
 });
 
-const ArchiveMenuItem = props => {
-  const { archived_at } = props;
-  const isArchived = archived_at !== null && archived_at !== undefined;
+class ArchiveMenuItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { processing: null };
+    this.onArchiveClick = this.onArchiveClick.bind(this);
+  }
 
-  const { classes } = props;
-  const [isProcessing, setProcessingStatus] = useState(false);
+  onArchiveClick() {
+    this.setState({ processing: true });
+    this.props.onArchiveClick(!this.props.isArchived, () =>
+      this.setState({ processing: false })
+    );
+  }
 
-  const handleArchiveStatusChange = () => {
-    setProcessingStatus(true);
-    console.group('handleArchiveStatusChange()');
-    console.log(`new archive status: ${!archived_at}`); // TODO: wire in API callbacks
-    console.groupEnd();
-    setTimeout(() => setProcessingStatus(false), 1000);
-  };
-
-  return (
-    <Tooltip
-      title={isArchived ? 'Unarchive' : 'Archive'}
-      aria-label={isArchived ? 'Unarchive' : 'Archive'}
-    >
-      <IconicButton onClick={handleArchiveStatusChange}>
-        <Fade in={!isProcessing}>
-          {isArchived ? (
-            <ArchiveIcon color="primary" />
-          ) : (
-            <ArchiveOutlinedIcon />
+  render() {
+    const { processing } = this.state;
+    const { classes, isArchived } = this.props;
+    return (
+      <Tooltip
+        title={isArchived ? "Unarchive" : "Archive"}
+        aria-label={isArchived ? "Unarchive" : "Archive"}
+      >
+        <IconicButton onClick={this.onArchiveClick}>
+          <Fade in={!processing}>
+            {isArchived ? (
+              <ArchiveIcon color="primary" />
+            ) : (
+              <ArchiveOutlinedIcon />
+            )}
+          </Fade>
+          {processing && (
+            <CircularProgress size={22} className={classes.buttonProgress} />
           )}
-        </Fade>
-        {isProcessing && (
-          <CircularProgress size={22} className={classes.buttonProgress} />
-        )}
-      </IconicButton>
-    </Tooltip>
-  );
-};
+        </IconicButton>
+      </Tooltip>
+    );
+  }
+}
 
 export default withStyles(styles)(ArchiveMenuItem);
+
+ArchiveMenuItem.propTypes = {
+  handleArchive: func.isRequired,
+  classes: object,
+  isArchived: bool
+};
+ArchiveMenuItem.defaultProps = {
+  classes: {},
+  isArchived: null
+};

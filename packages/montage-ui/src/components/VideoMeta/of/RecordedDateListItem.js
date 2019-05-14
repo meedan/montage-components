@@ -1,19 +1,18 @@
-import { DatePicker } from 'material-ui-pickers';
-import { format } from 'date-fns';
-import { withSnackbar } from 'notistack';
-import React, { useState, useCallback, useRef } from 'react';
+import { bool, func } from "prop-types";
+import { DatePicker, MuiPickersUtilsProvider } from "material-ui-pickers";
+import { format } from "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+import React, { useState, useCallback, useRef } from "react";
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import VideocamIcon from '@material-ui/icons/Videocam';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import VideocamIcon from "@material-ui/icons/Videocam";
 
 function RecordedDateListItem(props) {
-  const { data } = props;
-  const { archived_at } = data.gdVideoData;
-  const isArchived = archived_at !== null && archived_at !== undefined;
+  const { callback, isArchived } = props;
 
   const datepickerRef = useRef(null);
   const openDatepicker = useCallback(
@@ -29,17 +28,16 @@ function RecordedDateListItem(props) {
 
   const handleRecordedDateSet = date => {
     setRecordedDate(date);
-    console.group('handleRecordedDateSet()'); // TODO: one can change the date or clear a manually set recorded date — API calls should reflect that
-    console.log(`new date: ${date}`);
     console.groupEnd();
-    props.enqueueSnackbar(
-      date === null ? 'Recorded date unset' : 'Recorded date changed'
-    );
+    callback(date);
+    // props.enqueueSnackbar(
+    //   date === null ? "Recorded date unset" : "Recorded date changed"
+    // );
   };
 
   const displayDate = recordedDate
-    ? format(recordedDate, 'd MMMM YYYY', {
-        awareOfUnicodeTokens: true,
+    ? format(recordedDate, "d MMMM YYYY", {
+        awareOfUnicodeTokens: true
       })
     : null;
 
@@ -54,19 +52,18 @@ function RecordedDateListItem(props) {
           Set a recorded Date
         </Typography>
       );
-    } else {
-      return displayDate ? (
-        <Tooltip title="Overridden by a Montage user">
-          <Typography>Recorded {displayDate}</Typography>
-        </Tooltip>
-      ) : (
-        <Typography>No recorded date set</Typography>
-      );
     }
+    return displayDate ? (
+      <Tooltip title="Overridden by a Montage user">
+        <Typography>Recorded {displayDate}</Typography>
+      </Tooltip>
+    ) : (
+      <Typography>No recorded date set</Typography>
+    );
   };
 
   return (
-    <>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <ListItem
         button={!isArchived}
         dense
@@ -79,17 +76,26 @@ function RecordedDateListItem(props) {
       </ListItem>
       <DatePicker
         autoOk
-        clearable={recordedDate ? true : false}
-        clearLabel={isArchived ? 'Revert' : 'Clear'}
+        clearable={!!recordedDate}
+        clearLabel={isArchived ? "Revert" : "Clear"}
         disableFuture
         onChange={date => handleRecordedDateSet(date)}
         ref={datepickerRef}
-        style={{ height: '1px', width: '1px', overflow: 'hidden' }}
+        style={{ height: "1px", width: "1px", overflow: "hidden" }}
         TextFieldComponent="span"
         value={recordedDate}
       />
-    </>
+    </MuiPickersUtilsProvider>
   );
 }
 
-export default withSnackbar(RecordedDateListItem);
+export default RecordedDateListItem;
+
+RecordedDateListItem.propTypes = {
+  callback: func.isRequired,
+  isArchived: bool
+};
+
+RecordedDateListItem.defaultProps = {
+  isArchived: null
+};

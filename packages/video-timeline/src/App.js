@@ -206,6 +206,27 @@ class App extends Component {
                         >
                           <Grid item sm={4}>
                             <VideoMeta
+                              pubDate={data.ytVideoData.snippet.publishedAt}
+                              channelTitle={
+                                data.ytVideoData.snippet.channelTitle
+                              }
+                              videoViewCount={
+                                data.ytVideoData.statistics.viewCount
+                              }
+                              videoDescription={
+                                data.ytVideoData.snippet.description
+                              }
+                              onArchiveClick={(payload, callback) => {
+                                console.log(
+                                  'onArchiveClick, payload:',
+                                  payload
+                                );
+                                setTimeout(() => callback(), 1000);
+                              }}
+                              //
+
+                              onRecDateChange={date => console.log(date)}
+                              //
                               data={data}
                               currentTime={currentTime}
                               map={map}
@@ -292,7 +313,9 @@ class App extends Component {
 }
 
 // export default withStyles(styles)(App);
-export default connect(({ player, data }) => ({ player, data }))(withStyles(styles)(App));
+export default connect(({ player, data }) => ({ player, data }))(
+  withStyles(styles)(App)
+);
 
 // FIXME:
 export const AngularVideoTimeline = react2angular(

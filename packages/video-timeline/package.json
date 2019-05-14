@@ -63,7 +63,6 @@
     "rc-slider": "8.6.11",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.0",
-    "react-copy-to-clipboard": "5.0.1",
     "react-dev-utils": "^9.0.0",
     "react-dom": "^16.8.6",
     "react-player": "1.11.0",

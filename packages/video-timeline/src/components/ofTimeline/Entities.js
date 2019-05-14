@@ -10,8 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import CheckIcon from '@montage/ui/src/components/icons/CheckIcon';
-import ContentCutIcon from '@montage/ui/src/components/icons/ContentCutIcon';
+import { CheckIcon, CutIcon } from '@montage/ui/src/components';
 
 import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
@@ -688,7 +687,7 @@ class Entities extends Component {
                             <IconButton
                               onClick={() => this.duplicateAsClip(entity.id)}
                             >
-                              <ContentCutIcon fontSize="small" />
+                              <CutIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
                         ) : (

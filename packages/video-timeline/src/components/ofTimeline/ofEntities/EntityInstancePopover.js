@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import InstanceExpandIcon from '@montage/ui/src/components/icons/InstanceExpandIcon';
+import { ExpandIcon } from '@montage/ui/src/components';
 
 const styles = theme => ({
   Toolbar: {
@@ -71,7 +71,7 @@ class EntityInstancePopover extends Component {
       <>
         <Tooltip title="Match length of the video">
           <IconButton onClick={onExtend}>
-            <InstanceExpandIcon fontSize="small" />
+            <ExpandIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         {children}

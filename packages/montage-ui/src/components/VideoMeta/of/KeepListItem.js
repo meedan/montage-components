@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
-import { withSnackbar } from 'notistack';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { func } from "prop-types";
+import { withSnackbar } from "notistack";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import React, { Component } from "react";
 
-import Tooltip from '@material-ui/core/Tooltip';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
+import Tooltip from "@material-ui/core/Tooltip";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Popover from "@material-ui/core/Popover";
+import Typography from "@material-ui/core/Typography";
 
-import { KeepIcon, ClipboardIcon } from '@montage/ui/src/components';
+import { KeepIcon, ClipboardIcon } from "@montage/ui/src/components";
 
 class KeepListItem extends Component {
   constructor(props) {
@@ -32,15 +33,15 @@ class KeepListItem extends Component {
 
     const handleClipboardCopy = popupState => {
       popupState.close();
-      this.props.enqueueSnackbar('URL copied to clipboard');
+      this.props.enqueueSnackbar("URL copied to clipboard");
     };
 
     const triggerSave = () => {
-      this.setState({ status: 'processing' });
-      setTimeout(() => this.setState({ status: 'error' }), 1000);
+      this.setState({ status: "processing" });
+      setTimeout(() => this.setState({ status: "error" }), 1000);
     };
 
-    if (status === 'processing') {
+    if (status === "processing") {
       return (
         <ListItem dense>
           <ListItemIcon>
@@ -51,12 +52,13 @@ class KeepListItem extends Component {
           </ListItemText>
         </ListItem>
       );
-    } else if (status === 'error') {
+    }
+    if (status === "error") {
       return (
         <ListItem
-          button={!isArchived ? true : false}
+          button={!isArchived}
           onClick={
-            !isArchived ? () => this.setState({ status: 'success' }) : null
+            !isArchived ? () => this.setState({ status: "success" }) : null
           }
           dense
         >
@@ -65,7 +67,7 @@ class KeepListItem extends Component {
           </ListItemIcon>
           <ListItemText>
             <Typography>
-              Sending to Keep failed.{' '}
+              Sending to Keep failed.{" "}
               {!isArchived ? (
                 <Typography component="span" inline color="primary">
                   Retry?
@@ -75,7 +77,8 @@ class KeepListItem extends Component {
           </ListItemText>
         </ListItem>
       );
-    } else if (status === 'success') {
+    }
+    if (status === "success") {
       return (
         <>
           <PopupState variant="popover" popupId="demoPopover">
@@ -95,12 +98,12 @@ class KeepListItem extends Component {
                 <Popover
                   {...bindPopover(popupState)}
                   anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
+                    vertical: "bottom",
+                    horizontal: "center"
                   }}
                   transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
+                    vertical: "top",
+                    horizontal: "center"
                   }}
                 >
                   <List dense>
@@ -137,27 +140,30 @@ class KeepListItem extends Component {
           </PopupState>
         </>
       );
-    } else {
-      return (
-        <ListItem
-          button={!isArchived ? true : false}
-          onClick={!isArchived ? triggerSave : null}
-          dense
-        >
-          <ListItemIcon>
-            <KeepIcon />
-          </ListItemIcon>
-          <ListItemText>
-            <Typography inline color={!isArchived ? 'primary' : 'default'}>
-              {!isArchived
-                ? 'Save video to Keep locations'
-                : 'This video has not been saved to Keep'}
-            </Typography>
-          </ListItemText>
-        </ListItem>
-      );
     }
+    return (
+      <ListItem
+        button={!isArchived}
+        onClick={!isArchived ? triggerSave : null}
+        dense
+      >
+        <ListItemIcon>
+          <KeepIcon />
+        </ListItemIcon>
+        <ListItemText>
+          <Typography inline color={!isArchived ? "primary" : "default"}>
+            {!isArchived
+              ? "Save video to Keep locations"
+              : "This video has not been saved to Keep"}
+          </Typography>
+        </ListItemText>
+      </ListItem>
+    );
   }
 }
 
 export default withSnackbar(KeepListItem);
+
+KeepListItem.propTypes = {
+  enqueueSnackbar: func.isRequired
+};

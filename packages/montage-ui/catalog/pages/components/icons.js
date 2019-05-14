@@ -1,11 +1,13 @@
 import React from "react";
 import { markdown, ReactSpecimen } from "@catalog/core";
 
-import CheckIcon from "@montage/ui/src/components/icons/CheckIcon";
-import ContentCutIcon from "@montage/ui/src/components/icons/ContentCutIcon";
-import CopyToClipboardIcon from "@montage/ui/src/components/icons/CopyToClipboardIcon";
-import InstanceExpandIcon from "@montage/ui/src/components/icons/InstanceExpandIcon";
-import KeepIcon from "@montage/ui/src/components/icons/KeepIcon";
+import {
+  CheckIcon,
+  ClipboardIcon,
+  CutIcon,
+  ExpandIcon,
+  KeepIcon
+} from "@montage/ui/src/components";
 
 export default () => markdown`
 
@@ -40,17 +42,17 @@ ${(
 )}
 ${(
   <ReactSpecimen showSource span={2}>
-    <CopyToClipboardIcon />
+    <ClipboardIcon />
   </ReactSpecimen>
 )}
 ${(
   <ReactSpecimen showSource span={2}>
-    <ContentCutIcon />
+    <CutIcon />
   </ReactSpecimen>
 )}
 ${(
   <ReactSpecimen showSource span={2}>
-    <InstanceExpandIcon />
+    <ExpandIcon />
   </ReactSpecimen>
 )}
 ${(

@@ -23,7 +23,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TextField from '@material-ui/core/TextField';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import RemoveModal from './ofMoreMenuItem/RemoveModal';
+import RemoveModal from './RemoveModal';
 
 const ParentPopupState = React.createContext(null);
 
