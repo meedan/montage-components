@@ -20,8 +20,8 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { color } from "@montage/ui/src/config";
 
-import ArchiveMenuItem from "./of/ArchiveMenuItem";
-import FavMenuItem from "./of/FavMenuItem";
+import ArchiveStatus from "./of/ArchiveStatus";
+import FavouriteStatus from "./of/FavouriteStatus";
 import KeepListItem from "./of/KeepListItem";
 import MoreMenuItem from "./of/MoreMenuItem";
 import PublishedDateListItem from "./of/PublishedDateListItem";
@@ -61,8 +61,8 @@ class VideoMeta extends Component {
       videoDescription,
       videoViewCount,
       onRecDateChange,
-      //
       favourited,
+      //
       classes,
       data,
       currentTime,
@@ -114,8 +114,13 @@ class VideoMeta extends Component {
                 top: "8px"
               }}
             >
-              {!isArchived ? <FavMenuItem favourited={favourited} /> : null}
-              <ArchiveMenuItem
+              {!isArchived ? (
+                <FavouriteStatus
+                  onFavouriteClick={this.props.onFavouriteClick}
+                  isFavourited={favourited}
+                />
+              ) : null}
+              <ArchiveStatus
                 onArchiveClick={this.props.onArchiveClick}
                 isArchived={isArchived}
               />
@@ -183,6 +188,7 @@ VideoMeta.propTypes = {
   channelTitle: string.isRequired,
   currentTime: number,
   favourited: bool,
+  onFavouriteClick: func.isRequired,
   onArchiveClick: func.isRequired,
   onRecDateChange: func.isRequired,
   pubDate: string.isRequired,

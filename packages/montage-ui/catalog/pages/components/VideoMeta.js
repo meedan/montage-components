@@ -18,12 +18,16 @@ ${(
       videoDescription="Description"
       videoPlaces={[]}
       videoViewCount="222"
-      //
-      onRecDateChange={date => console.log(date)}
       onArchiveClick={(payload, callback) => {
-        console.log(payload);
+        console.log("onArchiveClick, payload:", payload);
         setTimeout(() => callback(), 1000);
       }}
+      onFavouriteClick={(payload, callback) => {
+        console.log("onFavouriteClick, payload:", payload);
+        setTimeout(() => callback(), 1000);
+      }}
+      //
+      onRecDateChange={date => console.log(date)}
     />
   </ReactSpecimen>
 )}
@@ -39,11 +43,15 @@ ${(
       videoDescription="Description"
       videoPlaces={[]}
       videoViewCount="222"
-      //
       onArchiveClick={(payload, callback) => {
-        console.log(payload);
+        console.log("onArchiveClick, payload:", payload);
         setTimeout(() => callback(), 1000);
       }}
+      onFavouriteClick={(payload, callback) => {
+        console.log("onFavouriteClick, payload:", payload);
+        setTimeout(() => callback(), 1000);
+      }}
+      //
       onRecDateChange={date => console.log(date)}
     />
   </ReactSpecimen>
