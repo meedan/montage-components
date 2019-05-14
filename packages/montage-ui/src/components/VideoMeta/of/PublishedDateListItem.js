@@ -1,14 +1,15 @@
-import React from 'react';
-import { parseISO, format } from 'date-fns';
+import { parseISO, format } from "date-fns";
+import { string } from "prop-types";
+import React from "react";
 
-import Typography from '@material-ui/core/Typography';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import PublishIcon from '@material-ui/icons/Publish';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import PublishIcon from "@material-ui/icons/Publish";
+import Typography from "@material-ui/core/Typography";
 
 const PublishedDateListItem = props => {
-  const { data } = props;
+  const { pubDate } = props;
   return (
     <ListItem component="div" dense>
       <ListItemIcon>
@@ -16,12 +17,10 @@ const PublishedDateListItem = props => {
       </ListItemIcon>
       <ListItemText>
         <Typography>
-          Published{' '}
-          {format(
-            parseISO(data.ytVideoData.snippet.publishedAt),
-            'd MMMM YYYY',
-            { awareOfUnicodeTokens: true }
-          )}
+          Published{" "}
+          {format(parseISO(pubDate), "d MMMM YYYY", {
+            awareOfUnicodeTokens: true
+          })}
         </Typography>
       </ListItemText>
     </ListItem>
@@ -29,3 +28,7 @@ const PublishedDateListItem = props => {
 };
 
 export default PublishedDateListItem;
+
+PublishedDateListItem.propTypes = {
+  pubDate: string.isRequired
+};

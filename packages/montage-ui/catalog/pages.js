@@ -12,6 +12,11 @@ const pages = [
         content: require("./pages/components/icons.js"),
         path: "/components/icons",
         title: "Icons"
+      },
+      {
+        content: require("./pages/components/VideoMeta.js"),
+        path: "/components/VideoMeta",
+        title: "VideoMeta"
       }
     ]
   }
