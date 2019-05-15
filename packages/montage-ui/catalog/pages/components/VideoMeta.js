@@ -7,6 +7,49 @@ export default () => markdown`
 
 # VideoMeta
 
+## Archived variations
+
+${(
+  <ReactSpecimen span={3}>
+    <VideoMeta
+      arcDate="2019-03-22T19:14:14.000Z"
+      channelTitle="Channel Title"
+      currentTime={0}
+      favourited={false}
+      pubDate="2019-03-22T19:14:14.000Z"
+      videoDescription="Description"
+      videoPlaces={[]}
+      videoId="11503"
+      videoBackups={{
+        backupIds: [],
+        backups: []
+      }}
+      videoBackupSettings={{
+        backupServiceIds: ["archiveOrg", "archiveIs"],
+        backupServices: [
+          { id: "archiveOrg", name: "Archive.org", isActive: true },
+          { id: "archiveIs", name: "Archive.Is", isActive: false }
+        ]
+      }}
+      videoViewCount="222"
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      //
+      onRecDateChange={date => console.log(date)}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
+    />
+  </ReactSpecimen>
+)}
+
 ${(
   <ReactSpecimen span={3}>
     <VideoMeta
@@ -63,46 +106,8 @@ ${(
     />
   </ReactSpecimen>
 )}
-${(
-  <ReactSpecimen span={3}>
-    <VideoMeta
-      arcDate="2019-03-22T19:14:14.000Z"
-      channelTitle="Channel Title"
-      currentTime={0}
-      favourited={false}
-      pubDate="2019-03-22T19:14:14.000Z"
-      videoDescription="Description"
-      videoPlaces={[]}
-      videoId="11503"
-      videoBackups={{
-        backupIds: [],
-        backups: []
-      }}
-      videoBackupSettings={{
-        backupServiceIds: ["archiveOrg", "archiveIs"],
-        backupServices: [
-          { id: "archiveOrg", name: "Archive.org", isActive: true },
-          { id: "archiveIs", name: "Archive.Is", isActive: false }
-        ]
-      }}
-      videoViewCount="222"
-      onTriggerArchive={(payload, callback) => {
-        console.log("onTriggerArchive, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      onTriggerFavourite={(payload, callback) => {
-        console.log("onTriggerFavourite, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      //
-      onRecDateChange={date => console.log(date)}
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep");
-        setTimeout(() => callback(), 2000);
-      }}
-    />
-  </ReactSpecimen>
-)}
+
+## Unarchived variations
 
 ${(
   <ReactSpecimen span={3}>
