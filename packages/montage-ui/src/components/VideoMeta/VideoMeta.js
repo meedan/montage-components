@@ -99,9 +99,9 @@ class VideoMeta extends Component {
 
     // console.log(videoPlaces, videoPlacesData, mapData);
 
-    console.group("VideoMeta");
-    console.log(this.props);
-    console.groupEnd();
+    // console.group("VideoMeta");
+    // console.log(this.props);
+    // console.groupEnd();
 
     return map ? null : ( // /> //   onClose={() => setMap(false)} //   isCompact={!map} //   expandMap={() => setMap(true)} //   data={mapData} //   currentTime={currentTime} //   collapseMap={() => setMap(false)} //   id="TopMap" // <Map
       <Card square elevation={0} className={classes.Card}>
