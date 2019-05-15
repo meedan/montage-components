@@ -209,6 +209,7 @@ class App extends Component {
                       >
                         <Grid item sm={4}>
                           <VideoMeta
+                            currentTime={currentTime}
                             pubDate={data.ytVideoData.snippet.publishedAt}
                             channelTitle={data.ytVideoData.snippet.channelTitle}
                             videoViewCount={
@@ -219,19 +220,37 @@ class App extends Component {
                               data.ytVideoData.snippet.description
                             }
                             videoBackups={data.videoBackups}
-                            onArchiveClick={(payload, callback) => {
-                              console.log('onArchiveClick, payload:', payload);
-                              // this.props.enqueueSnackbar('Archived');
-                              setTimeout(() => callback(), 1000);
-                            }}
-                            currentTime={currentTime}
-                            onFavouriteClick={(payload, callback) => {
+                            onTriggerArchive={(payload, callback) => {
                               console.log(
-                                'onFavouriteClick, payload:',
+                                'onTriggerArchive, payload:',
                                 payload
                               );
-                              // this.props.enqueueSnackbar('Added to favorites');
-                              setTimeout(() => callback(), 1000);
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar('Video archived');
+                                callback();
+                              }, 1000);
+                            }}
+                            onTriggerKeep={callback => {
+                              console.log('onTriggerKeep');
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar(
+                                  'Syncing with Keep finished'
+                                );
+                                callback();
+                              }, 2000);
+                            }}
+                            onTriggerFavourite={(payload, callback) => {
+                              console.log(
+                                'onTriggerFavourite, payload:',
+                                payload
+                              );
+                              // ;
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar(
+                                  'Video added to favourites'
+                                );
+                                callback();
+                              }, 1000);
                             }}
                             //
                             onRecDateChange={date => console.log(date)}

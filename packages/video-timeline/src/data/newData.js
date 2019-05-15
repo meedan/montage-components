@@ -15,13 +15,13 @@ const newData = {
     ]
   },
   videoBackups: {
-    backupIds: ['11503'],
+    backupIds: [11503],
     backups: [
       {
-        id: '11503',
+        id: 11503,
         locations: [
           { serviceId: "archiveIs", status: "OK", url: "https://archive.is/…/media/…/x/y/z.mp4"},
-          { serviceId: "archiveOrg", status: "ERROR", url: "https://archive.org/…/media/…/x/y/z.mp4"},
+          { serviceId: "archiveOrg", status: "OK", url: "https://archive.org/…/media/…/x/y/z.mp4"},
         ]
       }
     ]

@@ -23,14 +23,16 @@ class ArchiveStatus extends Component {
   constructor(props) {
     super(props);
     this.state = { processing: null };
-    this.onArchiveClick = this.onArchiveClick.bind(this);
+    this.onTriggerArchive = this.onTriggerArchive.bind(this);
   }
 
-  onArchiveClick() {
+  onTriggerArchive() {
+    if (this.props.isArchived) return null;
     this.setState({ processing: true });
-    this.props.onArchiveClick(!this.props.isArchived, () =>
+    this.props.onTriggerArchive(!this.props.isArchived, () =>
       this.setState({ processing: false })
     );
+    return null;
   }
 
   render() {
@@ -41,7 +43,7 @@ class ArchiveStatus extends Component {
         title={isArchived ? "Unarchive" : "Archive"}
         aria-label={isArchived ? "Unarchive" : "Archive"}
       >
-        <IconicButton onClick={this.onArchiveClick}>
+        <IconicButton onClick={this.onTriggerArchive}>
           <Fade in={!processing}>
             {isArchived ? (
               <ArchiveIcon color="primary" />
@@ -61,7 +63,7 @@ class ArchiveStatus extends Component {
 export default withStyles(styles)(ArchiveStatus);
 
 ArchiveStatus.propTypes = {
-  onArchiveClick: func.isRequired,
+  onTriggerArchive: func.isRequired,
   classes: object,
   isArchived: bool
 };

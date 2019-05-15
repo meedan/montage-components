@@ -46,13 +46,17 @@ ${(
         ]
       }}
       videoViewCount="222"
-      onArchiveClick={(payload, callback) => {
-        console.log("onArchiveClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
-      onFavouriteClick={(payload, callback) => {
-        console.log("onFavouriteClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
       }}
       //
       onRecDateChange={date => console.log(date)}
@@ -82,16 +86,20 @@ ${(
         ]
       }}
       videoViewCount="222"
-      onArchiveClick={(payload, callback) => {
-        console.log("onArchiveClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
-      onFavouriteClick={(payload, callback) => {
-        console.log("onFavouriteClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
       //
       onRecDateChange={date => console.log(date)}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
     />
   </ReactSpecimen>
 )}
@@ -128,16 +136,20 @@ ${(
         ]
       }}
       videoViewCount="222"
-      onArchiveClick={(payload, callback) => {
-        console.log("onArchiveClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
-      onFavouriteClick={(payload, callback) => {
-        console.log("onFavouriteClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
       //
       onRecDateChange={date => console.log(date)}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
     />
   </ReactSpecimen>
 )}
@@ -158,16 +170,20 @@ ${(
       }}
       videoPlaces={[]}
       videoViewCount="222"
-      onArchiveClick={(payload, callback) => {
-        console.log("onArchiveClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
-      onFavouriteClick={(payload, callback) => {
-        console.log("onFavouriteClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
       //
       onRecDateChange={date => console.log(date)}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
     />
   </ReactSpecimen>
 )}
@@ -204,16 +220,20 @@ ${(
         ]
       }}
       videoViewCount="222"
-      onArchiveClick={(payload, callback) => {
-        console.log("onArchiveClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
-      onFavouriteClick={(payload, callback) => {
-        console.log("onFavouriteClick, payload:", payload);
-        setTimeout(() => callback(), 1000);
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
       }}
       //
       onRecDateChange={date => console.log(date)}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
     />
   </ReactSpecimen>
 )}
