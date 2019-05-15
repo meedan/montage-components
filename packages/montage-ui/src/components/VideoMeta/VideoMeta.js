@@ -1,4 +1,4 @@
-import { array, bool, func, object, number, shape, string } from "prop-types";
+import { array, bool, func, number, shape, string } from "prop-types";
 import Flatted from "flatted/esm";
 import React, { Component } from "react";
 import styled from "styled-components";
@@ -22,7 +22,7 @@ import { color } from "@montage/ui/src/config";
 
 import ArchiveStatus from "./of/ArchiveStatus";
 import FavouriteStatus from "./of/FavouriteStatus";
-import KeepListItem from "./of/KeepListItem";
+import KeepStatus from "./of/KeepStatus";
 import MoreMenuItem from "./of/MoreMenuItem";
 import PublishedDateListItem from "./of/PublishedDateListItem";
 import RecordedDateListItem from "./of/RecordedDateListItem";
@@ -147,7 +147,12 @@ class VideoMeta extends Component {
               callback={onRecDateChange}
               isArchived={isArchived}
             />
-            {/* <KeepListItem {...this.props} /> */}
+            <KeepStatus
+              isArchived={isArchived}
+              videoBackups={this.props.videoBackups}
+              videoBackupSettings={this.props.videoBackupSettings}
+              videoId={this.props.videoId}
+            />
           </List>
         </CardContent>
         <Divider variant="middle" />
@@ -188,11 +193,17 @@ VideoMeta.propTypes = {
   channelTitle: string.isRequired,
   currentTime: number,
   favourited: bool,
-  onFavouriteClick: func.isRequired,
   onArchiveClick: func.isRequired,
+  onFavouriteClick: func.isRequired,
   onRecDateChange: func.isRequired,
   pubDate: string.isRequired,
+  videoBackups: shape({ videoBackupIds: array, videoBackups: array }),
+  videoBackupSettings: shape({
+    backupServices: array.isRequired,
+    backupServiceIds: array.isRequired
+  }).isRequired,
   videoDescription: string.isRequired,
+  videoId: string.isRequired,
   videoPlaces: array,
   videoViewCount: string.isRequired
 };
@@ -200,5 +211,6 @@ VideoMeta.defaultProps = {
   arcDate: null,
   currentTime: 0,
   favourited: null,
+  videoBackups: { videoBackupIds: [], videoBackups: [] },
   videoPlaces: []
 };

@@ -1,20 +1,19 @@
+import { array, bool, string, shape } from "prop-types";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { func } from "prop-types";
-import { withSnackbar } from "notistack";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import React, { Component } from "react";
 
-import Tooltip from "@material-ui/core/Tooltip";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import { KeepIcon, ClipboardIcon } from "@montage/ui/src/components";
 
-class KeepListItem extends Component {
+class KeepStatus extends Component {
   constructor(props) {
     super(props);
     this.state = { status: null };
@@ -22,18 +21,23 @@ class KeepListItem extends Component {
 
   render() {
     const { status } = this.state;
-    const { data } = this.props;
+    const {
+      isArchived,
+      videoBackups,
+      videoBackupSettings,
+      videoId
+    } = this.props;
 
-    const { id } = data.gdVideoData;
-    const { archived_at } = data.gdVideoData;
-    const { services, serviceIds } = data.keep.settings;
-    const { media, mediaIds } = data.keep.backups;
-    const currentMedia = media[mediaIds.indexOf(id)];
-    const isArchived = archived_at !== null && archived_at !== undefined;
+    // console.group("KeepStatus");
+    // console.log(videoBackupSettings);
+    // console.groupEnd();
+
+    const { backups, backupIds } = videoBackups;
+    const { backupServices, backupServiceIds } = videoBackupSettings;
+    const currentMedia = backups[backupIds.indexOf(videoId)];
 
     const handleClipboardCopy = popupState => {
       popupState.close();
-      this.props.enqueueSnackbar("URL copied to clipboard");
     };
 
     const triggerSave = () => {
@@ -116,18 +120,20 @@ class KeepListItem extends Component {
                             key={url}
                             onCopy={() => handleClipboardCopy(popupState)}
                           >
-                            <ListItem button={url !== null || undefined}>
-                              <ListItemIcon>
-                                <Tooltip title="Copy to Clipboard">
+                            <Tooltip title="Copy to Clipboard">
+                              <ListItem button={url !== null || undefined}>
+                                <ListItemIcon>
                                   <ClipboardIcon />
-                                </Tooltip>
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={
-                                  services[serviceIds.indexOf(serviceId)].name
-                                }
-                              />
-                            </ListItem>
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={
+                                    backupServices[
+                                      backupServiceIds.indexOf(serviceId)
+                                    ].name
+                                  }
+                                />
+                              </ListItem>
+                            </Tooltip>
                           </CopyToClipboard>
                         );
                       }
@@ -162,8 +168,25 @@ class KeepListItem extends Component {
   }
 }
 
-export default withSnackbar(KeepListItem);
+export default KeepStatus;
 
-KeepListItem.propTypes = {
-  enqueueSnackbar: func.isRequired
+KeepStatus.propTypes = {
+  isArchived: bool,
+  videoBackups: shape({
+    videoBackupIds: array,
+    videoBackups: array
+  }),
+  videoBackupSettings: shape({
+    backupServices: array.isRequired,
+    backupServiceIds: array.isRequired
+  }).isRequired,
+  videoId: string.isRequired
+};
+
+KeepStatus.defaultProps = {
+  isArchived: null,
+  videoBackups: {
+    videoBackupIds: [],
+    videoBackups: []
+  }
 };
