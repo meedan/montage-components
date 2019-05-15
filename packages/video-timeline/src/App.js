@@ -219,7 +219,6 @@ class App extends Component {
                               data.ytVideoData.snippet.description
                             }
                             videoBackups={data.videoBackups}
-                            videoBackupSettings={data.videoBackupSettings}
                             onArchiveClick={(payload, callback) => {
                               console.log('onArchiveClick, payload:', payload);
                               // this.props.enqueueSnackbar('Archived');

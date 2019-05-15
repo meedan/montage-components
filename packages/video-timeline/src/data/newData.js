@@ -20,8 +20,8 @@ const newData = {
       {
         id: '11503',
         locations: [
-          { serviceId: "archiveIs", url: "https://archive.is/…/media/…/x/y/z.mp4"},
-          { serviceId: "archiveOrg", url: "https://archive.org/…/media/…/x/y/z.mp4"},
+          { serviceId: "archiveIs", status: "OK", url: "https://archive.is/…/media/…/x/y/z.mp4"},
+          { serviceId: "archiveOrg", status: "ERROR", url: "https://archive.org/…/media/…/x/y/z.mp4"},
         ]
       }
     ]
