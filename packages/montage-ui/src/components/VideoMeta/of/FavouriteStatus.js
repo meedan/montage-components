@@ -23,14 +23,16 @@ class FavoriteStatus extends Component {
   constructor(props) {
     super(props);
     this.state = { processing: null };
-    this.onFavouriteClick = this.onFavouriteClick.bind(this);
+    this.onTriggerFavourite = this.onTriggerFavourite.bind(this);
   }
 
-  onFavouriteClick() {
+  onTriggerFavourite() {
+    if (this.props.isArchived) return null;
     this.setState({ processing: true });
-    this.props.onFavouriteClick(!this.props.isFavourited, () =>
+    this.props.onTriggerFavourite(!this.props.isFavourited, () =>
       this.setState({ processing: false })
     );
+    return null;
   }
 
   render() {
@@ -41,7 +43,7 @@ class FavoriteStatus extends Component {
         title={isFavourited ? "Remove from favorites" : "Add to favorites"}
         aria-label={isFavourited ? "Remove from favorites" : "Add to favorites"}
       >
-        <IconicButton onClick={this.onFavouriteClick}>
+        <IconicButton onClick={this.onTriggerFavourite}>
           <Fade in={!processing}>
             {isFavourited ? <StarIcon color="primary" /> : <StarBorderIcon />}
           </Fade>
@@ -57,11 +59,13 @@ class FavoriteStatus extends Component {
 export default withStyles(styles)(FavoriteStatus);
 
 FavoriteStatus.propTypes = {
-  onFavouriteClick: func.isRequired,
+  classes: object,
+  isArchived: bool,
   isFavourited: bool,
-  classes: object
+  onTriggerFavourite: func.isRequired
 };
 FavoriteStatus.defaultProps = {
-  isFavourited: null,
-  classes: {}
+  classes: {},
+  isArchived: null,
+  isFavourited: null
 };

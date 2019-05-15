@@ -99,9 +99,9 @@ class VideoMeta extends Component {
 
     // console.log(videoPlaces, videoPlacesData, mapData);
 
-    // console.group("VideoMeta");
-    // console.log(this.props);
-    // console.groupEnd();
+    console.group("VideoMeta");
+    console.log(this.props);
+    console.groupEnd();
 
     return map ? null : ( // /> //   onClose={() => setMap(false)} //   isCompact={!map} //   expandMap={() => setMap(true)} //   data={mapData} //   currentTime={currentTime} //   collapseMap={() => setMap(false)} //   id="TopMap" // <Map
       <Card square elevation={0} className={classes.Card}>
@@ -116,12 +116,12 @@ class VideoMeta extends Component {
             >
               {!isArchived ? (
                 <FavouriteStatus
-                  onFavouriteClick={this.props.onFavouriteClick}
+                  onTriggerFavourite={this.props.onTriggerFavourite}
                   isFavourited={favourited}
                 />
               ) : null}
               <ArchiveStatus
-                onArchiveClick={this.props.onArchiveClick}
+                onTriggerArchive={this.props.onTriggerArchive}
                 isArchived={isArchived}
               />
               {/* <MoreMenuItem {...this.props} /> */}
@@ -149,6 +149,7 @@ class VideoMeta extends Component {
             />
             <KeepStatus
               isArchived={isArchived}
+              onTriggerKeep={this.props.onTriggerKeep}
               videoBackups={this.props.videoBackups}
               videoId={this.props.videoId}
             />
@@ -192,9 +193,10 @@ VideoMeta.propTypes = {
   channelTitle: string.isRequired,
   currentTime: number,
   favourited: bool,
-  onArchiveClick: func.isRequired,
-  onFavouriteClick: func.isRequired,
+  onTriggerArchive: func.isRequired,
+  onTriggerFavourite: func.isRequired,
   onRecDateChange: func.isRequired,
+  onTriggerKeep: func.isRequired,
   pubDate: string.isRequired,
   videoBackups: shape({ videoBackupIds: array, videoBackups: array }),
   videoDescription: string.isRequired,
