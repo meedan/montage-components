@@ -173,6 +173,10 @@ class App extends Component {
     // const { data, map } = this.state;
     const { map } = this.state;
 
+    console.group('APP');
+    console.log(this.props);
+    console.groupEnd();
+
     return (
       <>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -210,14 +214,18 @@ class App extends Component {
                             videoViewCount={
                               data.ytVideoData.statistics.viewCount
                             }
+                            videoId={data.gdVideoData.id}
                             videoDescription={
                               data.ytVideoData.snippet.description
                             }
+                            videoBackups={data.videoBackups}
+                            videoBackupSettings={data.videoBackupSettings}
                             onArchiveClick={(payload, callback) => {
                               console.log('onArchiveClick, payload:', payload);
                               // this.props.enqueueSnackbar('Archived');
                               setTimeout(() => callback(), 1000);
                             }}
+                            currentTime={currentTime}
                             onFavouriteClick={(payload, callback) => {
                               console.log(
                                 'onFavouriteClick, payload:',
@@ -227,13 +235,9 @@ class App extends Component {
                               setTimeout(() => callback(), 1000);
                             }}
                             //
-
                             onRecDateChange={date => console.log(date)}
-                            //
-                            data={data}
-                            currentTime={currentTime}
-                            map={map}
-                            setMap={this.setMap}
+                            // map={map}
+                            // setMap={this.setMap}
                           />
                         </Grid>
                         <Grid item sm={8}>
