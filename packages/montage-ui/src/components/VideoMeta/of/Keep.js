@@ -71,7 +71,7 @@ class KeepStatus extends Component {
       }
       if (backupsCount === 0) {
         return isArchived
-          ? `This video has not been synced with Keep`
+          ? `Not synced with Keep`
           : `Save video to Keep locations`;
       }
       return `Safely stored in ${backupsCount} Keep locations`;

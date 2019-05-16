@@ -46,47 +46,48 @@ class RecordedDate extends Component {
         return <Typography>Saving new recording date…</Typography>;
       }
       if (recDate) {
-        return recDateOverriden ? (
-          <Tooltip title="Overridden by a Montage user">
-            <Typography>Recorded {displayDate}</Typography>
-          </Tooltip>
-        ) : (
-          <Typography>Recorded {displayDate}</Typography>
-        );
+        return <Typography>Recorded {displayDate}</Typography>;
       }
-      if (!recDate) {
-        return (
-          <Typography color={isArchived ? "default" : "primary"}>
-            {isArchived ? `No recorded date set` : `Set a recorded Date`}
-          </Typography>
-        );
-      }
-      return "ERROR";
+      return (
+        <Typography color={isArchived ? "default" : "primary"}>
+          {isArchived ? `No recorded date set` : `Set a recorded Date`}
+        </Typography>
+      );
     };
+
+    const renderEl = () => (
+      <ListItem
+        button={!isArchived}
+        dense
+        onClick={!isArchived ? this.onDatepickerToggle : null}
+      >
+        <ListItemIcon>
+          <VideocamIcon />
+        </ListItemIcon>
+        <ListItemText>{renderDate()}</ListItemText>
+      </ListItem>
+    );
 
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <ListItem
-          button={!isArchived}
-          dense
-          onClick={!isArchived ? this.onDatepickerToggle : null}
-        >
-          <ListItemIcon>
-            <VideocamIcon />
-          </ListItemIcon>
-          <ListItemText>{renderDate()}</ListItemText>
-        </ListItem>
-        <DatePicker
-          autoOk
-          clearable={!!recDate}
-          clearLabel={isArchived ? "Revert" : "Clear"}
-          disableFuture
-          onChange={this.onRecDateChange}
-          ref={this.datepickerRef}
-          style={{ height: "1px", width: "1px", overflow: "hidden" }}
-          TextFieldComponent="span"
-          value={parseISO(recDate) || null}
-        />
+        <>
+          {recDateOverriden ? (
+            <Tooltip title="Overridden by a Montage user">{renderEl()}</Tooltip>
+          ) : (
+            renderEl()
+          )}
+          <DatePicker
+            autoOk
+            clearable={!!recDate}
+            clearLabel={isArchived ? "Revert" : "Clear"}
+            disableFuture
+            onChange={this.onRecDateChange}
+            ref={this.datepickerRef}
+            style={{ height: "1px", width: "1px", overflow: "hidden" }}
+            TextFieldComponent="span"
+            value={parseISO(recDate) || null}
+          />
+        </>
       </MuiPickersUtilsProvider>
     );
   }
