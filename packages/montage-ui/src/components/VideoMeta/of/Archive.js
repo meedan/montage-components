@@ -27,7 +27,6 @@ class ArchiveStatus extends Component {
   }
 
   onTriggerArchive() {
-    if (this.props.isArchived) return null;
     this.setState({ processing: true });
     this.props.onTriggerArchive(!this.props.isArchived, () =>
       this.setState({ processing: false })

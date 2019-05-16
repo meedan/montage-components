@@ -1,12 +1,64 @@
 import React from "react";
 import { markdown, ReactSpecimen } from "@catalog/core";
 
+import Archive from "@montage/ui/src/components/VideoMeta/of/Archive";
+import Favourite from "@montage/ui/src/components/VideoMeta/of/Favourite";
 import Keep from "@montage/ui/src/components/VideoMeta/of/Keep";
 import RecordedDate from "@montage/ui/src/components/VideoMeta/of/RecordedDate";
 
 export default () => markdown`
 
 # Video Meta — Partials
+
+## Fav/Unfav
+
+${(
+  <ReactSpecimen span={3}>
+    <Favourite
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      isFavourited={false}
+    />
+  </ReactSpecimen>
+)}
+${(
+  <ReactSpecimen span={3}>
+    <Favourite
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      isFavourited
+    />
+  </ReactSpecimen>
+)}
+
+## Archive/Unarchive
+
+${(
+  <ReactSpecimen span={3}>
+    <Archive
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      isArchived={false}
+    />
+  </ReactSpecimen>
+)}
+${(
+  <ReactSpecimen span={3}>
+    <Archive
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      isArchived
+    />
+  </ReactSpecimen>
+)}
 
 ## Keep
 
