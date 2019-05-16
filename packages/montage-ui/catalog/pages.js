@@ -22,6 +22,11 @@ const pages = [
         content: require("./pages/VideoMeta/VideoMeta-Archived.js"),
         path: "/video-meta-archived",
         title: "Archived variations"
+      },
+      {
+        content: require("./pages/VideoMeta/Partials.js"),
+        path: "/video-meta-partials",
+        title: "Partials"
       }
     ]
   }

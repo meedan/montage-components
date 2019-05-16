@@ -22,7 +22,7 @@ import { color } from "@montage/ui/src/config";
 
 import ArchiveStatus from "./of/ArchiveStatus";
 import FavouriteStatus from "./of/FavouriteStatus";
-import KeepStatus from "./of/KeepStatus";
+import Keep from "./of/Keep";
 import MoreMenuItem from "./of/MoreMenuItem";
 import PublishedDateListItem from "./of/PublishedDateListItem";
 import RecordedDate from "./of/RecordedDate";
@@ -142,7 +142,7 @@ class VideoMeta extends Component {
               recDate={this.props.recDate}
               recDateOverriden={this.props.recDateOverriden}
             />
-            <KeepStatus
+            <Keep
               isArchived={isArchived}
               onTriggerKeep={this.props.onTriggerKeep}
               videoBackups={this.props.videoBackups}
