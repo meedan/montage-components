@@ -1,22 +1,27 @@
 /* eslint global-require: off */
 const pages = [
   {
-    content: require("./pages/helpers.js"),
+    content: require("./pages/Helpers/Helpers.js"),
     path: "/helpers",
     title: "Helpers"
   },
   {
-    title: "Components",
+    content: require("./pages/Icons/Icons.js"),
+    path: "/icons",
+    title: "Icons"
+  },
+  {
+    title: "Video Meta",
     pages: [
       {
-        content: require("./pages/components/icons.js"),
-        path: "/components/icons",
-        title: "Icons"
+        content: require("./pages/VideoMeta/VideoMeta.js"),
+        path: "/video-meta",
+        title: "Standard variations"
       },
       {
-        content: require("./pages/components/VideoMeta.js"),
-        path: "/components/VideoMeta",
-        title: "VideoMeta"
+        content: require("./pages/VideoMeta/VideoMeta-Archived.js"),
+        path: "/video-meta-archived",
+        title: "Archived variations"
       }
     ]
   }
