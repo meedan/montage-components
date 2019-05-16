@@ -28,7 +28,7 @@
     "eslint": "^5.16.0",
     "eslint-config-react-app": "^4.0.1",
     "eslint-loader": "2.1.2",
-    "eslint-plugin-flowtype": "3.8.2",
+    "eslint-plugin-flowtype": "3.9.0",
     "eslint-plugin-import": "2.17.2",
     "eslint-plugin-jsx-a11y": "6.2.1",
     "eslint-plugin-react": "7.13.0",
@@ -51,7 +51,7 @@
     "material-ui-pickers": "2.2.4",
     "material-ui-popup-state": "1.3.2",
     "mini-css-extract-plugin": "0.5.0",
-    "notistack": "0.8.2",
+    "notistack": "0.8.3",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "owtj": "^1.0.3",
     "pnp-webpack-plugin": "1.2.1",
@@ -181,7 +181,7 @@
   },
   "devDependencies": {
     "babel-plugin-styled-components": "1.10.0",
-    "eslint-config-prettier": "4.2.0",
+    "eslint-config-prettier": "4.3.0",
     "eslint-plugin-prettier": "3.1.0",
     "prettier": "1.17.1"
   }
