@@ -20,8 +20,8 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { color } from "@montage/ui/src/config";
 
-import ArchiveStatus from "./of/ArchiveStatus";
-import FavouriteStatus from "./of/FavouriteStatus";
+import Archive from "./of/Archive";
+import Favourite from "./of/Favourite";
 import Keep from "./of/Keep";
 import MoreMenuItem from "./of/MoreMenuItem";
 import PublishedDateListItem from "./of/PublishedDateListItem";
@@ -109,12 +109,12 @@ class VideoMeta extends Component {
               }}
             >
               {!isArchived ? (
-                <FavouriteStatus
+                <Favourite
                   onTriggerFavourite={this.props.onTriggerFavourite}
                   isFavourited={this.props.favourited}
                 />
               ) : null}
-              <ArchiveStatus
+              <Archive
                 onTriggerArchive={this.props.onTriggerArchive}
                 isArchived={isArchived}
               />
