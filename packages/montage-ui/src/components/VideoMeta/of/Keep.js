@@ -159,10 +159,6 @@ KeepStatus.propTypes = {
     videoBackups: array
   }),
   onTriggerKeep: func.isRequired,
-  videoBackupSettings: shape({
-    backupServices: array.isRequired,
-    backupServiceIds: array.isRequired
-  }).isRequired,
   videoId: string.isRequired
 };
 
