@@ -253,7 +253,12 @@ class App extends Component {
                               }, 1000);
                             }}
                             //
-                            onRecDateChange={date => console.log(date)}
+                            onRecDateChange={(date, callback) =>
+                              console.log(date)
+                            }
+                            recDateOverriden={
+                              data.gdVideoData.recorded_date_overridden
+                            }
                             // map={map}
                             // setMap={this.setMap}
                           />
