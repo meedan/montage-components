@@ -18,6 +18,12 @@ ${(
       favourited
       videoId="11503"
       pubDate="2019-03-22T19:14:14.000Z"
+      recDate="1989-01-13T01:22:14.000Z"
+      recDateOverriden
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
       videoDescription="Description"
       videoBackups={{
         backupIds: [],
@@ -34,7 +40,6 @@ ${(
         setTimeout(() => callback(), 2000);
       }}
       //
-      onRecDateChange={date => console.log(date)}
       onTriggerKeep={callback => {
         console.log("onTriggerKeep");
         setTimeout(() => callback(), 2000);
@@ -53,6 +58,8 @@ ${(
       currentTime={0}
       favourited={false}
       pubDate="2019-03-22T19:14:14.000Z"
+      recDate={null}
+      recDateOverriden={false}
       videoDescription="Description"
       videoPlaces={[]}
       videoId="11503"
@@ -81,12 +88,15 @@ ${(
         console.log("onTriggerArchive, payload:", payload);
         setTimeout(() => callback(), 2000);
       }}
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
       onTriggerFavourite={(payload, callback) => {
         console.log("onTriggerFavourite, payload:", payload);
         setTimeout(() => callback(), 2000);
       }}
       //
-      onRecDateChange={date => console.log(date)}
       onTriggerKeep={callback => {
         console.log("onTriggerKeep");
         setTimeout(() => callback(), 2000);
@@ -138,7 +148,10 @@ ${(
         setTimeout(() => callback(), 2000);
       }}
       //
-      onRecDateChange={date => console.log(date)}
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
       onTriggerKeep={callback => {
         console.log("onTriggerKeep");
         setTimeout(() => callback(), 2000);

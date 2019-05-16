@@ -1,4 +1,4 @@
-import { array, bool, func, number, shape, string } from "prop-types";
+import { array, bool, func, number, object, shape, string } from "prop-types";
 import Flatted from "flatted/esm";
 import React, { Component } from "react";
 import styled from "styled-components";
@@ -25,7 +25,7 @@ import FavouriteStatus from "./of/FavouriteStatus";
 import KeepStatus from "./of/KeepStatus";
 import MoreMenuItem from "./of/MoreMenuItem";
 import PublishedDateListItem from "./of/PublishedDateListItem";
-import RecordedDateListItem from "./of/RecordedDateListItem";
+import RecordedDate from "./of/RecordedDate";
 
 // import Map from './Map';
 
@@ -56,12 +56,6 @@ class VideoMeta extends Component {
   render() {
     const {
       arcDate,
-      channelTitle,
-      pubDate,
-      videoDescription,
-      videoViewCount,
-      onRecDateChange,
-      favourited,
       //
       classes,
       data,
@@ -117,7 +111,7 @@ class VideoMeta extends Component {
               {!isArchived ? (
                 <FavouriteStatus
                   onTriggerFavourite={this.props.onTriggerFavourite}
-                  isFavourited={favourited}
+                  isFavourited={this.props.favourited}
                 />
               ) : null}
               <ArchiveStatus
@@ -129,7 +123,7 @@ class VideoMeta extends Component {
 )}
           title={(
             <Typography noWrap variant="h6">
-              {channelTitle}
+              {this.props.channelTitle}
             </Typography>
 )}
         />
@@ -139,13 +133,14 @@ class VideoMeta extends Component {
               <ListItemIcon>
                 <VisibilityIcon />
               </ListItemIcon>
-              <ListItemText primary={`${videoViewCount} views`} />
+              <ListItemText primary={`${this.props.videoViewCount} views`} />
             </ListItem>
-            <PublishedDateListItem pubDate={pubDate} />
-            <RecordedDateListItem
-              {...this.props}
-              callback={onRecDateChange}
+            <PublishedDateListItem pubDate={this.props.pubDate} />
+            <RecordedDate
               isArchived={isArchived}
+              onRecDateChange={this.props.onRecDateChange}
+              recDate={this.props.recDate}
+              recDateOverriden={this.props.recDateOverriden}
             />
             <KeepStatus
               isArchived={isArchived}
@@ -162,7 +157,7 @@ class VideoMeta extends Component {
             component="div"
             variant="body2"
           >
-            {videoDescription}
+            {this.props.videoDescription}
           </MediaDescription>
         </CardContent>
         <CardContent>
@@ -191,13 +186,16 @@ export default withStyles(styles)(VideoMeta);
 VideoMeta.propTypes = {
   arcDate: string,
   channelTitle: string.isRequired,
+  classes: object,
   currentTime: number,
   favourited: bool,
+  onRecDateChange: func.isRequired,
   onTriggerArchive: func.isRequired,
   onTriggerFavourite: func.isRequired,
-  onRecDateChange: func.isRequired,
   onTriggerKeep: func.isRequired,
   pubDate: string.isRequired,
+  recDate: string,
+  recDateOverriden: bool,
   videoBackups: shape({ videoBackupIds: array, videoBackups: array }),
   videoDescription: string.isRequired,
   videoId: string.isRequired,
@@ -206,8 +204,11 @@ VideoMeta.propTypes = {
 };
 VideoMeta.defaultProps = {
   arcDate: null,
+  classes: {},
   currentTime: 0,
   favourited: null,
+  recDate: null,
+  recDateOverriden: null,
   videoBackups: { videoBackupIds: [], videoBackups: [] },
   videoPlaces: []
 };
