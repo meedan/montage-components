@@ -4,6 +4,7 @@ import { markdown, ReactSpecimen } from "@catalog/core";
 import Archive from "@montage/ui/src/components/VideoMeta/of/Archive";
 import Favourite from "@montage/ui/src/components/VideoMeta/of/Favourite";
 import Keep from "@montage/ui/src/components/VideoMeta/of/Keep";
+import PublishedDate from "@montage/ui/src/components/VideoMeta/of/PublishedDate";
 import RecordedDate from "@montage/ui/src/components/VideoMeta/of/RecordedDate";
 
 export default () => markdown`
@@ -60,170 +61,11 @@ ${(
   </ReactSpecimen>
 )}
 
-## Keep
-
-### Default
+## Published date
 
 ${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived={false}
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{ backupIds: [], backups: [] }}
-      videoId="11503"
-    />
-  </ReactSpecimen>
-)}
-
-${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived={false}
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{
-        backupIds: ["11503"],
-        backups: [
-          {
-            id: "11503",
-            locations: [
-              {
-                serviceId: "archiveIs",
-                status: "OK",
-                url: "https://archive.is/…/media/…/x/y/z.mp4"
-              },
-              {
-                serviceId: "archiveOrg",
-                status: "ERROR",
-                url: "https://archive.org/…/media/…/x/y/z.mp4"
-              }
-            ]
-          }
-        ]
-      }}
-      videoId="11503"
-    />
-  </ReactSpecimen>
-)}
-
-${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived={false}
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{
-        backupIds: ["11503"],
-        backups: [
-          {
-            id: "11503",
-            locations: [
-              {
-                serviceId: "archiveIs",
-                status: "OK",
-                url: "https://archive.is/…/media/…/x/y/z.mp4"
-              },
-              {
-                serviceId: "archiveOrg",
-                status: "OK",
-                url: "https://archive.org/…/media/…/x/y/z.mp4"
-              }
-            ]
-          }
-        ]
-      }}
-      videoId="11503"
-    />
-  </ReactSpecimen>
-)}
-
-
-### Archived
-
-${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{ backupIds: [], backups: [] }}
-      videoId="11503"
-    />
-  </ReactSpecimen>
-)}
-
-${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{
-        backupIds: ["11503"],
-        backups: [
-          {
-            id: "11503",
-            locations: [
-              {
-                serviceId: "archiveIs",
-                status: "OK",
-                url: "https://archive.is/…/media/…/x/y/z.mp4"
-              },
-              {
-                serviceId: "archiveOrg",
-                status: "ERROR",
-                url: "https://archive.org/…/media/…/x/y/z.mp4"
-              }
-            ]
-          }
-        ]
-      }}
-      videoId="11503"
-    />
-  </ReactSpecimen>
-)}
-
-${(
-  <ReactSpecimen span={2}>
-    <Keep
-      isArchived
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep()");
-        setTimeout(() => callback(), 2000);
-      }}
-      videoBackups={{
-        backupIds: ["11503"],
-        backups: [
-          {
-            id: "11503",
-            locations: [
-              {
-                serviceId: "archiveIs",
-                status: "OK",
-                url: "https://archive.is/…/media/…/x/y/z.mp4"
-              },
-              {
-                serviceId: "archiveOrg",
-                status: "OK",
-                url: "https://archive.org/…/media/…/x/y/z.mp4"
-              }
-            ]
-          }
-        ]
-      }}
-      videoId="11503"
-    />
+  <ReactSpecimen>
+    <PublishedDate pubDate="2019-03-22T19:14:14.000Z" />
   </ReactSpecimen>
 )}
 
@@ -313,6 +155,172 @@ ${(
       }}
       recDate="1989-01-13T01:22:14.000Z"
       recDateOverriden
+    />
+  </ReactSpecimen>
+)}
+
+## Keep
+
+### Default
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived={false}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{ backupIds: [], backups: [] }}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived={false}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{
+        backupIds: ["11503"],
+        backups: [
+          {
+            id: "11503",
+            locations: [
+              {
+                serviceId: "archiveIs",
+                status: "OK",
+                url: "https://archive.is/…/media/…/x/y/z.mp4"
+              },
+              {
+                serviceId: "archiveOrg",
+                status: "ERROR",
+                url: "https://archive.org/…/media/…/x/y/z.mp4"
+              }
+            ]
+          }
+        ]
+      }}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived={false}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{
+        backupIds: ["11503"],
+        backups: [
+          {
+            id: "11503",
+            locations: [
+              {
+                serviceId: "archiveIs",
+                status: "OK",
+                url: "https://archive.is/…/media/…/x/y/z.mp4"
+              },
+              {
+                serviceId: "archiveOrg",
+                status: "OK",
+                url: "https://archive.org/…/media/…/x/y/z.mp4"
+              }
+            ]
+          }
+        ]
+      }}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+### Archived
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{ backupIds: [], backups: [] }}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{
+        backupIds: ["11503"],
+        backups: [
+          {
+            id: "11503",
+            locations: [
+              {
+                serviceId: "archiveIs",
+                status: "OK",
+                url: "https://archive.is/…/media/…/x/y/z.mp4"
+              },
+              {
+                serviceId: "archiveOrg",
+                status: "ERROR",
+                url: "https://archive.org/…/media/…/x/y/z.mp4"
+              }
+            ]
+          }
+        ]
+      }}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+${(
+  <ReactSpecimen span={2}>
+    <Keep
+      isArchived
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep()");
+        setTimeout(() => callback(), 2000);
+      }}
+      videoBackups={{
+        backupIds: ["11503"],
+        backups: [
+          {
+            id: "11503",
+            locations: [
+              {
+                serviceId: "archiveIs",
+                status: "OK",
+                url: "https://archive.is/…/media/…/x/y/z.mp4"
+              },
+              {
+                serviceId: "archiveOrg",
+                status: "OK",
+                url: "https://archive.org/…/media/…/x/y/z.mp4"
+              }
+            ]
+          }
+        ]
+      }}
+      videoId="11503"
     />
   </ReactSpecimen>
 )}

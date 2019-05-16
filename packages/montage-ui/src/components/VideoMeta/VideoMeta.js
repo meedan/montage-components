@@ -24,7 +24,7 @@ import Archive from "./of/Archive";
 import Favourite from "./of/Favourite";
 import Keep from "./of/Keep";
 import MoreMenuItem from "./of/MoreMenuItem";
-import PublishedDateListItem from "./of/PublishedDateListItem";
+import PublishedDate from "./of/PublishedDate";
 import RecordedDate from "./of/RecordedDate";
 
 // import Map from './Map';
@@ -135,7 +135,7 @@ class VideoMeta extends Component {
               </ListItemIcon>
               <ListItemText primary={`${this.props.videoViewCount} views`} />
             </ListItem>
-            <PublishedDateListItem pubDate={this.props.pubDate} />
+            <PublishedDate pubDate={this.props.pubDate} />
             <RecordedDate
               isArchived={isArchived}
               onRecDateChange={this.props.onRecDateChange}
