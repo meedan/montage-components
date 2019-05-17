@@ -4,15 +4,19 @@ import Menu from "material-ui-popup-state/HoverMenu";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import React, { Component } from "react";
 
+import Button from "@material-ui/core/Button";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import ChevronRight from "@material-ui/icons/ChevronRight";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import TextField from "@material-ui/core/TextField";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const ParentPopupState = React.createContext(null);
@@ -48,9 +52,9 @@ const Submenu = withStyles(submenuStyles)(
               <Menu
                 {...bindMenu(popupState)}
                 {...props}
-                // disableAutoFocusItem
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 className={classes.menu}
+                disableAutoFocusItem
                 getContentAnchorEl={null}
                 MenuListProps={{ dense: true }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
@@ -68,41 +72,117 @@ const Submenu = withStyles(submenuStyles)(
 class MoreMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = { status: null };
+    this.state = { newName: "", status: null };
     this.addTo = this.addTo.bind(this);
+    this.onCloseForm = this.onCloseForm.bind(this);
+    this.onCreateNewCollection = this.onCreateNewCollection.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onManageDupes = this.onManageDupes.bind(this);
+    this.onOpenForm = this.onOpenForm.bind(this);
     this.removeFrom = this.removeFrom.bind(this);
   }
 
-  onManageDupes() {
-    console.log("onManageDupes()");
+  onManageDupes(popupState) {
+    popupState.close();
+    this.props.onManageDupes();
   }
 
-  onDelete() {
-    console.log("onDelete()");
+  onDelete(popupState) {
+    popupState.close();
+    this.props.onDelete();
+  }
+
+  onCloseForm() {
+    this.setState({ status: null, newName: "" });
+  }
+
+  onOpenForm() {
+    this.setState({ status: "adding" });
+  }
+
+  onCreateNewCollection() {
+    this.props.onCreateCollection(this.state.newName);
+    this.setState({ status: null, newName: "" });
   }
 
   removeFrom(id) {
-    console.log("onDelete()");
-    const { inCollections } = this.props;
-    const i = inCollections.indexOf(id);
+    const { allocation } = this.props;
+    const i = allocation.indexOf(id);
     if (i > -1) {
-      inCollections.splice(i, 1);
-      this.props.onUpdateCollections(inCollections);
+      allocation.splice(i, 1);
+      this.props.onUpdateAllocation(allocation);
     }
   }
 
   addTo(id) {
-    console.log("onDelete()");
-    const { inCollections } = this.props;
-    const newArr = [...inCollections, id];
-    this.props.onUpdateCollections(newArr);
+    const { allocation } = this.props;
+    const newArr = [...allocation, id];
+    this.props.onUpdateAllocation(newArr);
   }
 
   render() {
-    const { isArchived, collections, inCollections } = this.props;
+    const { isArchived, collections, allocation } = this.props;
     const { status } = this.state;
+
+    const form = (
+      <ClickAwayListener onClickAway={this.onCloseForm}>
+        <Grid container direction="column" spacing={8} wrap="nowrap">
+          <Grid item>
+            <TextField
+              autoFocus
+              fullWidth
+              id="newName"
+              inputProps={{
+                autoComplete: "off"
+              }}
+              label="New collection…"
+              placeholder="Enter name"
+              required
+              type="text"
+              onChange={e =>
+                this.setState({
+                  newName: e.currentTarget.value
+                })
+              }
+              onKeyPress={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  this.onCreateNewCollection();
+                } else if (e.key === "Escape") {
+                  e.preventDefault();
+                  this.onCloseForm();
+                }
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <Grid
+              container
+              direction="row-reverse"
+              justify="space-between"
+              wrap="nowrap"
+            >
+              <Grid item>
+                <Button
+                  color="primary"
+                  disabled={this.state.newName.length === 0}
+                  mini
+                  onClick={this.onCreateNewCollection}
+                  size="small"
+                >
+                  Create
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button mini onClick={this.onCloseForm} size="small">
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </ClickAwayListener>
+    );
 
     return (
       <PopupState variant="popover" popupId="moreMenu">
@@ -123,7 +203,6 @@ class MoreMenu extends Component {
                 {!isArchived
                   ? [
                     <Submenu
-                      dense
                       disableAutoFocusItem
                       open={
                           status === "adding"
@@ -136,7 +215,7 @@ class MoreMenu extends Component {
                       {collections && collections.length > 0
                           ? collections.map(collection => {
                               const { name, id } = collection;
-                              const isCollected = includes(inCollections, id);
+                              const isCollected = includes(allocation, id);
                               return (
                                 <MenuItem
                                   key={id}
@@ -161,17 +240,26 @@ class MoreMenu extends Component {
                       {collections && collections.length > 0 ? (
                         <Divider />
                         ) : null}
-                      <MenuItem>
-                        <ListItemText>New Collection</ListItemText>
+                      <MenuItem
+                        button={!status}
+                        onClick={!status ? this.onOpenForm : null}
+                        style={{ height: "auto" }}
+                      >
+                        <ListItemText>
+                          {status === "adding" ? form : `New Collection`}
+                        </ListItemText>
                       </MenuItem>
                     </Submenu>,
-                    <MenuItem onClick={this.onManageDupes} dense>
+                    <MenuItem
+                      dense
+                      onClick={() => this.onManageDupes(popupState)}
+                    >
                       <ListItemText>Manage duplicates</ListItemText>
                     </MenuItem>,
                     <Divider />
                     ]
                   : null}
-                <MenuItem onClick={this.onDelete} dense>
+                <MenuItem dense onClick={() => this.onDelete(popupState)}>
                   <ListItemText>Remove from Library</ListItemText>
                 </MenuItem>
               </Menu>
@@ -185,17 +273,19 @@ class MoreMenu extends Component {
 export default MoreMenu;
 
 MoreMenu.propTypes = {
-  // videoId: oneOfType([number, string]).isRequired
+  allocation: array,
   collections: array,
-  inCollections: array,
   isArchived: bool,
+  onCreateCollection: func.isRequired,
+  onDelete: func.isRequired,
+  onManageDupes: func.isRequired,
   onTriggerDelete: func.isRequired,
   onTriggerDuplicates: func.isRequired,
-  onUpdateCollections: func.isRequired
+  onUpdateAllocation: func.isRequired
 };
 
 MoreMenu.defaultProps = {
+  allocation: [],
   collections: [],
-  inCollections: [],
   isArchived: false
 };

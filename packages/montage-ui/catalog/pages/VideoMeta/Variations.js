@@ -5,64 +5,46 @@ import { VideoMeta } from "@montage/ui/src/components";
 
 export default () => markdown`
 
-# Video Meta — Basic Variations
-
-## When Keep synchronization hasn’t been initialized yet
+# Video Meta — Variations
 
 ${(
-  <ReactSpecimen>
+  <ReactSpecimen span={3}>
     <VideoMeta
+      allocation={["collectionId1", "collectionId2"]}
       arcDate={null}
       channelTitle="Channel Title"
+      collections={[
+        { name: "A collection", id: "collectionId1" },
+        { name: "Another collection", id: "collectionId2" },
+        { name: "Third collection", id: "collectionId3" }
+      ]}
       currentTime={0}
       favourited
-      videoId="11503"
-      pubDate="2019-03-22T19:14:14.000Z"
-      recDate="1989-01-13T01:22:14.000Z"
-      recDateOverriden
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
       onRecDateChange={(payload, callback) => {
         console.log("onRecDateChange, payload:", payload);
         setTimeout(() => callback(), 2000);
       }}
-      videoDescription="Description"
-      videoBackups={{
-        backupIds: [],
-        backups: []
-      }}
-      videoPlaces={[]}
-      videoViewCount="222"
       onTriggerArchive={(payload, callback) => {
         console.log("onTriggerArchive, payload:", payload);
         setTimeout(() => callback(), 2000);
       }}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
       onTriggerFavourite={(payload, callback) => {
         console.log("onTriggerFavourite, payload:", payload);
         setTimeout(() => callback(), 2000);
       }}
-      //
       onTriggerKeep={callback => {
         console.log("onTriggerKeep");
         setTimeout(() => callback(), 2000);
       }}
-    />
-  </ReactSpecimen>
-)}
-
-## When Keep synchronization failed on at least one item
-
-${(
-  <ReactSpecimen>
-    <VideoMeta
-      arcDate={null}
-      channelTitle="Channel Title"
-      currentTime={0}
-      favourited={false}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
       pubDate="2019-03-22T19:14:14.000Z"
-      recDate={null}
-      recDateOverriden={false}
-      videoDescription="Description"
-      videoPlaces={[]}
-      videoId="11503"
+      recDate="1989-01-13T01:22:14.000Z"
+      recDateOverriden
       videoBackups={{
         backupIds: ["11503"],
         backups: [
@@ -83,41 +65,52 @@ ${(
           }
         ]
       }}
+      videoDescription="Description"
+      videoId="11503"
+      videoPlaces={[]}
       videoViewCount="222"
-      onTriggerArchive={(payload, callback) => {
-        console.log("onTriggerArchive, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      onRecDateChange={(payload, callback) => {
-        console.log("onRecDateChange, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      onTriggerFavourite={(payload, callback) => {
-        console.log("onTriggerFavourite, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      //
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep");
-        setTimeout(() => callback(), 2000);
-      }}
     />
   </ReactSpecimen>
 )}
 
-## When video has at least one Keep-synced location
-
 ${(
-  <ReactSpecimen>
+  <ReactSpecimen span={3}>
     <VideoMeta
-      arcDate={null}
+      allocation={["collectionId1", "collectionId2"]}
+      arcDate="2019-03-22T19:14:14.000Z"
       channelTitle="Channel Title"
+      collections={[
+        { name: "A collection", id: "collectionId1" },
+        { name: "Another collection", id: "collectionId2" },
+        { name: "Third collection", id: "collectionId3" }
+      ]}
       currentTime={0}
-      favourited={false}
+      favourited
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
       pubDate="2019-03-22T19:14:14.000Z"
-      videoDescription="Description"
-      videoPlaces={[]}
-      videoId="11503"
+      recDate="1989-01-13T01:22:14.000Z"
+      recDateOverriden
       videoBackups={{
         backupIds: ["11503"],
         backups: [
@@ -131,31 +124,17 @@ ${(
               },
               {
                 serviceId: "archiveOrg",
-                status: "OK",
+                status: "ERROR",
                 url: "https://archive.org/…/media/…/x/y/z.mp4"
               }
             ]
           }
         ]
       }}
+      videoDescription="Description"
+      videoId="11503"
+      videoPlaces={[]}
       videoViewCount="222"
-      onTriggerArchive={(payload, callback) => {
-        console.log("onTriggerArchive, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      onTriggerFavourite={(payload, callback) => {
-        console.log("onTriggerFavourite, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      //
-      onRecDateChange={(payload, callback) => {
-        console.log("onRecDateChange, payload:", payload);
-        setTimeout(() => callback(), 2000);
-      }}
-      onTriggerKeep={callback => {
-        console.log("onTriggerKeep");
-        setTimeout(() => callback(), 2000);
-      }}
     />
   </ReactSpecimen>
 )}

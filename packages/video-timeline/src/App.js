@@ -209,6 +209,35 @@ class App extends Component {
                       >
                         <Grid item sm={4}>
                           <VideoMeta
+                            allocation={['collectionId1', 'collectionId2']}
+                            collections={[
+                              {
+                                name: 'A collection',
+                                id: 'collectionId1',
+                              },
+                              {
+                                name: 'Another collection',
+                                id: 'collectionId2',
+                              },
+                              {
+                                name: 'Third collection',
+                                id: 'collectionId3',
+                              },
+                            ]}
+                            onCreateCollection={str =>
+                              console.log('onCreateCollection()', str)
+                            }
+                            onDelete={() => console.log('onDelete()')}
+                            onManageDupes={() => console.log('onManageDupes()')}
+                            onTriggerDelete={() =>
+                              console.log('onTriggerDelete()')
+                            }
+                            onTriggerDuplicates={() =>
+                              console.log('onTriggerDuplicates()')
+                            }
+                            onUpdateAllocation={arr =>
+                              console.log('onUpdateAllocation()', arr)
+                            }
                             currentTime={currentTime}
                             pubDate={data.ytVideoData.snippet.publishedAt}
                             channelTitle={data.ytVideoData.snippet.channelTitle}
