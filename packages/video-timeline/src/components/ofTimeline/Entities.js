@@ -2,7 +2,7 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import produce from 'immer';
-import Flatted from 'flatted/esm';
+// import Flatted from 'flatted/esm';
 import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -73,7 +73,7 @@ class Entities extends Component {
     // });
 
     const segments = recomputeSegments(entities, duration);
-    return { entities, segments, playlist };
+    return { segments, playlist };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -127,8 +127,8 @@ class Entities extends Component {
 
   duplicateAsClipHook = (entity, instance, entityType = 'tag') => {
     console.log(entity, instance);
-    const entities = produce(this.state.entities, nextEntities => {
-      let clip = this.state.entities.find(
+    const entities = produce(this.props.entities, nextEntities => {
+      let clip = this.props.entities.find(
         c => c.project_clip.name === getName(entity, entityType)
       );
 
@@ -190,7 +190,7 @@ class Entities extends Component {
     });
 
     const segments = recomputeSegments(entities, this.props.duration);
-    this.setState({ entities, segments });
+    this.setState({ segments });
   };
 
   handlePlay = () => {
@@ -255,7 +255,7 @@ class Entities extends Component {
 
     const j = v.findIndex(d => d === val);
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
       const t = nextEntities[ti];
 
@@ -269,14 +269,14 @@ class Entities extends Component {
 
     values[id] = v;
     const segments = recomputeSegments(entities, duration);
-    this.setState({ entities, segments, values });
+    this.setState({ segments, values });
   };
 
   moveHandle = (id, [startHandle, endHandle], unit = 0) => {
     const { targetInstance } = this.state;
     const { duration } = this.props;
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
       const t = nextEntities[ti];
 
@@ -287,13 +287,13 @@ class Entities extends Component {
     });
 
     const segments = recomputeSegments(entities, duration);
-    this.setState({ entities, segments });
+    this.setState({ segments });
   };
 
   startNewInstance = id => {
     const { currentTime, duration } = this.props;
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
       const t = nextEntities[ti];
 
@@ -314,7 +314,7 @@ class Entities extends Component {
     });
 
     const segments = recomputeSegments(entities, duration);
-    this.setState({ entities, segments });
+    this.setState({ segments });
   };
 
   startNewEntity = () => {
@@ -334,7 +334,7 @@ class Entities extends Component {
       return null;
     })();
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       nextEntities.splice(0, 0, {
         ...entityName,
         id,
@@ -352,15 +352,15 @@ class Entities extends Component {
     });
 
     const segments = recomputeSegments(entities, duration);
-    this.setState({ entities, segments });
+    this.setState({ segments });
   };
 
   stopNewEntity = () => {
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       nextEntities.splice(0, 1);
     });
 
-    this.setState({ entities });
+    // this.setState({ entities });
   };
 
   openInCheck = id => {
@@ -410,8 +410,8 @@ class Entities extends Component {
       return;
     }
 
-    const { entities } = this.state;
-    const { duration } = this.props;
+    // const { entities } = this.state;
+    const { duration, entities } = this.props;
 
     const rect = e.currentTarget.getBoundingClientRect();
 
@@ -478,18 +478,18 @@ class Entities extends Component {
   };
 
   deleteEntity = id => {
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
       nextEntities.splice(i, 1);
     });
 
-    this.setState({ entities });
+    // this.setState({ entities });
   };
 
   updateEntity = (id, name) => {
     const { entityType } = this.props;
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
       nextEntities[i][`project_${entityType}`].name = name;
       //
@@ -502,13 +502,13 @@ class Entities extends Component {
       // }
     });
 
-    this.setState({ entities });
+    // this.setState({ entities });
   };
 
   deleteInstance(id) {
     const { targetInstance } = this.state;
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
       const ii = nextEntities[ti].instances.findIndex(
         i => i.id === targetInstance.id
@@ -518,7 +518,7 @@ class Entities extends Component {
 
     const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      entities,
+      // entities,
       segments,
       targetInstance: null,
       targetEntity: null,
@@ -527,7 +527,7 @@ class Entities extends Component {
 
   duplicateAsClip = id => {
     const { targetInstance } = this.state;
-    const entity = this.state.entities.find(t => t.id === id);
+    const entity = this.props.entities.find(t => t.id === id);
     this.props.duplicateAsClip(entity, targetInstance, this.props.entityType);
     this.setState({
       targetInstance: null,
@@ -538,7 +538,7 @@ class Entities extends Component {
   expandInstance(id) {
     const { targetInstance } = this.state;
 
-    const entities = produce(this.state.entities, nextEntities => {
+    const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
       const i = nextEntities[ti].instances.find(
         i => i.id === targetInstance.id
@@ -550,7 +550,7 @@ class Entities extends Component {
 
     const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      entities,
+      // entities,
       segments,
       targetInstance: null,
       targetEntity: null,
@@ -558,8 +558,8 @@ class Entities extends Component {
   }
 
   render() {
-    const { duration, suggestions, entityType } = this.props;
-    const { entities, playlist } = this.state;
+    const { entities, duration, suggestions, entityType } = this.props;
+    const { playlist } = this.state;
 
     return (
       <TableSection
