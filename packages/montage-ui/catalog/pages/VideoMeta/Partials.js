@@ -10,7 +10,7 @@ import RecordedDate from "@montage/ui/src/components/VideoMeta/of/RecordedDate";
 
 export default () => markdown`
 
-# Video Meta — Partials
+# Partials
 
 ## Fav/Unfav
 
