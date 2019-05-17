@@ -5,7 +5,55 @@ import { VideoMeta } from "@montage/ui/src/components";
 
 export default () => markdown`
 
-# Video Meta — Variations
+# Variations
+
+## Default
+
+${(
+  <ReactSpecimen span={3}>
+    <VideoMeta
+      allocation={[]}
+      arcDate={null}
+      channelTitle="Channel Title"
+      collections={[]}
+      currentTime={0}
+      favourited={false}
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
+      pubDate="2019-03-22T19:14:14.000Z"
+      recDate={null}
+      recDateOverriden={false}
+      videoBackups={{
+        backupIds: [],
+        backups: []
+      }}
+      videoDescription="Description"
+      videoId="11503"
+      videoPlaces={[]}
+      videoViewCount="222"
+    />
+  </ReactSpecimen>
+)}
 
 ${(
   <ReactSpecimen span={3}>
@@ -58,7 +106,7 @@ ${(
               },
               {
                 serviceId: "archiveOrg",
-                status: "ERROR",
+                status: "OK",
                 url: "https://archive.org/…/media/…/x/y/z.mp4"
               }
             ]
@@ -72,6 +120,56 @@ ${(
     />
   </ReactSpecimen>
 )}
+
+
+## Archived
+
+${(
+  <ReactSpecimen span={3}>
+    <VideoMeta
+      allocation={[]}
+      arcDate="2019-03-22T19:14:14.000Z"
+      channelTitle="Channel Title"
+      collections={[]}
+      currentTime={0}
+      favourited={false}
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
+      onRecDateChange={(payload, callback) => {
+        console.log("onRecDateChange, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerArchive={(payload, callback) => {
+        console.log("onTriggerArchive, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
+      onTriggerFavourite={(payload, callback) => {
+        console.log("onTriggerFavourite, payload:", payload);
+        setTimeout(() => callback(), 2000);
+      }}
+      onTriggerKeep={callback => {
+        console.log("onTriggerKeep");
+        setTimeout(() => callback(), 2000);
+      }}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
+      pubDate="2019-03-22T19:14:14.000Z"
+      recDate={null}
+      recDateOverriden={false}
+      videoBackups={{
+        backupIds: [],
+        backups: []
+      }}
+      videoDescription="Description"
+      videoId="11503"
+      videoPlaces={[]}
+      videoViewCount="222"
+    />
+  </ReactSpecimen>
+)}
+
 
 ${(
   <ReactSpecimen span={3}>
@@ -124,7 +222,7 @@ ${(
               },
               {
                 serviceId: "archiveOrg",
-                status: "ERROR",
+                status: "OK",
                 url: "https://archive.org/…/media/…/x/y/z.mp4"
               }
             ]
