@@ -2,7 +2,6 @@ import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
 import produce from 'immer';
-// import Flatted from 'flatted/esm';
 import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -42,11 +41,7 @@ class Entities extends Component {
 
     const playlist = transport === entityType;
 
-    // const persisted = window.localStorage.getItem(entityType);
-    // if (persisted) entities = Flatted.parse(persisted);
-
-    // if (state.entities && state.segments) return { playlist };
-
+    // TODO: move this upstream
     // merge overlapping tag instances
     // entities.forEach(e => {
     //   e.isCreating = false;
@@ -78,12 +73,6 @@ class Entities extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // if (nextState !== this.state)
-    //   window.localStorage.setItem(
-    //     this.props.entityType,
-    //     Flatted.stringify(nextState.entities)
-    //   );
-
     if (nextProps.skip) return false;
 
     if (
@@ -190,8 +179,6 @@ class Entities extends Component {
       }
     });
 
-    // const segments = recomputeSegments(entities, this.props.duration);
-    // this.setState({ segments });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
@@ -211,7 +198,6 @@ class Entities extends Component {
   };
 
   onAfterChange = (v, id) => {
-    // console.log('onAfterChange');
     const { values } = this.state;
     const p = values[id] || [];
 
@@ -225,7 +211,6 @@ class Entities extends Component {
   };
 
   onBeforeChange = (v, id) => {
-    // console.log('onBeforeChange');
     const { values } = this.state;
     const p = values[id] || [];
 
@@ -244,9 +229,7 @@ class Entities extends Component {
   };
 
   onChange = (v, id) => {
-    // console.log('onChange');
     const { values } = this.state;
-    const { duration } = this.props;
     const p = values[id] || [];
 
     let val;
@@ -270,14 +253,13 @@ class Entities extends Component {
     });
 
     values[id] = v;
-    // const segments = recomputeSegments(entities, duration);
     this.setState({ values });
+
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   moveHandle = (id, [startHandle, endHandle], unit = 0) => {
     const { targetInstance } = this.state;
-    const { duration } = this.props;
 
     const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
@@ -289,13 +271,11 @@ class Entities extends Component {
       if (endHandle) i.end_seconds += unit;
     });
 
-    // const segments = recomputeSegments(entities, duration);
-    // this.setState({ segments });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   startNewInstance = id => {
-    const { currentTime, duration } = this.props;
+    const { currentTime } = this.props;
 
     const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === id);
@@ -317,13 +297,11 @@ class Entities extends Component {
       }
     });
 
-    // const segments = recomputeSegments(entities, duration);
-    // this.setState({ segments });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   startNewEntity = () => {
-    const { currentTime, entityType, duration } = this.props;
+    const { currentTime, entityType } = this.props;
     const id = Math.random()
       .toString(36)
       .substring(2);
@@ -356,8 +334,6 @@ class Entities extends Component {
       });
     });
 
-    // const segments = recomputeSegments(entities, duration);
-    // this.setState({ segments });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
@@ -366,7 +342,6 @@ class Entities extends Component {
       nextEntities.splice(0, 1);
     });
 
-    // this.setState({ entities });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
@@ -490,7 +465,6 @@ class Entities extends Component {
       nextEntities.splice(i, 1);
     });
 
-    // this.setState({ entities });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
@@ -500,17 +474,8 @@ class Entities extends Component {
     const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
       nextEntities[i][`project_${entityType}`].name = name;
-      //
-      // if (this.props.entityType === 'tag') {
-      //   nextEntities[i].project_tag.name = name
-      // } else if (this.props.entityType === 'place') {
-      //   nextEntities[i].project_location.name = name
-      // } else if (this.props.entityType === 'clip') {
-      //   nextEntities[i].project_clip.name = name
-      // }
     });
 
-    // this.setState({ entities });
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
@@ -525,10 +490,7 @@ class Entities extends Component {
       nextEntities[ti].instances.splice(ii, 1);
     });
 
-    // const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      // entities,
-      // segments,
       targetInstance: null,
       targetEntity: null,
     });
@@ -559,10 +521,7 @@ class Entities extends Component {
       nextEntities[ti].instances = [i];
     });
 
-    // const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
-      // entities,
-      // segments,
       targetInstance: null,
       targetEntity: null,
     });
