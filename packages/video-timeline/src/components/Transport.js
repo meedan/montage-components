@@ -25,8 +25,6 @@ const Transport = props => {
 
   const { playing, currentTime } = player;
 
-  // console.log(player);
-
   if (playing)
     return (
       <PlaybackControls>

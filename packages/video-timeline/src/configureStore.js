@@ -45,3 +45,13 @@ export const configureAppStore = () => {
 
   return store;
 };
+
+// TODO angular data
+//   // FIXME:
+//   // if (props.$scope) {
+//   //   const data = props.$scope.$parent.ctrl;
+//   //   return {
+//   //     data,
+//   //     duration: data.gdVideoData.duration,
+//   //   };
+//   // }

@@ -13,18 +13,12 @@ class Player extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.player.seekTo !== prevProps.player.seekTo) {
       if (this.props.player.seekTo !== null) {
-        // console.log('seeking', this.props.player.seekTo);
-        this.player.seekTo(this.props.player.seekTo);
+        this.internalPlayer.seekTo(
+          this.props.player.seekTo,
+          true /* this.props.player.seekAhead */
+        );
       }
     }
-
-    // if (
-    //   this.props.player.seekTo === null &&
-    //   prevProps.player.playing === false &&
-    //   this.props.player.playing === true
-    // ) {
-    //   this.props.update({ seekTo: 0, playing: false });
-    // }
   }
 
   handleOnReady = () => {
