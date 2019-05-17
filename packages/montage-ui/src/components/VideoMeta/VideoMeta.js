@@ -118,7 +118,17 @@ class VideoMeta extends Component {
                 onTriggerArchive={this.props.onTriggerArchive}
                 isArchived={isArchived}
               />
-              {/* <MoreMenu {...this.props} /> */}
+              <MoreMenu
+                allocation={this.props.allocation}
+                collections={this.props.collections}
+                isArchived={isArchived}
+                onCreateCollection={this.props.onCreateCollection}
+                onDelete={this.props.onDelete}
+                onManageDupes={this.props.onManageDupes}
+                onTriggerDelete={this.props.onTriggerDelete}
+                onUpdateAllocation={this.props.onUpdateAllocation}
+                videoId={this.props.videoId}
+              />
             </div>
 )}
           title={(
@@ -184,15 +194,22 @@ class VideoMeta extends Component {
 export default withStyles(styles)(VideoMeta);
 
 VideoMeta.propTypes = {
+  allocation: array,
   arcDate: string,
   channelTitle: string.isRequired,
   classes: object,
+  collections: array,
   currentTime: number,
   favourited: bool,
+  onCreateCollection: func.isRequired,
+  onDelete: func.isRequired,
+  onManageDupes: func.isRequired,
   onRecDateChange: func.isRequired,
   onTriggerArchive: func.isRequired,
+  onTriggerDelete: func.isRequired,
   onTriggerFavourite: func.isRequired,
   onTriggerKeep: func.isRequired,
+  onUpdateAllocation: func.isRequired,
   pubDate: string.isRequired,
   recDate: string,
   recDateOverriden: bool,
@@ -203,8 +220,10 @@ VideoMeta.propTypes = {
   videoViewCount: string.isRequired
 };
 VideoMeta.defaultProps = {
+  allocation: [],
   arcDate: null,
   classes: {},
+  collections: [],
   currentTime: 0,
   favourited: null,
   recDate: null,

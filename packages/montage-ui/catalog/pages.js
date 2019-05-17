@@ -14,14 +14,9 @@ const pages = [
     title: "Video Meta",
     pages: [
       {
-        content: require("./pages/VideoMeta/VideoMeta.js"),
+        content: require("./pages/VideoMeta/Variations.js"),
         path: "/video-meta",
-        title: "Standard variations"
-      },
-      {
-        content: require("./pages/VideoMeta/VideoMeta-Archived.js"),
-        path: "/video-meta-archived",
-        title: "Archived variations"
+        title: "Variations"
       },
       {
         content: require("./pages/VideoMeta/Partials.js"),

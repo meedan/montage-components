@@ -67,13 +67,15 @@ ${(
 ${(
   <ReactSpecimen span={3}>
     <MoreMenu
+      allocation={[]}
       collections={[]}
-      inCollections={[]}
       isArchived={false}
-      onCreateCollection={() => console.log("onCreateCollection()")}
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
       onTriggerDelete={() => console.log("onTriggerDelete()")}
       onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
-      onUpdateCollections={arr => console.log("onUpdateCollections()", arr)}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
       videoId="11503"
     />
   </ReactSpecimen>
@@ -82,6 +84,7 @@ ${(
 ${(
   <ReactSpecimen span={3}>
     <MoreMenu
+      allocation={["collectionId1", "collectionId2"]}
       collections={[
         {
           name: "A collection",
@@ -96,12 +99,13 @@ ${(
           id: "collectionId3"
         }
       ]}
-      inCollections={["collectionId1", "collectionId2"]}
       isArchived={false}
-      onCreateCollection={() => console.log("onCreateCollection()")}
+      onCreateCollection={str => console.log("onCreateCollection()", str)}
+      onDelete={() => console.log("onDelete()")}
+      onManageDupes={() => console.log("onManageDupes()")}
       onTriggerDelete={() => console.log("onTriggerDelete()")}
       onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
-      onUpdateCollections={arr => console.log("onUpdateCollections()", arr)}
+      onUpdateAllocation={arr => console.log("onUpdateAllocation()", arr)}
       videoId="11503"
     />
   </ReactSpecimen>
