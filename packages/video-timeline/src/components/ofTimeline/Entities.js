@@ -20,6 +20,7 @@ import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
+import { update } from '../../reducers/data';
 
 const Range = Slider.Range;
 const FPS = 30;
@@ -189,8 +190,9 @@ class Entities extends Component {
       }
     });
 
-    const segments = recomputeSegments(entities, this.props.duration);
-    this.setState({ segments });
+    // const segments = recomputeSegments(entities, this.props.duration);
+    // this.setState({ segments });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   handlePlay = () => {
@@ -268,8 +270,9 @@ class Entities extends Component {
     });
 
     values[id] = v;
-    const segments = recomputeSegments(entities, duration);
-    this.setState({ segments, values });
+    // const segments = recomputeSegments(entities, duration);
+    this.setState({ values });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   moveHandle = (id, [startHandle, endHandle], unit = 0) => {
@@ -286,8 +289,9 @@ class Entities extends Component {
       if (endHandle) i.end_seconds += unit;
     });
 
-    const segments = recomputeSegments(entities, duration);
-    this.setState({ segments });
+    // const segments = recomputeSegments(entities, duration);
+    // this.setState({ segments });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   startNewInstance = id => {
@@ -313,8 +317,9 @@ class Entities extends Component {
       }
     });
 
-    const segments = recomputeSegments(entities, duration);
-    this.setState({ segments });
+    // const segments = recomputeSegments(entities, duration);
+    // this.setState({ segments });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   startNewEntity = () => {
@@ -351,8 +356,9 @@ class Entities extends Component {
       });
     });
 
-    const segments = recomputeSegments(entities, duration);
-    this.setState({ segments });
+    // const segments = recomputeSegments(entities, duration);
+    // this.setState({ segments });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   stopNewEntity = () => {
@@ -361,6 +367,7 @@ class Entities extends Component {
     });
 
     // this.setState({ entities });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   openInCheck = id => {
@@ -484,6 +491,7 @@ class Entities extends Component {
     });
 
     // this.setState({ entities });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   updateEntity = (id, name) => {
@@ -503,6 +511,7 @@ class Entities extends Component {
     });
 
     // this.setState({ entities });
+    this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
   deleteInstance(id) {
@@ -516,13 +525,15 @@ class Entities extends Component {
       nextEntities[ti].instances.splice(ii, 1);
     });
 
-    const segments = recomputeSegments(entities, this.props.duration);
+    // const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
       // entities,
-      segments,
+      // segments,
       targetInstance: null,
       targetEntity: null,
     });
+
+    this.props.update({ [this.props.entitiesyKey]: entities });
   }
 
   duplicateAsClip = id => {
@@ -548,13 +559,15 @@ class Entities extends Component {
       nextEntities[ti].instances = [i];
     });
 
-    const segments = recomputeSegments(entities, this.props.duration);
+    // const segments = recomputeSegments(entities, this.props.duration);
     this.setState({
       // entities,
-      segments,
+      // segments,
       targetInstance: null,
       targetEntity: null,
     });
+
+    this.props.update({ [this.props.entitiesyKey]: entities });
   }
 
   render() {
@@ -752,6 +765,6 @@ const MemoizedRange = React.memo(props => <Range {...props} />);
 
 export default connect(
   null,
-  { play, pause, seekTo }
+  { play, pause, seekTo, update }
 )(Entities);
 // )(React.memo(props => <Entities {...props} />));

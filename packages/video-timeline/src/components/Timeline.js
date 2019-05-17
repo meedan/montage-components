@@ -280,6 +280,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoClips}
+            entitiesyKey={'videoClips'}
             playing={playing}
             transport={transport}
             suggestions={this.props.data.project.projectclips}
@@ -302,6 +303,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoTags}
+            entitiesyKey={'videoTags'}
             playing={playing}
             transport={transport}
             suggestions={this.props.data.project.projecttags}
@@ -324,6 +326,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoPlaces}
+            entitiesyKey={'videoPlaces'}
             playing={playing}
             transport={transport}
             suggestions={this.props.data.project.projectplaces}
