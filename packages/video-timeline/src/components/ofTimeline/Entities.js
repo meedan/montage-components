@@ -41,47 +41,47 @@ class Entities extends Component {
 
     const playlist = transport === entityType;
 
-    const persisted = window.localStorage.getItem(entityType);
-    if (persisted) entities = Flatted.parse(persisted);
+    // const persisted = window.localStorage.getItem(entityType);
+    // if (persisted) entities = Flatted.parse(persisted);
 
-    if (state.entities && state.segments) return { playlist };
+    // if (state.entities && state.segments) return { playlist };
 
     // merge overlapping tag instances
-    entities.forEach(e => {
-      e.isCreating = false;
-      e.instances = e.instances
-        .sort((j, i) => j.start_seconds - i.start_seconds)
-        .reduce((acc = [], i) => {
-          const j = acc.pop();
-
-          if (j) {
-            if (
-              j.start_seconds <= i.start_seconds &&
-              i.start_seconds < j.end_seconds
-            ) {
-              j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
-              j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
-              acc.push(j);
-              return acc;
-            }
-
-            acc.push(j);
-          }
-
-          return [...acc, i];
-        }, []);
-    });
+    // entities.forEach(e => {
+    //   e.isCreating = false;
+    //   e.instances = e.instances
+    //     .sort((j, i) => j.start_seconds - i.start_seconds)
+    //     .reduce((acc = [], i) => {
+    //       const j = acc.pop();
+    //
+    //       if (j) {
+    //         if (
+    //           j.start_seconds <= i.start_seconds &&
+    //           i.start_seconds < j.end_seconds
+    //         ) {
+    //           j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+    //           j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+    //           acc.push(j);
+    //           return acc;
+    //         }
+    //
+    //         acc.push(j);
+    //       }
+    //
+    //       return [...acc, i];
+    //     }, []);
+    // });
 
     const segments = recomputeSegments(entities, duration);
     return { entities, segments, playlist };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState !== this.state)
-      window.localStorage.setItem(
-        this.props.entityType,
-        Flatted.stringify(nextState.entities)
-      );
+    // if (nextState !== this.state)
+    //   window.localStorage.setItem(
+    //     this.props.entityType,
+    //     Flatted.stringify(nextState.entities)
+    //   );
 
     if (nextProps.skip) return false;
 
