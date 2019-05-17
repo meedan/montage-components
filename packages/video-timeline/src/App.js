@@ -24,28 +24,6 @@ import Transport from './components/Transport';
 
 import hamock from './hamock.png';
 
-// import baseData from './data/baseData';
-// import timelineData from './data/timelineData';
-// import newData from './data/newData';
-//
-// const DATA = produce(
-//   {
-//     ...baseData, // Base data from Laurian’s account
-//     ...timelineData, // Base data from Laurian’s account
-//     ...newData, // Add new data missing in the API
-//     project: {
-//       ...baseData.project,
-//       projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
-//       projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
-//     },
-//   },
-//   () => {}
-// );
-//
-// console.group('Data:');
-// console.log(DATA);
-// console.groupEnd();
-
 const Layout = styled.div`
   align-items: center;
   bottom: 0;
@@ -105,23 +83,10 @@ class App extends Component {
   state = {
     anchorElNext: null,
     anchorElPrev: null,
-    // data: DATA,
     map: false,
     mode: 'timeline',
   };
 
-  // static getDerivedStateFromProps(props, state) {
-  //   // FIXME:
-  //   // if (props.$scope) {
-  //   //   const data = props.$scope.$parent.ctrl;
-  //   //   return {
-  //   //     data,
-  //   //     duration: data.gdVideoData.duration,
-  //   //   };
-  //   // }
-  //
-  //   return {};
-  // }
   componentDidMount = () => {
     window.addEventListener('resize', this.updateDimensions.bind(this));
     this.updateDimensions();
@@ -167,10 +132,8 @@ class App extends Component {
   };
 
   render() {
-    // const { classes, player } = this.props;
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
-    // const { data, map } = this.state;
     const { map } = this.state;
 
     console.group('APP');
@@ -370,7 +333,6 @@ class App extends Component {
   }
 }
 
-// export default withStyles(styles)(App);
 export default connect(({ player, data }) => ({ player, data }))(
   withStyles(styles)(withSnackbar(App))
 );
