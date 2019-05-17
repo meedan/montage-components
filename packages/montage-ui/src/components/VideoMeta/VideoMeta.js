@@ -23,7 +23,7 @@ import { color } from "@montage/ui/src/config";
 import Archive from "./of/Archive";
 import Favourite from "./of/Favourite";
 import Keep from "./of/Keep";
-import MoreMenuItem from "./of/MoreMenuItem";
+import MoreMenu from "./of/MoreMenu";
 import PublishedDate from "./of/PublishedDate";
 import RecordedDate from "./of/RecordedDate";
 
@@ -118,7 +118,7 @@ class VideoMeta extends Component {
                 onTriggerArchive={this.props.onTriggerArchive}
                 isArchived={isArchived}
               />
-              {/* <MoreMenuItem {...this.props} /> */}
+              {/* <MoreMenu {...this.props} /> */}
             </div>
 )}
           title={(

@@ -4,6 +4,7 @@ import { markdown, ReactSpecimen } from "@catalog/core";
 import Archive from "@montage/ui/src/components/VideoMeta/of/Archive";
 import Favourite from "@montage/ui/src/components/VideoMeta/of/Favourite";
 import Keep from "@montage/ui/src/components/VideoMeta/of/Keep";
+import MoreMenu from "@montage/ui/src/components/VideoMeta/of/MoreMenu";
 import PublishedDate from "@montage/ui/src/components/VideoMeta/of/PublishedDate";
 import RecordedDate from "@montage/ui/src/components/VideoMeta/of/RecordedDate";
 
@@ -57,6 +58,51 @@ ${(
         setTimeout(() => callback(), 2000);
       }}
       isArchived
+    />
+  </ReactSpecimen>
+)}
+
+## More menu
+
+${(
+  <ReactSpecimen span={3}>
+    <MoreMenu
+      collections={[]}
+      inCollections={[]}
+      isArchived={false}
+      onCreateCollection={() => console.log("onCreateCollection()")}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
+      onUpdateCollections={arr => console.log("onUpdateCollections()", arr)}
+      videoId="11503"
+    />
+  </ReactSpecimen>
+)}
+
+${(
+  <ReactSpecimen span={3}>
+    <MoreMenu
+      collections={[
+        {
+          name: "A collection",
+          id: "collectionId1"
+        },
+        {
+          name: "Another collection",
+          id: "collectionId2"
+        },
+        {
+          name: "Third collection",
+          id: "collectionId3"
+        }
+      ]}
+      inCollections={["collectionId1", "collectionId2"]}
+      isArchived={false}
+      onCreateCollection={() => console.log("onCreateCollection()")}
+      onTriggerDelete={() => console.log("onTriggerDelete()")}
+      onTriggerDuplicates={() => console.log("onTriggerDuplicates()")}
+      onUpdateCollections={arr => console.log("onUpdateCollections()", arr)}
+      videoId="11503"
     />
   </ReactSpecimen>
 )}
