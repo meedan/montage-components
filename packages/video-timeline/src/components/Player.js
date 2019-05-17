@@ -18,13 +18,13 @@ class Player extends Component {
       }
     }
 
-    if (
-      this.props.player.seekTo === null &&
-      prevProps.player.playing === false &&
-      this.props.player.playing === true
-    ) {
-      this.props.update({ seekTo: 0, playing: false });
-    }
+    // if (
+    //   this.props.player.seekTo === null &&
+    //   prevProps.player.playing === false &&
+    //   this.props.player.playing === true
+    // ) {
+    //   this.props.update({ seekTo: 0, playing: false });
+    // }
   }
 
   handleOnReady = () => {
@@ -54,7 +54,7 @@ class Player extends Component {
         config={{
           youtube: {
             playerVars: {
-              autoplay: 1,
+              autoplay: 0,
             },
             preload: true,
           },
