@@ -98,8 +98,8 @@ class TimelineComments extends Component {
         title="Comments"
         actions={
           <Tooltip title="New comment">
-            <IconButton>
-              <AddIcon fontSize="small" onClick={this.startNewCommentThread} />
+            <IconButton onClick={this.startNewCommentThread}>
+              <AddIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         }

@@ -209,24 +209,25 @@ class MoreMenu extends Component {
                             ? true
                             : popupState._childPopupState
                         }
-                      popupId="addToCollection"
+                      popupId="allocationPopover"
                       title="Add to collection…"
+                      key="allocationPopover"
                     >
                       {collections && collections.length > 0
                           ? collections.map(collection => {
                               const { name, id } = collection;
-                              const isCollected = includes(allocation, id);
+                              const isAllocated = includes(allocation, id);
                               return (
                                 <MenuItem
                                   key={id}
                                   onClick={() =>
-                                    isCollected
+                                    isAllocated
                                       ? this.removeFrom(id)
                                       : this.addTo(id)
                                   }
                                 >
                                   <ListItemIcon>
-                                    {isCollected ? (
+                                    {isAllocated ? (
                                       <CheckBoxIcon fontSize="small" />
                                     ) : (
                                       <CheckBoxOutlineBlankIcon fontSize="small" />
@@ -238,12 +239,13 @@ class MoreMenu extends Component {
                             })
                           : null}
                       {collections && collections.length > 0 ? (
-                        <Divider />
+                        <Divider key="allocationPopoverDivider" />
                         ) : null}
                       <MenuItem
                         button={!status}
                         onClick={!status ? this.onOpenForm : null}
                         style={{ height: "auto" }}
+                        key="newCollectionItem"
                       >
                         <ListItemText>
                           {status === "adding" ? form : `New Collection`}
@@ -253,10 +255,11 @@ class MoreMenu extends Component {
                     <MenuItem
                       dense
                       onClick={() => this.onManageDupes(popupState)}
+                      key="manageDupesItem"
                     >
                       <ListItemText>Manage duplicates</ListItemText>
                     </MenuItem>,
-                    <Divider />
+                    <Divider key="divider" />
                     ]
                   : null}
                 <MenuItem dense onClick={() => this.onDelete(popupState)}>
