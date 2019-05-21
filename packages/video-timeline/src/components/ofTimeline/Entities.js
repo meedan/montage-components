@@ -474,6 +474,7 @@ class Entities extends Component {
     const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
       nextEntities[i][`project_${entityType}`].name = name;
+      delete nextEntities[i].isCreating;
     });
 
     this.props.update({ [this.props.entitiesyKey]: entities });
@@ -595,7 +596,9 @@ class Entities extends Component {
                       entityId={entity.id}
                       entityName={getName(entity, entityType)}
                       entityType={entityType}
-                      isCreating={entity.isCreating}
+                      isCreating={
+                        entity.isCreating || entity.isCreating !== undefined
+                      }
                       startNewInstance={() => this.startNewInstance(entity.id)}
                       stopNewEntity={this.stopNewEntity}
                       suggestions={suggestions}
