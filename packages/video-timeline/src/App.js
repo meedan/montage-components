@@ -191,13 +191,10 @@ class App extends Component {
                               console.log('onCreateCollection()', str)
                             }
                             onDelete={() => console.log('onDelete()')}
-                            onManageDupes={() => console.log('onManageDupes()')}
                             onTriggerDelete={() =>
                               console.log('onTriggerDelete()')
                             }
-                            onTriggerDuplicates={() =>
-                              console.log('onTriggerDuplicates()')
-                            }
+                            onManageDupes={() => console.log('onManageDupes()')}
                             onUpdateAllocation={arr =>
                               console.log('onUpdateAllocation()', arr)
                             }
@@ -287,9 +284,7 @@ class App extends Component {
                       selected: classes.TabSelected,
                     }}
                     value={'transcript'}
-                  >
-                    Transcript
-                  </Tab>
+                  />
                   <Tab
                     onClick={() => this.setState({ mode: 'timeline' })}
                     selected={this.state.mode === 'timeline'}

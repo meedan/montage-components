@@ -27,7 +27,7 @@ class EntityInstanceHandle extends Component {
     e.stopPropagation();
   }
   render() {
-    const { classes, value } = this.props;
+    const { classes, open, value } = this.props;
     return (
       <>
         <Tooltip placement="top" title={formatTime(value)} enterDelay={350}>
@@ -45,6 +45,7 @@ class EntityInstanceHandle extends Component {
             horizontal: 'center',
           }}
           disableRestoreFocus
+          open={open}
         >
           <div className={classes.Toolbar}>
             <Tooltip placement="bottom" title="Move backward">

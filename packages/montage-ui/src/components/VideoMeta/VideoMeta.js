@@ -1,4 +1,13 @@
-import { array, bool, func, number, object, shape, string } from "prop-types";
+import {
+  array,
+  bool,
+  func,
+  number,
+  object,
+  oneOfType,
+  shape,
+  string
+} from "prop-types";
 import Flatted from "flatted/esm";
 import React, { Component } from "react";
 import styled from "styled-components";
@@ -215,7 +224,7 @@ VideoMeta.propTypes = {
   recDateOverriden: bool,
   videoBackups: shape({ videoBackupIds: array, videoBackups: array }),
   videoDescription: string.isRequired,
-  videoId: string.isRequired,
+  videoId: oneOfType([string, number]).isRequired,
   videoPlaces: array,
   videoViewCount: string.isRequired
 };

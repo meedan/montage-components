@@ -121,13 +121,11 @@ function CommentThread(props) {
         );
       })}
       {isActionable ? (
-        <>
-          <ListItem>
-            <ListItemText>
-              <CommentForm onCancel={closePopup} onSubmit={handleThreadReply} />
-            </ListItemText>
-          </ListItem>
-        </>
+        <ListItem>
+          <ListItemText>
+            <CommentForm onCancel={closePopup} onSubmit={handleThreadReply} />
+          </ListItemText>
+        </ListItem>
       ) : null}
     </List>
   );
