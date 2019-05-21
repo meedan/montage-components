@@ -1,4 +1,12 @@
-import { array, bool, func, string, shape } from "prop-types";
+import {
+  array,
+  bool,
+  func,
+  number,
+  oneOfType,
+  shape,
+  string
+} from "prop-types";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { filter, some } from "lodash";
 import PopupState, { bindPopover } from "material-ui-popup-state";
@@ -159,7 +167,7 @@ KeepStatus.propTypes = {
     videoBackups: array
   }),
   onTriggerKeep: func.isRequired,
-  videoId: string.isRequired
+  videoId: oneOfType([string, number]).isRequired
 };
 
 KeepStatus.defaultProps = {

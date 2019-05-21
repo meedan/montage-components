@@ -1,4 +1,4 @@
-import { array, bool, func, number, oneOfType, string } from "prop-types";
+import { array, bool, func } from "prop-types";
 import { includes } from "lodash";
 import Menu from "material-ui-popup-state/HoverMenu";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
@@ -278,9 +278,8 @@ MoreMenu.propTypes = {
   isArchived: bool,
   onCreateCollection: func.isRequired,
   onDelete: func.isRequired,
-  onManageDupes: func.isRequired,
   onTriggerDelete: func.isRequired,
-  onTriggerDuplicates: func.isRequired,
+  onManageDupes: func.isRequired,
   onUpdateAllocation: func.isRequired
 };
 

@@ -622,7 +622,15 @@ class Entities extends Component {
                         <MemoizedRange
                           defaultValue={arr}
                           handle={handleProps => (
-                            <EntityInstanceHandle {...handleProps} />
+                            <EntityInstanceHandle
+                              {...handleProps}
+                              open={
+                                this.state.targetEntity &&
+                                this.state.targetInstance
+                                  ? true
+                                  : false
+                              }
+                            />
                           )}
                           key={entity.id}
                           max={duration}
