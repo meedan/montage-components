@@ -24,6 +24,21 @@ const pages = [
         title: "Partials"
       }
     ]
+  },
+  {
+    title: "Range slider",
+    pages: [
+      {
+        content: require("./pages/RangeSlider/Variations.js"),
+        path: "/range-slider",
+        title: "Variations"
+      }
+      // {
+      //   content: require("./pages/VideoMeta/Partials.js"),
+      //   path: "/video-meta-partials",
+      //   title: "Partials"
+      // }
+    ]
   }
 ];
 
