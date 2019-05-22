@@ -1,8 +1,12 @@
 import { number, shape, object } from "prop-types";
 import React, { Component } from "react";
 import styled from "styled-components";
+import PopupState from "material-ui-popup-state";
 
 import { MeTooltip, formatSeconds } from "@montage/ui";
+
+import HandlePopover from "./HandlePopover";
+import InstancePopover from "./InstancePopover";
 
 const RSInstance = styled(({ ...props }) => <div {...props} />)`
   backface-visibility: visible;
@@ -13,17 +17,16 @@ const RSInstance = styled(({ ...props }) => <div {...props} />)`
 `;
 
 const RSHandle = styled(({ pos, isVisible, ...props }) => <div {...props} />)`
-  ${({ pos }) => (pos === "start" ? `left: -2px;` : `right: -2px;`)};
+  ${({ pos }) => (pos === "start" ? `left: 0` : `right: 0;`)};
   background: rgba(71, 123, 181, 1);
   bottom: 0;
   cursor: ew-resize;
   opacity: ${({ isVisible }) => (isVisible ? "1" : "0")};
   position: absolute;
   top: 0;
-  transform: ${({ isVisible, pos }) =>
-    isVisible ? `translateX(${pos === "start" ? `-2px` : `2px`})` : `none`};
+  transform: ${({ pos }) => `translateX(${pos === "start" ? `-50%` : `50%`})`};
   transition: transform 250ms, opacity 250ms;
-  width: 4px;
+  width: 3px;
   z-index: 1;
 `;
 
@@ -35,10 +38,18 @@ class Instance extends Component {
       dragging: null,
       overHandle: null
     };
+    this.onInstanceEnter = this.onInstanceEnter.bind(this);
+    this.onInstanceLeave = this.onInstanceLeave.bind(this);
+    this.onHandleEnter = this.onHandleEnter.bind(this);
+    this.onHandleLeave = this.onHandleLeave.bind(this);
+
     this.onHandleDrag = this.onHandleDrag.bind(this);
     this.onHandleDragEnd = this.onHandleDragEnd.bind(this);
     this.onHandleDragStart = this.onHandleDragStart.bind(this);
+    this.onHandleMouseDown = this.onHandleMouseDown.bind(this);
+
     this.updateEdge = this.updateEdge.bind(this);
+    this.updateRef = this.updateRef.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +58,37 @@ class Instance extends Component {
       start: this.props.start
     });
     return null;
+  }
+
+  onInstanceEnter(e) {
+    console.log("onInstanceEnter", e.target);
+    this.setState({ overInstance: true });
+    this.updateRef(e.target);
+  }
+
+  onInstanceLeave() {
+    console.log("onInstanceLeave", null);
+    this.setState({ overInstance: null });
+  }
+
+  onHandleEnter(e) {
+    console.log("onHandleEnter", e.target);
+    this.setState({ overHandle: true });
+    this.updateRef(e.target);
+  }
+
+  onHandleLeave() {
+    console.log("onHandleLeave", null);
+    this.setState({ overHandle: null });
+    this.updateRef(null);
+  }
+
+  onHandleMouseDown(e, edge) {
+    this.setState({
+      dragging: edge,
+      overHandle: edge,
+      overInstance: true
+    });
   }
 
   onHandleDragStart(e, edge) {
@@ -105,6 +147,11 @@ class Instance extends Component {
     return null;
   }
 
+  updateRef(el) {
+    this.instanceRef = el;
+    this.setState({ instanceRef: this.instanceRef });
+  }
+
   render() {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
@@ -126,6 +173,21 @@ class Instance extends Component {
       }
     ];
 
+    // console.group("Instance.js");
+    // console.log(this.instanceRef);
+    // console.groupEnd();
+
+    const renderPopoverContent = () => {
+      if (this.state.dragging || !this.state.instanceRef) return null;
+      if (this.state.overHandle) {
+        return <HandlePopover instanceRef={this.instanceRef} />;
+      }
+      if (this.state.overInstance) {
+        return <InstancePopover instanceRef={this.instanceRef} />;
+      }
+      return null;
+    };
+
     return (
       <RSInstance
         style={{
@@ -133,8 +195,8 @@ class Instance extends Component {
           right: `${x2}px`,
           zIndex: this.state.overInstance ? `1000` : `default`
         }}
-        onMouseEnter={() => this.setState({ overInstance: true })}
-        onMouseLeave={() => this.setState({ overInstance: null })}
+        onMouseEnter={e => this.onInstanceEnter(e)}
+        onMouseLeave={this.onInstanceLeave}
       >
         {handles.map(handle => {
           const { value, edge } = handle;
@@ -148,8 +210,9 @@ class Instance extends Component {
               onDrag={e => this.onHandleDrag(e, edge)}
               onDragEnd={e => this.onHandleDragEnd(e, edge)}
               onDragStart={e => this.onHandleDragStart(e, edge)}
-              onMouseEnter={() => this.setState({ overHandle: edge })}
-              onMouseLeave={() => this.setState({ overHandle: null })}
+              onMouseDown={e => this.onHandleMouseDown(e, edge)}
+              onMouseEnter={e => this.onHandleEnter(e, edge)}
+              onMouseLeave={e => this.onHandleLeave(e, edge)}
               pos={edge}
             >
               <MeTooltip
@@ -162,6 +225,7 @@ class Instance extends Component {
             </RSHandle>
           );
         })}
+        {renderPopoverContent()}
       </RSInstance>
     );
   }
