@@ -1,3 +1,4 @@
+export { default as RangeSlider } from "./RangeSlider/RangeSlider";
 export { default as VideoMeta } from "./VideoMeta/VideoMeta";
 
 export { default as CheckIcon } from "./Icons/Check";
