@@ -1,7 +1,7 @@
 import { number, shape, object } from "prop-types";
-import React, { Component } from "react";
+import React, { createRef, Component } from "react";
 import styled from "styled-components";
-import PopupState from "material-ui-popup-state";
+import PopupState, { bindHover, bindPopover } from "material-ui-popup-state";
 
 import { MeTooltip, formatSeconds } from "@montage/ui";
 
@@ -28,6 +28,9 @@ const RSHandle = styled(({ pos, isVisible, ...props }) => <div {...props} />)`
   transition: transform 250ms, opacity 250ms;
   width: 3px;
   z-index: 1;
+  &:hover {
+    opacity: 1 !important;
+  }
 `;
 
 class Instance extends Component {
@@ -46,10 +49,11 @@ class Instance extends Component {
     this.onHandleDrag = this.onHandleDrag.bind(this);
     this.onHandleDragEnd = this.onHandleDragEnd.bind(this);
     this.onHandleDragStart = this.onHandleDragStart.bind(this);
-    this.onHandleMouseDown = this.onHandleMouseDown.bind(this);
 
     this.updateEdge = this.updateEdge.bind(this);
     this.updateRef = this.updateRef.bind(this);
+
+    this.instanceRef = createRef();
   }
 
   componentDidMount() {
@@ -79,16 +83,11 @@ class Instance extends Component {
 
   onHandleLeave() {
     console.log("onHandleLeave", null);
-    this.setState({ overHandle: null });
-    this.updateRef(null);
-  }
-
-  onHandleMouseDown(e, edge) {
-    this.setState({
-      dragging: edge,
-      overHandle: edge,
-      overInstance: true
-    });
+    this.setState(prevState => ({
+      overHandle: null,
+      overInstance: prevState.overInstance ? prevState.overInstance : null
+    }));
+    this.updateRef(this.state.overInstance ? this.instanceRef.current : null);
   }
 
   onHandleDragStart(e, edge) {
@@ -99,6 +98,8 @@ class Instance extends Component {
     const img = document.createElement("img");
     img.src =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAFoEvQfAAAABGdBTUEAALGPC/xhBQAAAAtJREFUCB1jYAACAAAFAAGNu5vzAAAAAElFTkSuQmCC";
+    e.dataTransfer.dropEffect = "none";
+    e.dataTransfer.effectAllowed = "none";
     e.dataTransfer.setData("text/plain", "foo");
     e.dataTransfer.setDragImage(img, 0, 0);
   }
@@ -148,8 +149,7 @@ class Instance extends Component {
   }
 
   updateRef(el) {
-    this.instanceRef = el;
-    this.setState({ instanceRef: this.instanceRef });
+    this.setState({ instanceRef: el });
   }
 
   render() {
@@ -177,56 +177,77 @@ class Instance extends Component {
     // console.log(this.instanceRef);
     // console.groupEnd();
 
-    const renderPopoverContent = () => {
+    const renderPopoverContent = popupState => {
       if (this.state.dragging || !this.state.instanceRef) return null;
       if (this.state.overHandle) {
-        return <HandlePopover instanceRef={this.instanceRef} />;
+        return (
+          <HandlePopover
+            instanceRef={this.state.instanceRef}
+            popupState={popupState}
+          />
+        );
       }
       if (this.state.overInstance) {
-        return <InstancePopover instanceRef={this.instanceRef} />;
+        return (
+          <InstancePopover
+            instanceRef={this.state.instanceRef}
+            instancePopoverChildren={<>Hello</>}
+            popupState={popupState}
+          />
+        );
       }
       return null;
     };
 
     return (
-      <RSInstance
-        style={{
-          left: `${x1}px`,
-          right: `${x2}px`,
-          zIndex: this.state.overInstance ? `1000` : `default`
-        }}
-        onMouseEnter={e => this.onInstanceEnter(e)}
-        onMouseLeave={this.onInstanceLeave}
-      >
-        {handles.map(handle => {
-          const { value, edge } = handle;
-          return (
-            <RSHandle
-              draggable
-              isVisible={
-                this.state.overInstance || this.state.dragging === edge
-              }
-              key={edge}
-              onDrag={e => this.onHandleDrag(e, edge)}
-              onDragEnd={e => this.onHandleDragEnd(e, edge)}
-              onDragStart={e => this.onHandleDragStart(e, edge)}
-              onMouseDown={e => this.onHandleMouseDown(e, edge)}
-              onMouseEnter={e => this.onHandleEnter(e, edge)}
-              onMouseLeave={e => this.onHandleLeave(e, edge)}
-              pos={edge}
-            >
-              <MeTooltip
-                isVisible={
-                  this.state.overHandle === edge || this.state.dragging === edge
-                }
-              >
-                {formatSeconds(value)}
-              </MeTooltip>
-            </RSHandle>
-          );
-        })}
-        {renderPopoverContent()}
-      </RSInstance>
+      <PopupState variant="popover" popupId="InstancePopover">
+        {popupState => (
+          <RSInstance
+            style={{
+              left: `${x1}px`,
+              right: `${x2}px`,
+              zIndex: this.state.overInstance ? `1000` : `default`
+            }}
+            onMouseEnter={e => this.onInstanceEnter(e)}
+            onMouseLeave={this.onInstanceLeave}
+            onMouseMove={e => this.updateRef(e.target)}
+          >
+            <div style={{ height: "28px" }} ref={this.instanceRef}>
+              {handles.map(handle => {
+                const { value, edge } = handle;
+                return (
+                  <RSHandle
+                    draggable
+                    isVisible={
+                      this.state.overInstance || this.state.dragging === edge
+                    }
+                    key={edge}
+                    onDrag={e => this.onHandleDrag(e, edge)}
+                    onDragEnd={e => this.onHandleDragEnd(e, edge)}
+                    onDragStart={e => this.onHandleDragStart(e, edge)}
+                    onMouseEnter={e => this.onHandleEnter(e, edge)}
+                    onMouseLeave={e => this.onHandleLeave(e, edge)}
+                    pos={edge}
+                  >
+                    <MeTooltip
+                      isVisible={
+                        this.state.overHandle === edge ||
+                        this.state.dragging === edge
+                      }
+                    >
+                      {formatSeconds(value)}
+                    </MeTooltip>
+                  </RSHandle>
+                );
+              })}
+              {renderPopoverContent(popupState)}
+              <style scoped>
+                {"#InstancePopover { pointer-events: none; }"}
+              </style>
+            </div>
+          </RSInstance>
+        )}
+      </PopupState>
     );
   }
 }

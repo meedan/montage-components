@@ -1,20 +1,12 @@
 import React from "react";
-
-import { withStyles } from "@material-ui/core/styles";
-import Popover from "@material-ui/core/Popover";
-
-const styles = theme => ({
-  BackdropRoot: {
-    pointerEvents: "none"
-  }
-});
+import Popover from "material-ui-popup-state/HoverPopover";
+import { bindPopover } from "material-ui-popup-state";
 
 const InstancePopover = props => {
-  // console.log("InstancePopover", props.instanceRef);
-  const { classes } = props;
   return (
     <>
       <Popover
+        {...bindPopover(props.popupState)}
         anchorEl={props.instanceRef}
         anchorReference="anchorEl"
         anchorOrigin={{
@@ -27,22 +19,17 @@ const InstancePopover = props => {
           horizontal: "center"
         }}
         open
-        BackdropProps={{
-          classes: {
-            root: classes.BackdropRoot
-          },
-          invisible: true
-        }}
       >
-        Instance Popover
+        {props.instancePopoverChildren}
       </Popover>
-      <style scoped>{"#InstancePopover { pointer-events: none; }"}</style>
     </>
   );
 };
 
-export default withStyles(styles)(InstancePopover);
+export default InstancePopover;
 
 InstancePopover.propTypes = {
+  // instancePopoverChildren: ,
   // instanceRef: ,
+  // popupState: ,
 };

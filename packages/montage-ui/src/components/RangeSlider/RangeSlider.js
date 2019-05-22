@@ -69,7 +69,11 @@ class RangeSlider extends Component {
     const { coords, instances, wrapper } = this.state;
 
     return (
-      <RSWrapper onDrop={e => e.preventDefault()} ref={this.wrapperRef}>
+      <RSWrapper
+        onDragOver={e => e.preventDefault()}
+        onDrop={e => e.preventDefault()}
+        ref={this.wrapperRef}
+      >
         {instances.map((instance, i) => {
           const { id, start_seconds, end_seconds } = instance;
           return (
