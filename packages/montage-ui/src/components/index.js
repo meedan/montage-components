@@ -1,3 +1,5 @@
+export { default as MeTooltip } from "./Tooltip/Tooltip";
+
 export { default as RangeSlider } from "./RangeSlider/RangeSlider";
 export { default as VideoMeta } from "./VideoMeta/VideoMeta";
 
