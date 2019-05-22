@@ -10,6 +10,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { CheckIcon, CutIcon } from '@montage/ui/src/components';
+import { RangeSlider } from '@montage/ui';
 
 import EntityControls from './ofEntities/EntityControls';
 import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
@@ -556,7 +557,7 @@ class Entities extends Component {
             </Tooltip>
           </>
         }
-        onMouseLeave={this.hideInstancePopover}
+        // onMouseLeave={this.hideInstancePopover}
       >
         {entities
           ? entities.map((entity, i) => {
@@ -608,18 +609,23 @@ class Entities extends Component {
                   rightColContent={
                     <>
                       <EntitySliderWrapper
-                        onMouseMove={
-                          !this.state.isDragging
-                            ? e => this.showInstancePopover(e, entity.id)
-                            : this.detecInstancePopoverOff
-                        }
-                        onMouseOver={
-                          !this.state.isDragging
-                            ? e => this.showInstancePopover(e, entity.id)
-                            : this.detecInstancePopoverOff
-                        }
+                      // onMouseMove={
+                      //   !this.state.isDragging
+                      //     ? e => this.showInstancePopover(e, entity.id)
+                      //     : this.detecInstancePopoverOff
+                      // }
+                      // onMouseOver={
+                      //   !this.state.isDragging
+                      //     ? e => this.showInstancePopover(e, entity.id)
+                      //     : this.detecInstancePopoverOff
+                      // }
                       >
-                        <MemoizedRange
+                        <RangeSlider
+                          instances={instances}
+                          duration={duration}
+                        />
+
+                        {/* <MemoizedRange
                           defaultValue={arr}
                           handle={handleProps => (
                             <EntityInstanceHandle
@@ -643,7 +649,7 @@ class Entities extends Component {
                           pushable
                           trackStyle={trackStyle}
                           value={arr}
-                        />
+                        /> */}
                       </EntitySliderWrapper>
                       <EntityInstancePopover
                         anchorPosition={this.state.anchorPosition}
@@ -656,7 +662,7 @@ class Entities extends Component {
                         instance={this.state.targetInstance}
                         isOverHandle={this.state.isOverHandle}
                         onDelete={() => this.deleteInstance(entity.id)}
-                        onExit={this.hideInstancePopover}
+                        // onExit={this.hideInstancePopover}
                         onExtend={() => this.expandInstance(entity.id)}
                         moveForward={h =>
                           this.moveHandle(entity.id, h, 1 / FPS)
