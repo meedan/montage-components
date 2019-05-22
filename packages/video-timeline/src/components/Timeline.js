@@ -13,7 +13,7 @@ import Entities from './ofTimeline/Entities';
 import formatTime from './ofTimeline/formatTime';
 import TimelineComments from './ofTimeline/Comments';
 
-import { color } from '@montage/ui';
+import { color, MeTooltip } from '@montage/ui';
 
 import { play, pause, seekTo } from '../reducers/player';
 
@@ -59,18 +59,6 @@ const PlayheadMarker = styled.div`
   touch-action: pan-x;
   transform: translateX(-50%);
   width: 6px;
-`;
-const PlayheadTimestamp = styled.div`
-  background: ${color.shadow600};
-  border-radius: 3px;
-  bottom: 100%;
-  color: ${grey[50]};
-  display: ${({ hide }) => (hide ? 'none' : 'block')};
-  left: 50%;
-  padding: 3px 6px;
-  position: absolute;
-  transform: translate(-50%, -66%);
-  z-index: 10001;
 `;
 
 const PlayheadThumb = styled(({ pxOffset, position, ...props }) => (
@@ -225,27 +213,17 @@ class Timeline extends Component {
           <Slider
             defaultValue={0}
             handle={props => {
-              // <Tooltip title={formatTime(time)} placement="top">
-              // </Tooltip>
               return (
                 <PlayheadMarker
                   style={{ left: `${props.offset}%` }}
                   onMouseEnter={() => this.setState({ showTimestamp: true })}
                   onMouseLeave={() => this.setState({ showTimestamp: false })}
                 >
-                  <PlayheadTimestamp
-                    hide={!this.state.showTimestamp && !this.state.dragging}
+                  <MeTooltip
+                    isVisible={this.state.showTimestamp || this.state.dragging}
                   >
-                    <Typography
-                      variant="overline"
-                      style={{
-                        color: 'white',
-                        lineHeight: '1.3em',
-                      }}
-                    >
-                      {formatTime(time)}
-                    </Typography>
-                  </PlayheadTimestamp>
+                    {formatTime(time)}
+                  </MeTooltip>
                   <PlayheadThumb />
                 </PlayheadMarker>
               );

@@ -29,6 +29,7 @@ class RangeSlider extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener("dragover", this.updateCoords.bind(this));
     window.addEventListener("resize", this.updateDimensions.bind(this));
     this.setState(prevState => ({
       wrapper: {
@@ -40,6 +41,7 @@ class RangeSlider extends Component {
   }
 
   componentWillUnmount() {
+    document.removeEventListener("dragover", this.updateCoords.bind(this));
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
@@ -56,8 +58,10 @@ class RangeSlider extends Component {
   }
 
   updateCoords(e) {
+    if (!e) return null;
     this.setState({ coords: { x: e.pageX, y: e.pageY } });
     e.preventDefault();
+    return null;
   }
 
   render() {
@@ -65,11 +69,7 @@ class RangeSlider extends Component {
     const { coords, instances, wrapper } = this.state;
 
     return (
-      <RSWrapper
-        onDragOver={this.updateCoords}
-        onDrop={e => e.preventDefault()}
-        ref={this.wrapperRef}
-      >
+      <RSWrapper onDrop={e => e.preventDefault()} ref={this.wrapperRef}>
         {instances.map((instance, i) => {
           const { id, start_seconds, end_seconds } = instance;
           return (
