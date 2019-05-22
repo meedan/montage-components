@@ -27,36 +27,18 @@ const RSHandle = styled(({ pos, isVisible, ...props }) => <div {...props} />)`
   z-index: 1;
 `;
 
-// const calcVal = (edge, start, end, duration, coords, rect) => {
-//   if (coords.x <= 0) return null;
-//   const { width, left } = rect;
-//   const newTime = ((coords.x - left) * duration) / width;
-//
-//   if (edge === "start" && newTime > end) {
-//     return end - 5 < 0 ? 0 : end - 5;
-//   }
-//   if (edge === "end" && newTime < start) {
-//     return start + 5 > duration ? duration : start + 5;
-//   }
-//   return newTime;
-// };
-
 class Instance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isHoveringInstance: null,
-      isDraggingHandle: null,
-      isHoveringHandle: null
+      overInstance: null,
+      dragging: null,
+      overHandle: null
     };
     this.onHandleDrag = this.onHandleDrag.bind(this);
     this.onHandleDragEnd = this.onHandleDragEnd.bind(this);
     this.onHandleDragStart = this.onHandleDragStart.bind(this);
-    this.onHandleEnter = this.onHandleEnter.bind(this);
     this.updateEdge = this.updateEdge.bind(this);
-    this.onHandleLeave = this.onHandleLeave.bind(this);
-    this.onInstanceEnter = this.onInstanceEnter.bind(this);
-    this.onInstanceLeave = this.onInstanceLeave.bind(this);
   }
 
   componentDidMount() {
@@ -69,8 +51,8 @@ class Instance extends Component {
 
   onHandleDragStart(e, edge) {
     this.setState({
-      isHoveringInstance: true,
-      isDraggingHandle: edge
+      overInstance: true,
+      dragging: edge
     });
     const img = document.createElement("img");
     img.src =
@@ -82,8 +64,8 @@ class Instance extends Component {
   onHandleDrag(e, edge) {
     this.setState(
       {
-        isHoveringHandle: edge,
-        isHoveringInstance: true
+        overHandle: edge,
+        overInstance: true
       },
       () => this.updateEdge(edge)
     );
@@ -92,28 +74,12 @@ class Instance extends Component {
   onHandleDragEnd(e, edge) {
     this.setState(
       {
-        isDraggingHandle: null,
-        isHoveringHandle: null,
-        isHoveringInstance: null
+        dragging: null,
+        overHandle: null,
+        overInstance: null
       },
       () => this.updateEdge(edge)
     );
-  }
-
-  onInstanceEnter() {
-    this.setState({ isHoveringInstance: true });
-  }
-
-  onInstanceLeave() {
-    this.setState({ isHoveringInstance: null });
-  }
-
-  onHandleEnter(edge) {
-    this.setState({ isHoveringHandle: edge });
-  }
-
-  onHandleLeave() {
-    this.setState({ isHoveringHandle: null });
   }
 
   updateEdge(edge) {
@@ -149,60 +115,53 @@ class Instance extends Component {
     const x1 = (this.state.start * width) / duration;
     const x2 = width - (this.state.end * width) / duration;
 
+    const handles = [
+      {
+        edge: "end",
+        value: this.state.end
+      },
+      {
+        edge: "start",
+        value: this.state.start
+      }
+    ];
+
     return (
       <RSInstance
         style={{
           left: `${x1}px`,
           right: `${x2}px`,
-          zIndex: this.state.isHoveringInstance ? `1000` : `default`
+          zIndex: this.state.overInstance ? `1000` : `default`
         }}
-        onMouseEnter={this.onInstanceEnter}
-        onMouseLeave={this.onInstanceLeave}
+        onMouseEnter={() => this.setState({ overInstance: true })}
+        onMouseLeave={() => this.setState({ overInstance: null })}
       >
-        <RSHandle
-          draggable
-          isVisible={
-            this.state.isHoveringInstance ||
-            this.state.isDraggingHandle === "start"
-          }
-          onDrag={e => this.onHandleDrag(e, "start")}
-          onDragEnd={e => this.onHandleDragEnd(e, "start")}
-          onDragStart={e => this.onHandleDragStart(e, "start")}
-          onMouseEnter={() => this.onHandleEnter("start")}
-          onMouseLeave={this.onHandleLeave}
-          pos="start"
-        >
-          <MeTooltip
-            isVisible={
-              this.state.isHoveringHandle === "start" ||
-              this.state.isDraggingHandle === "start"
-            }
-          >
-            {formatSeconds(this.state.start)}
-          </MeTooltip>
-        </RSHandle>
-        <RSHandle
-          draggable
-          isVisible={
-            this.state.isHoveringInstance ||
-            this.state.isDraggingHandle === "end"
-          }
-          onDrag={e => this.onHandleDrag(e, "end")}
-          onDragEnd={e => this.onHandleDragEnd(e, "end")}
-          onDragStart={e => this.onHandleDragStart(e, "end")}
-          onMouseEnter={() => this.onHandleEnter("end")}
-          onMouseLeave={this.onHandleLeave}
-          pos="end"
-        >
-          <MeTooltip
-            isVisible={
-              this.state.isHoveringHandle === "end" ||
-              this.state.isDraggingHandle === "end"
-            }
-          >
-            {formatSeconds(this.state.end)}
-          </MeTooltip>
-        </RSHandle>
+        {handles.map(handle => {
+          const { value, edge } = handle;
+          return (
+            <RSHandle
+              draggable
+              isVisible={
+                this.state.overInstance || this.state.dragging === edge
+              }
+              key={edge}
+              onDrag={e => this.onHandleDrag(e, edge)}
+              onDragEnd={e => this.onHandleDragEnd(e, edge)}
+              onDragStart={e => this.onHandleDragStart(e, edge)}
+              onMouseEnter={() => this.setState({ overHandle: edge })}
+              onMouseLeave={() => this.setState({ overHandle: null })}
+              pos={edge}
+            >
+              <MeTooltip
+                isVisible={
+                  this.state.overHandle === edge || this.state.dragging === edge
+                }
+              >
+                {formatSeconds(value)}
+              </MeTooltip>
+            </RSHandle>
+          );
+        })}
       </RSInstance>
     );
   }
