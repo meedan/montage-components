@@ -14,7 +14,7 @@ const logger = createLogger({
   diff: true,
 });
 
-export const configureAppStore = () => {
+export const configureAppStore = preloadedState => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: [
@@ -30,6 +30,7 @@ export const configureAppStore = () => {
     preloadedState: load({
       namespace: 'pizza',
       states: ['data'],
+      preloadedState,
     }),
     devTools:
       process.env.NODE_ENV !== 'production'
@@ -45,13 +46,3 @@ export const configureAppStore = () => {
 
   return store;
 };
-
-// TODO angular data
-//   // FIXME:
-//   // if (props.$scope) {
-//   //   const data = props.$scope.$parent.ctrl;
-//   //   return {
-//   //     data,
-//   //     duration: data.gdVideoData.duration,
-//   //   };
-//   // }

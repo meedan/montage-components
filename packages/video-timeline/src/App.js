@@ -1,8 +1,6 @@
 import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
-import { react2angular } from 'react2angular';
 import DateFnsUtils from '@date-io/date-fns';
-// import produce from 'immer';
 import React, { createRef, Component } from 'react';
 import styled from 'styled-components';
 import { withSnackbar } from 'notistack';
@@ -332,11 +330,3 @@ class App extends Component {
 export default connect(({ player, data }) => ({ player, data }))(
   withStyles(styles)(withSnackbar(App))
 );
-
-// FIXME:
-export const AngularVideoTimeline = react2angular(
-  App,
-  ['foo'],
-  ['$scope', '$http']
-);
-window.AngularVideoTimeline = AngularVideoTimeline;
