@@ -1,4 +1,5 @@
 import { bindPopover } from "material-ui-popup-state";
+import { object, string } from "prop-types";
 import Popover from "material-ui-popup-state/HoverPopover";
 import React from "react";
 
@@ -40,7 +41,6 @@ const HandlePopover = props => {
 export default HandlePopover;
 
 HandlePopover.propTypes = {
-  // instancePopoverChildren: ,
-  // instanceRef: ,
-  // popupState: ,
+  popupState: object.isRequired,
+  id: string.isRequired
 };
