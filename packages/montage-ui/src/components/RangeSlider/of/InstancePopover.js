@@ -1,6 +1,6 @@
-import React from "react";
-import Popover from "material-ui-popup-state/HoverPopover";
 import { bindPopover } from "material-ui-popup-state";
+import Popover from "material-ui-popup-state/HoverPopover";
+import React from "react";
 
 const InstancePopover = props => {
   return (
@@ -9,6 +9,7 @@ const InstancePopover = props => {
         {...bindPopover(props.popupState)}
         anchorEl={props.instanceRef}
         anchorReference="anchorEl"
+        disablePortal
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "center"

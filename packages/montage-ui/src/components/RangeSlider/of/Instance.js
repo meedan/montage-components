@@ -42,15 +42,14 @@ class Instance extends Component {
       dragging: null
     };
 
-    this.onMouseMove = this.onMouseMove.bind(this);
     this.updateRef = this.updateRef.bind(this);
 
-    this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
 
     this.onHandleEnter = this.onHandleEnter.bind(this);
     this.onHandleLeave = this.onHandleLeave.bind(this);
-
     this.onInstanceEnter = this.onInstanceEnter.bind(this);
     this.onInstanceLeave = this.onInstanceLeave.bind(this);
   }
@@ -139,8 +138,8 @@ class Instance extends Component {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
 
-    const { duration, wrapper } = this.props;
-    const { dragging, start, end, overInstance, overHandle } = this.state;
+    const { duration, instancePopoverChildren, wrapper } = this.props;
+    const { end, start } = this.state;
     const { width } = wrapper.rect;
 
     const x1 = (start * width) / duration;
@@ -161,8 +160,8 @@ class Instance extends Component {
     ];
 
     const renderPopover = popupState => {
-      if (dragging || !this.state.instanceRef) return null;
-      if (overHandle) {
+      if (this.state.dragging || !this.state.instanceRef) return null;
+      if (this.state.overHandle) {
         return (
           <HandlePopover
             instanceRef={this.state.instanceRef}
@@ -170,17 +169,21 @@ class Instance extends Component {
           />
         );
       }
-      if (overInstance) {
+      if (this.state.overInstance) {
         return (
           <InstancePopover
             instanceRef={this.state.instanceRef}
-            instancePopoverChildren={<>Hello</>}
+            instancePopoverChildren={instancePopoverChildren}
             popupState={popupState}
           />
         );
       }
       return null;
     };
+
+    // console.group("Instance.js");
+    // console.log(this.state);
+    // console.groupEnd();
 
     return (
       <>
@@ -191,28 +194,30 @@ class Instance extends Component {
                 style={{
                   left: `${x1}px`,
                   width: `${instanceWidth}px`,
-                  zIndex: overInstance ? `1000` : `default`
+                  zIndex: this.state.overInstance ? `1000` : `default`
                 }}
-                onMouseEnter={e => this.onInstanceEnter(e, popupState)}
+                onMouseEnter={this.onInstanceEnter}
                 onMouseLeave={this.onInstanceLeave}
               />
               {handles.map(handle => {
                 const { edge, value } = handle;
+                const isHandleActive =
+                  this.state.dragging === edge ||
+                  this.state.overHandle === edge;
                 return (
                   <RSHandle
                     isVisible={
-                      (overInstance && !dragging) ||
-                      dragging === edge ||
-                      overHandle === edge
+                      isHandleActive ||
+                      (this.state.overInstance && !this.state.dragging)
                     }
-                    isDragging={dragging === edge}
+                    isDragging={this.state.dragging === edge}
                     key={edge}
                     onMouseDown={() => this.onMouseDown(edge)}
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
                     onMouseLeave={this.onHandleLeave}
                     style={{ left: edge === "start" ? `${x1}px` : `${x2}px` }}
                   >
-                    {overHandle === edge || dragging === edge ? (
+                    {isHandleActive ? (
                       <MeTooltip isVisible>{formatSeconds(value)}</MeTooltip>
                     ) : null}
                   </RSHandle>

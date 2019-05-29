@@ -13,9 +13,7 @@ import { CheckIcon, CutIcon } from '@montage/ui/src/components';
 import { RangeSlider } from '@montage/ui';
 
 import EntityControls from './ofEntities/EntityControls';
-import EntityInstanceHandle from './ofEntities/EntityInstanceHandle';
 import EntityInstancePopover from './ofEntities/EntityInstancePopover';
-import EntitySliderWrapper from './ofEntities/EntitySliderWrapper';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
@@ -357,108 +355,108 @@ class Entities extends Component {
     });
   };
 
-  detecInstancePopoverOff = ({ clientX, clientY, currentTarget }) => {
-    const rect = currentTarget.getBoundingClientRect();
-    // console.log(rect, clientX, clientY);
+  // detecInstancePopoverOff = ({ clientX, clientY, currentTarget }) => {
+  //   const rect = currentTarget.getBoundingClientRect();
+  //   // console.log(rect, clientX, clientY);
+  //
+  //   if (
+  //     rect.x < clientX &&
+  //     clientX < rect.x + rect.width &&
+  //     rect.y < clientY &&
+  //     clientY < rect.y + rect.height
+  //   ) {
+  //     // all fine
+  //   } else {
+  //     // console.log('outside', rect, clientX, clientY);
+  //     this.setState({
+  //       targetInstance: null,
+  //       targetEntity: null,
+  //     });
+  //   }
+  // };
 
-    if (
-      rect.x < clientX &&
-      clientX < rect.x + rect.width &&
-      rect.y < clientY &&
-      clientY < rect.y + rect.height
-    ) {
-      // all fine
-    } else {
-      // console.log('outside', rect, clientX, clientY);
-      this.setState({
-        targetInstance: null,
-        targetEntity: null,
-      });
-    }
-  };
-
-  hideInstancePopover = () => {
-    this.setState({
-      targetInstance: null,
-      targetEntity: null,
-    });
-  };
-
-  showInstancePopover = (e, id) => {
-    if (!e) {
-      this.setState({
-        targetInstance: null,
-        targetEntity: null,
-      });
-      return;
-    }
-
-    // const { entities } = this.state;
-    const { duration, entities } = this.props;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    const s2px = rect.width / duration;
-    const px2s = duration / rect.width;
-
-    const relativeMousePos = e.clientX - rect.left;
-    const normalzdMousePos = relativeMousePos > 0 ? relativeMousePos : 0;
-    const mouseTime = normalzdMousePos * px2s;
-
-    const targetEntity = entities.find(t => t.id === id);
-    if (!targetEntity) {
-      this.setState({
-        targetInstance: null,
-        targetEntity: null,
-      });
-      return;
-    }
-
-    const handleTime = 4 * px2s;
-
-    const targetInstance = targetEntity.instances.find(
-      i =>
-        mouseTime >= i.start_seconds - handleTime / 2 &&
-        mouseTime < i.end_seconds
-    );
-
-    const instanceX1 = targetInstance ? targetInstance.start_seconds * s2px : 0;
-    const instanceX2 = targetInstance ? targetInstance.end_seconds * s2px : 0;
-
-    const isOverStartHandle = !!targetEntity.instances.find(
-      i =>
-        mouseTime >= i.start_seconds - handleTime &&
-        mouseTime <= i.start_seconds + handleTime
-    );
-
-    const isOverEndHandle = !!targetEntity.instances.find(
-      i =>
-        mouseTime >= i.end_seconds - handleTime &&
-        mouseTime <= i.end_seconds + handleTime
-    );
-
-    const x = (function() {
-      if (isOverStartHandle) {
-        return instanceX1;
-      } else if (isOverEndHandle) {
-        return instanceX2;
-      } else {
-        return instanceX1 + (instanceX2 - instanceX1) / 2;
-      }
-    })();
-
-    this.setState({
-      anchorPosition: {
-        left: x + rect.left,
-        top: rect.height + rect.top,
-      },
-      isOverHandle: isOverStartHandle || isOverEndHandle,
-      isOverStartHandle,
-      isOverEndHandle,
-      targetInstance,
-      targetEntity,
-    });
-  };
+  // hideInstancePopover = () => {
+  //   this.setState({
+  //     targetInstance: null,
+  //     targetEntity: null,
+  //   });
+  // };
+  //
+  // showInstancePopover = (e, id) => {
+  //   if (!e) {
+  //     this.setState({
+  //       targetInstance: null,
+  //       targetEntity: null,
+  //     });
+  //     return;
+  //   }
+  //
+  //   // const { entities } = this.state;
+  //   const { duration, entities } = this.props;
+  //
+  //   const rect = e.currentTarget.getBoundingClientRect();
+  //
+  //   const s2px = rect.width / duration;
+  //   const px2s = duration / rect.width;
+  //
+  //   const relativeMousePos = e.clientX - rect.left;
+  //   const normalzdMousePos = relativeMousePos > 0 ? relativeMousePos : 0;
+  //   const mouseTime = normalzdMousePos * px2s;
+  //
+  //   const targetEntity = entities.find(t => t.id === id);
+  //   if (!targetEntity) {
+  //     this.setState({
+  //       targetInstance: null,
+  //       targetEntity: null,
+  //     });
+  //     return;
+  //   }
+  //
+  //   const handleTime = 4 * px2s;
+  //
+  //   const targetInstance = targetEntity.instances.find(
+  //     i =>
+  //       mouseTime >= i.start_seconds - handleTime / 2 &&
+  //       mouseTime < i.end_seconds
+  //   );
+  //
+  //   const instanceX1 = targetInstance ? targetInstance.start_seconds * s2px : 0;
+  //   const instanceX2 = targetInstance ? targetInstance.end_seconds * s2px : 0;
+  //
+  //   const isOverStartHandle = !!targetEntity.instances.find(
+  //     i =>
+  //       mouseTime >= i.start_seconds - handleTime &&
+  //       mouseTime <= i.start_seconds + handleTime
+  //   );
+  //
+  //   const isOverEndHandle = !!targetEntity.instances.find(
+  //     i =>
+  //       mouseTime >= i.end_seconds - handleTime &&
+  //       mouseTime <= i.end_seconds + handleTime
+  //   );
+  //
+  //   const x = (function() {
+  //     if (isOverStartHandle) {
+  //       return instanceX1;
+  //     } else if (isOverEndHandle) {
+  //       return instanceX2;
+  //     } else {
+  //       return instanceX1 + (instanceX2 - instanceX1) / 2;
+  //     }
+  //   })();
+  //
+  //   this.setState({
+  //     anchorPosition: {
+  //       left: x + rect.left,
+  //       top: rect.height + rect.top,
+  //     },
+  //     isOverHandle: isOverStartHandle || isOverEndHandle,
+  //     isOverStartHandle,
+  //     isOverEndHandle,
+  //     targetInstance,
+  //     targetEntity,
+  //   });
+  // };
 
   deleteEntity = id => {
     const entities = produce(this.props.entities, nextEntities => {
@@ -608,24 +606,8 @@ class Entities extends Component {
                   }
                   rightColContent={
                     <>
-                      <EntitySliderWrapper
-                      // onMouseMove={
-                      //   !this.state.isDragging
-                      //     ? e => this.showInstancePopover(e, entity.id)
-                      //     : this.detecInstancePopoverOff
-                      // }
-                      // onMouseOver={
-                      //   !this.state.isDragging
-                      //     ? e => this.showInstancePopover(e, entity.id)
-                      //     : this.detecInstancePopoverOff
-                      // }
-                      >
-                        <RangeSlider
-                          instances={instances}
-                          duration={duration}
-                        />
-
-                        {/* <MemoizedRange
+                      <RangeSlider instances={instances} duration={duration} />
+                      {/* <MemoizedRange
                           defaultValue={arr}
                           handle={handleProps => (
                             <EntityInstanceHandle
@@ -650,7 +632,6 @@ class Entities extends Component {
                           trackStyle={trackStyle}
                           value={arr}
                         /> */}
-                      </EntitySliderWrapper>
                       <EntityInstancePopover
                         anchorPosition={this.state.anchorPosition}
                         handle={[
@@ -737,7 +718,7 @@ const recomputeSegments = (entities, duration) => {
   return segments;
 };
 
-const MemoizedRange = React.memo(props => <Range {...props} />);
+// const MemoizedRange = React.memo(props => <Range {...props} />);
 
 export default connect(
   null,

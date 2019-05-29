@@ -53,7 +53,7 @@ class RangeSlider extends Component {
   }
 
   render() {
-    const { duration } = this.props;
+    const { duration, instancePopoverChildren } = this.props;
     const { instances, wrapper } = this.state;
 
     return (
@@ -65,6 +65,7 @@ class RangeSlider extends Component {
               duration={duration}
               end={end_seconds}
               i={i}
+              instancePopoverChildren={instancePopoverChildren}
               key={id}
               start={start_seconds}
               wrapper={wrapper}
