@@ -9,15 +9,32 @@ import { configureAppStore } from './configureStore';
 import App from './App';
 
 const VideoTimeline = props => {
-  const store = configureAppStore(
-    props.$scope
-      ? {
-          data: JSON.parse(owtj(props.$scope.$parent.ctrl)),
-        }
-      : {}
-  );
+  let data = {};
+  if (props.$scope) {
+    const {
+      gdVideoData,
+      ytVideoData,
+      nextUrl,
+      prevUrl,
+      nextVideo,
+      project,
+      videoCollection,
+    } = JSON.parse(owtj(props.$scope.$parent.ctrl));
 
-  // console.log(props, JSON.parse(owtj(props.$scope.$parent.ctrl)));
+    data = {
+      gdVideoData,
+      ytVideoData,
+      nextUrl,
+      prevUrl,
+      nextVideo,
+      project,
+      videoCollection,
+    };
+  }
+
+  const store = configureAppStore(props.$scope ? { data } : {});
+
+  console.log(props, data);
 
   return (
     <Provider store={store}>
