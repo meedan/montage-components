@@ -4,7 +4,6 @@ import baseData from '../data/baseData';
 import timelineData from '../data/timelineData';
 import newData from '../data/newData';
 
-
 const initialState = {
   ...baseData, // Base data from Laurian’s account
   ...timelineData, // Base data from Laurian’s account
@@ -15,7 +14,6 @@ const initialState = {
     projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
   },
 };
-
 
 const dataSlice = createSlice({
   initialState,
@@ -29,8 +27,5 @@ const dataSlice = createSlice({
 console.log(dataSlice);
 
 const { actions, reducer } = dataSlice;
-export const {
-  update,
-  reset,
-} = actions;
+export const { update, reset } = actions;
 export default reducer;
