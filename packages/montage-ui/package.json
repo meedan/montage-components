@@ -46,7 +46,7 @@
     "react": "16.8.6",
     "react-copy-to-clipboard": "5.0.1",
     "react-dom": "16.8.6",
-    "react-hot-loader": "4.8.8"
+    "react-hot-loader": "4.8.8",
     "react-error-boundary": "^1.2.5",
     "style-loader": "0.23.1",
     "styled-components": "4.2.0",
