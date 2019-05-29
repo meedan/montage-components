@@ -12,19 +12,15 @@ const HandlePopover = props => {
     <>
       <Popover
         {...bindPopover(props.popupState)}
-        anchorEl={props.instanceRef}
-        anchorReference="anchorEl"
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "center"
         }}
-        // disablePortal
-        id="InstancePopover"
+        id={props.id}
         transformOrigin={{
           vertical: "top",
           horizontal: "center"
         }}
-        open
       >
         <Tooltip placement="bottom" title="Move backward">
           <IconButton onClick={() => console.log("<-")}>

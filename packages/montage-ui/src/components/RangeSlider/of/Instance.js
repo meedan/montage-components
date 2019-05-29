@@ -4,13 +4,9 @@ import Popover from "material-ui-popup-state/HoverPopover";
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-
 import { MeTooltip, formatSeconds } from "@montage/ui";
-import { CutIcon, ExpandIcon } from "@montage/ui/src/components";
 
-// import HandlePopover from "./HandlePopover";
+import HandlePopover from "./HandlePopover";
 import InstancePopover from "./InstancePopover";
 
 const RSInstance = styled(({ ...props }) => <div {...props} />)`
@@ -45,15 +41,9 @@ class Instance extends Component {
     this.state = {
       coords: { x: 0, y: 0 },
       dragging: null,
-      instancePopover: null,
-      instanceRef: null,
       overHandle: null,
-      overInstance: null,
-      x1HandlePopover: null,
-      x2HandlePopover: null
+      overInstance: null
     };
-
-    this.updateRef = this.updateRef.bind(this);
 
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -79,9 +69,8 @@ class Instance extends Component {
     document.removeEventListener("mouseup", this.onMouseUp.bind(this));
   }
 
-  onInstanceEnter(e) {
-    this.setState({ overInstance: true, instancePopover: true });
-    this.updateRef(e.target);
+  onInstanceEnter() {
+    this.setState({ overInstance: true });
   }
 
   onInstanceLeave() {
@@ -90,7 +79,6 @@ class Instance extends Component {
 
   onHandleEnter(e, edge) {
     this.setState({ overHandle: edge });
-    this.updateRef(e.target);
   }
 
   onHandleLeave() {
@@ -98,7 +86,6 @@ class Instance extends Component {
       overHandle: null,
       overInstance: prevState.overInstance ? prevState.overInstance : null
     }));
-    this.updateRef(this.state.overInstance ? this.instanceRef.current : null);
   }
 
   onMouseDown(edge) {
@@ -130,8 +117,6 @@ class Instance extends Component {
       newTime = start + MIN_LENGTH > duration ? duration : start + MIN_LENGTH;
     }
 
-    this.updateRef(e.target);
-
     this.setState(prevState => ({
       coords,
       [dragging]:
@@ -139,10 +124,6 @@ class Instance extends Component {
     }));
 
     return null;
-  }
-
-  updateRef(el) {
-    this.setState({ instanceRef: el });
   }
 
   render() {
@@ -169,28 +150,6 @@ class Instance extends Component {
         value: this.state.start
       }
     ];
-
-    const renderInstancePopover = popupState => {
-      if (this.state.dragging || !this.state.instanceRef) return null;
-      if (this.state.instancePopover) {
-        return (
-          <HandlePopover
-            instanceRef={this.state.instanceRef}
-            popupState={popupState}
-          />
-        );
-      }
-      // if (this.state.overInstance) {
-      //   return (
-      //     <InstancePopover
-      //       instanceRef={this.state.instanceRef}
-      //       instancePopoverChildren={instancePopoverChildren}
-      //       popupState={popupState}
-      //     />
-      //   );
-      // }
-      return null;
-    };
 
     // console.group("Instance.js");
     // console.log(this.state);
@@ -225,32 +184,32 @@ class Instance extends Component {
           )}
         </PopupState>
 
-        {/* {handles.map(handle => {
+        {handles.map(handle => {
           const { edge, value } = handle;
           const isHandleActive =
             this.state.dragging === edge || this.state.overHandle === edge;
           return (
             <PopupState
               key={`${edge}Popover`}
-              popupId="InstancePopover"
+              popupId={`${edge}Popover`}
               variant="popover"
             >
               {popupState => (
                 <>
                   <RSHandle
+                    isDragging={this.state.dragging === edge}
                     isVisible={
                       isHandleActive ||
                       (this.state.overInstance && !this.state.dragging)
                     }
-                    isDragging={this.state.dragging === edge}
                     onMouseDown={() => this.onMouseDown(edge)}
+                    onMouseEnter={e => this.onHandleEnter(e, edge)}
+                    onMouseLeave={this.onHandleLeave}
                     style={{ left: edge === "start" ? `${x1}px` : `${x2}px` }}
-                    {...bindHover(popupState)}
                   >
                     <div
-                      onMouseEnter={e => this.onHandleEnter(e, edge)}
-                      onMouseLeave={this.onHandleLeave}
                       style={{ width: `100%`, height: `28px` }}
+                      {...bindHover(popupState)}
                     >
                       {isHandleActive ? (
                         <MeTooltip isVisible>{formatSeconds(value)}</MeTooltip>
@@ -258,26 +217,16 @@ class Instance extends Component {
                     </div>
                   </RSHandle>
                   {!this.state.dragging ? (
-                    <Popover
-                      {...bindPopover(popupState)}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "center"
-                      }}
+                    <HandlePopover
+                      popupState={popupState}
                       id={`${edge}Popover`}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "center"
-                      }}
-                    >
-                      {this.props.instancePopoverChildren}
-                    </Popover>
+                    />
                   ) : null}
                 </>
               )}
             </PopupState>
           );
-        })} */}
+        })}
       </>
     );
   }
