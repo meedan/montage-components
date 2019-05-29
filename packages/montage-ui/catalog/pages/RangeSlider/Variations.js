@@ -13,6 +13,7 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={100}
+      instancePopoverChildren={<>Something</>}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -62,6 +63,7 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={2645}
+      instancePopoverChildren={<>Something</>}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -111,6 +113,7 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={2645}
+      instancePopoverChildren={<>Something</>}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",

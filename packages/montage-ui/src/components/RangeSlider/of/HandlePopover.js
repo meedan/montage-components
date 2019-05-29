@@ -1,6 +1,6 @@
-import React from "react";
-import Popover from "material-ui-popup-state/HoverPopover";
 import { bindPopover } from "material-ui-popup-state";
+import Popover from "material-ui-popup-state/HoverPopover";
+import React from "react";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
@@ -18,6 +18,7 @@ const HandlePopover = props => {
           vertical: "bottom",
           horizontal: "center"
         }}
+        disablePortal
         id="InstancePopover"
         transformOrigin={{
           vertical: "top",
