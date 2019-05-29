@@ -13,12 +13,8 @@ const RSWrapper = styled.div`
 class RangeSlider extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      coords: { x: 0, y: 0 },
-      mouseX: 0
-    };
+    this.state = {};
 
-    this.updateCoords = this.updateCoords.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
 
     this.wrapperRef = createRef();
@@ -29,7 +25,6 @@ class RangeSlider extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("dragover", this.updateCoords.bind(this));
     window.addEventListener("resize", this.updateDimensions.bind(this));
     this.setState(prevState => ({
       wrapper: {
@@ -41,7 +36,6 @@ class RangeSlider extends Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener("dragover", this.updateCoords.bind(this));
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
@@ -57,28 +51,16 @@ class RangeSlider extends Component {
     return null;
   }
 
-  updateCoords(e) {
-    if (!e) return null;
-    this.setState({ coords: { x: e.pageX, y: e.pageY } });
-    e.preventDefault();
-    return null;
-  }
-
   render() {
     const { duration } = this.props;
-    const { coords, instances, wrapper } = this.state;
+    const { instances, wrapper } = this.state;
 
     return (
-      <RSWrapper
-        onDragOver={e => e.preventDefault()}
-        onDrop={e => e.preventDefault()}
-        ref={this.wrapperRef}
-      >
+      <RSWrapper ref={this.wrapperRef}>
         {instances.map((instance, i) => {
           const { id, start_seconds, end_seconds } = instance;
           return (
             <Instance
-              coords={coords}
               duration={duration}
               end={end_seconds}
               i={i}
