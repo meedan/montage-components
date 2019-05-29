@@ -3,7 +3,7 @@ import { markdown, ReactSpecimen } from "@catalog/core";
 
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import { CheckIcon, RangeSlider } from "@montage/ui/src/components";
+import { CheckIcon, CutIcon, RangeSlider } from "@montage/ui/src/components";
 
 export default () => markdown`
 
@@ -15,6 +15,8 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={100}
+      deleteInstance={() => console.log("deleteInstance")}
+      extendInstance={() => console.log("extendInstance")}
       instancePopoverChildren={(
         <>
           <Tooltip title="Open in Check">
@@ -73,7 +75,17 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={2645}
-      instancePopoverChildren={<>Something</>}
+      deleteInstance={() => console.log("deleteInstance")}
+      extendInstance={() => console.log("extendInstance")}
+      instancePopoverChildren={(
+        <>
+          <Tooltip title="Copy to Clips">
+            <IconButton>
+              <CutIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -123,7 +135,17 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={2645}
-      instancePopoverChildren={<>Something</>}
+      deleteInstance={() => console.log("deleteInstance")}
+      extendInstance={() => console.log("extendInstance")}
+      instancePopoverChildren={(
+        <>
+          <Tooltip title="Copy to Clips">
+            <IconButton>
+              <CutIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",

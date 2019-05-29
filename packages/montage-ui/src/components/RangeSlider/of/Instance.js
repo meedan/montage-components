@@ -1,6 +1,5 @@
-import { number, shape, object } from "prop-types";
-import PopupState, { bindHover, bindPopover } from "material-ui-popup-state";
-import Popover from "material-ui-popup-state/HoverPopover";
+import { func, number, shape, object } from "prop-types";
+import PopupState, { bindHover } from "material-ui-popup-state";
 import React, { Component } from "react";
 import styled from "styled-components";
 
@@ -176,6 +175,8 @@ class Instance extends Component {
               </RSInstance>
               {!this.state.dragging ? (
                 <InstancePopover
+                  deleteInstance={this.props.deleteInstance}
+                  extendInstance={this.props.extendInstance}
                   instancePopoverChildren={this.props.instancePopoverChildren}
                   popupState={popupState}
                 />
@@ -235,14 +236,17 @@ class Instance extends Component {
 export default Instance;
 
 Instance.propTypes = {
-  start: number.isRequired,
-  end: number.isRequired,
+  deleteInstance: func.isRequired,
   duration: number.isRequired,
+  end: number.isRequired,
+  extendInstance: func.isRequired,
+  start: number.isRequired,
   wrapper: shape({
     rect: object.isRequired,
     ref: object.isRequired
   })
 };
+
 Instance.defaultProps = {
   wrapper: null
 };
