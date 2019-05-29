@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
-import { react2angular } from 'react2angular';
 import DateFnsUtils from '@date-io/date-fns';
-// import produce from 'immer';
 import React, { createRef, Component } from 'react';
+import ErrorBoundary from 'react-error-boundary';
 import styled from 'styled-components';
 import { withSnackbar } from 'notistack';
 
@@ -132,6 +131,7 @@ class App extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
     const { map } = this.state;
@@ -301,14 +301,16 @@ class App extends Component {
               <BottomWrapper>
                 {this.state.mode === 'timeline' ? (
                   <TimelineWrapper ref={this.timelineRef}>
-                    <Timeline
-                      box={this.state.timelineBox}
-                      currentTime={currentTime}
-                      transport={transport}
-                      data={data}
-                      duration={duration}
-                      playing={playing}
-                    />
+                    <ErrorBoundary>
+                      <Timeline
+                        box={this.state.timelineBox}
+                        currentTime={currentTime}
+                        transport={transport}
+                        data={data}
+                        duration={duration}
+                        playing={playing}
+                      />
+                    </ErrorBoundary>
                   </TimelineWrapper>
                 ) : (
                   <div style={{ textAlign: 'center' }}>
@@ -332,11 +334,3 @@ class App extends Component {
 export default connect(({ player, data }) => ({ player, data }))(
   withStyles(styles)(withSnackbar(App))
 );
-
-// FIXME:
-export const AngularVideoTimeline = react2angular(
-  App,
-  ['foo'],
-  ['$scope', '$http']
-);
-window.AngularVideoTimeline = AngularVideoTimeline;

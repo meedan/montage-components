@@ -687,6 +687,8 @@ class Entities extends Component {
 }
 
 const recomputeSegments = (entities, duration) => {
+  if (!entities) return [];
+
   const instances = entities
     .reduce((acc, t) => [...acc, ...t.instances], [])
     .sort((j, i) => j.start_seconds - i.start_seconds);

@@ -14,23 +14,25 @@ const logger = createLogger({
   diff: true,
 });
 
-export const configureAppStore = () => {
+export const configureAppStore = preloadedState => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: [
       // RavenMiddleware(SENTRY_DSN),
       logger,
-      save({
-        namespace: 'pizza',
-        states: ['data'],
-        debounce: 1000,
-      }),
+      // save({
+      //   namespace: 'pizza',
+      //   states: ['data'],
+      //   debounce: 1000,
+      // }),
       ...getDefaultMiddleware(),
     ],
-    preloadedState: load({
-      namespace: 'pizza',
-      states: ['data'],
-    }),
+    preloadedState,
+    // preloadedState: load({
+    //   namespace: 'pizza',
+    //   states: ['data'],
+    //   preloadedState,
+    // }),
     devTools:
       process.env.NODE_ENV !== 'production'
         ? {
@@ -45,13 +47,3 @@ export const configureAppStore = () => {
 
   return store;
 };
-
-// TODO angular data
-//   // FIXME:
-//   // if (props.$scope) {
-//   //   const data = props.$scope.$parent.ctrl;
-//   //   return {
-//   //     data,
-//   //     duration: data.gdVideoData.duration,
-//   //   };
-//   // }

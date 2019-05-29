@@ -10,6 +10,7 @@ import {
 } from "prop-types";
 import Flatted from "flatted/esm";
 import React, { Component } from "react";
+import ErrorBoundary from "react-error-boundary";
 import styled from "styled-components";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -161,12 +162,14 @@ class VideoMeta extends Component {
               recDate={this.props.recDate}
               recDateOverriden={this.props.recDateOverriden}
             />
-            <Keep
-              isArchived={isArchived}
-              onTriggerKeep={this.props.onTriggerKeep}
-              videoBackups={this.props.videoBackups}
-              videoId={this.props.videoId}
-            />
+            <ErrorBoundary>
+              <Keep
+                isArchived={isArchived}
+                onTriggerKeep={this.props.onTriggerKeep}
+                videoBackups={this.props.videoBackups}
+                videoId={this.props.videoId}
+              />
+            </ErrorBoundary>
           </List>
         </CardContent>
         <Divider variant="middle" />
