@@ -1,4 +1,5 @@
 import { bindPopover } from "material-ui-popup-state";
+import { array, node, object, oneOfType, string } from "prop-types";
 import Popover from "material-ui-popup-state/HoverPopover";
 import React from "react";
 
@@ -39,7 +40,10 @@ const InstancePopover = props => {
 export default InstancePopover;
 
 InstancePopover.propTypes = {
-  // instancePopoverChildren: ,
-  // instanceRef: ,
-  // popupState: ,
+  instancePopoverChildren: oneOfType([array, string, node]),
+  popupState: object.isRequired
+};
+
+InstancePopover.defaultProps = {
+  instancePopoverChildren: null
 };
