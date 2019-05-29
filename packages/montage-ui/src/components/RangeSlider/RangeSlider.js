@@ -8,6 +8,7 @@ const RSWrapper = styled.div`
   height: 28px;
   position: relative;
   width: 100%;
+  user-select: none;
 `;
 
 class RangeSlider extends Component {
