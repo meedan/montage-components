@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { array, number } from "prop-types";
+import { array, func, number } from "prop-types";
 import styled from "styled-components";
 
 import Instance from "./of/Instance";
@@ -62,8 +62,10 @@ class RangeSlider extends Component {
           const { id, start_seconds, end_seconds } = instance;
           return (
             <Instance
+              deleteInstance={this.props.deleteInstance}
               duration={duration}
               end={end_seconds}
+              extendInstance={this.props.extendInstance}
               i={i}
               instancePopoverChildren={instancePopoverChildren}
               key={id}
@@ -80,7 +82,9 @@ class RangeSlider extends Component {
 export default RangeSlider;
 
 RangeSlider.propTypes = {
-  instances: array.isRequired,
-  duration: number.isRequired
+  deleteInstance: func.isRequired,
+  duration: number.isRequired,
+  extendInstance: func.isRequired,
+  instances: array.isRequired
 };
 RangeSlider.defaultProps = {};

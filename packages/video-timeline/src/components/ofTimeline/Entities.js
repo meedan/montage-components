@@ -1,6 +1,5 @@
 import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
-import Slider from 'rc-slider';
 import produce from 'immer';
 import { connect } from 'react-redux';
 
@@ -9,18 +8,17 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { CheckIcon, CutIcon } from '@montage/ui/src/components';
+// import { CheckIcon, CutIcon } from '@montage/ui/src/components';
 import { RangeSlider } from '@montage/ui';
 
 import EntityControls from './ofEntities/EntityControls';
-import EntityInstancePopover from './ofEntities/EntityInstancePopover';
+// import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
 import { update } from '../../reducers/data';
 
-const Range = Slider.Range;
 const FPS = 30;
 
 function getName(entity, entityType) {
@@ -555,7 +553,6 @@ class Entities extends Component {
             </Tooltip>
           </>
         }
-        // onMouseLeave={this.hideInstancePopover}
       >
         {entities
           ? entities.map((entity, i) => {
@@ -606,7 +603,12 @@ class Entities extends Component {
                   }
                   rightColContent={
                     <>
-                      <RangeSlider instances={instances} duration={duration} />
+                      <RangeSlider
+                        copyInstanceToClips={() => alert('copyInstanceToClips')}
+                        extendInstance={() => alert('extendInstance')}
+                        duration={duration}
+                        instances={instances}
+                      />
                       {/* <MemoizedRange
                           defaultValue={arr}
                           handle={handleProps => (
@@ -632,7 +634,7 @@ class Entities extends Component {
                           trackStyle={trackStyle}
                           value={arr}
                         /> */}
-                      <EntityInstancePopover
+                      {/* <EntityInstancePopover
                         anchorPosition={this.state.anchorPosition}
                         handle={[
                           this.state.isOverStartHandle,
@@ -672,7 +674,7 @@ class Entities extends Component {
                       </EntityInstancePopover>
                       <style scoped>
                         {'#instanceControlsPopover { pointer-events: none; }'}
-                      </style>
+                      </style> */}
                     </>
                   }
                 />
