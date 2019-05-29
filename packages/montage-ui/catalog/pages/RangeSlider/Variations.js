@@ -1,7 +1,9 @@
 import React from "react";
 import { markdown, ReactSpecimen } from "@catalog/core";
 
-import { RangeSlider } from "@montage/ui/src/components";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import { CheckIcon, RangeSlider } from "@montage/ui/src/components";
 
 export default () => markdown`
 
@@ -13,7 +15,15 @@ ${(
   <ReactSpecimen>
     <RangeSlider
       duration={100}
-      instancePopoverChildren={<>Something</>}
+      instancePopoverChildren={(
+        <>
+          <Tooltip title="Open in Check">
+            <IconButton>
+              <CheckIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
