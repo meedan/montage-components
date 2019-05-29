@@ -12,6 +12,7 @@ const MeTooltip = styled.div`
   line-height: 11px !important;
   padding: 6px !important;
   position: absolute;
+  pointer-events: none;
   transform: translate(-50%, -6px);
   z-index: 200;
 `;

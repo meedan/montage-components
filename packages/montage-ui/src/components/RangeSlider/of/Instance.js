@@ -16,16 +16,18 @@ const RSInstance = styled(({ ...props }) => <div {...props} />)`
   top: 0;
 `;
 
-const RSHandle = styled(({ pos, isVisible, ...props }) => <div {...props} />)`
+const RSHandle = styled(({ isDragging, isVisible, ...props }) => (
+  <div {...props} />
+))`
   background: rgba(71, 123, 181, 1);
   bottom: 0;
   cursor: ew-resize;
   opacity: ${({ isVisible }) => (isVisible ? "1" : "0")};
   position: absolute;
   top: 0;
-  transform: ${({ pos }) => `translateX(${pos === "start" ? `-50%` : `50%`})`};
-  transition: transform 250ms, opacity 250ms;
-  width: 4px;
+  transform: translateX(-50%);
+  transition: transform 250ms, opacity 250ms, width 250ms;
+  width: ${({ isDragging }) => (isDragging ? 1 : 4)}px;
   z-index: 2000;
   &:hover {
     opacity: 1 !important;
@@ -37,8 +39,7 @@ class Instance extends Component {
     super(props);
     this.state = {
       coords: { x: 0, y: 0 },
-      dragging: null,
-      prevCoords: null
+      dragging: null
     };
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -73,8 +74,8 @@ class Instance extends Component {
     this.updateRef(e.target);
   }
 
-  onInstanceLeave(e, popupState) {
-    this.setState({ overInstance: null });
+  onInstanceLeave() {
+    this.setState({ overInstance: null, overHandle: null });
   }
 
   onHandleEnter(e, edge) {
@@ -90,22 +91,12 @@ class Instance extends Component {
     this.updateRef(this.state.overInstance ? this.instanceRef.current : null);
   }
 
-  onMouseDown(e, edge) {
-    this.setState(prevState => ({
-      dragging: edge,
-      prevCoords: prevState.coords
-    }));
+  onMouseDown(edge) {
+    this.setState({ dragging: edge });
   }
 
   onMouseUp() {
-    if (!this.state.dragging) return null;
-    this.setState({
-      dragging: null,
-      overInstance: null,
-      overHandle: null,
-      prevCoords: null
-    });
-    return null;
+    this.setState({ dragging: null });
   }
 
   onMouseMove(e) {
@@ -149,7 +140,7 @@ class Instance extends Component {
     if (!this.props.wrapper.ref) return null;
 
     const { duration, wrapper } = this.props;
-    const { start, end } = this.state;
+    const { dragging, start, end, overInstance, overHandle } = this.state;
     const { width } = wrapper.rect;
 
     const x1 = (start * width) / duration;
@@ -170,8 +161,8 @@ class Instance extends Component {
     ];
 
     const renderPopover = popupState => {
-      if (this.state.dragging || !this.state.instanceRef) return null;
-      if (this.state.overHandle) {
+      if (dragging || !this.state.instanceRef) return null;
+      if (overHandle) {
         return (
           <HandlePopover
             instanceRef={this.state.instanceRef}
@@ -179,7 +170,7 @@ class Instance extends Component {
           />
         );
       }
-      if (this.state.overInstance) {
+      if (overInstance) {
         return (
           <InstancePopover
             instanceRef={this.state.instanceRef}
@@ -200,31 +191,28 @@ class Instance extends Component {
                 style={{
                   left: `${x1}px`,
                   width: `${instanceWidth}px`,
-                  zIndex: this.state.overInstance ? `1000` : `default`
+                  zIndex: overInstance ? `1000` : `default`
                 }}
                 onMouseEnter={e => this.onInstanceEnter(e, popupState)}
-                onMouseLeave={e => this.onInstanceLeave(e, popupState)}
+                onMouseLeave={this.onInstanceLeave}
               />
-
               {handles.map(handle => {
                 const { edge, value } = handle;
                 return (
                   <RSHandle
                     isVisible={
-                      this.state.overInstance ||
-                      this.state.dragging === edge ||
-                      this.state.overHandle === edge
+                      (overInstance && !dragging) ||
+                      dragging === edge ||
+                      overHandle === edge
                     }
+                    isDragging={dragging === edge}
                     key={edge}
-                    onMouseDown={e => this.onMouseDown(e, edge)}
+                    onMouseDown={() => this.onMouseDown(edge)}
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
-                    onMouseLeave={e => this.onHandleLeave(e, edge)}
-                    style={{
-                      left: edge === "start" ? `${x1 - 4}px` : `${x2 - 4}px`
-                    }}
+                    onMouseLeave={this.onHandleLeave}
+                    style={{ left: edge === "start" ? `${x1}px` : `${x2}px` }}
                   >
-                    {this.state.overHandle === edge ||
-                    this.state.dragging === edge ? (
+                    {overHandle === edge || dragging === edge ? (
                       <MeTooltip isVisible>{formatSeconds(value)}</MeTooltip>
                     ) : null}
                   </RSHandle>
