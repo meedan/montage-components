@@ -18,7 +18,7 @@ const HandlePopover = props => {
           vertical: "bottom",
           horizontal: "center"
         }}
-        disablePortal
+        // disablePortal
         id="InstancePopover"
         transformOrigin={{
           vertical: "top",
