@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { react2angular } from 'react2angular';
+import owtj from 'owtj';
 import { SnackbarProvider } from 'notistack';
 
 import { configureAppStore } from './configureStore';
@@ -11,10 +12,12 @@ const VideoTimeline = props => {
   const store = configureAppStore(
     props.$scope
       ? {
-          ...props.$scope.$parent.ctrl,
+          data: JSON.parse(owtj(props.$scope.$parent.ctrl)),
         }
       : {}
   );
+
+  // console.log(props, JSON.parse(owtj(props.$scope.$parent.ctrl)));
 
   return (
     <Provider store={store}>
@@ -26,10 +29,14 @@ const VideoTimeline = props => {
 };
 
 const root = document.getElementById('react-root');
-if (root) ReactDOM.render(<VideoTimeline />, root);
+if (root) {
+  ReactDOM.render(<VideoTimeline />, root);
+} else {
+  console.log('no react-root, angular?');
+}
 
 export const AngularVideoTimeline = react2angular(
-  App,
+  VideoTimeline,
   ['foo'],
   ['$scope', '$http']
 );
