@@ -201,7 +201,8 @@ class Instance extends Component {
                     isDragging={this.state.dragging === edge}
                     isVisible={
                       isHandleActive ||
-                      (this.state.overInstance && !this.state.dragging)
+                      (this.state.overInstance && !this.state.dragging) ||
+                      popupState.isOpen
                     }
                     onMouseDown={() => this.onMouseDown(edge)}
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
