@@ -8,7 +8,7 @@
   "scripts": {
     "status": "npx oao status",
     "clean": "npx oao clean",
-    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN"
+    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN -e REACT_APP_GOOGLE_API_KEY"
   },
   "workspaces": [
     "packages/*"
