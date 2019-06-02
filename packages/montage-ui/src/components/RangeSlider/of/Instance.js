@@ -16,7 +16,7 @@ const RSInstance = styled(({ ...props }) => <div {...props} />)`
   top: 0;
 `;
 
-const RSHandle = styled(({ isDragging, isVisible, ...props }) => (
+const RSHandle = styled(({ isDragging, isVisible, pos, ...props }) => (
   <div {...props} />
 ))`
   background: rgba(71, 123, 181, 1);
@@ -25,7 +25,7 @@ const RSHandle = styled(({ isDragging, isVisible, ...props }) => (
   opacity: ${({ isVisible }) => (isVisible ? "1" : "0")};
   position: absolute;
   top: 0;
-  transform: translateX(-50%);
+  transform: ${({ pos }) => (pos === "end" ? `translateX(-50%)` : ``)};
   transition: transform 250ms, opacity 250ms, width 250ms;
   width: ${({ isDragging }) => (isDragging ? 1 : 4)}px;
   z-index: 2000;
@@ -208,6 +208,7 @@ class Instance extends Component {
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
                     onMouseLeave={this.onHandleLeave}
                     style={{ left: edge === "start" ? `${x1}px` : `${x2}px` }}
+                    pos={edge}
                   >
                     <div
                       style={{ width: `100%`, height: `28px` }}
