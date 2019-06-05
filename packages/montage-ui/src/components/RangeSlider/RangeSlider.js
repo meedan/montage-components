@@ -15,9 +15,7 @@ class RangeSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
-    this.updateDimensions = this.updateDimensions.bind(this);
-
+    this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
   }
 
@@ -26,30 +24,22 @@ class RangeSlider extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.updateDimensions.bind(this));
-    this.setState(prevState => ({
-      wrapper: {
-        ...prevState.wrapper,
-        ref: this.wrapperRef.current
-      }
-    }));
-    this.updateDimensions();
+    window.addEventListener("resize", this.updateRef.bind(this));
+    this.updateRef();
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions.bind(this));
+    window.removeEventListener("resize", this.updateRef.bind(this));
   }
 
-  updateDimensions() {
+  updateRef() {
     if (!this.wrapperRef) return null;
-    const wrapperRect = this.wrapperRef.current.getBoundingClientRect();
-    this.setState(prevState => ({
+    this.setState({
       wrapper: {
-        ...prevState.wrapper,
-        rect: wrapperRect
+        ref: this.wrapperRef.current,
+        rect: this.wrapperRef.current.getBoundingClientRect()
       }
-    }));
-    return null;
+    });
   }
 
   render() {
@@ -66,8 +56,9 @@ class RangeSlider extends Component {
               duration={duration}
               end={end_seconds}
               extendInstance={this.props.extendInstance}
-              i={i}
+              id={id}
               instancePopoverChildren={instancePopoverChildren}
+              instances={instances}
               key={id}
               start={start_seconds}
               wrapper={wrapper}

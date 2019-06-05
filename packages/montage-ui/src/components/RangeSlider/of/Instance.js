@@ -2,6 +2,7 @@ import { func, number, shape, object } from "prop-types";
 import PopupState, { bindHover } from "material-ui-popup-state";
 import React, { Component } from "react";
 import styled from "styled-components";
+import { filter, minBy, maxBy } from "lodash";
 
 import { MeTooltip, formatSeconds } from "@montage/ui";
 
@@ -14,6 +15,9 @@ const RSInstance = styled(({ ...props }) => <div {...props} />)`
   bottom: 0;
   position: absolute;
   top: 0;
+  &:hover {
+    z-index: 3000;
+  }
 `;
 
 const RSHandle = styled(({ isDragging, isVisible, pos, ...props }) => (
@@ -101,10 +105,21 @@ class Instance extends Component {
     this.setState({ coords });
 
     if (!this.state.dragging) return null;
-    const { duration, wrapper } = this.props;
+    const { duration, wrapper, id, instances } = this.props;
     const { dragging, end, start } = this.state;
     const { width, left } = wrapper.rect;
     const MIN_LENGTH = (6 * duration) / width;
+
+    const prevInstance = maxBy(
+      filter(instances, i => i.end_seconds <= start),
+      i => i.end_seconds
+    );
+    const nextInstance = minBy(
+      filter(instances, i => i.start_seconds >= end),
+      i => i.start_seconds
+    );
+    const RANGE_MIN = prevInstance ? prevInstance.end_seconds : 0;
+    const RANGE_MAX = nextInstance ? nextInstance.start_seconds : duration;
 
     if (coords.x <= 0) return null;
     let newTime = ((coords.x - left) * duration) / width;
@@ -119,7 +134,9 @@ class Instance extends Component {
     this.setState(prevState => ({
       coords,
       [dragging]:
-        newTime > 0 && newTime < duration ? newTime : prevState[dragging]
+        newTime > RANGE_MIN && newTime < RANGE_MAX
+          ? newTime
+          : prevState[dragging]
     }));
 
     return null;
@@ -129,7 +146,12 @@ class Instance extends Component {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
 
-    const { duration, instancePopoverChildren, wrapper } = this.props;
+    const {
+      duration,
+      instancePopoverChildren,
+      instances,
+      wrapper
+    } = this.props;
     const { end, start } = this.state;
     const { width } = wrapper.rect;
 
@@ -147,6 +169,24 @@ class Instance extends Component {
       {
         edge: "start",
         value: this.state.start
+      }
+    ];
+
+    const array = [
+      {
+        start_seconds: 10,
+        end_seconds: 30,
+        id: "one"
+      },
+      {
+        start_seconds: 20,
+        end_seconds: 40,
+        id: "two"
+      },
+      {
+        start_seconds: 30,
+        end_seconds: 50,
+        id: "three"
       }
     ];
 

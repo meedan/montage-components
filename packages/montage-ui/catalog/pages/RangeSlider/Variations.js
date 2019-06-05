@@ -17,7 +17,7 @@ ${(
       duration={100}
       deleteInstance={() => console.log("deleteInstance")}
       extendInstance={() => console.log("extendInstance")}
-      instancePopoverChildren={(
+      instancePopoverChildren={
         <>
           <Tooltip title="Open in Check">
             <IconButton>
@@ -25,7 +25,7 @@ ${(
             </IconButton>
           </Tooltip>
         </>
-)}
+      }
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -37,7 +37,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 5,
-          id: 24100,
+          id: 1,
           start_seconds: 0
         },
         {
@@ -50,7 +50,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 50,
-          id: 24101,
+          id: 2,
           start_seconds: 30
         },
         {
@@ -63,7 +63,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 90,
-          id: 24105,
+          id: 3,
           start_seconds: 70
         }
       ]}
@@ -79,7 +79,7 @@ ${(
       duration={2645}
       deleteInstance={() => console.log("deleteInstance")}
       extendInstance={() => console.log("extendInstance")}
-      instancePopoverChildren={(
+      instancePopoverChildren={
         <>
           <Tooltip title="Copy to Clips">
             <IconButton>
@@ -87,7 +87,7 @@ ${(
             </IconButton>
           </Tooltip>
         </>
-)}
+      }
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -99,7 +99,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 1963,
-          id: 24100,
+          id: 1,
           start_seconds: 1043.23066109155
         },
         {
@@ -112,7 +112,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 45,
-          id: 24101,
+          id: 2,
           start_seconds: 0
         },
         {
@@ -125,7 +125,7 @@ ${(
           // video_tag_id: 20674,
           // youtube_id: "9G8dmsnFjL4"
           end_seconds: 126,
-          id: 24105,
+          id: 3,
           start_seconds: 120
         }
       ]}
