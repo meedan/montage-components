@@ -43,7 +43,7 @@ class RangeSlider extends Component {
   }
 
   render() {
-    const { duration, instancePopoverChildren } = this.props;
+    const { duration } = this.props;
     const { instances, wrapper } = this.state;
 
     return (
@@ -52,12 +52,14 @@ class RangeSlider extends Component {
           const { id, start_seconds, end_seconds } = instance;
           return (
             <Instance
+              checkInstance={this.props.checkInstance}
+              clipInstance={this.props.clipInstance}
               deleteInstance={this.props.deleteInstance}
               duration={duration}
               end={end_seconds}
-              extendInstance={this.props.extendInstance}
+              extendInstance={e => this.props.extendInstance(instance, e)}
               id={id}
-              instancePopoverChildren={instancePopoverChildren}
+              instance={instance}
               instances={instances}
               key={id}
               start={start_seconds}
@@ -73,9 +75,14 @@ class RangeSlider extends Component {
 export default RangeSlider;
 
 RangeSlider.propTypes = {
+  checkInstance: func,
+  clipInstance: func,
   deleteInstance: func.isRequired,
   duration: number.isRequired,
   extendInstance: func.isRequired,
   instances: array.isRequired
 };
-RangeSlider.defaultProps = {};
+RangeSlider.defaultProps = {
+  checkInstance: null,
+  clipInstance: null
+};

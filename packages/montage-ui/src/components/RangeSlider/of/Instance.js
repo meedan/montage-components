@@ -172,24 +172,6 @@ class Instance extends Component {
       }
     ];
 
-    const array = [
-      {
-        start_seconds: 10,
-        end_seconds: 30,
-        id: "one"
-      },
-      {
-        start_seconds: 20,
-        end_seconds: 40,
-        id: "two"
-      },
-      {
-        start_seconds: 30,
-        end_seconds: 50,
-        id: "three"
-      }
-    ];
-
     // console.group("Instance.js");
     // console.log(this.state);
     // console.groupEnd();
@@ -215,9 +197,11 @@ class Instance extends Component {
               </RSInstance>
               {!this.state.dragging ? (
                 <InstancePopover
+                  checkInstance={this.props.checkInstance}
+                  clipInstance={this.props.clipInstance}
                   deleteInstance={this.props.deleteInstance}
                   extendInstance={this.props.extendInstance}
-                  instancePopoverChildren={this.props.instancePopoverChildren}
+                  instance={this.props.instance}
                   popupState={popupState}
                 />
               ) : null}

@@ -6,47 +6,66 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { CheckIcon, CutIcon, ExpandIcon } from "@montage/ui/src/components";
 
-import { ExpandIcon } from "@montage/ui/src/components";
-
-const InstancePopover = props => {
-  return (
-    <Popover
-      {...bindPopover(props.popupState)}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center"
-      }}
-      id="InstancePopover"
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "center"
-      }}
-    >
-      {props.instancePopoverChildren}
-      <Tooltip title="Extend full-length">
-        <IconButton onClick={props.extendInstance}>
-          <ExpandIcon fontSize="small" />
+const InstancePopover = ({
+  checkInstance,
+  clipInstance,
+  deleteInstance,
+  extendInstance,
+  instance,
+  popupState
+}) => (
+  <Popover
+    {...bindPopover(popupState)}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center"
+    }}
+    id="InstancePopover"
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center"
+    }}
+  >
+    {clipInstance ? (
+      <Tooltip title="Copy to Clips">
+        <IconButton onClick={() => clipInstance(instance)}>
+          <CutIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Delete">
-        <IconButton onClick={props.deleteInstance}>
-          <DeleteIcon fontSize="small" />
+    ) : null}
+    {checkInstance ? (
+      <Tooltip title="Open in Check">
+        <IconButton onClick={() => checkInstance(instance)}>
+          <CheckIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-    </Popover>
-  );
-};
+    ) : null}
+    <Tooltip title="Extend full-length">
+      <IconButton onClick={extendInstance}>
+        <ExpandIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title="Delete">
+      <IconButton onClick={deleteInstance}>
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  </Popover>
+);
 
 export default InstancePopover;
 
 InstancePopover.propTypes = {
+  checkInstance: func,
+  clipInstance: func,
   deleteInstance: func.isRequired,
   extendInstance: func.isRequired,
-  instancePopoverChildren: oneOfType([array, string, node]),
   popupState: object.isRequired
 };
 
 InstancePopover.defaultProps = {
-  instancePopoverChildren: null
+  checkInstance: null,
+  clipInstance: null
 };

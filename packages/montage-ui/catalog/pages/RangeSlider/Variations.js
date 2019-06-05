@@ -14,18 +14,10 @@ export default () => markdown`
 ${(
   <ReactSpecimen>
     <RangeSlider
+      checkInstance={i => console.log("checkInstance: ", i)}
+      deleteInstance={i => console.log("deleteInstance: ", i)}
       duration={100}
-      deleteInstance={() => console.log("deleteInstance")}
-      extendInstance={() => console.log("extendInstance")}
-      instancePopoverChildren={
-        <>
-          <Tooltip title="Open in Check">
-            <IconButton>
-              <CheckIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </>
-      }
+      extendInstance={i => console.log("extendInstance: ", i)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -76,18 +68,10 @@ ${(
 ${(
   <ReactSpecimen>
     <RangeSlider
+      clipInstance={i => console.log("clipInstance: ", i)}
+      deleteInstance={i => console.log("deleteInstance: ", i)}
       duration={2645}
-      deleteInstance={() => console.log("deleteInstance")}
-      extendInstance={() => console.log("extendInstance")}
-      instancePopoverChildren={
-        <>
-          <Tooltip title="Copy to Clips">
-            <IconButton>
-              <CutIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </>
-      }
+      extendInstance={i => console.log("extendInstance: ", i)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
