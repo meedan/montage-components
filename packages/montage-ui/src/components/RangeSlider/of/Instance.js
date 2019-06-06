@@ -155,10 +155,10 @@ class Instance extends Component {
     const { duration } = this.props;
     const calcVal = prevState => {
       if (dir === "fwd") {
-        return prevState[edge] < duration ? prevState[edge] + 0.5 : duration;
+        return prevState[edge] < duration ? prevState[edge] + 1 : duration;
       }
       if (dir === "bwd") {
-        return prevState[edge] > 0 ? prevState[edge] - 0.5 : 0;
+        return prevState[edge] > 0 ? prevState[edge] - 1 : 0;
       }
       return null;
     };
