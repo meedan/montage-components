@@ -70,7 +70,7 @@ class RangeSlider extends Component {
               deleteInstance={this.props.deleteInstance}
               duration={duration}
               end={end_seconds}
-              extendInstance={e => this.props.extendInstance(instance, e)}
+              extendInstance={() => this.props.extendInstance(id)}
               id={id}
               instance={instance}
               instances={instances}

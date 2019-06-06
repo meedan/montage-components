@@ -17,7 +17,7 @@ ${(
       checkInstance={i => console.log("checkInstance: ", i)}
       deleteInstance={i => console.log("deleteInstance: ", i)}
       duration={100}
-      extendInstance={i => console.log("extendInstance: ", i)}
+      extendInstance={id => console.log("extendInstance: ", id)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",
@@ -72,7 +72,7 @@ ${(
       clipInstance={i => console.log("clipInstance: ", i)}
       deleteInstance={i => console.log("deleteInstance: ", i)}
       duration={100}
-      extendInstance={i => console.log("extendInstance: ", i)}
+      extendInstance={id => console.log("extendInstance: ", id)}
       instances={[
         {
           // created: "2019-04-24T10:11:24+00:00",

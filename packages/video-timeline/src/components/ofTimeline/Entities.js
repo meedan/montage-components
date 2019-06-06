@@ -506,24 +506,14 @@ class Entities extends Component {
     });
   };
 
-  expandInstance(id) {
-    const { targetInstance } = this.state;
-
+  extendInstance(entityId, instanceId) {
     const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === id);
-      const i = nextEntities[ti].instances.find(
-        i => i.id === targetInstance.id
-      );
+      const ti = nextEntities.findIndex(t => t.id === entityId);
+      const i = nextEntities[ti].instances.find(i => i.id === instanceId);
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
       nextEntities[ti].instances = [i];
     });
-
-    this.setState({
-      targetInstance: null,
-      targetEntity: null,
-    });
-
     this.props.update({ [this.props.entitiesyKey]: entities });
   }
 
@@ -605,9 +595,14 @@ class Entities extends Component {
                     <>
                       <RangeSlider
                         copyInstanceToClips={() => alert('copyInstanceToClips')}
-                        extendInstance={() => alert('extendInstance')}
+                        extendInstance={instanceId =>
+                          this.extendInstance(entity.id, instanceId)
+                        }
                         duration={duration}
                         instances={instances}
+                        updateInstances={instances =>
+                          console.log('updateInstances: ', instances)
+                        }
                       />
                       {/* <MemoizedRange
                           defaultValue={arr}
@@ -646,7 +641,7 @@ class Entities extends Component {
                         isOverHandle={this.state.isOverHandle}
                         onDelete={() => this.deleteInstance(entity.id)}
                         // onExit={this.hideInstancePopover}
-                        onExtend={() => this.expandInstance(entity.id)}
+                        onExtend={() => this.extendInstance(entity.id)}
                         moveForward={h =>
                           this.moveHandle(entity.id, h, 1 / FPS)
                         }
