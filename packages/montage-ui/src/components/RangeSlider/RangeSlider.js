@@ -1,5 +1,4 @@
 import { array, func, number } from "prop-types";
-import { findIndex } from "lodash";
 import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
@@ -37,7 +36,7 @@ class RangeSlider extends Component {
   }
 
   updateInstance(id, payload) {
-    const i = findIndex(this.state.instances, i => i.id === id);
+    const i = this.state.instances.findIndex(i => i.id === id);
     const instances = [
       ...this.state.instances.slice(0, i),
       { ...this.state.instances[i], ...payload },
