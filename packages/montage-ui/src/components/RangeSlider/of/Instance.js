@@ -153,12 +153,14 @@ class Instance extends Component {
 
   moveHandle(edge, dir) {
     const { duration } = this.props;
+    const unit = duration / this.props.wrapper.rect.width;
+
     const calcVal = prevState => {
       if (dir === "fwd") {
-        return prevState[edge] < duration ? prevState[edge] + 1 : duration;
+        return prevState[edge] < duration ? prevState[edge] + unit : duration;
       }
       if (dir === "bwd") {
-        return prevState[edge] > 0 ? prevState[edge] - 1 : 0;
+        return prevState[edge] > 0 ? prevState[edge] - unit : 0;
       }
       return null;
     };
