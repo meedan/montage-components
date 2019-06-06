@@ -8,18 +8,16 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-// import { CheckIcon, CutIcon } from '@montage/ui/src/components';
 import { RangeSlider } from '@montage/ui';
 
 import EntityControls from './ofEntities/EntityControls';
-// import EntityInstancePopover from './ofEntities/EntityInstancePopover';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
 import { play, pause, seekTo } from '../../reducers/player';
 import { update } from '../../reducers/data';
 
-const FPS = 30;
+// const FPS = 30;
 
 function getName(entity, entityType) {
   return entity[`project_${entityType}`].name;
@@ -353,109 +351,6 @@ class Entities extends Component {
     });
   };
 
-  // detecInstancePopoverOff = ({ clientX, clientY, currentTarget }) => {
-  //   const rect = currentTarget.getBoundingClientRect();
-  //   // console.log(rect, clientX, clientY);
-  //
-  //   if (
-  //     rect.x < clientX &&
-  //     clientX < rect.x + rect.width &&
-  //     rect.y < clientY &&
-  //     clientY < rect.y + rect.height
-  //   ) {
-  //     // all fine
-  //   } else {
-  //     // console.log('outside', rect, clientX, clientY);
-  //     this.setState({
-  //       targetInstance: null,
-  //       targetEntity: null,
-  //     });
-  //   }
-  // };
-
-  // hideInstancePopover = () => {
-  //   this.setState({
-  //     targetInstance: null,
-  //     targetEntity: null,
-  //   });
-  // };
-  //
-  // showInstancePopover = (e, id) => {
-  //   if (!e) {
-  //     this.setState({
-  //       targetInstance: null,
-  //       targetEntity: null,
-  //     });
-  //     return;
-  //   }
-  //
-  //   // const { entities } = this.state;
-  //   const { duration, entities } = this.props;
-  //
-  //   const rect = e.currentTarget.getBoundingClientRect();
-  //
-  //   const s2px = rect.width / duration;
-  //   const px2s = duration / rect.width;
-  //
-  //   const relativeMousePos = e.clientX - rect.left;
-  //   const normalzdMousePos = relativeMousePos > 0 ? relativeMousePos : 0;
-  //   const mouseTime = normalzdMousePos * px2s;
-  //
-  //   const targetEntity = entities.find(t => t.id === id);
-  //   if (!targetEntity) {
-  //     this.setState({
-  //       targetInstance: null,
-  //       targetEntity: null,
-  //     });
-  //     return;
-  //   }
-  //
-  //   const handleTime = 4 * px2s;
-  //
-  //   const targetInstance = targetEntity.instances.find(
-  //     i =>
-  //       mouseTime >= i.start_seconds - handleTime / 2 &&
-  //       mouseTime < i.end_seconds
-  //   );
-  //
-  //   const instanceX1 = targetInstance ? targetInstance.start_seconds * s2px : 0;
-  //   const instanceX2 = targetInstance ? targetInstance.end_seconds * s2px : 0;
-  //
-  //   const isOverStartHandle = !!targetEntity.instances.find(
-  //     i =>
-  //       mouseTime >= i.start_seconds - handleTime &&
-  //       mouseTime <= i.start_seconds + handleTime
-  //   );
-  //
-  //   const isOverEndHandle = !!targetEntity.instances.find(
-  //     i =>
-  //       mouseTime >= i.end_seconds - handleTime &&
-  //       mouseTime <= i.end_seconds + handleTime
-  //   );
-  //
-  //   const x = (function() {
-  //     if (isOverStartHandle) {
-  //       return instanceX1;
-  //     } else if (isOverEndHandle) {
-  //       return instanceX2;
-  //     } else {
-  //       return instanceX1 + (instanceX2 - instanceX1) / 2;
-  //     }
-  //   })();
-  //
-  //   this.setState({
-  //     anchorPosition: {
-  //       left: x + rect.left,
-  //       top: rect.height + rect.top,
-  //     },
-  //     isOverHandle: isOverStartHandle || isOverEndHandle,
-  //     isOverStartHandle,
-  //     isOverEndHandle,
-  //     targetInstance,
-  //     targetEntity,
-  //   });
-  // };
-
   deleteEntity = id => {
     const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
@@ -560,18 +455,6 @@ class Entities extends Component {
 
               arr.sort((p, q) => p - q);
 
-              const trackStyle = arr.reduce((acc, j, i) => {
-                return [
-                  ...acc,
-                  {
-                    backgroundColor:
-                      i % 2 === 0 ? 'rgba(71, 123, 181, 0.4)' : 'transparent',
-                  },
-                ];
-              }, []);
-
-              // console.log(tag.id, arr);
-
               return (
                 <TableBlock
                   key={entity.id}
@@ -592,85 +475,17 @@ class Entities extends Component {
                     />
                   }
                   rightColContent={
-                    <>
-                      <RangeSlider
-                        copyInstanceToClips={() => alert('copyInstanceToClips')}
-                        extendInstance={instanceId =>
-                          this.extendInstance(entity.id, instanceId)
-                        }
-                        duration={duration}
-                        instances={instances}
-                        updateInstances={instances =>
-                          console.log('updateInstances: ', instances)
-                        }
-                      />
-                      {/* <MemoizedRange
-                          defaultValue={arr}
-                          handle={handleProps => (
-                            <EntityInstanceHandle
-                              {...handleProps}
-                              open={
-                                this.state.targetEntity &&
-                                this.state.targetInstance
-                                  ? true
-                                  : false
-                              }
-                            />
-                          )}
-                          key={entity.id}
-                          max={duration}
-                          min={0}
-                          onAfterChange={v => this.onAfterChange(v, entity.id)}
-                          onBeforeChange={v =>
-                            this.onBeforeChange(v, entity.id)
-                          }
-                          onChange={v => this.onChange(v, entity.id)}
-                          pushable
-                          trackStyle={trackStyle}
-                          value={arr}
-                        /> */}
-                      {/* <EntityInstancePopover
-                        anchorPosition={this.state.anchorPosition}
-                        handle={[
-                          this.state.isOverStartHandle,
-                          this.state.isOverEndHandle,
-                        ]}
-                        entity={this.state.targetEntity}
-                        entityId={entity.id}
-                        instance={this.state.targetInstance}
-                        isOverHandle={this.state.isOverHandle}
-                        onDelete={() => this.deleteInstance(entity.id)}
-                        // onExit={this.hideInstancePopover}
-                        onExtend={() => this.extendInstance(entity.id)}
-                        moveForward={h =>
-                          this.moveHandle(entity.id, h, 1 / FPS)
-                        }
-                        moveBackward={h =>
-                          this.moveHandle(entity.id, h, -1 / FPS)
-                        }
-                      >
-                        {entityType !== 'clip' ? (
-                          <Tooltip title="Copy to Clips">
-                            <IconButton
-                              onClick={() => this.duplicateAsClip(entity.id)}
-                            >
-                              <CutIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip title="Open in Check">
-                            <IconButton
-                              onClick={() => this.openInCheck(entity.id)}
-                            >
-                              <CheckIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </EntityInstancePopover>
-                      <style scoped>
-                        {'#instanceControlsPopover { pointer-events: none; }'}
-                      </style> */}
-                    </>
+                    <RangeSlider
+                      copyInstanceToClips={() => alert('copyInstanceToClips')}
+                      extendInstance={instanceId =>
+                        this.extendInstance(entity.id, instanceId)
+                      }
+                      duration={duration}
+                      instances={instances}
+                      updateInstances={instances =>
+                        console.log('updateInstances: ', instances)
+                      }
+                    />
                   }
                 />
               );
@@ -717,10 +532,7 @@ const recomputeSegments = (entities, duration) => {
   return segments;
 };
 
-// const MemoizedRange = React.memo(props => <Range {...props} />);
-
 export default connect(
   null,
   { play, pause, seekTo, update }
 )(Entities);
-// )(React.memo(props => <Entities {...props} />));
