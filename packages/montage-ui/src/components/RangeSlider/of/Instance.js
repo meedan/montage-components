@@ -1,4 +1,4 @@
-import { func, number, shape, object } from "prop-types";
+import { array, func, number, object, shape } from "prop-types";
 import PopupState, { bindHover } from "material-ui-popup-state";
 import React, { Component } from "react";
 import styled from "styled-components";
@@ -56,6 +56,8 @@ class Instance extends Component {
     this.onHandleLeave = this.onHandleLeave.bind(this);
     this.onInstanceEnter = this.onInstanceEnter.bind(this);
     this.onInstanceLeave = this.onInstanceLeave.bind(this);
+
+    this.moveHandle = this.moveHandle.bind(this);
   }
 
   componentDidMount() {
@@ -101,7 +103,7 @@ class Instance extends Component {
     this.setState({ coords });
 
     if (!this.state.dragging) return null;
-    const { duration, wrapper, id, instances } = this.props;
+    const { duration, wrapper, instances } = this.props;
     const { dragging, end, start } = this.state;
     const { width, left } = wrapper.rect;
     const MIN_LENGTH = (6 * duration) / width;
@@ -146,18 +148,37 @@ class Instance extends Component {
         end_seconds: this.state.end
       });
     });
+    return null;
+  }
+
+  moveHandle(edge, dir) {
+    const { duration } = this.props;
+    const calcVal = prevState => {
+      if (dir === "fwd") {
+        return prevState[edge] < duration ? prevState[edge] + 0.5 : duration;
+      }
+      if (dir === "bwd") {
+        return prevState[edge] > 0 ? prevState[edge] - 0.5 : 0;
+      }
+      return null;
+    };
+    this.setState(
+      prevState => ({
+        [edge]: calcVal(prevState)
+      }),
+      () =>
+        this.props.updateInstance({
+          start_seconds: this.state.start,
+          end_seconds: this.state.end
+        })
+    );
   }
 
   render() {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
 
-    const {
-      duration,
-      instancePopoverChildren,
-      instances,
-      wrapper
-    } = this.props;
+    const { duration, wrapper } = this.props;
     const { end, start } = this.state;
     const { width } = wrapper.rect;
 
@@ -251,8 +272,10 @@ class Instance extends Component {
                   </RSHandle>
                   {!this.state.dragging ? (
                     <HandlePopover
-                      popupState={popupState}
                       id={`${edge}Popover`}
+                      moveBackward={() => this.moveHandle(edge, "bwd")}
+                      moveForward={() => this.moveHandle(edge, "fwd")}
+                      popupState={popupState}
                     />
                   ) : null}
                 </>
@@ -268,12 +291,16 @@ class Instance extends Component {
 export default Instance;
 
 Instance.propTypes = {
-  updateInstance: func.isRequired,
+  checkInstance: func,
+  clipInstance: func,
   deleteInstance: func.isRequired,
   duration: number.isRequired,
   end: number.isRequired,
   extendInstance: func.isRequired,
+  instances: array.isRequired,
+  instance: object.isRequired,
   start: number.isRequired,
+  updateInstance: func.isRequired,
   wrapper: shape({
     rect: object.isRequired,
     ref: object.isRequired
@@ -281,5 +308,7 @@ Instance.propTypes = {
 };
 
 Instance.defaultProps = {
+  checkInstance: null,
+  clipInstance: null,
   wrapper: null
 };

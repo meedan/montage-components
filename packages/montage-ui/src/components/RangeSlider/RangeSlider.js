@@ -61,7 +61,7 @@ class RangeSlider extends Component {
 
     return (
       <RSWrapper ref={this.wrapperRef}>
-        {instances.map((instance, i) => {
+        {instances.map(instance => {
           const { id, start_seconds, end_seconds } = instance;
           return (
             <Instance
