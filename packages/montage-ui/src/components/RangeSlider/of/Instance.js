@@ -95,10 +95,6 @@ class Instance extends Component {
     this.setState({ dragging: edge });
   }
 
-  onMouseUp() {
-    this.setState({ dragging: null });
-  }
-
   onMouseMove(e) {
     if (!e) return null;
     const coords = { x: e.pageX, y: e.pageY };
@@ -140,6 +136,16 @@ class Instance extends Component {
     }));
 
     return null;
+  }
+
+  onMouseUp() {
+    if (!this.state.dragging) return null;
+    this.setState({ dragging: null }, () => {
+      this.props.updateInstance({
+        start_seconds: this.state.start,
+        end_seconds: this.state.end
+      });
+    });
   }
 
   render() {
@@ -262,6 +268,7 @@ class Instance extends Component {
 export default Instance;
 
 Instance.propTypes = {
+  updateInstance: func.isRequired,
   deleteInstance: func.isRequired,
   duration: number.isRequired,
   end: number.isRequired,

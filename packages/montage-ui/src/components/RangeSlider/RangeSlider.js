@@ -1,5 +1,6 @@
-import React, { Component, createRef } from "react";
 import { array, func, number } from "prop-types";
+import { findIndex } from "lodash";
+import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
 import Instance from "./of/Instance";
@@ -14,22 +15,35 @@ const RSWrapper = styled.div`
 class RangeSlider extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      instances: []
+    };
+    this.updateInstance = this.updateInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
   }
 
-  static getDerivedStateFromProps(props, state) {
-    return { ...state, instances: props.instances };
+  componentWillMount() {
+    this.setState({ instances: this.props.instances });
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.updateRef.bind(this));
     this.updateRef();
+    window.addEventListener("resize", this.updateRef.bind(this));
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateRef.bind(this));
+  }
+
+  updateInstance(id, payload) {
+    const i = findIndex(this.state.instances, i => i.id === id);
+    const instances = [
+      ...this.state.instances.slice(0, i),
+      { ...this.state.instances[i], ...payload },
+      ...this.state.instances.slice(i + 1)
+    ];
+    this.setState({ instances }, () => this.props.updateInstances(instances));
   }
 
   updateRef() {
@@ -63,6 +77,7 @@ class RangeSlider extends Component {
               instances={instances}
               key={id}
               start={start_seconds}
+              updateInstance={payload => this.updateInstance(id, payload)}
               wrapper={wrapper}
             />
           );
@@ -80,7 +95,8 @@ RangeSlider.propTypes = {
   deleteInstance: func.isRequired,
   duration: number.isRequired,
   extendInstance: func.isRequired,
-  instances: array.isRequired
+  instances: array.isRequired,
+  updateInstances: func.isRequired
 };
 RangeSlider.defaultProps = {
   checkInstance: null,
