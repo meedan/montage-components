@@ -22,12 +22,22 @@ const HandlePopover = ({ moveBackward, moveForward, id, popupState }) => (
     }}
   >
     <Tooltip placement="bottom" title="Move backward">
-      <IconButton onClick={moveBackward}>
+      <IconButton
+        onClick={e => {
+          e.stopPropagation();
+          moveBackward();
+        }}
+      >
         <ArrowBackIcon fontSize="small" />
       </IconButton>
     </Tooltip>
     <Tooltip placement="bottom" title="Move forward">
-      <IconButton onClick={moveForward}>
+      <IconButton
+        onClick={e => {
+          e.stopPropagation();
+          moveForward();
+        }}
+      >
         <ArrowForwardIcon fontSize="small" />
       </IconButton>
     </Tooltip>

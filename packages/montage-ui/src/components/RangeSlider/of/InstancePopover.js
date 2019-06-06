@@ -1,5 +1,5 @@
 import { bindPopover } from "material-ui-popup-state";
-import { array, func, node, object, oneOfType, string } from "prop-types";
+import { func, object } from "prop-types";
 import Popover from "material-ui-popup-state/HoverPopover";
 import React from "react";
 
@@ -13,7 +13,6 @@ const InstancePopover = ({
   clipInstance,
   deleteInstance,
   extendInstance,
-  instance,
   popupState
 }) => (
   <Popover

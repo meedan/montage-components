@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 import Table from '@material-ui/core/Table';
 import grey from '@material-ui/core/colors/grey';
-import Typography from '@material-ui/core/Typography';
 
 import Entities from './ofTimeline/Entities';
 import formatTime from './ofTimeline/formatTime';
@@ -31,7 +30,7 @@ const Playhead = styled(({ box, ...props }) => <div {...props} />)`
   border-left: 1px solid ${grey[300]};
   pointer-events: none;
   position: fixed;
-  z-index: 100;
+  z-index: 1;
   .rc-slider {
     height: 100%;
     padding: 0;
