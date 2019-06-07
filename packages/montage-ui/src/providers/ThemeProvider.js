@@ -15,6 +15,81 @@ const theme = createMuiTheme({
         backgroundColor: grey[700],
         fontSize: mui.typography.pxToRem(13)
       }
+    },
+    MuiTableCell: {
+      root: {
+        borderColor: grey[200]
+      },
+      paddingDense: {
+        paddingBottom: 6,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingTop: 6
+      }
+    },
+    MuiMenuItem: {
+      root: {
+        fontSize: mui.typography.pxToRem(14)
+      }
+    },
+    MuiListItem: {
+      gutters: {
+        paddingTop: 6,
+        paddingBottom: 6
+      },
+      dense: {
+        fontSize: mui.typography.pxToRem(13)
+      }
+    },
+    MuiListItemIcon: {
+      root: {
+        marginRight: 6
+      }
+    },
+    MuiListItemText: {
+      root: {
+        fontSize: mui.typography.pxToRem(14),
+        padding: "0 6px"
+      },
+      dense: {
+        fontSize: mui.typography.pxToRem(13)
+      }
+    },
+    MuiIconButton: {
+      root: {
+        padding: 6,
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      },
+      colorPrimary: {
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      },
+      colorSecondary: {
+        "&:hover": {
+          backgroundColor: "transparent",
+          "@media (hover: none)": {
+            backgroundColor: "transparent"
+          },
+          "&$disabled": {
+            backgroundColor: "transparent"
+          }
+        }
+      }
     }
   },
 
