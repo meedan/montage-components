@@ -44,7 +44,7 @@ const Submenu = withStyles(submenuStyles)(
         >
           {popupState => (
             <ParentPopupState.Provider value={popupState}>
-              <MenuItem {...bindHover(popupState)} selected={popupState.isOpen}
+              <MenuItem {...bindHover(popupState)} selected={popupState.isOpen}>
                 <ListItemText>{title}</ListItemText>
                 <ChevronRight className={classes.moreArrow} />
               </MenuItem>
