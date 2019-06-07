@@ -82,7 +82,7 @@ class KeepStatus extends Component {
           ? `Not synced with Keep`
           : `Save video to Keep locations`;
       }
-      return `Safely stored in ${backupsCount} Keep locations`;
+      return `Saved in ${backupsCount} Keep locations`;
     };
 
     return (
@@ -90,19 +90,23 @@ class KeepStatus extends Component {
         {popupState => (
           <>
             <ListItem
+              component="div"
               button={!isArchived}
-              dense
               onClick={
                 !isArchived && backupsCount > 0 && !processing && !error
                   ? popupState.open
                   : this.onTriggerKeep
               }
+              dense
             >
               <ListItemIcon>
                 <KeepIcon />
               </ListItemIcon>
               <ListItemText>
-                <Typography color={isVanilla ? "primary" : "initial"}>
+                <Typography
+                  color={isVanilla ? "primary" : "initial"}
+                  variant="body2"
+                >
                   {renderStatus()}
                 </Typography>
               </ListItemText>

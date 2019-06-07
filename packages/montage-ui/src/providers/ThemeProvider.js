@@ -12,47 +12,9 @@ const theme = createMuiTheme({
   overrides: {
     MuiTooltip: {
       tooltip: {
-        backgroundColor: grey[700],
-        fontSize: mui.typography.pxToRem(13)
-      }
-    },
-    MuiTableCell: {
-      root: {
-        borderColor: grey[200]
-      },
-      paddingDense: {
-        paddingBottom: 6,
-        paddingLeft: 12,
-        paddingRight: 12,
-        paddingTop: 6
-      }
-    },
-    MuiMenuItem: {
-      root: {
-        fontSize: mui.typography.pxToRem(14)
-      }
-    },
-    MuiListItem: {
-      gutters: {
-        paddingTop: 6,
-        paddingBottom: 6
-      },
-      dense: {
-        fontSize: mui.typography.pxToRem(13)
-      }
-    },
-    MuiListItemIcon: {
-      root: {
-        marginRight: 6
-      }
-    },
-    MuiListItemText: {
-      root: {
-        fontSize: mui.typography.pxToRem(14),
-        padding: "0 6px"
-      },
-      dense: {
-        fontSize: mui.typography.pxToRem(13)
+        backgroundColor: grey[800],
+        fontSize: mui.typography.pxToRem(13),
+        fontWeight: mui.typography.fontWeightRegular
       }
     },
     MuiIconButton: {
@@ -67,28 +29,45 @@ const theme = createMuiTheme({
             backgroundColor: "transparent"
           }
         }
+      }
+    },
+    MuiTableCell: {
+      root: {
+        borderColor: grey[200]
       },
-      colorPrimary: {
-        "&:hover": {
-          backgroundColor: "transparent",
-          "@media (hover: none)": {
-            backgroundColor: "transparent"
-          },
-          "&$disabled": {
-            backgroundColor: "transparent"
-          }
-        }
+      paddingDense: {
+        paddingBottom: 6,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingTop: 6
+      }
+    },
+    // MuiMenuItem: {
+    //   root: {
+    //     fontSize: mui.typography.pxToRem(12)
+    //   }
+    // },
+    MuiListItem: {
+      // gutters: {
+      //   paddingTop: 6,
+      //   paddingBottom: 6
+      // },
+      dense: {
+        fontSize: mui.typography.pxToRem(13)
+      }
+    },
+    MuiListItemIcon: {
+      root: {
+        minWidth: 40
+      }
+    },
+    MuiListItemText: {
+      root: {
+        fontSize: mui.typography.pxToRem(14)
+        // padding: "0 6px"
       },
-      colorSecondary: {
-        "&:hover": {
-          backgroundColor: "transparent",
-          "@media (hover: none)": {
-            backgroundColor: "transparent"
-          },
-          "&$disabled": {
-            backgroundColor: "transparent"
-          }
-        }
+      dense: {
+        fontSize: mui.typography.pxToRem(13)
       }
     }
   },

@@ -151,7 +151,11 @@ class VideoMeta extends Component {
               <ListItemIcon>
                 <VisibilityIcon />
               </ListItemIcon>
-              <ListItemText primary={`${this.props.videoViewCount} views`} />
+              <ListItemText primary={`${this.props.videoViewCount} views`}>
+                <Typography variant="body2">
+                  {this.props.videoViewCount} views
+                </Typography>
+              </ListItemText>
             </ListItem>
             <PublishedDate pubDate={this.props.pubDate} />
             <RecordedDate

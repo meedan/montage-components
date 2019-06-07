@@ -48,13 +48,15 @@ class RecordedDate extends Component {
 
     const renderDate = () => {
       if (processing) {
-        return <Typography>Saving new recording date…</Typography>;
+        return (
+          <Typography variant="body2">Saving new recording date…</Typography>
+        );
       }
       if (recDate) {
-        return <Typography>Recorded {displayDate}</Typography>;
+        return <Typography variant="body2">Recorded {displayDate}</Typography>;
       }
       return (
-        <Typography color={isArchived ? "initial" : "primary"}>
+        <Typography color={isArchived ? "initial" : "primary"} variant="body2">
           {isArchived ? `No recorded date set` : `Set a recorded Date`}
         </Typography>
       );

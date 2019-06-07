@@ -16,7 +16,7 @@ const PublishedDateListItem = props => {
         <PublishIcon />
       </ListItemIcon>
       <ListItemText>
-        <Typography>
+        <Typography variant="body2">
           Published{" "}
           {format(parseISO(pubDate), "d MMMM YYYY", {
             awareOfUnicodeTokens: true
