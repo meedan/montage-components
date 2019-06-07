@@ -120,4 +120,4 @@ const Transport = props => {
 export default connect(
   null,
   { play, pause, seekTo }
-)(withTheme()(Transport));
+)(withTheme(Transport));

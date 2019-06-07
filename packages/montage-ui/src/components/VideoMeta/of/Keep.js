@@ -102,7 +102,7 @@ class KeepStatus extends Component {
                 <KeepIcon />
               </ListItemIcon>
               <ListItemText>
-                <Typography color={isVanilla ? "primary" : "default"}>
+                <Typography color={isVanilla ? "primary" : "initial"}>
                   {renderStatus()}
                 </Typography>
               </ListItemText>

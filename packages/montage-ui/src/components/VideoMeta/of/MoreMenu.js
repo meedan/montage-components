@@ -23,10 +23,10 @@ const ParentPopupState = React.createContext(null);
 
 const submenuStyles = theme => ({
   menu: {
-    top: -theme.spacing.unit
+    top: -theme.spacing
   },
   moreArrow: {
-    marginRight: theme.spacing.unit * -1
+    marginRight: theme.spacing(-1)
   }
 });
 

@@ -9,15 +9,13 @@ const theme = createMuiTheme();
 
 const customTheme = createMuiTheme({
   typography: {
-    useNextVariants: true,
-    // Use the system font instead of the default Roboto font.
-    fontWeightMedium: 500,
-    body2: {
-      fontSize: 13
-    },
-    h6: {
-      fontWeight: 400
-    }
+    // fontWeightMedium: 500,
+    // body2: {
+    //   fontSize: 13
+    // },
+    // h6: {
+    //   fontWeight: 400
+    // }
   },
   props: {
     MuiButtonBase: {
