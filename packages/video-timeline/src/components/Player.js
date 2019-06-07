@@ -81,4 +81,4 @@ class Player extends Component {
 export default connect(
   null,
   { play, pause, duration, timeupdate, update }
-)(withTheme()(Player));
+)(withTheme(Player));

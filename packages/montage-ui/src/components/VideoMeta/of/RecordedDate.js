@@ -1,38 +1,46 @@
 import { bool, func, string } from "prop-types";
-import { DatePicker, MuiPickersUtilsProvider } from "material-ui-pickers";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { parseISO, format } from "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
-import React, { Component, createRef } from "react";
+import React, { Component } from "react";
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
+
 import VideocamIcon from "@material-ui/icons/Videocam";
 
 class RecordedDate extends Component {
   constructor(props) {
     super(props);
-    this.state = { processing: null };
-    this.onRecDateChange = this.onRecDateChange.bind(this);
-    this.onDatepickerToggle = this.onDatepickerToggle.bind(this);
-    this.datepickerRef = createRef(null);
+    this.state = { date: null, processing: null, pickerOpen: false };
+    this.onAcceptDate = this.onAcceptDate.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
   }
 
-  onRecDateChange(date) {
+  componentDidMount() {
+    this.setState({ date: parseISO(this.props.recDate) });
+  }
+
+  onDateChange(date) {
+    console.log("onDateChange: ", date);
+    this.setState({ date });
+  }
+
+  onAcceptDate(date) {
     if (this.props.isArchived) return null;
-    this.setState({ processing: true });
+    console.log("onAcceptDate", date);
+    this.setState({ processing: true, pickerOpen: false });
     this.props.onRecDateChange(date, () => this.setState({ processing: null }));
     return null;
   }
 
-  onDatepickerToggle(e) {
-    this.datepickerRef.current.open(e);
-  }
-
   render() {
-    const { processing } = this.state;
+    const { date, processing } = this.state;
     const { isArchived, recDate, recDateOverriden } = this.props;
 
     const displayDate = recDate
@@ -43,13 +51,15 @@ class RecordedDate extends Component {
 
     const renderDate = () => {
       if (processing) {
-        return <Typography>Saving new recording date…</Typography>;
+        return (
+          <Typography variant="body2">Saving new recording date…</Typography>
+        );
       }
       if (recDate) {
-        return <Typography>Recorded {displayDate}</Typography>;
+        return <Typography variant="body2">Recorded {displayDate}</Typography>;
       }
       return (
-        <Typography color={isArchived ? "default" : "primary"}>
+        <Typography color={isArchived ? "initial" : "primary"} variant="body2">
           {isArchived ? `No recorded date set` : `Set a recorded Date`}
         </Typography>
       );
@@ -59,7 +69,7 @@ class RecordedDate extends Component {
       <ListItem
         button={!isArchived}
         dense
-        onClick={!isArchived ? this.onDatepickerToggle : null}
+        onClick={!isArchived ? () => this.setState({ pickerOpen: true }) : null}
       >
         <ListItemIcon>
           <VideocamIcon />
@@ -77,15 +87,19 @@ class RecordedDate extends Component {
             renderEl()
           )}
           <DatePicker
+            animateYearScrolling
             autoOk
             clearable={!!recDate}
             clearLabel={isArchived ? "Revert" : "Clear"}
             disableFuture
-            onChange={this.onRecDateChange}
-            ref={this.datepickerRef}
-            style={{ height: "1px", width: "1px", overflow: "hidden" }}
+            onAccept={this.onAcceptDate}
+            // onOpen={() => this.setState({ pickerOpen: true })}
+            onChange={this.onDateChange}
+            // onClose={() => this.setState({ pickerOpen: false })}
+            open={this.state.pickerOpen}
             TextFieldComponent="span"
-            value={parseISO(recDate) || null}
+            value={date || null}
+            variant="dialog"
           />
         </>
       </MuiPickersUtilsProvider>

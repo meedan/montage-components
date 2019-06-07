@@ -13,22 +13,23 @@ import React, { Component } from "react";
 import ErrorBoundary from "react-error-boundary";
 import styled from "styled-components";
 
-import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import Divider from "@material-ui/core/Divider";
-import grey from "@material-ui/core/colors/grey";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import PlaceIcon from "@material-ui/icons/Place";
-import Typography from "@material-ui/core/Typography";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography
+} from "@material-ui/core";
 
-import { color } from "@montage/ui/src/config";
+import { withStyles } from "@material-ui/core/styles";
+import grey from "@material-ui/core/colors/grey";
+import PlaceIcon from "@material-ui/icons/Place";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import Archive from "./of/Archive";
 import Favourite from "./of/Favourite";
@@ -153,7 +154,11 @@ class VideoMeta extends Component {
               <ListItemIcon>
                 <VisibilityIcon />
               </ListItemIcon>
-              <ListItemText primary={`${this.props.videoViewCount} views`} />
+              <ListItemText primary={`${this.props.videoViewCount} views`}>
+                <Typography variant="body2">
+                  {this.props.videoViewCount} views
+                </Typography>
+              </ListItemText>
             </ListItem>
             <PublishedDate pubDate={this.props.pubDate} />
             <RecordedDate
@@ -194,8 +199,8 @@ class VideoMeta extends Component {
             }}
             onClick={() => setMap(true)}
           >
-            <PlaceIcon fontSize="small" style={{ marginRight: "5px" }} />{" "}
-            <span style={{ color: color.brand }}>Set location</span>
+            <PlaceIcon fontSize="small" style={{ marginRight: "5px" }} /> Set
+            location
           </Button>
         </CardContent>
       </Card>

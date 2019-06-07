@@ -108,4 +108,4 @@ function Preview(props) {
   );
 }
 
-export default withTheme()(Preview);
+export default withTheme(Preview);

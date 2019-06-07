@@ -4,29 +4,32 @@ import Menu from "material-ui-popup-state/HoverMenu";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import React, { Component } from "react";
 
-import Button from "@material-ui/core/Button";
+import {
+  Button,
+  ClickAwayListener,
+  Divider,
+  Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  TextField
+} from "@material-ui/core";
+
+import { withStyles } from "@material-ui/core/styles";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Divider from "@material-ui/core/Divider";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import TextField from "@material-ui/core/TextField";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 const ParentPopupState = React.createContext(null);
 
 const submenuStyles = theme => ({
   menu: {
-    top: -theme.spacing.unit
+    top: -theme.spacing
   },
   moreArrow: {
-    marginRight: theme.spacing.unit * -1
+    marginRight: theme.spacing(-1)
   }
 });
 
@@ -41,11 +44,7 @@ const Submenu = withStyles(submenuStyles)(
         >
           {popupState => (
             <ParentPopupState.Provider value={popupState}>
-              <MenuItem
-                {...bindHover(popupState)}
-                dense
-                selected={popupState.isOpen}
-              >
+              <MenuItem {...bindHover(popupState)} selected={popupState.isOpen}>
                 <ListItemText>{title}</ListItemText>
                 <ChevronRight className={classes.moreArrow} />
               </MenuItem>
@@ -126,7 +125,7 @@ class MoreMenu extends Component {
 
     const form = (
       <ClickAwayListener onClickAway={this.onCloseForm}>
-        <Grid container direction="column" spacing={8} wrap="nowrap">
+        <Grid container direction="column" spacing={1} wrap="nowrap">
           <Grid item>
             <TextField
               autoFocus
@@ -198,6 +197,7 @@ class MoreMenu extends Component {
                 disableAutoFocusItem
                 getContentAnchorEl={null}
                 open={status === "adding" ? true : popupState.isOpen}
+                MenuListProps={{ dense: true }}
                 transformOrigin={{ vertical: "top", horizontal: "center" }}
               >
                 {!isArchived
@@ -253,7 +253,6 @@ class MoreMenu extends Component {
                       </MenuItem>
                     </Submenu>,
                     <MenuItem
-                      dense
                       onClick={() => this.onManageDupes(popupState)}
                       key="manageDupesItem"
                     >
@@ -262,7 +261,7 @@ class MoreMenu extends Component {
                     <Divider key="divider" />
                     ]
                   : null}
-                <MenuItem dense onClick={() => this.onDelete(popupState)}>
+                <MenuItem onClick={() => this.onDelete(popupState)}>
                   <ListItemText>Remove from Library</ListItemText>
                 </MenuItem>
               </Menu>

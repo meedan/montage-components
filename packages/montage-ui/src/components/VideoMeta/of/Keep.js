@@ -12,13 +12,15 @@ import { filter, some } from "lodash";
 import PopupState, { bindPopover } from "material-ui-popup-state";
 import React, { Component } from "react";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Popover from "@material-ui/core/Popover";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
 
 import { KeepIcon, ClipboardIcon } from "@montage/ui/src/components";
 
@@ -82,7 +84,7 @@ class KeepStatus extends Component {
           ? `Not synced with Keep`
           : `Save video to Keep locations`;
       }
-      return `Safely stored in ${backupsCount} Keep locations`;
+      return `Saved in ${backupsCount} Keep locations`;
     };
 
     return (
@@ -90,19 +92,23 @@ class KeepStatus extends Component {
         {popupState => (
           <>
             <ListItem
+              component="div"
               button={!isArchived}
-              dense
               onClick={
                 !isArchived && backupsCount > 0 && !processing && !error
                   ? popupState.open
                   : this.onTriggerKeep
               }
+              dense
             >
               <ListItemIcon>
                 <KeepIcon />
               </ListItemIcon>
               <ListItemText>
-                <Typography color={isVanilla ? "primary" : "default"}>
+                <Typography
+                  color={isVanilla ? "primary" : "initial"}
+                  variant="body2"
+                >
                   {renderStatus()}
                 </Typography>
               </ListItemText>

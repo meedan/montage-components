@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Catalog } from "@catalog/core";
 
-import { MUIThemeProvider } from "@montage/ui";
+import { ThemeProvider } from "@montage/ui";
 
 import pages from "./pages";
 import theme from "./theme";
@@ -11,7 +11,7 @@ import { version } from "../package.json";
 
 ReactDOM.render(
   <>
-    <MUIThemeProvider>
+    <ThemeProvider>
       <Catalog
         pages={pages}
         responsiveSizes={[
@@ -21,7 +21,7 @@ ReactDOM.render(
         theme={theme}
         title={`Montage UI v.${version}`}
       />
-    </MUIThemeProvider>
+    </ThemeProvider>
   </>,
   document.getElementById("catalog")
 );

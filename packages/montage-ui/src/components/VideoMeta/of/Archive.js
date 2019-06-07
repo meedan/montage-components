@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { bool, func, object } from "prop-types";
 
+import { CircularProgress, Fade, IconButton, Tooltip } from "@material-ui/core";
+
 import { withStyles } from "@material-ui/core/styles";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import ArchiveOutlinedIcon from "@material-ui/icons/ArchiveOutlined";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Fade from "@material-ui/core/Fade";
-import IconicButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = () => ({
   buttonProgress: {
@@ -42,7 +40,7 @@ class ArchiveStatus extends Component {
         title={isArchived ? "Unarchive" : "Archive"}
         aria-label={isArchived ? "Unarchive" : "Archive"}
       >
-        <IconicButton onClick={this.onTriggerArchive}>
+        <IconButton onClick={this.onTriggerArchive}>
           <Fade in={!processing}>
             {isArchived ? (
               <ArchiveIcon color="primary" />
@@ -53,7 +51,7 @@ class ArchiveStatus extends Component {
           {processing && (
             <CircularProgress size={22} className={classes.buttonProgress} />
           )}
-        </IconicButton>
+        </IconButton>
       </Tooltip>
     );
   }

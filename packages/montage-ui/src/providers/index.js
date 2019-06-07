@@ -1,1 +1,1 @@
-export { default as MUIThemeProvider } from "./MUIThemeProvider";
+export { default as ThemeProvider } from "./ThemeProvider";

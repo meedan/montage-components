@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { createRef, Component } from 'react';
 import ErrorBoundary from 'react-error-boundary';
 import styled from 'styled-components';
 import { withSnackbar } from 'notistack';
 
-import { MUIThemeProvider, VideoMeta } from '@montage/ui';
+import { ThemeProvider, VideoMeta } from '@montage/ui';
 
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -144,7 +144,7 @@ class App extends Component {
       <>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <CssBaseline />
-          <MUIThemeProvider>
+          <ThemeProvider>
             <style scoped>{'.popover { pointer-events: none; }'}</style>
             <Layout>
               <TopWrapper>
@@ -324,7 +324,7 @@ class App extends Component {
                 )}
               </BottomWrapper>
             </Layout>
-          </MUIThemeProvider>
+          </ThemeProvider>
         </MuiPickersUtilsProvider>
       </>
     );
