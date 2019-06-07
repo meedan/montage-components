@@ -34,6 +34,9 @@ const styles = {
     top: 8,
     transform: 'none',
   },
+  ListItemAvatar: {
+    minWidth: '40px',
+  },
   savingProgress: {},
 };
 
@@ -164,7 +167,7 @@ function Comment(props) {
       onMouseLeave={() => setHoveringStatus(false)}
     >
       <ListItem alignItems="flex-start" className={classes.ListItem} key={id}>
-        <ListItemAvatar>
+        <ListItemAvatar className={classes.ListItemAvatar}>
           <Tooltip
             title={
               <Typography align="center" color="inherit" variant="caption">
@@ -189,7 +192,12 @@ function Comment(props) {
               value={text}
             />
           ) : (
-            <Typography variant="body2" color="textSecondary">
+            <Typography
+              color="textSecondary"
+              display="block"
+              variant="body2"
+              style={{ fontSize: '13px' }}
+            >
               {text}
             </Typography>
           )}
