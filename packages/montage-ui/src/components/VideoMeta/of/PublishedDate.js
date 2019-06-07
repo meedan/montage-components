@@ -2,11 +2,14 @@ import { parseISO, format } from "date-fns";
 import { string } from "prop-types";
 import React from "react";
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography
+} from "@material-ui/core";
+
 import PublishIcon from "@material-ui/icons/Publish";
-import Typography from "@material-ui/core/Typography";
 
 const PublishedDateListItem = props => {
   const { pubDate } = props;
@@ -16,7 +19,7 @@ const PublishedDateListItem = props => {
         <PublishIcon />
       </ListItemIcon>
       <ListItemText>
-        <Typography>
+        <Typography variant="body2">
           Published{" "}
           {format(parseISO(pubDate), "d MMMM YYYY", {
             awareOfUnicodeTokens: true

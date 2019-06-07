@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
 
 function EntityDeleteModal(props) {
   const { onCancel, onConfirm, name, title } = props;
@@ -21,8 +22,10 @@ function EntityDeleteModal(props) {
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Do you wish to remove all instances of <strong>{name}</strong>? This
-          can’t be undone.
+          <Typography variant="body1">
+            Do you wish to remove all instances of <strong>{name}</strong>? This
+            can’t be undone.
+          </Typography>
         </DialogContentText>
       </DialogContent>
       <DialogActions>

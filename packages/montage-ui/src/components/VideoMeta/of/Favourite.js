@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { bool, func, object } from "prop-types";
 
+import { CircularProgress, Fade, IconButton, Tooltip } from "@material-ui/core";
+
 import { withStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Fade from "@material-ui/core/Fade";
-import IconicButton from "@material-ui/core/IconButton";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import StarIcon from "@material-ui/icons/Star";
-import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = () => ({
   buttonProgress: {
@@ -43,14 +41,14 @@ class FavoriteStatus extends Component {
         title={isFavourited ? "Remove from favorites" : "Add to favorites"}
         aria-label={isFavourited ? "Remove from favorites" : "Add to favorites"}
       >
-        <IconicButton onClick={this.onTriggerFavourite}>
+        <IconButton onClick={this.onTriggerFavourite}>
           <Fade in={!processing}>
             {isFavourited ? <StarIcon color="primary" /> : <StarBorderIcon />}
           </Fade>
           {processing && (
             <CircularProgress size={22} className={classes.buttonProgress} />
           )}
-        </IconicButton>
+        </IconButton>
       </Tooltip>
     );
   }
