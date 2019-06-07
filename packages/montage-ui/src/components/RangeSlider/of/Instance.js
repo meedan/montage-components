@@ -152,15 +152,31 @@ class Instance extends Component {
   }
 
   moveHandle(edge, dir) {
-    const { duration } = this.props;
-    const unit = duration / this.props.wrapper.rect.width;
+    const { end, start } = this.state;
+    const { duration, instances } = this.props;
+
+    const prevInstance = maxBy(
+      filter(instances, i => i.end_seconds <= start),
+      i => i.end_seconds
+    );
+    const nextInstance = minBy(
+      filter(instances, i => i.start_seconds >= end),
+      i => i.start_seconds
+    );
+    const RANGE_MAX = nextInstance ? nextInstance.start_seconds : duration;
+    const RANGE_MIN = prevInstance ? prevInstance.end_seconds : 0;
+    const UNIT = duration / this.props.wrapper.rect.width;
 
     const calcVal = prevState => {
       if (dir === "fwd") {
-        return prevState[edge] < duration ? prevState[edge] + unit : duration;
+        return prevState[edge] + UNIT < RANGE_MAX
+          ? prevState[edge] + UNIT
+          : prevState[edge];
       }
       if (dir === "bwd") {
-        return prevState[edge] > 0 ? prevState[edge] - unit : 0;
+        return prevState[edge] - UNIT > RANGE_MIN
+          ? prevState[edge] - UNIT
+          : prevState[edge];
       }
       return null;
     };
