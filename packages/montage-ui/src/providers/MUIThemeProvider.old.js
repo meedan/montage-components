@@ -8,15 +8,6 @@ import { color } from "@montage/ui/src/config";
 const theme = createMuiTheme();
 
 const customTheme = createMuiTheme({
-  typography: {
-    // fontWeightMedium: 500,
-    // body2: {
-    //   fontSize: 13
-    // },
-    // h6: {
-    //   fontWeight: 400
-    // }
-  },
   props: {
     MuiButtonBase: {
       disableRipple: true

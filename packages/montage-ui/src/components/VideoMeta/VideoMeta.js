@@ -28,8 +28,6 @@ import PlaceIcon from "@material-ui/icons/Place";
 import Typography from "@material-ui/core/Typography";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
-import { color } from "@montage/ui/src/config";
-
 import Archive from "./of/Archive";
 import Favourite from "./of/Favourite";
 import Keep from "./of/Keep";
@@ -194,8 +192,8 @@ class VideoMeta extends Component {
             }}
             onClick={() => setMap(true)}
           >
-            <PlaceIcon fontSize="small" style={{ marginRight: "5px" }} />{" "}
-            <span style={{ color: color.brand }}>Set location</span>
+            <PlaceIcon fontSize="small" style={{ marginRight: "5px" }} /> Set
+            location
           </Button>
         </CardContent>
       </Card>
