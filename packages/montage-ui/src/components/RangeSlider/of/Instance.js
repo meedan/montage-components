@@ -69,6 +69,18 @@ class Instance extends Component {
     document.addEventListener("mouseup", this.onMouseUp.bind(this));
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.end !== prevProps.end ||
+      this.props.start !== prevProps.start
+    ) {
+      this.setState({
+        end: this.props.end,
+        start: this.props.start
+      });
+    }
+  }
+
   componentWillUnmount() {
     document.removeEventListener("mousemove", this.onMouseMove.bind(this));
     document.removeEventListener("mouseup", this.onMouseUp.bind(this));

@@ -18,6 +18,7 @@ class RangeSlider extends Component {
       instances: []
     };
     this.deleteInstance = this.deleteInstance.bind(this);
+    this.extendInstance = this.extendInstance.bind(this);
     this.updateInstance = this.updateInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
@@ -53,6 +54,14 @@ class RangeSlider extends Component {
     this.setState({ instances }, () => this.props.updateInstances(instances));
   }
 
+  extendInstance(id) {
+    const { instances } = this.state;
+    const i = instances.findIndex(instance => instance.id === id);
+    instances[i].start_seconds = 0;
+    instances[i].end_seconds = this.props.duration;
+    this.setState({ instances }, () => this.props.updateInstances(instances));
+  }
+
   updateRef() {
     if (!this.wrapperRef) return null;
     this.setState({
@@ -61,6 +70,7 @@ class RangeSlider extends Component {
         rect: this.wrapperRef.current.getBoundingClientRect()
       }
     });
+    return null;
   }
 
   render() {
@@ -78,7 +88,7 @@ class RangeSlider extends Component {
               deleteInstance={() => this.deleteInstance(id)}
               duration={duration}
               end={end_seconds}
-              extendInstance={() => this.props.extendInstance(id)}
+              extendInstance={() => this.extendInstance(id)}
               id={id}
               instance={instance}
               instances={instances}
@@ -100,7 +110,6 @@ RangeSlider.propTypes = {
   checkInstance: func,
   clipInstance: func,
   duration: number.isRequired,
-  extendInstance: func.isRequired,
   instances: array.isRequired,
   updateInstances: func.isRequired
 };
