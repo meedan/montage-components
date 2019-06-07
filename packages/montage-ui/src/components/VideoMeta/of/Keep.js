@@ -12,13 +12,15 @@ import { filter, some } from "lodash";
 import PopupState, { bindPopover } from "material-ui-popup-state";
 import React, { Component } from "react";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Popover from "@material-ui/core/Popover";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
 
 import { KeepIcon, ClipboardIcon } from "@montage/ui/src/components";
 

@@ -4,19 +4,22 @@ import Menu from "material-ui-popup-state/HoverMenu";
 import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
 import React, { Component } from "react";
 
-import Button from "@material-ui/core/Button";
+import {
+  Button,
+  ClickAwayListener,
+  Divider,
+  Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  TextField
+} from "@material-ui/core";
+
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Divider from "@material-ui/core/Divider";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import TextField from "@material-ui/core/TextField";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const ParentPopupState = React.createContext(null);

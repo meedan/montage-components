@@ -1,19 +1,22 @@
-import React from 'react';
+import { func } from "prop-types";
+import React from "react";
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "@material-ui/core";
 
-function RemoveModal(props) {
+function RemoveModal({ handleClose, handleRemove }) {
   return (
     <Dialog
       aria-describedby="Confirm that you’re sure to remove this video from your Library"
       aria-labelledby="Remove video"
       maxWidth="xs"
-      onClose={props.handleClose}
+      onClose={handleClose}
       open
     >
       <DialogTitle>Remove video</DialogTitle>
@@ -24,10 +27,10 @@ function RemoveModal(props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button size="large" onClick={props.handleClose}>
+        <Button size="large" onClick={handleClose}>
           Cancel
         </Button>
-        <Button size="large" color="primary" onClick={props.handleRemove}>
+        <Button size="large" color="primary" onClick={handleRemove}>
           Remove
         </Button>
       </DialogActions>
@@ -36,3 +39,8 @@ function RemoveModal(props) {
 }
 
 export default RemoveModal;
+
+RemoveModal.propTypes = {
+  handleRemove: func.isRequired,
+  handleClose: func.isRequired
+};

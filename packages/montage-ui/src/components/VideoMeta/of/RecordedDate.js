@@ -4,11 +4,14 @@ import { parseISO, format } from "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import React, { Component } from "react";
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
+
 import VideocamIcon from "@material-ui/icons/Videocam";
 
 class RecordedDate extends Component {
