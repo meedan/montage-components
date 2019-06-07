@@ -1,7 +1,8 @@
 import styled from "styled-components";
+import grey from "@material-ui/core/colors/grey";
 
 const MeTooltip = styled.div`
-  background: rgba(0, 0, 0, 0.6925);
+  background: ${grey[800]};
   border-radius: 3px;
   bottom: 100%;
   color: white !important;
