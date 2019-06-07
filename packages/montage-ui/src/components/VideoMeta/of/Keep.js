@@ -142,6 +142,7 @@ class KeepStatus extends Component {
                                 <Typography
                                   noWrap
                                   style={{ maxWidth: "160px" }}
+                                  variant="body2"
                                 >
                                   {url.replace(/https:\/\//g, "")}
                                 </Typography>

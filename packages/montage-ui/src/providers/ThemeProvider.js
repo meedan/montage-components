@@ -42,32 +42,21 @@ const theme = createMuiTheme({
         paddingTop: 6
       }
     },
-    // MuiMenuItem: {
-    //   root: {
-    //     fontSize: mui.typography.pxToRem(12)
-    //   }
-    // },
-    MuiListItem: {
-      // gutters: {
-      //   paddingTop: 6,
-      //   paddingBottom: 6
-      // },
-      dense: {
-        fontSize: mui.typography.pxToRem(13)
+    MuiMenuItem: {
+      root: {
+        minHeight: 44
       }
     },
     MuiListItemIcon: {
       root: {
-        minWidth: 40
+        minWidth: 36
       }
     },
     MuiListItemText: {
-      root: {
-        fontSize: mui.typography.pxToRem(14)
-        // padding: "0 6px"
-      },
       dense: {
-        fontSize: mui.typography.pxToRem(13)
+        fontSize: mui.typography.pxToRem(10),
+        marginBottom: 2,
+        marginTop: 2
       }
     }
   },
