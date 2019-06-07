@@ -12,8 +12,8 @@ export default () => markdown`
 ${(
   <ReactSpecimen>
     <RangeSlider
-      checkInstance={i => console.log("checkInstance: ", i)}
-      deleteInstance={i => console.log("deleteInstance: ", i)}
+      checkInstance={instanceId => console.log("checkInstance: ", instanceId)}
+      deleteInstance={instanceId => console.log("deleteInstance: ", instanceId)}
       duration={100}
       instances={[
         {
@@ -66,8 +66,8 @@ ${(
 ${(
   <ReactSpecimen>
     <RangeSlider
-      clipInstance={i => console.log("clipInstance: ", i)}
-      deleteInstance={i => console.log("deleteInstance: ", i)}
+      clipInstance={instanceId => console.log("clipInstance: ", instanceId)}
+      deleteInstance={instanceId => console.log("deleteInstance: ", instanceId)}
       duration={100}
       instances={[
         {

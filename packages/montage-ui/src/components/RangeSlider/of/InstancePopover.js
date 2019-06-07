@@ -13,46 +13,53 @@ const InstancePopover = ({
   clipInstance,
   deleteInstance,
   extendInstance,
+  instance,
   popupState
-}) => (
-  <Popover
-    {...bindPopover(popupState)}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center"
-    }}
-    id="InstancePopover"
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center"
-    }}
-  >
-    {clipInstance ? (
-      <Tooltip title="Copy to Clips">
-        <IconButton onClick={() => clipInstance(instance)}>
-          <CutIcon fontSize="small" />
+}) => {
+  const fireAction = fn => {
+    popupState.close();
+    fn(instance.id);
+  };
+  return (
+    <Popover
+      {...bindPopover(popupState)}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center"
+      }}
+      id="InstancePopover"
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "center"
+      }}
+    >
+      {clipInstance ? (
+        <Tooltip title="Copy to Clips">
+          <IconButton onClick={() => fireAction(clipInstance)}>
+            <CutIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : null}
+      {checkInstance ? (
+        <Tooltip title="Open in Check">
+          <IconButton onClick={() => fireAction(checkInstance)}>
+            <CheckIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : null}
+      <Tooltip title="Extend full-length">
+        <IconButton onClick={() => fireAction(extendInstance)}>
+          <ExpandIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-    ) : null}
-    {checkInstance ? (
-      <Tooltip title="Open in Check">
-        <IconButton onClick={() => checkInstance(instance)}>
-          <CheckIcon fontSize="small" />
+      <Tooltip title="Delete">
+        <IconButton onClick={() => fireAction(deleteInstance)}>
+          <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-    ) : null}
-    <Tooltip title="Extend full-length">
-      <IconButton onClick={extendInstance}>
-        <ExpandIcon fontSize="small" />
-      </IconButton>
-    </Tooltip>
-    <Tooltip title="Delete">
-      <IconButton onClick={deleteInstance}>
-        <DeleteIcon fontSize="small" />
-      </IconButton>
-    </Tooltip>
-  </Popover>
-);
+    </Popover>
+  );
+};
 
 export default InstancePopover;
 
@@ -61,6 +68,7 @@ InstancePopover.propTypes = {
   clipInstance: func,
   deleteInstance: func.isRequired,
   extendInstance: func.isRequired,
+  instance: object.isRequired,
   popupState: object.isRequired
 };
 

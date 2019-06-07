@@ -340,15 +340,8 @@ class Entities extends Component {
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
-  openInCheck = id => {
-    const { targetInstance } = this.state;
-    console.group('openInCheck');
-    console.log('targetInstance', targetInstance);
-    console.groupEnd();
-    this.setState({
-      targetInstance: null,
-      targetEntity: null,
-    });
+  checkInstance = instanceId => {
+    console.log('checkInstance', instanceId);
   };
 
   deleteEntity = id => {
@@ -476,7 +469,17 @@ class Entities extends Component {
                   }
                   rightColContent={
                     <RangeSlider
-                      copyInstanceToClips={() => alert('copyInstanceToClips')}
+                      clipInstance={
+                        entityType !== 'clip'
+                          ? instanceId =>
+                              console.log('clipInstance: ', instanceId)
+                          : null
+                      }
+                      checkInstance={
+                        entityType === 'clip'
+                          ? instanceId => this.checkInstance(instanceId)
+                          : null
+                      }
                       extendInstance={instanceId =>
                         this.extendInstance(entity.id, instanceId)
                       }
