@@ -1,12 +1,12 @@
 language: node_js
 node_js:
-  - 'lts/dubnium'
-
-script: echo 
-
+  - lts/dubnium
 deploy:
   provider: script
   script: npm run deploy
   skip_cleanup: true
   on:
     branch: develop
+env:
+  global:
+    secure: gCoh5WovtBQvqUNPTYAdxjOPILB9VZbMf6D8ED4UDNrupEycngfwhJLUONgzl3pqglePjIRnnqa764lYzUTQpXgXonbpkomxYIAdijqoslCqS9lnpp5YfuBdhOqD2rNoKB3epSgfbij3pgslyuEm0Zwa7GOTr2lyTidGL2JbnJgeDqhuJ6TOMw7agFSJcN3ffWrKrI3XhGMwEo27SCyeIjvun/VWpRXw5VNkUCfeVg390jjEJ8rlFLtbxoNLqVF5D94zPSgK/lnK0TMQ4CInCyJAcc37bZCcHVpH4tcV92zq9fVDITKUff2c3VbKQ47kOWEqgwHWNlUhgGEjEC0LZNbvTEw3i+W7RRJm8L7hvL1YU+r1emz6JROr3cN4jpC7A4EoQzYK1/m/OAQkZM9HJyu0sNtnKVwwQYLReGFREF3oBZLDdUali9N9Eh9kYYpIJrG3tVzBQDFqbcb65lfFLZOIrn9uDOD46NMqCv6Xilx/LlkG2kCT/v7YjUZO3wOqRGcnbG3HT2ibQOrUVmpZ6o5rIu9XuNJRdvSQ4lyEmD+bmAA8Q8PwTs9TZ/FKBU9GFfjykWLmXP+zEWBR18TJIuvk/2db1oHvhPMwe5A9L0kNAWR2s/O//klh07ldrOHfbO8/P/hlvkTVarXE/Wu2fL6A4z084UsdaiiMZry7C1s=
