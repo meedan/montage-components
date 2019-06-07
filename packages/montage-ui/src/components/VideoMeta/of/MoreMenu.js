@@ -16,11 +16,11 @@ import {
   TextField
 } from "@material-ui/core";
 
+import { withStyles } from "@material-ui/core/styles";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 const ParentPopupState = React.createContext(null);
 
