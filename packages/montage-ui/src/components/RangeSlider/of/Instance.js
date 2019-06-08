@@ -183,12 +183,12 @@ class Instance extends Component {
       if (dir === "fwd") {
         return prevState[edge] + UNIT < RANGE_MAX
           ? prevState[edge] + UNIT
-          : prevState[edge];
+          : RANGE_MAX;
       }
       if (dir === "bwd") {
         return prevState[edge] - UNIT > RANGE_MIN
           ? prevState[edge] - UNIT
-          : prevState[edge];
+          : RANGE_MIN;
       }
       return null;
     };
