@@ -144,7 +144,7 @@ class Instance extends Component {
     this.setState(prevState => ({
       coords,
       [dragging]:
-        newTime > RANGE_MIN && newTime < RANGE_MAX
+        newTime >= RANGE_MIN && newTime <= RANGE_MAX
           ? newTime
           : prevState[dragging]
     }));
