@@ -16,7 +16,8 @@ const InstancePopover = ({
   instance,
   popupState
 }) => {
-  const fireAction = fn => {
+  const fireAction = (fn, e) => {
+    e.stopPropagation();
     popupState.close();
     fn(instance.id);
   };
@@ -35,25 +36,25 @@ const InstancePopover = ({
     >
       {clipInstance ? (
         <Tooltip title="Copy to Clips">
-          <IconButton onClick={() => fireAction(clipInstance)}>
+          <IconButton onClick={e => fireAction(clipInstance, e)}>
             <CutIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       ) : null}
       {checkInstance ? (
         <Tooltip title="Open in Check">
-          <IconButton onClick={() => fireAction(checkInstance)}>
+          <IconButton onClick={e => fireAction(checkInstance, e)}>
             <CheckIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       ) : null}
       <Tooltip title="Extend full-length">
-        <IconButton onClick={() => fireAction(extendInstance)}>
+        <IconButton onClick={e => fireAction(extendInstance, e)}>
           <ExpandIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Delete">
-        <IconButton onClick={() => fireAction(deleteInstance)}>
+        <IconButton onClick={e => fireAction(deleteInstance, e)}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>
