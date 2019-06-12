@@ -365,14 +365,16 @@ class Entities extends Component {
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
-  deleteInstance(id) {
-    const { targetInstance } = this.state;
+  deleteInstance(entityId, instanceId) {
+    // const { targetInstance } = this.state;
 
     const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === id);
-      const ii = nextEntities[ti].instances.findIndex(
-        i => i.id === targetInstance.id
-      );
+      const ti = nextEntities.findIndex(t => t.id === entityId);
+      // const ii = nextEntities[ti].instances.findIndex(
+      //   i => i.id === targetInstance.id
+      // );
+      const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
+
       nextEntities[ti].instances.splice(ii, 1);
     });
 
@@ -401,6 +403,16 @@ class Entities extends Component {
       i.start_seconds = 0;
       i.end_seconds = this.props.duration;
       nextEntities[ti].instances = [i];
+    });
+    this.props.update({ [this.props.entitiesyKey]: entities });
+  }
+
+  updateInstance(entityId, instanceId, { start_seconds, end_seconds }) {
+    const entities = produce(this.props.entities, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === entityId);
+      const i = nextEntities[ti].instances.find(i => i.id === instanceId);
+      i.start_seconds = start_seconds;
+      i.end_seconds = end_seconds;
     });
     this.props.update({ [this.props.entitiesyKey]: entities });
   }
@@ -485,8 +497,11 @@ class Entities extends Component {
                       }
                       duration={duration}
                       instances={instances}
-                      updateInstances={instances =>
-                        console.log('updateInstances: ', instances)
+                      updateInstance={(instanceId, payload) =>
+                        this.updateInstance(entity.id, instanceId, payload)
+                      }
+                      deleteInstance={instanceId =>
+                        this.deleteInstance(entity.id, instanceId)
                       }
                     />
                   }

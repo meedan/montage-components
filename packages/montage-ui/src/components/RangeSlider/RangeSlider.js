@@ -15,19 +15,22 @@ class RangeSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      instances: [],
+      // instances: [],
       draggedInstance: null
     };
-    this.deleteInstance = this.deleteInstance.bind(this);
-    this.extendInstance = this.extendInstance.bind(this);
+    // this.deleteInstance = this.deleteInstance.bind(this);
+    // this.extendInstance = this.extendInstance.bind(this);
     this.setDraggedInstance = this.setDraggedInstance.bind(this);
-    this.updateInstance = this.updateInstance.bind(this);
+    // this.updateInstance = this.updateInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
   }
 
-  componentWillMount() {
-    this.setState({ instances: this.props.instances });
+  // componentWillMount() {
+  //   this.setState({ instances: this.props.instances });
+  // }
+  static getDerivedStateFromProps({ instances = [] }) {
+    return { instances };
   }
 
   componentDidMount() {
@@ -44,30 +47,30 @@ class RangeSlider extends Component {
     this.setState({ draggedInstance: id || null });
   }
 
-  updateInstance(id, payload) {
-    const i = this.state.instances.findIndex(i => i.id === id);
-    const instances = [
-      ...this.state.instances.slice(0, i),
-      { ...this.state.instances[i], ...payload },
-      ...this.state.instances.slice(i + 1)
-    ];
-    this.setState({ instances }, () => this.props.updateInstances(instances));
-  }
+  // updateInstance(id, payload) {
+  //   const i = this.state.instances.findIndex(i => i.id === id);
+  //   const instances = [
+  //     ...this.state.instances.slice(0, i),
+  //     { ...this.state.instances[i], ...payload },
+  //     ...this.state.instances.slice(i + 1)
+  //   ];
+  //   this.setState({ instances }, () => this.props.updateInstances(instances));
+  // }
 
-  deleteInstance(id) {
-    const { instances } = this.state;
-    const i = instances.findIndex(instance => instance.id === id);
-    instances.splice(i, 1);
-    this.setState({ instances }, () => this.props.updateInstances(instances));
-  }
+  // deleteInstance(id) {
+  //   const { instances } = this.state;
+  //   const i = instances.findIndex(instance => instance.id === id);
+  //   instances.splice(i, 1);
+  //   this.setState({ instances }, () => this.props.updateInstances(instances));
+  // }
 
-  extendInstance(id) {
-    const { instances } = this.state;
-    const i = instances.findIndex(instance => instance.id === id);
-    instances[i].start_seconds = 0;
-    instances[i].end_seconds = this.props.duration;
-    this.setState({ instances }, () => this.props.updateInstances(instances));
-  }
+  // extendInstance(id) {
+  //   const { instances } = this.state;
+  //   const i = instances.findIndex(instance => instance.id === id);
+  //   instances[i].start_seconds = 0;
+  //   instances[i].end_seconds = this.props.duration;
+  //   this.setState({ instances }, () => this.props.updateInstances(instances));
+  // }
 
   updateRef() {
     if (!this.wrapperRef) return null;
@@ -93,10 +96,10 @@ class RangeSlider extends Component {
             <Instance
               checkInstance={this.props.checkInstance}
               clipInstance={this.props.clipInstance}
-              deleteInstance={() => this.deleteInstance(id)}
+              deleteInstance={() => this.props.deleteInstance(id)}
               duration={duration}
               end={end_seconds}
-              extendInstance={() => this.extendInstance(id)}
+              extendInstance={() => this.props.extendInstance(id)}
               id={id}
               instance={instance}
               instances={instances}
@@ -104,7 +107,7 @@ class RangeSlider extends Component {
               key={id}
               setDraggedInstance={this.setDraggedInstance}
               start={start_seconds}
-              updateInstance={payload => this.updateInstance(id, payload)}
+              updateInstance={payload => this.props.updateInstance(id, payload)}
               wrapper={wrapper}
             />
           );
@@ -121,7 +124,10 @@ RangeSlider.propTypes = {
   clipInstance: func,
   duration: number.isRequired,
   instances: array.isRequired,
-  updateInstances: func.isRequired
+  // updateInstances: func.isRequired,
+  updateInstance: func.isRequired,
+  extendInstance: func.isRequired,
+  deleteInstance: func.isRequired,
 };
 RangeSlider.defaultProps = {
   checkInstance: null,
