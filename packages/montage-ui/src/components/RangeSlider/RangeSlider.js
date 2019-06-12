@@ -64,6 +64,7 @@ class RangeSlider extends Component {
 
   updateRef() {
     if (!this.wrapperRef) return null;
+    if (!this.wrapperRef.current) return null;
     this.setState({
       wrapper: {
         ref: this.wrapperRef.current,
