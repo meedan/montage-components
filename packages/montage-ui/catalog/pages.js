@@ -39,6 +39,11 @@ const pages = [
       //   title: "Partials"
       // }
     ]
+  },
+  {
+    content: require("./pages/TimelinePlayhead/TimelinePlayhead.js"),
+    path: "/timeline-playhead",
+    title: "Timeline playhead"
   }
 ];
 
