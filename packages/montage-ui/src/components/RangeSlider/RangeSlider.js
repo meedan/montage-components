@@ -15,10 +15,12 @@ class RangeSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      instances: []
+      instances: [],
+      draggedInstance: null
     };
     this.deleteInstance = this.deleteInstance.bind(this);
     this.extendInstance = this.extendInstance.bind(this);
+    this.setDraggedInstance = this.setDraggedInstance.bind(this);
     this.updateInstance = this.updateInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
@@ -35,6 +37,11 @@ class RangeSlider extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateRef.bind(this));
+  }
+
+  setDraggedInstance(id) {
+    console.log("setDraggedInstance", id);
+    this.setState({ draggedInstance: id || null });
   }
 
   updateInstance(id, payload) {
@@ -76,7 +83,7 @@ class RangeSlider extends Component {
 
   render() {
     const { duration } = this.props;
-    const { instances, wrapper } = this.state;
+    const { draggedInstance, instances, wrapper } = this.state;
 
     return (
       <RSWrapper ref={this.wrapperRef}>
@@ -93,7 +100,9 @@ class RangeSlider extends Component {
               id={id}
               instance={instance}
               instances={instances}
+              isLocked={draggedInstance && draggedInstance !== id}
               key={id}
+              setDraggedInstance={this.setDraggedInstance}
               start={start_seconds}
               updateInstance={payload => this.updateInstance(id, payload)}
               wrapper={wrapper}

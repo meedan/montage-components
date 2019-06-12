@@ -1,4 +1,4 @@
-import { array, func, number, object, shape } from "prop-types";
+import { array, bool, func, number, object, shape } from "prop-types";
 import PopupState, { bindHover } from "material-ui-popup-state";
 import React, { Component } from "react";
 import styled from "styled-components";
@@ -107,6 +107,7 @@ class Instance extends Component {
 
   onMouseDown(edge) {
     this.setState({ dragging: edge });
+    this.props.setDraggedInstance(this.props.id);
   }
 
   onMouseMove(e) {
@@ -155,6 +156,7 @@ class Instance extends Component {
   onMouseUp() {
     if (!this.state.dragging) return null;
     this.setState({ dragging: null }, () => {
+      this.props.setDraggedInstance(null);
       this.props.updateInstance({
         start_seconds: this.state.start,
         end_seconds: this.state.end
@@ -208,7 +210,7 @@ class Instance extends Component {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
 
-    const { duration, wrapper } = this.props;
+    const { isLocked, duration, wrapper } = this.props;
     const { end, start } = this.state;
     const { width } = wrapper.rect;
 
@@ -244,13 +246,15 @@ class Instance extends Component {
                   width: `${instanceWidth}px`,
                   zIndex: this.state.overInstance ? `1000` : `default`
                 }}
-                onMouseEnter={this.onInstanceEnter}
-                onMouseLeave={this.onInstanceLeave}
+                onMouseEnter={!isLocked ? this.onInstanceEnter : null}
+                onMouseLeave={!isLocked ? this.onInstanceLeave : null}
               >
-                <div
-                  {...bindHover(popupState)}
-                  style={{ width: `100%`, height: `28px` }}
-                />
+                {!isLocked ? (
+                  <div
+                    {...bindHover(popupState)}
+                    style={{ width: `100%`, height: `28px` }}
+                  />
+                ) : null}
               </RSInstance>
               {!this.state.dragging ? (
                 <InstancePopover
@@ -325,7 +329,9 @@ Instance.propTypes = {
   clipInstance: func,
   deleteInstance: func.isRequired,
   duration: number.isRequired,
+  isLocked: bool,
   end: number.isRequired,
+  setDraggedInstance: func.isRequired,
   extendInstance: func.isRequired,
   instances: array.isRequired,
   instance: object.isRequired,
@@ -340,5 +346,6 @@ Instance.propTypes = {
 Instance.defaultProps = {
   checkInstance: null,
   clipInstance: null,
+  isLocked: null,
   wrapper: null
 };
