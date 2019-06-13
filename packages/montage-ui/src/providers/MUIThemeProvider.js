@@ -56,6 +56,11 @@ const customTheme = createMuiTheme({
         fontSize: theme.typography.pxToRem(13)
       }
     },
+    // MuiListItemAvatar: {
+    //   root: {
+    //     minWidth:
+    //   }
+    // },
     MuiListItemIcon: {
       root: {
         marginRight: 6

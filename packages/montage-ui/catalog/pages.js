@@ -1,11 +1,6 @@
 /* eslint global-require: off */
 const pages = [
   {
-    content: require("./pages/Helpers/Helpers.js"),
-    path: "/helpers",
-    title: "Helpers"
-  },
-  {
     content: require("./pages/Icons/Icons.js"),
     path: "/icons",
     title: "Icons"
@@ -24,6 +19,16 @@ const pages = [
         title: "Partials"
       }
     ]
+  },
+  {
+    title: "Range slider",
+    content: require("./pages/RangeSlider/Variations.js"),
+    path: "/range-slider"
+  },
+  {
+    content: require("./pages/TimelinePlayhead/TimelinePlayhead.js"),
+    path: "/timeline-playhead",
+    title: "Timeline playhead"
   }
 ];
 
