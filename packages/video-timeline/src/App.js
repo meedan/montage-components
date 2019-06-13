@@ -52,16 +52,6 @@ const BottomWrapper = styled.div`
   padding-right: 50px;
   width: 100%;
 `;
-const TimelineWrapper = styled.div`
-  border-left: 1px solid ${grey[300]};
-  border-right: 1px solid ${grey[300]};
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1500px;
-  min-height: 500px;
-  padding-bottom: 300px;
-  position: relative;
-`;
 
 const styles = {
   Tab: {
@@ -77,37 +67,11 @@ const styles = {
 };
 
 class App extends Component {
-  timelineRef = createRef();
-
   state = {
     anchorElNext: null,
     anchorElPrev: null,
     map: false,
     mode: 'timeline',
-  };
-
-  componentDidMount = () => {
-    window.addEventListener('resize', this.updateDimensions.bind(this));
-    this.updateDimensions();
-  };
-  componentWillUnmount = () => {
-    window.addEventListener('resize', this.updateDimensions.bind(this));
-  };
-
-  updateDimensions = () => {
-    const rect = this.timelineRef.current;
-    if (!rect) return null;
-    const rectBox = rect.getBoundingClientRect();
-    this.setState({
-      timelineBox: {
-        height: rectBox.height,
-        width: rectBox.width,
-        x1: rectBox.x,
-        x2: rectBox.x + rectBox.width,
-        y1: rectBox.y,
-        y2: rectBox.y + rectBox.height,
-      },
-    });
   };
 
   handlePopoverPrevOpen = event => {
@@ -300,18 +264,15 @@ class App extends Component {
               </TopWrapper>
               <BottomWrapper>
                 {this.state.mode === 'timeline' ? (
-                  <TimelineWrapper ref={this.timelineRef}>
-                    <ErrorBoundary>
-                      <Timeline
-                        box={this.state.timelineBox}
-                        currentTime={currentTime}
-                        transport={transport}
-                        data={data}
-                        duration={duration}
-                        playing={playing}
-                      />
-                    </ErrorBoundary>
-                  </TimelineWrapper>
+                  <ErrorBoundary>
+                    <Timeline
+                      currentTime={currentTime}
+                      data={data}
+                      duration={duration}
+                      playing={playing}
+                      transport={transport}
+                    />
+                  </ErrorBoundary>
                 ) : (
                   <div style={{ textAlign: 'center' }}>
                     <img

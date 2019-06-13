@@ -5,11 +5,12 @@ import styled from "styled-components";
 import Playhead from "./of/Playhead";
 
 const TPWrapper = styled.div`
-  height: 28px;
+  min-height: 28px;
+  overflow: visible;
+  pointer-events: none;
   position: relative;
   user-select: none;
   width: 100%;
-  z-index: 9999;
 `;
 
 class TimelineWrapper extends Component {
@@ -41,18 +42,18 @@ class TimelineWrapper extends Component {
   }
 
   onChange(newTime) {
-    this.setState({ newTime }, () => this.props.setNewTime(this.state.newTime));
+    this.setState({ newTime }, () => this.props.onChange(this.state.newTime));
   }
 
   onBeforeChange(newTime) {
     this.setState({ dragging: true, newTime }, () =>
-      this.props.setNewTime(this.state.newTime)
+      this.props.onChange(this.state.newTime)
     );
   }
 
   onAfterChange() {
     this.setState({ dragging: null }, () =>
-      this.props.setNewTime(this.state.newTime)
+      this.props.onChange(this.state.newTime)
     );
   }
 
@@ -71,7 +72,7 @@ class TimelineWrapper extends Component {
   render() {
     const { dragging, newTime, currentTime, wrapper } = this.state;
     return (
-      <TPWrapper ref={this.wrapperRef}>
+      <TPWrapper ref={this.wrapperRef} {...this.props}>
         <Playhead
           dragging={dragging}
           duration={this.props.duration}
@@ -91,7 +92,7 @@ export default TimelineWrapper;
 TimelineWrapper.propTypes = {
   currentTime: number,
   duration: number.isRequired,
-  setNewTime: func.isRequired
+  onChange: func.isRequired
 };
 TimelineWrapper.defaultProps = {
   currentTime: 0

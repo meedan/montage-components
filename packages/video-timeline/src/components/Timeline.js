@@ -1,18 +1,16 @@
 import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { number, shape } from 'prop-types';
-import React, { Component } from 'react';
-import Slider from 'rc-slider';
+import React, { Component, createRef } from 'react';
 import styled from 'styled-components';
 
 import Table from '@material-ui/core/Table';
 import grey from '@material-ui/core/colors/grey';
 
 import Entities from './ofTimeline/Entities';
-import formatTime from './ofTimeline/formatTime';
 import TimelineComments from './ofTimeline/Comments';
 
-import { color, MeTooltip } from '@montage/ui';
+import { TimelinePlayhead } from '@montage/ui';
 
 import { play, pause, seekTo } from '../reducers/player';
 
@@ -20,72 +18,16 @@ const DISABLE_TIMELINE_TRANSPORT = false;
 const DISABLE_TRACK_TRANSPORT = false;
 const TIMELINE_OFFSET = 224;
 
-const Playhead = styled(({ box, ...props }) => <div {...props} />)`
-  ${({ box }) => `
-    height: ${box.height}px;
-    left: ${box.x1 + TIMELINE_OFFSET}px;
-    top: ${box.y1}px;
-    width: ${box.width - TIMELINE_OFFSET}px;
-  `}
+const TimelineWrapper = styled.div`
   border-left: 1px solid ${grey[300]};
-  pointer-events: none;
-  position: fixed;
-  z-index: 1;
-  .rc-slider {
-    height: 100%;
-    padding: 0;
-  }
-  .rc-slider,
-  .rc-slider-track,
-  .rc-slider-rail {
-    background: transparent;
-  }
-  .rc-slider-disabled {
-    .rc-slider-mark-text {
-      cursor: pointer !important;
-    }
-  }
-`;
-
-const PlayheadMarker = styled.div`
-  background: ${color.shadow100};
-  cursor: -webkit-grab;
-  cursor: col-resize;
-  cursor: grab;
-  height: 100%;
-  pointer-events: all;
-  position: absolute;
-  touch-action: pan-x;
-  transform: translateX(-50%);
-  width: 6px;
-`;
-
-const PlayheadThumb = styled(({ pxOffset, position, ...props }) => (
-  <div {...props} />
-))`
-  &:before {
-    background: ${color.brand};
-    border-radius: 100%;
-    content: ' ';
-    display: block;
-    height: 6px;
-    left: 50%;
-    position: absolute;
-    top: 0;
-    transform: translate(-50%, -50%);
-    width: 6px;
-  }
-  &:after {
-    border-left: 1px solid ${color.brand};
-    content: ' ';
-    display: block;
-    height: 100%;
-    left: 50%;
-    position: absolute;
-    top: 0;
-    transform: translateX(-50%);
-    width: 1px;
-  }
+  border-right: 1px solid ${grey[300]};
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1500px;
+  min-height: 500px;
+  padding-bottom: 300px;
+  position: relative;
+  user-select: none;
 `;
 
 class Timeline extends Component {
@@ -101,6 +43,7 @@ class Timeline extends Component {
       skip: false,
       time: 0,
     };
+    this.timelineRef = createRef();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -120,26 +63,45 @@ class Timeline extends Component {
     }
   }
 
-  onTrackClick = e => {
-    if (this.state.clip) {
-      return;
-    }
+  componentDidMount() {
+    this.updateRef();
+    document.addEventListener('resize', this.updateRef.bind(this));
+  }
 
-    const { box, play, duration, playing } = this.props;
+  componentWillUnmount() {
+    document.removeEventListener('resize', this.updateRef.bind(this));
+  }
 
-    const startPos = box.x1 + TIMELINE_OFFSET;
-    const endPos = box.width - TIMELINE_OFFSET;
-    const newPos = e.clientX - startPos;
-    const newPosFlat = newPos > 0 ? newPos : 0;
-    const newTime = (duration * newPosFlat) / endPos;
-    // console.log('onTrackClick()');
-    if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: newTime, disjoint: true, seekTo: newTime });
-      console.log(`seeking to ${newTime} (onTrackClick)`);
-      if (!playing) play({ transport: 'timeline' });
-    }
-    return null;
-  };
+  updateRef() {
+    if (!this.timelineRef) return null;
+    this.setState({
+      timelineRef: {
+        ref: this.timelineRef.current,
+        rect: this.timelineRef.current.getBoundingClientRect(),
+      },
+    });
+  }
+
+  // onTrackClick = e => {
+  //   if (this.state.clip) {
+  //     return;
+  //   }
+  //
+  //   const { box, play, duration, playing } = this.props;
+  //
+  //   const startPos = box.x1 + TIMELINE_OFFSET;
+  //   const endPos = box.width - TIMELINE_OFFSET;
+  //   const newPos = e.clientX - startPos;
+  //   const newPosFlat = newPos > 0 ? newPos : 0;
+  //   const newTime = (duration * newPosFlat) / endPos;
+  //   // console.log('onTrackClick()');
+  //   if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
+  //     this.setState({ time: newTime, disjoint: true, seekTo: newTime });
+  //     console.log(`seeking to ${newTime} (onTrackClick)`);
+  //     if (!playing) play({ transport: 'timeline' });
+  //   }
+  //   return null;
+  // };
 
   onDragStart = (val, skip = true, clip = false) => {
     // console.log('dragStart');
@@ -190,6 +152,23 @@ class Timeline extends Component {
     );
   };
 
+  onPlayheadChange = (time, skip = true, clip = false) => {
+    const { pause, playing } = this.props;
+
+    this.setState({
+      time: clip ? this.state.time : time,
+      clip,
+      skip,
+      seekTo: time,
+      dragging: true,
+      disjoint: true,
+      playing: playing || this.state.playing,
+    });
+
+    // pause
+    if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
+  };
+
   registerDuplicateAsClip = fn => {
     this.duplicateAsClip = fn;
   };
@@ -201,40 +180,46 @@ class Timeline extends Component {
   };
 
   render() {
-    const { time, skip, ffTime } = this.state;
+    const { time, skip, ffTime, timelineRef } = this.state;
     const { duration, transport, playing } = this.props;
 
     const currentTime = skip ? ffTime : time;
 
+    let playheadPin = {};
+
+    if (timelineRef && timelineRef.rect)
+      playheadPin = {
+        left: timelineRef.rect.left + TIMELINE_OFFSET,
+        top: timelineRef.rect.top,
+        bottom: 0,
+        width: timelineRef.rect.width - TIMELINE_OFFSET,
+      };
+
     return (
-      <div style={{ userSelect: 'none' }} onClick={e => this.onTrackClick(e)}>
-        <Playhead box={this.props.box}>
+      <TimelineWrapper
+        ref={this.timelineRef}
+        // onClick={e => this.onTrackClick(e)}
+        onClick={e => console.log('TimelineWrapperClick', e)}
+      >
+        <TimelinePlayhead
+          currentTime={this.state.time}
+          duration={duration}
+          onChange={this.onPlayheadChange}
+          style={{
+            ...playheadPin,
+            borderLeft: `1px solid ${grey[300]}`,
+            height: '100%',
+            position: 'fixed',
+            zIndex: '150',
+          }}
+        />
+        {/* <Playhead box={this.props.box}>
           <Slider
-            defaultValue={0}
-            handle={props => {
-              return (
-                <PlayheadMarker
-                  style={{ left: `${props.offset}%` }}
-                  onMouseEnter={() => this.setState({ showTimestamp: true })}
-                  onMouseLeave={() => this.setState({ showTimestamp: false })}
-                >
-                  <MeTooltip
-                    isVisible={this.state.showTimestamp || this.state.dragging}
-                  >
-                    {formatTime(time)}
-                  </MeTooltip>
-                  <PlayheadThumb />
-                </PlayheadMarker>
-              );
-            }}
-            max={duration}
-            min={0}
             onAfterChange={this.onDragEnd}
             onBeforeChange={this.onDragStart}
             onChange={this.onDrag}
-            value={this.state.time}
           />
-        </Playhead>
+        </Playhead> */}
         <Table padding="dense">
           <TimelineComments
             {...this.props}
@@ -311,32 +296,14 @@ class Timeline extends Component {
             timelineOffset={this.props.x1}
           />
         </Table>
-      </div>
+      </TimelineWrapper>
     );
   }
 }
 
-Timeline.defaultProps = {
-  box: {
-    height: 0,
-    width: 0,
-    x1: 0,
-    x2: 0,
-    x3: 0,
-    x4: 0,
-  },
-};
+Timeline.defaultProps = {};
 
-Timeline.propTypes = {
-  box: shape({
-    height: number,
-    width: number,
-    x1: number,
-    x2: number,
-    x3: number,
-    x4: number,
-  }),
-};
+Timeline.propTypes = {};
 
 export default connect(
   null,

@@ -1,4 +1,4 @@
-import { func, number, object, shape } from "prop-types";
+import { bool, func, number, object, shape } from "prop-types";
 import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
@@ -123,7 +123,7 @@ class Playhead extends Component {
     if (!this.props.wrapper) return null;
     if (!this.props.wrapper.ref) return null;
 
-    const { duration, wrapper } = this.props;
+    const { dragging, duration, wrapper } = this.props;
     const { time } = this.state;
     const { width } = wrapper.rect;
 
@@ -136,7 +136,7 @@ class Playhead extends Component {
         }}
         onMouseDown={this.onMouseDown}
       >
-        <MeTooltip isVisible>{formatSeconds(time)}</MeTooltip>
+        <MeTooltip isVisible={dragging}>{formatSeconds(time)}</MeTooltip>
       </El>
     );
   }
@@ -146,6 +146,7 @@ export default Playhead;
 
 Playhead.propTypes = {
   duration: number.isRequired,
+  dragging: bool,
   onAfterChange: func.isRequired,
   onBeforeChange: func.isRequired,
   onChange: func.isRequired,
@@ -156,5 +157,6 @@ Playhead.propTypes = {
   })
 };
 Playhead.defaultProps = {
+  dragging: null,
   wrapper: null
 };
