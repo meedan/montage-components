@@ -134,7 +134,7 @@ class App extends Component {
     console.log(this.props);
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
-    const { map } = this.state;
+    // const { map } = this.state;
 
     console.group('APP');
     console.log(this.props);
