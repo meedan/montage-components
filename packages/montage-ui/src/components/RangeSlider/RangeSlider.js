@@ -15,20 +15,13 @@ class RangeSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // instances: [],
       draggedInstance: null
     };
-    // this.deleteInstance = this.deleteInstance.bind(this);
-    // this.extendInstance = this.extendInstance.bind(this);
     this.setDraggedInstance = this.setDraggedInstance.bind(this);
-    // this.updateInstance = this.updateInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
   }
 
-  // componentWillMount() {
-  //   this.setState({ instances: this.props.instances });
-  // }
   static getDerivedStateFromProps({ instances = [] }) {
     return { instances };
   }
@@ -46,31 +39,6 @@ class RangeSlider extends Component {
     console.log("setDraggedInstance", id);
     this.setState({ draggedInstance: id || null });
   }
-
-  // updateInstance(id, payload) {
-  //   const i = this.state.instances.findIndex(i => i.id === id);
-  //   const instances = [
-  //     ...this.state.instances.slice(0, i),
-  //     { ...this.state.instances[i], ...payload },
-  //     ...this.state.instances.slice(i + 1)
-  //   ];
-  //   this.setState({ instances }, () => this.props.updateInstances(instances));
-  // }
-
-  // deleteInstance(id) {
-  //   const { instances } = this.state;
-  //   const i = instances.findIndex(instance => instance.id === id);
-  //   instances.splice(i, 1);
-  //   this.setState({ instances }, () => this.props.updateInstances(instances));
-  // }
-
-  // extendInstance(id) {
-  //   const { instances } = this.state;
-  //   const i = instances.findIndex(instance => instance.id === id);
-  //   instances[i].start_seconds = 0;
-  //   instances[i].end_seconds = this.props.duration;
-  //   this.setState({ instances }, () => this.props.updateInstances(instances));
-  // }
 
   updateRef() {
     if (!this.wrapperRef) return null;
@@ -124,10 +92,9 @@ RangeSlider.propTypes = {
   clipInstance: func,
   duration: number.isRequired,
   instances: array.isRequired,
-  // updateInstances: func.isRequired,
   updateInstance: func.isRequired,
   extendInstance: func.isRequired,
-  deleteInstance: func.isRequired,
+  deleteInstance: func.isRequired
 };
 RangeSlider.defaultProps = {
   checkInstance: null,

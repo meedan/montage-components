@@ -253,22 +253,6 @@ class Entities extends Component {
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
-  // moveHandle = (id, [startHandle, endHandle], unit = 0) => {
-  //   const { targetInstance } = this.state;
-  //
-  //   const entities = produce(this.props.entities, nextEntities => {
-  //     const ti = nextEntities.findIndex(t => t.id === id);
-  //     const t = nextEntities[ti];
-  //
-  //     const i = t.instances.find(i => i.id === targetInstance.id);
-  //
-  //     if (startHandle) i.start_seconds += unit;
-  //     if (endHandle) i.end_seconds += unit;
-  //   });
-  //
-  //   this.props.update({ [this.props.entitiesyKey]: entities });
-  // };
-
   startNewInstance = id => {
     const { currentTime } = this.props;
 
