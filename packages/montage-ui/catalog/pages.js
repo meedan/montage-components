@@ -22,18 +22,8 @@ const pages = [
   },
   {
     title: "Range slider",
-    pages: [
-      {
-        content: require("./pages/RangeSlider/Variations.js"),
-        path: "/range-slider",
-        title: "Variations"
-      }
-      // {
-      //   content: require("./pages/VideoMeta/Partials.js"),
-      //   path: "/video-meta-partials",
-      //   title: "Partials"
-      // }
-    ]
+    content: require("./pages/RangeSlider/Variations.js"),
+    path: "/range-slider"
   },
   {
     content: require("./pages/TimelinePlayhead/TimelinePlayhead.js"),
