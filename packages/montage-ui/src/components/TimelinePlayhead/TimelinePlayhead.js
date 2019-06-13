@@ -15,9 +15,20 @@ const TPWrapper = styled.div`
 class TimelineWrapper extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentTime: null,
+      dragging: null,
+      newTime: null
+    };
+    this.onAfterChange = this.onAfterChange.bind(this);
+    this.onBeforeChange = this.onBeforeChange.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.updateRef = this.updateRef.bind(this);
     this.wrapperRef = createRef();
+  }
+
+  static getDerivedStateFromProps({ currentTime }) {
+    return { currentTime };
   }
 
   componentDidMount() {
@@ -27,6 +38,22 @@ class TimelineWrapper extends Component {
 
   componentWillUnmount() {
     window.addEventListener("resize", this.updateRef.bind(this));
+  }
+
+  onChange(newTime) {
+    this.setState({ newTime }, () => this.props.setNewTime(this.state.newTime));
+  }
+
+  onBeforeChange(newTime) {
+    this.setState({ dragging: true, newTime }, () =>
+      this.props.setNewTime(this.state.newTime)
+    );
+  }
+
+  onAfterChange() {
+    this.setState({ dragging: null }, () =>
+      this.props.setNewTime(this.state.newTime)
+    );
   }
 
   updateRef() {
@@ -42,13 +69,17 @@ class TimelineWrapper extends Component {
   }
 
   render() {
+    const { dragging, newTime, currentTime, wrapper } = this.state;
     return (
       <TPWrapper ref={this.wrapperRef}>
         <Playhead
-          currentTime={this.props.currentTime}
+          dragging={dragging}
           duration={this.props.duration}
-          setCurrentTime={this.props.setCurrentTime}
-          wrapper={this.state.wrapper}
+          onAfterChange={this.onAfterChange}
+          onBeforeChange={this.onBeforeChange}
+          onChange={this.onChange}
+          time={dragging ? newTime : currentTime}
+          wrapper={wrapper}
         />
       </TPWrapper>
     );
@@ -58,8 +89,10 @@ class TimelineWrapper extends Component {
 export default TimelineWrapper;
 
 TimelineWrapper.propTypes = {
-  currentTime: number.isRequired,
+  currentTime: number,
   duration: number.isRequired,
-  setCurrentTime: func.isRequired
+  setNewTime: func.isRequired
 };
-TimelineWrapper.defaultProps = {};
+TimelineWrapper.defaultProps = {
+  currentTime: 0
+};

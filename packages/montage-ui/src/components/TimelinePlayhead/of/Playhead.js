@@ -45,7 +45,7 @@ class Playhead extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTime: null
+      time: null
     };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -56,35 +56,37 @@ class Playhead extends Component {
 
   componentDidMount() {
     this.setState({
-      currentTime: this.props.currentTime
+      time: this.props.time
     });
     document.addEventListener("mousemove", this.onMouseMove.bind(this));
     document.addEventListener("mouseup", this.onMouseUp.bind(this));
     this.updateRef();
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.currentTime !== prevProps.currentTime) {
-  //     this.setState({
-  //       currentTime: this.props.currentTime
-  //     });
-  //   }
-  // }
-
   componentWillUnmount() {
     document.removeEventListener("mousemove", this.onMouseMove.bind(this));
     document.removeEventListener("mouseup", this.onMouseUp.bind(this));
   }
 
-  onMouseDown() {
-    this.setState({ dragging: true });
+  onMouseDown(e) {
+    if (!e) return null;
+    const coords = { x: e.pageX, y: e.pageY };
+
+    const { duration, wrapper } = this.props;
+    const { width, left } = wrapper.rect;
+
+    if (coords.x <= 0) return null;
+    const newTime = ((coords.x - left) * duration) / width;
+
+    this.props.onBeforeChange(newTime);
+    return null;
   }
 
   onMouseMove(e) {
     if (!e) return null;
     const coords = { x: e.pageX, y: e.pageY };
 
-    if (!this.state.dragging) return null;
+    if (!this.props.dragging) return null;
     const { duration, wrapper } = this.props;
     const { width, left } = wrapper.rect;
 
@@ -93,17 +95,16 @@ class Playhead extends Component {
 
     this.setState(
       prevState => ({
-        currentTime:
-          newTime >= 0 && newTime <= duration ? newTime : prevState.currentTime
+        time: newTime >= 0 && newTime <= duration ? newTime : prevState.time
       }),
-      this.props.setCurrentTime(this.state.currentTime)
+      this.props.onChange(this.state.time)
     );
 
     return null;
   }
 
   onMouseUp() {
-    this.setState({ dragging: false });
+    this.props.onAfterChange();
   }
 
   updateRef() {
@@ -123,10 +124,10 @@ class Playhead extends Component {
     if (!this.props.wrapper.ref) return null;
 
     const { duration, wrapper } = this.props;
-    const { currentTime } = this.state;
+    const { time } = this.state;
     const { width } = wrapper.rect;
 
-    const x = (currentTime * width) / duration;
+    const x = (time * width) / duration;
 
     return (
       <El
@@ -135,7 +136,7 @@ class Playhead extends Component {
         }}
         onMouseDown={this.onMouseDown}
       >
-        <MeTooltip isVisible>{formatSeconds(currentTime)}</MeTooltip>
+        <MeTooltip isVisible>{formatSeconds(time)}</MeTooltip>
       </El>
     );
   }
@@ -145,8 +146,10 @@ export default Playhead;
 
 Playhead.propTypes = {
   duration: number.isRequired,
-  setCurrentTime: func.isRequired,
-  currentTime: number.isRequired,
+  onAfterChange: func.isRequired,
+  onBeforeChange: func.isRequired,
+  onChange: func.isRequired,
+  time: number.isRequired,
   wrapper: shape({
     rect: object.isRequired,
     ref: object.isRequired

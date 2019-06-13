@@ -14,7 +14,7 @@ ${(
     <TimelinePlayhead
       currentTime={50}
       duration={100}
-      setCurrentTime={time => console.log("setCurrentTime", time)}
+      setNewTime={time => console.log("setNewTime", time)}
     />
   </ReactSpecimen>
 )}
@@ -24,7 +24,7 @@ ${(
     <TimelinePlayhead
       currentTime={50}
       duration={100}
-      setCurrentTime={time => console.log("setCurrentTime", time)}
+      setNewTime={time => console.log("setNewTime", time)}
     />
   </ReactSpecimen>
 )}
