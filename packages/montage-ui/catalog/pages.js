@@ -1,11 +1,6 @@
 /* eslint global-require: off */
 const pages = [
   {
-    content: require("./pages/Helpers/Helpers.js"),
-    path: "/helpers",
-    title: "Helpers"
-  },
-  {
     content: require("./pages/Icons/Icons.js"),
     path: "/icons",
     title: "Icons"
