@@ -13,7 +13,19 @@ ReactDOM.render(
   <>
     <ThemeProvider>
       <Catalog
-        pages={pages}
+        pages={[
+          // {
+          //   path: "/md",
+          //   title: "MD",
+          //   component: require("./WELCOME.md")
+          // },
+          {
+            path: "/mdx",
+            title: "MDX",
+            component: require("./WELCOME.mdx")
+          },
+          ...pages
+        ]}
         responsiveSizes={[
           { name: "tablet", width: 1024, height: 768 },
           { name: "desktop", width: 1440, height: 900 }

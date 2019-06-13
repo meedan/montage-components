@@ -7,8 +7,8 @@
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
     "@date-io/date-fns": "1.3.6",
-    "@material-ui/core": "4.0.2",
-    "@material-ui/icons": "4.0.1",
+    "@material-ui/core": "4.1.1",
+    "@material-ui/icons": "4.2.0",
     "@montage/ui": "0.0.1",
     "@react-google-maps/api": "1.2.2",
     "@svgr/webpack": "4.2.0",
@@ -183,6 +183,6 @@
     "babel-plugin-styled-components": "1.10.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-prettier": "3.1.0",
-    "prettier": "1.18.0"
+    "prettier": "1.18.2"
   }
 }

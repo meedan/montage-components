@@ -15,7 +15,7 @@ function CommentForm(props) {
   };
 
   return (
-    <Grid container direction="column" spacing={8} wrap="nowrap">
+    <Grid container direction="column" spacing={1} wrap="nowrap">
       <Grid item>
         <TextField
           autoFocus
