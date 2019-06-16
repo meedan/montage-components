@@ -1,6 +1,5 @@
 import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
-import { number, shape } from 'prop-types';
 import { throttle } from 'lodash';
 import React, { Component, createRef } from 'react';
 import styled from 'styled-components';
@@ -30,12 +29,14 @@ const TimelineWrapper = styled.div`
   position: relative;
   user-select: none;
 `;
-const TimelinePlayheadPin = styled.div`
+const TimelinePlayheadTrackWrapper = styled.div`
+  border-left: 1px solid #e0e0e0;
   bottom: 0;
   left: ${TIMELINE_OFFSET}px;
   position: absolute;
   right: 0;
   top: 0;
+  z-index: 1;
 `;
 
 class Timeline extends Component {
@@ -72,12 +73,12 @@ class Timeline extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('resize', this.setPlayheadStyles.bind(this));
+    window.addEventListener('resize', this.setPlayheadStyles.bind(this));
     this.setPlayheadStyles();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('resize', this.setPlayheadStyles.bind(this));
+    window.removeEventListener('resize', this.setPlayheadStyles.bind(this));
   }
 
   setPlayheadStyles() {
@@ -204,14 +205,14 @@ class Timeline extends Component {
         // onClick={e => this.onTrackClick(e)}
         onClick={e => console.log('TimelineWrapperClick', e)}
       >
-        <TimelinePlayheadPin ref={this.playheadTrackEl}>
+        <TimelinePlayheadTrackWrapper ref={this.playheadTrackEl}>
           <TimelinePlayhead
             duration={duration}
             onTimeChange={throttle(this.onPlayheadChange, 150)}
             style={this.state.playheadTrackStyle}
             time={this.state.time}
           />
-        </TimelinePlayheadPin>
+        </TimelinePlayheadTrackWrapper>
         <Table padding="dense">
           <TimelineComments
             {...this.props}

@@ -30,11 +30,11 @@ class TimelineWrapper extends Component {
 
   componentDidMount() {
     this.measureRef();
-    document.addEventListener("resize", this.measureRef.bind(this));
+    window.addEventListener("resize", this.measureRef.bind(this));
   }
 
   componentWillUnmount() {
-    document.addEventListener("resize", this.measureRef.bind(this));
+    window.addEventListener("resize", this.measureRef.bind(this));
   }
 
   measureRef() {
@@ -43,7 +43,7 @@ class TimelineWrapper extends Component {
   }
 
   updateTime(time) {
-    this.setState({ time }, () => this.props.onTimeChange(this.state.time));
+    this.setState({ time }, () => this.props.onTimeChange(time));
   }
 
   render() {
