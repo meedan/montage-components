@@ -4,11 +4,15 @@
 
 ```react
 state: {time: 0}
+showSource: true
 ---
 <TimelinePlayhead
   duration={100}
   time={state.time}
-  onTimeChange={time => setState({time: time})}
+  onTimeChange={time => {
+    console.log('onTimeChange, time: ', time);
+    setState({ time: time });
+  }}
 />
 ```
 
@@ -19,7 +23,10 @@ state: {time: 0}
 <TimelinePlayhead
   duration={100}
   time={state.time}
-  onTimeChange={time => setState({time: time})}
+  onTimeChange={time => {
+    console.log('onTimeChange, time: ', time);
+    setState({ time: time });
+  }}
 />
 ```
 
@@ -30,7 +37,10 @@ state: {time: 50}
 <TimelinePlayhead
   duration={100}
   time={state.time}
-  onTimeChange={time => setState({time: time})}
+  onTimeChange={time => {
+    console.log('onTimeChange, time: ', time);
+    setState({ time: time });
+  }}
 />
 ```
 
@@ -41,6 +51,9 @@ state: {time: 100}
 <TimelinePlayhead
   duration={100}
   time={state.time}
-  onTimeChange={time => setState({time: time})}
+  onTimeChange={time => {
+    console.log('onTimeChange, time: ', time);
+    setState({ time: time });
+  }}
 />
 ```
