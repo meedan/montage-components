@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import React, { createRef, Component } from 'react';
+import React, { Component } from 'react';
 import ErrorBoundary from 'react-error-boundary';
 import styled from 'styled-components';
 import { withSnackbar } from 'notistack';
