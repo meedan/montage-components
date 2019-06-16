@@ -198,10 +198,7 @@ class Timeline extends Component {
     const currentTime = skip ? ffTime : time;
 
     return (
-      <TimelineWrapper
-
-      // onClick={e => console.log('TimelineWrapperClick', e)}
-      >
+      <TimelineWrapper>
         <TimelinePlayheadTrackWrapper
           ref={this.playheadTrackEl}
           onClick={e => this.onTrackClick(e)}
