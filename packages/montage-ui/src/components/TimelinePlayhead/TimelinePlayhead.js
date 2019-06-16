@@ -1,10 +1,10 @@
-import { func, number } from "prop-types";
+import { func, number, object } from "prop-types";
 import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
 import Playhead from "./of/Playhead";
 
-const TPWrapper = styled.div`
+const PlayheadTrack = styled.div`
   min-height: 28px;
   overflow: visible;
   pointer-events: none;
@@ -17,72 +17,47 @@ class TimelineWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTime: null,
-      dragging: null,
-      newTime: null
+      time: 0
     };
-    this.onAfterChange = this.onAfterChange.bind(this);
-    this.onBeforeChange = this.onBeforeChange.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.updateRef = this.updateRef.bind(this);
-    this.wrapperRef = createRef();
+    this.updateTime = this.updateTime.bind(this);
+    this.measureRef = this.measureRef.bind(this);
+    this.ref = createRef();
   }
 
-  static getDerivedStateFromProps({ currentTime }) {
-    return { currentTime };
+  static getDerivedStateFromProps({ time }) {
+    return { time };
   }
 
   componentDidMount() {
-    this.updateRef();
-    window.addEventListener("resize", this.updateRef.bind(this));
+    this.measureRef();
+    document.addEventListener("resize", this.measureRef.bind(this));
   }
 
   componentWillUnmount() {
-    window.addEventListener("resize", this.updateRef.bind(this));
+    document.addEventListener("resize", this.measureRef.bind(this));
   }
 
-  onChange(newTime) {
-    this.setState({ newTime }, () => this.props.onChange(this.state.newTime));
+  measureRef() {
+    if (this.ref && this.ref.current)
+      this.setState({ rect: this.ref.current.getBoundingClientRect() });
   }
 
-  onBeforeChange(newTime) {
-    this.setState({ dragging: true, newTime }, () =>
-      this.props.onChange(this.state.newTime)
-    );
-  }
-
-  onAfterChange() {
-    this.setState({ dragging: null }, () =>
-      this.props.onChange(this.state.newTime)
-    );
-  }
-
-  updateRef() {
-    if (!this.wrapperRef) return null;
-    if (!this.wrapperRef.current) return null;
-    this.setState({
-      wrapper: {
-        ref: this.wrapperRef.current,
-        rect: this.wrapperRef.current.getBoundingClientRect()
-      }
-    });
-    return null;
+  updateTime(time) {
+    this.setState({ time }, () => this.props.onTimeChange(this.state.time));
   }
 
   render() {
-    const { dragging, newTime, currentTime, wrapper } = this.state;
+    const { rect, time } = this.state;
+
     return (
-      <TPWrapper ref={this.wrapperRef} {...this.props}>
+      <PlayheadTrack ref={this.ref} style={this.props.style}>
         <Playhead
-          dragging={dragging}
           duration={this.props.duration}
-          onAfterChange={this.onAfterChange}
-          onBeforeChange={this.onBeforeChange}
-          onChange={this.onChange}
-          time={dragging ? newTime : currentTime}
-          wrapper={wrapper}
+          rect={rect}
+          time={time}
+          updateTime={this.updateTime}
         />
-      </TPWrapper>
+      </PlayheadTrack>
     );
   }
 }
@@ -90,10 +65,12 @@ class TimelineWrapper extends Component {
 export default TimelineWrapper;
 
 TimelineWrapper.propTypes = {
-  currentTime: number,
   duration: number.isRequired,
-  onChange: func.isRequired
+  onTimeChange: func.isRequired,
+  style: object,
+  time: number
 };
 TimelineWrapper.defaultProps = {
-  currentTime: 0
+  style: null,
+  time: 0
 };

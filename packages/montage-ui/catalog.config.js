@@ -12,10 +12,10 @@ module.exports = {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
       },
-      {
-        test: /\.mdx?$/,
-        use: ["babel-loader", "mdx-loader"]
-      },
+      // {
+      //   test: /\.mdx?$/,
+      //   use: ["babel-loader", "mdx-loader"]
+      // },
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
@@ -23,7 +23,7 @@ module.exports = {
       }
     );
 
-    console.log(JSON.stringify(config));
+    // console.log(JSON.stringify(config));
     return config;
   }
 };

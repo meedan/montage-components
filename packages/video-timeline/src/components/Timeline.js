@@ -1,6 +1,7 @@
 import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { number, shape } from 'prop-types';
+import { throttle } from 'lodash';
 import React, { Component, createRef } from 'react';
 import styled from 'styled-components';
 
@@ -29,6 +30,13 @@ const TimelineWrapper = styled.div`
   position: relative;
   user-select: none;
 `;
+const TimelinePlayheadPin = styled.div`
+  bottom: 0;
+  left: ${TIMELINE_OFFSET}px;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
 
 class Timeline extends Component {
   constructor(props) {
@@ -43,7 +51,7 @@ class Timeline extends Component {
       skip: false,
       time: 0,
     };
-    this.timelineRef = createRef();
+    this.playheadTrackEl = createRef();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -64,20 +72,26 @@ class Timeline extends Component {
   }
 
   componentDidMount() {
-    this.updateRef();
-    document.addEventListener('resize', this.updateRef.bind(this));
+    document.addEventListener('resize', this.setPlayheadStyles.bind(this));
+    this.setPlayheadStyles();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('resize', this.updateRef.bind(this));
+    document.removeEventListener('resize', this.setPlayheadStyles.bind(this));
   }
 
-  updateRef() {
-    if (!this.timelineRef) return null;
+  setPlayheadStyles() {
+    if (!this.playheadTrackEl) return null;
+    if (!this.playheadTrackEl.current) return null;
+    const rect = this.playheadTrackEl.current.getBoundingClientRect();
     this.setState({
-      timelineRef: {
-        ref: this.timelineRef.current,
-        rect: this.timelineRef.current.getBoundingClientRect(),
+      playheadTrackStyle: {
+        bottom: 0,
+        left: rect.left,
+        position: 'fixed',
+        top: rect.top,
+        width: rect.width,
+        zIndex: '150',
       },
     });
   }
@@ -180,46 +194,24 @@ class Timeline extends Component {
   };
 
   render() {
-    const { time, skip, ffTime, timelineRef } = this.state;
+    const { time, skip, ffTime } = this.state;
     const { duration, transport, playing } = this.props;
 
     const currentTime = skip ? ffTime : time;
 
-    let playheadPin = {};
-
-    if (timelineRef && timelineRef.rect)
-      playheadPin = {
-        left: timelineRef.rect.left + TIMELINE_OFFSET,
-        top: timelineRef.rect.top,
-        bottom: 0,
-        width: timelineRef.rect.width - TIMELINE_OFFSET,
-      };
-
     return (
       <TimelineWrapper
-        ref={this.timelineRef}
         // onClick={e => this.onTrackClick(e)}
         onClick={e => console.log('TimelineWrapperClick', e)}
       >
-        <TimelinePlayhead
-          currentTime={this.state.time}
-          duration={duration}
-          onChange={this.onPlayheadChange}
-          style={{
-            ...playheadPin,
-            borderLeft: `1px solid ${grey[300]}`,
-            height: '100%',
-            position: 'fixed',
-            zIndex: '150',
-          }}
-        />
-        {/* <Playhead box={this.props.box}>
-          <Slider
-            onAfterChange={this.onDragEnd}
-            onBeforeChange={this.onDragStart}
-            onChange={this.onDrag}
+        <TimelinePlayheadPin ref={this.playheadTrackEl}>
+          <TimelinePlayhead
+            duration={duration}
+            onTimeChange={throttle(this.onPlayheadChange, 150)}
+            style={this.state.playheadTrackStyle}
+            time={this.state.time}
           />
-        </Playhead> */}
+        </TimelinePlayheadPin>
         <Table padding="dense">
           <TimelineComments
             {...this.props}
