@@ -36,7 +36,6 @@ const TimelinePlayheadTrackWrapper = styled.div`
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 1;
 `;
 
 class Timeline extends Component {
@@ -166,7 +165,7 @@ class Timeline extends Component {
     );
   };
 
-  onPlayheadChange = (time, skip = true, clip = false) => {
+  onTimeChange = (time, skip = true, clip = false) => {
     const { pause, playing } = this.props;
 
     this.setState({
@@ -207,7 +206,7 @@ class Timeline extends Component {
         >
           <TimelinePlayhead
             duration={duration}
-            onTimeChange={throttle(this.onPlayheadChange, 150)}
+            onTimeChange={throttle(this.onTimeChange, 150)}
             style={this.state.playheadTrackStyle}
             time={this.state.time}
           />
