@@ -22,29 +22,29 @@ class RecordedDate extends Component {
     this.onDateChange = this.onDateChange.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ date: parseISO(this.props.recDate) });
+  static getDerivedStateFromProps({ date }) {
+    return { date };
   }
 
-  onDateChange(date) {
-    console.log("onDateChange: ", date);
-    this.setState({ date });
+  onDateChange(newDate) {
+    this.setState({ newDate });
   }
 
   onAcceptDate(date) {
-    if (this.props.isArchived) return null;
-    console.log("onAcceptDate", date);
-    this.setState({ processing: true, pickerOpen: false });
-    this.props.onRecDateChange(date, () => this.setState({ processing: null }));
-    return null;
+    if (!this.props.isArchived) {
+      this.setState({ processing: true, pickerOpen: false });
+      this.props.onDateChange(date ? date.toISOString() : null, () =>
+        this.setState({ processing: null })
+      );
+    }
   }
 
   render() {
     const { date, processing } = this.state;
-    const { isArchived, recDate, recDateOverriden } = this.props;
+    const { isArchived, isOverriden } = this.props;
 
-    const displayDate = recDate
-      ? format(parseISO(recDate), "d MMMM YYYY", {
+    const displayDate = date
+      ? format(parseISO(date), "d MMMM YYYY", {
           awareOfUnicodeTokens: true
         })
       : null;
@@ -55,7 +55,7 @@ class RecordedDate extends Component {
           <Typography variant="body2">Saving new recording date…</Typography>
         );
       }
-      if (recDate) {
+      if (date) {
         return <Typography variant="body2">Recorded {displayDate}</Typography>;
       }
       return (
@@ -81,7 +81,7 @@ class RecordedDate extends Component {
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <>
-          {recDateOverriden ? (
+          {isOverriden ? (
             <Tooltip title="Overridden by a Montage user">{renderEl()}</Tooltip>
           ) : (
             renderEl()
@@ -89,13 +89,12 @@ class RecordedDate extends Component {
           <DatePicker
             animateYearScrolling
             autoOk
-            clearable={!!recDate}
+            clearable={!!date}
             clearLabel={isArchived ? "Revert" : "Clear"}
             disableFuture
             onAccept={this.onAcceptDate}
-            // onOpen={() => this.setState({ pickerOpen: true })}
             onChange={this.onDateChange}
-            // onClose={() => this.setState({ pickerOpen: false })}
+            onClose={() => this.setState({ pickerOpen: false, newDate: null })}
             open={this.state.pickerOpen}
             TextFieldComponent="span"
             value={date || null}
@@ -111,13 +110,13 @@ export default RecordedDate;
 
 RecordedDate.propTypes = {
   isArchived: bool,
-  onRecDateChange: func.isRequired,
-  recDate: string,
-  recDateOverriden: bool
+  onDateChange: func.isRequired,
+  date: string,
+  isOverriden: bool
 };
 
 RecordedDate.defaultProps = {
   isArchived: null,
-  recDate: null,
-  recDateOverriden: null
+  date: null,
+  isOverriden: null
 };

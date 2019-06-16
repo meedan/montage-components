@@ -112,7 +112,7 @@ class VideoMeta extends Component {
       <Card square elevation={0} className={classes.Card}>
         <CardHeader
           style={{ paddingBottom: 0 }}
-          action={(
+          action={
             <div
               style={{
                 position: "relative",
@@ -141,12 +141,12 @@ class VideoMeta extends Component {
                 videoId={this.props.videoId}
               />
             </div>
-)}
-          title={(
+          }
+          title={
             <Typography noWrap variant="h6">
               {this.props.channelTitle}
             </Typography>
-)}
+          }
         />
         <CardContent>
           <List dense disablePadding component="div">
@@ -162,10 +162,10 @@ class VideoMeta extends Component {
             </ListItem>
             <PublishedDate pubDate={this.props.pubDate} />
             <RecordedDate
+              date={this.props.recDate}
               isArchived={isArchived}
-              onRecDateChange={this.props.onRecDateChange}
-              recDate={this.props.recDate}
-              recDateOverriden={this.props.recDateOverriden}
+              isOverriden={this.props.recDateOverriden}
+              onDateChange={this.props.onRecDateChange}
             />
             <ErrorBoundary>
               <Keep

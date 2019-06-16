@@ -130,43 +130,64 @@ span: 3
 
 ```react
 span: 2
+state: { date: null, isOverriden: null }
 ---
 <RecordedDate
   isArchived={false}
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate={null}
-  recDateOverriden={false}
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
 ```react
 span: 2
+state: { date: "1989-01-13T01:22:14.000Z" }
 ---
 <RecordedDate
   isArchived={false}
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate="1989-01-13T01:22:14.000Z"
-  recDateOverriden={false}
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
 ```react
 span: 2
+state: { date: "1989-01-13T01:22:14.000Z", isOverriden: true }
 ---
 <RecordedDate
   isArchived={false}
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate="1989-01-13T01:22:14.000Z"
-  recDateOverriden
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
@@ -174,43 +195,64 @@ span: 2
 
 ```react
 span: 2
+state: { date: null, isOverriden: null }
 ---
 <RecordedDate
   isArchived
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate={null}
-  recDateOverriden={false}
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
 ```react
 span: 2
+state: { date: "1989-01-13T01:22:14.000Z" }
 ---
 <RecordedDate
   isArchived
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate="1989-01-13T01:22:14.000Z"
-  recDateOverriden={false}
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
 ```react
 span: 2
+state: { date: "1989-01-13T01:22:14.000Z", isOverriden: true }
 ---
 <RecordedDate
   isArchived
-  onRecDateChange={(payload, callback) => {
-    console.log("onRecDateChange, payload:", payload);
-    setTimeout(() => callback(), 2000);
+  onDateChange={(payload, callback) => {
+    console.log("onDateChange, payload:", payload);
+    setTimeout(() => {
+      setState({
+        date: payload,
+        isOverriden: payload ? true : null
+      })
+      callback()
+    }, 2000);
   }}
-  recDate="1989-01-13T01:22:14.000Z"
-  recDateOverriden
+  date={state.date}
+  isOverriden={state.isOverriden}
 />
 ```
 
