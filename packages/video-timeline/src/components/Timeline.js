@@ -74,11 +74,13 @@ class Timeline extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.setPlayheadStyles.bind(this));
+    document.addEventListener('resize', this.setPlayheadStyles.bind(this));
     this.setPlayheadStyles();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.setPlayheadStyles.bind(this));
+    document.removeEventListener('resize', this.setPlayheadStyles.bind(this));
   }
 
   setPlayheadStyles() {

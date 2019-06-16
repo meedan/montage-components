@@ -31,9 +31,11 @@ class TimelineWrapper extends Component {
   componentDidMount() {
     this.measureRef();
     window.addEventListener("resize", this.measureRef.bind(this));
+    document.addEventListener("resize", this.measureRef.bind(this));
   }
 
   componentWillUnmount() {
+    document.addEventListener("resize", this.measureRef.bind(this));
     window.addEventListener("resize", this.measureRef.bind(this));
   }
 
