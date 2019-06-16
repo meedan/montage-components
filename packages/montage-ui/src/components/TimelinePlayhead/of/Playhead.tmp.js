@@ -6,6 +6,7 @@ import { MeTooltip, formatSeconds } from "@montage/ui";
 import { color } from "@montage/ui/src/config/";
 
 const El = styled.div`
+  background: rgba(0, 0, 0, 0.1);
   cursor: -webkit-grab;
   cursor: col-resize;
   cursor: grab;
@@ -43,7 +44,7 @@ const El = styled.div`
 class Playhead extends Component {
   constructor(props) {
     super(props);
-    this.state = { time: 0 };
+    this.state = { time: 0, newTime: 0 };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
@@ -73,10 +74,7 @@ class Playhead extends Component {
     if (coords.x <= 0) return null;
     const newTime = ((coords.x - left) * duration) / width;
 
-    this.setState(prevState => ({
-      dragging: true,
-      newTime: newTime >= 0 && newTime <= duration ? newTime : prevState.time
-    }));
+    this.setState({ dragging: true, newTime });
     return null;
   }
 
@@ -93,8 +91,7 @@ class Playhead extends Component {
 
     this.setState(
       prevState => ({
-        newTime:
-          newTime >= 0 && newTime <= duration ? newTime : prevState.newTime
+        newTime: newTime >= 0 && newTime <= duration ? newTime : prevState.time
       }),
       this.props.updateTime(this.state.newTime)
     );
@@ -103,10 +100,16 @@ class Playhead extends Component {
   }
 
   onMouseUp() {
-    this.setState({ dragging: false });
+    this.setState({ dragging: false }, () =>
+      this.props.updateTime(this.state.newTime)
+    );
   }
 
   render() {
+    // console.group("Playhead");
+    // console.log(this.props.rect);
+    // console.groupEnd();
+
     if (!this.props.rect) return null;
 
     const { duration, rect } = this.props;
@@ -134,9 +137,9 @@ export default Playhead;
 
 Playhead.propTypes = {
   duration: number.isRequired,
-  rect: object,
+  updateTime: func.isRequired,
   time: number.isRequired,
-  updateTime: func.isRequired
+  rect: object
 };
 Playhead.defaultProps = {
   rect: null

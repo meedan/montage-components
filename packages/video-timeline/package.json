@@ -48,8 +48,8 @@
     "jest-resolve": "24.7.1",
     "jest-watch-typeahead": "0.3.0",
     "lodash": "4.17.11",
-    "mini-css-extract-plugin": "0.5.0",
     "material-ui-popup-state": "1.4.0",
+    "mini-css-extract-plugin": "0.5.0",
     "notistack": "0.8.6",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "owtj": "1.0.3",
@@ -59,7 +59,7 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
-    "rc-slider": "8.6.11",
+    "rc-slider": "^8.6.13",
     "react": "16.8.6",
     "react-app-polyfill": "1.0.0",
     "react-dev-utils": "9.0.0",
@@ -76,11 +76,11 @@
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
+    "styled-components": "4.3.1",
     "terser-webpack-plugin": "1.2.3",
     "url-loader": "1.1.2",
     "webpack": "4.29.6",
     "webpack-dev-server": "3.3.1",
-    "styled-components": "4.3.1",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "4.2.0"
   },
@@ -181,7 +181,7 @@
   },
   "devDependencies": {
     "babel-plugin-styled-components": "1.10.0",
-    "eslint-config-prettier": "4.3.0",
+    "eslint-config-prettier": "5.0.0",
     "eslint-plugin-prettier": "3.1.0",
     "prettier": "1.18.2"
   }
