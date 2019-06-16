@@ -97,26 +97,23 @@ class Timeline extends Component {
     });
   }
 
-  // onTrackClick = e => {
-  //   if (this.state.clip) {
-  //     return;
-  //   }
-  //
-  //   const { box, play, duration, playing } = this.props;
-  //
-  //   const startPos = box.x1 + TIMELINE_OFFSET;
-  //   const endPos = box.width - TIMELINE_OFFSET;
-  //   const newPos = e.clientX - startPos;
-  //   const newPosFlat = newPos > 0 ? newPos : 0;
-  //   const newTime = (duration * newPosFlat) / endPos;
-  //   // console.log('onTrackClick()');
-  //   if (e.clientX > startPos && !DISABLE_TIMELINE_TRANSPORT) {
-  //     this.setState({ time: newTime, disjoint: true, seekTo: newTime });
-  //     console.log(`seeking to ${newTime} (onTrackClick)`);
-  //     if (!playing) play({ transport: 'timeline' });
-  //   }
-  //   return null;
-  // };
+  onTrackClick = e => {
+    if (this.state.clip) {
+      return;
+    }
+
+    const { play, duration, playing } = this.props;
+
+    const rect = this.playheadTrackEl.current.getBoundingClientRect();
+    const newTime = ((e.pageX - rect.left) * duration) / rect.width;
+
+    if (!DISABLE_TIMELINE_TRANSPORT) {
+      this.setState({ time: newTime, disjoint: true, seekTo: newTime });
+      console.log(`seeking to ${newTime} (onTrackClick)`);
+      if (!playing) play({ transport: 'timeline' });
+    }
+    return null;
+  };
 
   onDragStart = (val, skip = true, clip = false) => {
     // console.log('dragStart');
@@ -202,10 +199,13 @@ class Timeline extends Component {
 
     return (
       <TimelineWrapper
-        // onClick={e => this.onTrackClick(e)}
-        onClick={e => console.log('TimelineWrapperClick', e)}
+
+      // onClick={e => console.log('TimelineWrapperClick', e)}
       >
-        <TimelinePlayheadTrackWrapper ref={this.playheadTrackEl}>
+        <TimelinePlayheadTrackWrapper
+          ref={this.playheadTrackEl}
+          onClick={e => this.onTrackClick(e)}
+        >
           <TimelinePlayhead
             duration={duration}
             onTimeChange={throttle(this.onPlayheadChange, 150)}
