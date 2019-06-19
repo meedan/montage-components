@@ -1,18 +1,18 @@
-import { bool, func, string } from "prop-types";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { parseISO, format } from "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import React, { Component } from "react";
+import { bool, func, string } from 'prop-types';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { parseISO, format } from 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import React, { Component } from 'react';
 
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Typography
-} from "@material-ui/core";
+  Typography,
+} from '@material-ui/core';
 
-import VideocamIcon from "@material-ui/icons/Videocam";
+import VideocamIcon from '@material-ui/icons/Videocam';
 
 class RecordedDate extends Component {
   constructor(props) {
@@ -44,8 +44,8 @@ class RecordedDate extends Component {
     const { isArchived, isOverriden } = this.props;
 
     const displayDate = date
-      ? format(parseISO(date), "d MMMM YYYY", {
-          awareOfUnicodeTokens: true
+      ? format(parseISO(date), 'd MMMM YYYY', {
+          awareOfUnicodeTokens: true,
         })
       : null;
 
@@ -59,7 +59,7 @@ class RecordedDate extends Component {
         return <Typography variant="body2">Recorded {displayDate}</Typography>;
       }
       return (
-        <Typography color={isArchived ? "initial" : "primary"} variant="body2">
+        <Typography color={isArchived ? 'initial' : 'primary'} variant="body2">
           {isArchived ? `No recorded date set` : `Set a recorded Date`}
         </Typography>
       );
@@ -90,7 +90,7 @@ class RecordedDate extends Component {
             animateYearScrolling
             autoOk
             clearable={!!date}
-            clearLabel={isArchived ? "Revert" : "Clear"}
+            clearLabel={isArchived ? 'Revert' : 'Clear'}
             disableFuture
             onAccept={this.onAcceptDate}
             onChange={this.onDateChange}
@@ -112,11 +112,11 @@ RecordedDate.propTypes = {
   isArchived: bool,
   onDateChange: func.isRequired,
   date: string,
-  isOverriden: bool
+  isOverriden: bool,
 };
 
 RecordedDate.defaultProps = {
   isArchived: null,
   date: null,
-  isOverriden: null
+  isOverriden: null,
 };

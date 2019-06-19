@@ -5,12 +5,12 @@ import {
   number,
   oneOfType,
   shape,
-  string
-} from "prop-types";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { filter, some } from "lodash";
-import PopupState, { bindPopover } from "material-ui-popup-state";
-import React, { Component } from "react";
+  string,
+} from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { filter, some } from 'lodash';
+import PopupState, { bindPopover } from 'material-ui-popup-state';
+import React, { Component } from 'react';
 
 import {
   List,
@@ -19,10 +19,10 @@ import {
   ListItemText,
   Popover,
   Tooltip,
-  Typography
-} from "@material-ui/core";
+  Typography,
+} from '@material-ui/core';
 
-import { KeepIcon, ClipboardIcon } from "@montage/ui/src/components";
+import { KeepIcon, ClipboardIcon } from '@montage/ui/src/components';
 
 class KeepStatus extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class KeepStatus extends Component {
     const { backups, backupIds } = videoBackups;
     const backupsObj = backups[backupIds.indexOf(videoId)];
     const isError =
-      backupsObj && some(backupsObj.locations, { status: "ERROR" });
+      backupsObj && some(backupsObj.locations, { status: 'ERROR' });
     return { ...state, error: isError };
   }
 
@@ -54,7 +54,7 @@ class KeepStatus extends Component {
     const backupsObj = backups[backupIds.indexOf(videoId)];
     const backupsCount = backupsObj
       ? filter(backupsObj.locations, o => {
-          return o.status === "OK";
+          return o.status === 'OK';
         }).length
       : 0;
 
@@ -72,7 +72,7 @@ class KeepStatus extends Component {
       if (!isArchived && error) {
         return (
           <>
-            Sending to Keep failed.{" "}
+            Sending to Keep failed.{' '}
             <Typography component="span" inline color="primary">
               Retry?
             </Typography>
@@ -106,7 +106,7 @@ class KeepStatus extends Component {
               </ListItemIcon>
               <ListItemText>
                 <Typography
-                  color={isVanilla ? "primary" : "initial"}
+                  color={isVanilla ? 'primary' : 'initial'}
                   variant="body2"
                 >
                   {renderStatus()}
@@ -116,18 +116,18 @@ class KeepStatus extends Component {
             <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center"
+                vertical: 'bottom',
+                horizontal: 'center',
               }}
               transformOrigin={{
-                vertical: "top",
-                horizontal: "center"
+                vertical: 'top',
+                horizontal: 'center',
               }}
             >
               <List dense>
                 {backupsObj
                   ? backupsObj.locations.map(location => {
-                      if (!location || location.status === "ERROR") return null;
+                      if (!location || location.status === 'ERROR') return null;
                       const { url } = location;
                       return (
                         <CopyToClipboard
@@ -143,10 +143,10 @@ class KeepStatus extends Component {
                               <ListItemText>
                                 <Typography
                                   noWrap
-                                  style={{ maxWidth: "160px" }}
+                                  style={{ maxWidth: '160px' }}
                                   variant="body2"
                                 >
-                                  {url.replace(/https:\/\//g, "")}
+                                  {url.replace(/https:\/\//g, '')}
                                 </Typography>
                               </ListItemText>
                             </ListItem>
@@ -170,16 +170,16 @@ KeepStatus.propTypes = {
   isArchived: bool,
   videoBackups: shape({
     videoBackupIds: array,
-    videoBackups: array
+    videoBackups: array,
   }),
   onTriggerKeep: func.isRequired,
-  videoId: oneOfType([string, number]).isRequired
+  videoId: oneOfType([string, number]).isRequired,
 };
 
 KeepStatus.defaultProps = {
   isArchived: null,
   videoBackups: {
     videoBackupIds: [],
-    videoBackups: []
-  }
+    videoBackups: [],
+  },
 };

@@ -1,9 +1,9 @@
-import { bool, func, number, object, shape } from "prop-types";
-import React, { Component, createRef } from "react";
-import styled from "styled-components";
+import { bool, func, number, object, shape } from 'prop-types';
+import React, { Component, createRef } from 'react';
+import styled from 'styled-components';
 
-import { MeTooltip, formatSeconds } from "@montage/ui";
-import { color } from "@montage/ui/src/config/";
+import { MeTooltip, formatSeconds } from '@montage/ui';
+import { color } from '@montage/ui/src/config/';
 
 const El = styled.div`
   cursor: -webkit-grab;
@@ -18,7 +18,7 @@ const El = styled.div`
   &:before {
     background: ${color.brand};
     border-radius: 4px;
-    content: " ";
+    content: ' ';
     display: block;
     height: 7px;
     left: 50%;
@@ -29,7 +29,7 @@ const El = styled.div`
   }
   &:after {
     border-left: 1px solid ${color.brand};
-    content: " ";
+    content: ' ';
     display: block;
     height: 100%;
     left: 50%;
@@ -54,13 +54,13 @@ class Playhead extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   componentWillUnmount() {
-    document.removeEventListener("mousemove", this.onMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   onMouseDown(e) {
@@ -75,7 +75,7 @@ class Playhead extends Component {
 
     this.setState(prevState => ({
       dragging: true,
-      newTime: newTime >= 0 && newTime <= duration ? newTime : prevState.time
+      newTime: newTime >= 0 && newTime <= duration ? newTime : prevState.time,
     }));
     return null;
   }
@@ -94,7 +94,7 @@ class Playhead extends Component {
     this.setState(
       prevState => ({
         newTime:
-          newTime >= 0 && newTime <= duration ? newTime : prevState.newTime
+          newTime >= 0 && newTime <= duration ? newTime : prevState.newTime,
       }),
       this.props.updateTime(this.state.newTime)
     );
@@ -120,7 +120,7 @@ class Playhead extends Component {
     return (
       <El
         style={{
-          left: `${x}px`
+          left: `${x}px`,
         }}
         onMouseDown={this.onMouseDown}
       >
@@ -136,8 +136,8 @@ Playhead.propTypes = {
   duration: number.isRequired,
   rect: object,
   time: number.isRequired,
-  updateTime: func.isRequired
+  updateTime: func.isRequired,
 };
 Playhead.defaultProps = {
-  rect: null
+  rect: null,
 };

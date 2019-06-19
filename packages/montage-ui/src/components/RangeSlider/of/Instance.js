@@ -1,13 +1,13 @@
-import { array, bool, func, number, object, shape } from "prop-types";
-import PopupState, { bindHover } from "material-ui-popup-state";
-import React, { Component } from "react";
-import styled from "styled-components";
-import { filter, minBy, maxBy } from "lodash";
+import { array, bool, func, number, object, shape } from 'prop-types';
+import PopupState, { bindHover } from 'material-ui-popup-state';
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { filter, minBy, maxBy } from 'lodash';
 
-import { MeTooltip, formatSeconds } from "@montage/ui";
+import { MeTooltip, formatSeconds } from '@montage/ui';
 
-import HandlePopover from "./HandlePopover";
-import InstancePopover from "./InstancePopover";
+import HandlePopover from './HandlePopover';
+import InstancePopover from './InstancePopover';
 
 const RSInstance = styled(({ ...props }) => <div {...props} />)`
   backface-visibility: visible;
@@ -26,10 +26,10 @@ const RSHandle = styled(({ isDragging, isVisible, pos, ...props }) => (
   background: rgba(71, 123, 181, 1);
   bottom: 0;
   cursor: ew-resize;
-  opacity: ${({ isVisible }) => (isVisible ? "1" : "0")};
+  opacity: ${({ isVisible }) => (isVisible ? '1' : '0')};
   position: absolute;
   top: 0;
-  transform: ${({ pos }) => (pos === "end" ? `translateX(-50%)` : ``)};
+  transform: ${({ pos }) => (pos === 'end' ? `translateX(-50%)` : ``)};
   transition: transform 250ms, opacity 250ms, width 250ms;
   width: ${({ isDragging }) => (isDragging ? 1 : 4)}px;
   z-index: 2000;
@@ -45,7 +45,7 @@ class Instance extends Component {
       coords: { x: 0, y: 0 },
       dragging: null,
       overHandle: null,
-      overInstance: null
+      overInstance: null,
     };
 
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -63,10 +63,10 @@ class Instance extends Component {
   componentDidMount() {
     this.setState({
       end: this.props.end,
-      start: this.props.start
+      start: this.props.start,
     });
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   componentDidUpdate(prevProps) {
@@ -76,14 +76,14 @@ class Instance extends Component {
     ) {
       this.setState({
         end: this.props.end,
-        start: this.props.start
+        start: this.props.start,
       });
     }
   }
 
   componentWillUnmount() {
-    document.removeEventListener("mousemove", this.onMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   onInstanceEnter() {
@@ -101,7 +101,7 @@ class Instance extends Component {
   onHandleLeave() {
     this.setState(prevState => ({
       overHandle: null,
-      overInstance: prevState.overInstance ? prevState.overInstance : null
+      overInstance: prevState.overInstance ? prevState.overInstance : null,
     }));
   }
 
@@ -135,10 +135,10 @@ class Instance extends Component {
     if (coords.x <= 0) return null;
     let newTime = ((coords.x - left) * duration) / width;
 
-    if (dragging === "start" && newTime > end - MIN_LENGTH) {
+    if (dragging === 'start' && newTime > end - MIN_LENGTH) {
       newTime = end - MIN_LENGTH < 0 ? 0 : end - MIN_LENGTH;
     }
-    if (dragging === "end" && newTime < start + MIN_LENGTH) {
+    if (dragging === 'end' && newTime < start + MIN_LENGTH) {
       newTime = start + MIN_LENGTH > duration ? duration : start + MIN_LENGTH;
     }
 
@@ -147,7 +147,7 @@ class Instance extends Component {
       [dragging]:
         newTime >= RANGE_MIN && newTime <= RANGE_MAX
           ? newTime
-          : prevState[dragging]
+          : prevState[dragging],
     }));
 
     return null;
@@ -159,7 +159,7 @@ class Instance extends Component {
       this.props.setDraggedInstance(null);
       this.props.updateInstance({
         start_seconds: this.state.start,
-        end_seconds: this.state.end
+        end_seconds: this.state.end,
       });
     });
     return null;
@@ -182,12 +182,12 @@ class Instance extends Component {
     const UNIT = duration / this.props.wrapper.rect.width;
 
     const calcVal = prevState => {
-      if (dir === "fwd") {
+      if (dir === 'fwd') {
         return prevState[edge] + UNIT < RANGE_MAX
           ? prevState[edge] + UNIT
           : RANGE_MAX;
       }
-      if (dir === "bwd") {
+      if (dir === 'bwd') {
         return prevState[edge] - UNIT > RANGE_MIN
           ? prevState[edge] - UNIT
           : RANGE_MIN;
@@ -196,12 +196,12 @@ class Instance extends Component {
     };
     this.setState(
       prevState => ({
-        [edge]: calcVal(prevState)
+        [edge]: calcVal(prevState),
       }),
       () =>
         this.props.updateInstance({
           start_seconds: this.state.start,
-          end_seconds: this.state.end
+          end_seconds: this.state.end,
         })
     );
   }
@@ -222,13 +222,13 @@ class Instance extends Component {
 
     const handles = [
       {
-        edge: "end",
-        value: this.state.end
+        edge: 'end',
+        value: this.state.end,
       },
       {
-        edge: "start",
-        value: this.state.start
-      }
+        edge: 'start',
+        value: this.state.start,
+      },
     ];
 
     // console.group("Instance.js");
@@ -244,7 +244,7 @@ class Instance extends Component {
                 style={{
                   left: `${x1}px`,
                   width: `${instanceWidth}px`,
-                  zIndex: this.state.overInstance ? `1000` : `default`
+                  zIndex: this.state.overInstance ? `1000` : `default`,
                 }}
                 onMouseEnter={!isLocked ? this.onInstanceEnter : null}
                 onMouseLeave={!isLocked ? this.onInstanceLeave : null}
@@ -292,7 +292,7 @@ class Instance extends Component {
                     onMouseDown={() => this.onMouseDown(edge)}
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
                     onMouseLeave={this.onHandleLeave}
-                    style={{ left: edge === "start" ? `${x1}px` : `${x2}px` }}
+                    style={{ left: edge === 'start' ? `${x1}px` : `${x2}px` }}
                     pos={edge}
                   >
                     <div
@@ -307,8 +307,8 @@ class Instance extends Component {
                   {!this.state.dragging ? (
                     <HandlePopover
                       id={`${edge}Popover`}
-                      moveBackward={() => this.moveHandle(edge, "bwd")}
-                      moveForward={() => this.moveHandle(edge, "fwd")}
+                      moveBackward={() => this.moveHandle(edge, 'bwd')}
+                      moveForward={() => this.moveHandle(edge, 'fwd')}
                       popupState={popupState}
                     />
                   ) : null}
@@ -339,13 +339,13 @@ Instance.propTypes = {
   updateInstance: func.isRequired,
   wrapper: shape({
     rect: object.isRequired,
-    ref: object.isRequired
-  })
+    ref: object.isRequired,
+  }),
 };
 
 Instance.defaultProps = {
   checkInstance: null,
   clipInstance: null,
   isLocked: null,
-  wrapper: null
+  wrapper: null,
 };

@@ -6,12 +6,12 @@ import {
   object,
   oneOfType,
   shape,
-  string
-} from "prop-types";
-import Flatted from "flatted/esm";
-import React, { Component } from "react";
-import ErrorBoundary from "react-error-boundary";
-import styled from "styled-components";
+  string,
+} from 'prop-types';
+import Flatted from 'flatted/esm';
+import React, { Component } from 'react';
+import ErrorBoundary from 'react-error-boundary';
+import styled from 'styled-components';
 
 import {
   Button,
@@ -23,20 +23,20 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography
-} from "@material-ui/core";
+  Typography,
+} from '@material-ui/core';
 
-import { withStyles } from "@material-ui/core/styles";
-import grey from "@material-ui/core/colors/grey";
-import PlaceIcon from "@material-ui/icons/Place";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import { withStyles } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
+import PlaceIcon from '@material-ui/icons/Place';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import Archive from "./of/Archive";
-import Favourite from "./of/Favourite";
-import Keep from "./of/Keep";
-import MoreMenu from "./of/MoreMenu";
-import PublishedDate from "./of/PublishedDate";
-import RecordedDate from "./of/RecordedDate";
+import Archive from './of/Archive';
+import Favourite from './of/Favourite';
+import Keep from './of/Keep';
+import MoreMenu from './of/MoreMenu';
+import PublishedDate from './of/PublishedDate';
+import RecordedDate from './of/RecordedDate';
 
 // import Map from './Map';
 
@@ -57,10 +57,10 @@ const MediaDescription = styled(Typography)`
 
 const styles = {
   Card: {
-    height: "380px",
-    position: "relative",
-    paddingBottom: "60px"
-  }
+    height: '380px',
+    position: 'relative',
+    paddingBottom: '60px',
+  },
 };
 
 class VideoMeta extends Component {
@@ -72,17 +72,17 @@ class VideoMeta extends Component {
       data,
       currentTime,
       map,
-      setMap
+      setMap,
     } = this.props;
     const isArchived = arcDate !== null && arcDate !== undefined;
 
     let videoPlaces = [];
     if (videoPlaces) ({ videoPlaces } = this.props);
-    const persisted2 = window.localStorage.getItem("videoPlaces");
+    const persisted2 = window.localStorage.getItem('videoPlaces');
     if (persisted2) videoPlaces = Flatted.parse(persisted2);
 
     let videoPlacesData = {};
-    const persisted = window.localStorage.getItem("videoPlacesData");
+    const persisted = window.localStorage.getItem('videoPlacesData');
     if (persisted) videoPlacesData = Flatted.parse(persisted);
 
     const mapData = videoPlaces
@@ -95,7 +95,7 @@ class VideoMeta extends Component {
             videoPlacesData[p.id].time = i.start_seconds;
             videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
             return videoPlacesData[p.id];
-          })
+          }),
           // ...p.instances.filter(i => !!i.data).map(i => i.data),
         ],
         []
@@ -115,8 +115,8 @@ class VideoMeta extends Component {
           action={
             <div
               style={{
-                position: "relative",
-                top: "8px"
+                position: 'relative',
+                top: '8px',
               }}
             >
               {!isArchived ? (
@@ -193,13 +193,13 @@ class VideoMeta extends Component {
             variant="contained"
             style={{
               borderRadius: 0,
-              boxShadow: "none",
+              boxShadow: 'none',
               paddingTop: 16,
-              paddingBottom: 16
+              paddingBottom: 16,
             }}
             onClick={() => setMap(true)}
           >
-            <PlaceIcon fontSize="small" style={{ marginRight: "5px" }} /> Set
+            <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} /> Set
             location
           </Button>
         </CardContent>
@@ -234,7 +234,7 @@ VideoMeta.propTypes = {
   videoDescription: string.isRequired,
   videoId: oneOfType([string, number]).isRequired,
   videoPlaces: array,
-  videoViewCount: string.isRequired
+  videoViewCount: string.isRequired,
 };
 VideoMeta.defaultProps = {
   allocation: [],
@@ -246,5 +246,5 @@ VideoMeta.defaultProps = {
   recDate: null,
   recDateOverriden: null,
   videoBackups: { videoBackupIds: [], videoBackups: [] },
-  videoPlaces: []
+  videoPlaces: [],
 };

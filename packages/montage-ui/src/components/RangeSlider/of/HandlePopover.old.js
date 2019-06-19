@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { withStyles } from "@material-ui/core/styles";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import IconButton from "@material-ui/core/IconButton";
-import Popover from "@material-ui/core/Popover";
-import Tooltip from "@material-ui/core/Tooltip";
+import { withStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import IconButton from '@material-ui/core/IconButton';
+import Popover from '@material-ui/core/Popover';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
   BackdropRoot: {
-    pointerEvents: "none"
-  }
+    pointerEvents: 'none',
+  },
 });
 
 class HandlePopover extends Component {
@@ -23,23 +23,23 @@ class HandlePopover extends Component {
           anchorEl={this.props.instanceRef}
           anchorReference="anchorEl"
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center"
+            vertical: 'bottom',
+            horizontal: 'center',
           }}
           id="HandlePopover"
           transformOrigin={{
-            vertical: "top",
-            horizontal: "center"
+            vertical: 'top',
+            horizontal: 'center',
           }}
           open
           BackdropProps={{
             classes: {
-              root: classes.BackdropRoot
+              root: classes.BackdropRoot,
             },
-            invisible: true
+            invisible: true,
           }}
         >
-          <div style={{ pointerEvents: "auto" }}>
+          <div style={{ pointerEvents: 'auto' }}>
             <Tooltip placement="bottom" title="Move backward">
               <IconButton onClick={e => this.moveBackward(e)}>
                 <ArrowBackIcon fontSize="small" />
@@ -52,7 +52,7 @@ class HandlePopover extends Component {
             </Tooltip>
           </div>
         </Popover>
-        <style scoped>{"#HandlePopover { pointer-events: none; }"}</style>
+        <style scoped>{'#HandlePopover { pointer-events: none; }'}</style>
       </>
     );
   }

@@ -1,5 +1,5 @@
-import { func } from "prop-types";
-import React from "react";
+import { func } from 'prop-types';
+import React from 'react';
 
 import {
   Button,
@@ -7,8 +7,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
-} from "@material-ui/core";
+  DialogTitle,
+} from '@material-ui/core';
 
 function RemoveModal({ handleClose, handleRemove }) {
   return (
@@ -42,5 +42,5 @@ export default RemoveModal;
 
 RemoveModal.propTypes = {
   handleRemove: func.isRequired,
-  handleClose: func.isRequired
+  handleClose: func.isRequired,
 };

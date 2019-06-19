@@ -1,8 +1,8 @@
-import { array, func, number } from "prop-types";
-import React, { Component, createRef } from "react";
-import styled from "styled-components";
+import { array, func, number } from 'prop-types';
+import React, { Component, createRef } from 'react';
+import styled from 'styled-components';
 
-import Instance from "./of/Instance";
+import Instance from './of/Instance';
 
 const RSWrapper = styled.div`
   height: 28px;
@@ -15,7 +15,7 @@ class RangeSlider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      draggedInstance: null
+      draggedInstance: null,
     };
     this.setDraggedInstance = this.setDraggedInstance.bind(this);
     this.updateRef = this.updateRef.bind(this);
@@ -28,15 +28,15 @@ class RangeSlider extends Component {
 
   componentDidMount() {
     this.updateRef();
-    window.addEventListener("resize", this.updateRef.bind(this));
+    window.addEventListener('resize', this.updateRef.bind(this));
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateRef.bind(this));
+    window.removeEventListener('resize', this.updateRef.bind(this));
   }
 
   setDraggedInstance(id) {
-    console.log("setDraggedInstance", id);
+    console.log('setDraggedInstance', id);
     this.setState({ draggedInstance: id || null });
   }
 
@@ -46,8 +46,8 @@ class RangeSlider extends Component {
     this.setState({
       wrapper: {
         ref: this.wrapperRef.current,
-        rect: this.wrapperRef.current.getBoundingClientRect()
-      }
+        rect: this.wrapperRef.current.getBoundingClientRect(),
+      },
     });
     return null;
   }
@@ -94,9 +94,9 @@ RangeSlider.propTypes = {
   instances: array.isRequired,
   updateInstance: func.isRequired,
   extendInstance: func.isRequired,
-  deleteInstance: func.isRequired
+  deleteInstance: func.isRequired,
 };
 RangeSlider.defaultProps = {
   checkInstance: null,
-  clipInstance: null
+  clipInstance: null,
 };

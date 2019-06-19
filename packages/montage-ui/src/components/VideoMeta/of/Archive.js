@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { bool, func, object } from "prop-types";
+import React, { Component } from 'react';
+import { bool, func, object } from 'prop-types';
 
-import { CircularProgress, Fade, IconButton, Tooltip } from "@material-ui/core";
+import { CircularProgress, Fade, IconButton, Tooltip } from '@material-ui/core';
 
-import { withStyles } from "@material-ui/core/styles";
-import ArchiveIcon from "@material-ui/icons/Archive";
-import ArchiveOutlinedIcon from "@material-ui/icons/ArchiveOutlined";
+import { withStyles } from '@material-ui/core/styles';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 
 const styles = () => ({
   buttonProgress: {
-    left: "50%",
+    left: '50%',
     marginLeft: -11,
     marginTop: -11,
-    position: "absolute",
-    top: "50%"
-  }
+    position: 'absolute',
+    top: '50%',
+  },
 });
 
 class ArchiveStatus extends Component {
@@ -37,8 +37,8 @@ class ArchiveStatus extends Component {
     const { classes, isArchived } = this.props;
     return (
       <Tooltip
-        title={isArchived ? "Unarchive" : "Archive"}
-        aria-label={isArchived ? "Unarchive" : "Archive"}
+        title={isArchived ? 'Unarchive' : 'Archive'}
+        aria-label={isArchived ? 'Unarchive' : 'Archive'}
       >
         <IconButton onClick={this.onTriggerArchive}>
           <Fade in={!processing}>
@@ -62,9 +62,9 @@ export default withStyles(styles)(ArchiveStatus);
 ArchiveStatus.propTypes = {
   onTriggerArchive: func.isRequired,
   classes: object,
-  isArchived: bool
+  isArchived: bool,
 };
 ArchiveStatus.defaultProps = {
   classes: {},
-  isArchived: null
+  isArchived: null,
 };

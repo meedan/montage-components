@@ -1,1 +1,1 @@
-export { default as formatSeconds } from "./formatSeconds";
+export { default as formatSeconds } from './formatSeconds';

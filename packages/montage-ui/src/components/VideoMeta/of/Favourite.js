@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { bool, func, object } from "prop-types";
+import React, { Component } from 'react';
+import { bool, func, object } from 'prop-types';
 
-import { CircularProgress, Fade, IconButton, Tooltip } from "@material-ui/core";
+import { CircularProgress, Fade, IconButton, Tooltip } from '@material-ui/core';
 
-import { withStyles } from "@material-ui/core/styles";
-import StarBorderIcon from "@material-ui/icons/StarBorder";
-import StarIcon from "@material-ui/icons/Star";
+import { withStyles } from '@material-ui/core/styles';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarIcon from '@material-ui/icons/Star';
 
 const styles = () => ({
   buttonProgress: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     marginTop: -11,
-    marginLeft: -11
-  }
+    marginLeft: -11,
+  },
 });
 
 class FavoriteStatus extends Component {
@@ -38,8 +38,8 @@ class FavoriteStatus extends Component {
     const { classes, isFavourited } = this.props;
     return (
       <Tooltip
-        title={isFavourited ? "Remove from favorites" : "Add to favorites"}
-        aria-label={isFavourited ? "Remove from favorites" : "Add to favorites"}
+        title={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
+        aria-label={isFavourited ? 'Remove from favorites' : 'Add to favorites'}
       >
         <IconButton onClick={this.onTriggerFavourite}>
           <Fade in={!processing}>
@@ -60,10 +60,10 @@ FavoriteStatus.propTypes = {
   classes: object,
   isArchived: bool,
   isFavourited: bool,
-  onTriggerFavourite: func.isRequired
+  onTriggerFavourite: func.isRequired,
 };
 FavoriteStatus.defaultProps = {
   classes: {},
   isArchived: null,
-  isFavourited: null
+  isFavourited: null,
 };

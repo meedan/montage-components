@@ -1,8 +1,8 @@
-import { func, number, object } from "prop-types";
-import React, { Component, createRef } from "react";
-import styled from "styled-components";
+import { func, number, object } from 'prop-types';
+import React, { Component, createRef } from 'react';
+import styled from 'styled-components';
 
-import Playhead from "./of/Playhead";
+import Playhead from './of/Playhead';
 
 const PlayheadTrack = styled.div`
   min-height: 28px;
@@ -17,7 +17,7 @@ class TimelineWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      time: 0
+      time: 0,
     };
     this.updateTime = this.updateTime.bind(this);
     this.measureRef = this.measureRef.bind(this);
@@ -30,13 +30,13 @@ class TimelineWrapper extends Component {
 
   componentDidMount() {
     this.measureRef();
-    window.addEventListener("resize", this.measureRef.bind(this));
-    document.addEventListener("resize", this.measureRef.bind(this));
+    window.addEventListener('resize', this.measureRef.bind(this));
+    document.addEventListener('resize', this.measureRef.bind(this));
   }
 
   componentWillUnmount() {
-    document.addEventListener("resize", this.measureRef.bind(this));
-    window.addEventListener("resize", this.measureRef.bind(this));
+    document.addEventListener('resize', this.measureRef.bind(this));
+    window.addEventListener('resize', this.measureRef.bind(this));
   }
 
   measureRef() {
@@ -70,9 +70,9 @@ TimelineWrapper.propTypes = {
   duration: number.isRequired,
   onTimeChange: func.isRequired,
   style: object,
-  time: number
+  time: number,
 };
 TimelineWrapper.defaultProps = {
   style: null,
-  time: 0
+  time: 0,
 };

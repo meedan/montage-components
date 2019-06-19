@@ -1,12 +1,12 @@
-import { bindPopover } from "material-ui-popup-state";
-import { func, object } from "prop-types";
-import Popover from "material-ui-popup-state/HoverPopover";
-import React from "react";
+import { bindPopover } from 'material-ui-popup-state';
+import { func, object } from 'prop-types';
+import Popover from 'material-ui-popup-state/HoverPopover';
+import React from 'react';
 
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { CheckIcon, CutIcon, ExpandIcon } from "@montage/ui/src/components";
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { CheckIcon, CutIcon, ExpandIcon } from '@montage/ui/src/components';
 
 const InstancePopover = ({
   checkInstance,
@@ -14,7 +14,7 @@ const InstancePopover = ({
   deleteInstance,
   extendInstance,
   instance,
-  popupState
+  popupState,
 }) => {
   const fireAction = (fn, e) => {
     e.stopPropagation();
@@ -25,13 +25,13 @@ const InstancePopover = ({
     <Popover
       {...bindPopover(popupState)}
       anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center"
+        vertical: 'bottom',
+        horizontal: 'center',
       }}
       id="InstancePopover"
       transformOrigin={{
-        vertical: "top",
-        horizontal: "center"
+        vertical: 'top',
+        horizontal: 'center',
       }}
     >
       {clipInstance ? (
@@ -70,10 +70,10 @@ InstancePopover.propTypes = {
   deleteInstance: func.isRequired,
   extendInstance: func.isRequired,
   instance: object.isRequired,
-  popupState: object.isRequired
+  popupState: object.isRequired,
 };
 
 InstancePopover.defaultProps = {
   checkInstance: null,
-  clipInstance: null
+  clipInstance: null,
 };

@@ -1,8 +1,8 @@
-import { array, bool, func } from "prop-types";
-import { includes } from "lodash";
-import Menu from "material-ui-popup-state/HoverMenu";
-import PopupState, { bindHover, bindMenu } from "material-ui-popup-state";
-import React, { Component } from "react";
+import { array, bool, func } from 'prop-types';
+import { includes } from 'lodash';
+import Menu from 'material-ui-popup-state/HoverMenu';
+import PopupState, { bindHover, bindMenu } from 'material-ui-popup-state';
+import React, { Component } from 'react';
 
 import {
   Button,
@@ -13,24 +13,24 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
-  TextField
-} from "@material-ui/core";
+  TextField,
+} from '@material-ui/core';
 
-import { withStyles } from "@material-ui/core/styles";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { withStyles } from '@material-ui/core/styles';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const ParentPopupState = React.createContext(null);
 
 const submenuStyles = theme => ({
   menu: {
-    top: -theme.spacing
+    top: -theme.spacing,
   },
   moreArrow: {
-    marginRight: theme.spacing(-1)
-  }
+    marginRight: theme.spacing(-1),
+  },
 });
 
 const Submenu = withStyles(submenuStyles)(
@@ -51,12 +51,12 @@ const Submenu = withStyles(submenuStyles)(
               <Menu
                 {...bindMenu(popupState)}
                 {...props}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 className={classes.menu}
                 disableAutoFocusItem
                 getContentAnchorEl={null}
                 MenuListProps={{ dense: true }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               >
                 {children}
               </Menu>
@@ -71,7 +71,7 @@ const Submenu = withStyles(submenuStyles)(
 class MoreMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = { newName: "", status: null };
+    this.state = { newName: '', status: null };
     this.addTo = this.addTo.bind(this);
     this.onCloseForm = this.onCloseForm.bind(this);
     this.onCreateNewCollection = this.onCreateNewCollection.bind(this);
@@ -92,16 +92,16 @@ class MoreMenu extends Component {
   }
 
   onCloseForm() {
-    this.setState({ status: null, newName: "" });
+    this.setState({ status: null, newName: '' });
   }
 
   onOpenForm() {
-    this.setState({ status: "adding" });
+    this.setState({ status: 'adding' });
   }
 
   onCreateNewCollection() {
     this.props.onCreateCollection(this.state.newName);
-    this.setState({ status: null, newName: "" });
+    this.setState({ status: null, newName: '' });
   }
 
   removeFrom(id) {
@@ -132,7 +132,7 @@ class MoreMenu extends Component {
               fullWidth
               id="newName"
               inputProps={{
-                autoComplete: "off"
+                autoComplete: 'off',
               }}
               label="New collection…"
               placeholder="Enter name"
@@ -140,14 +140,14 @@ class MoreMenu extends Component {
               type="text"
               onChange={e =>
                 this.setState({
-                  newName: e.currentTarget.value
+                  newName: e.currentTarget.value,
                 })
               }
               onKeyPress={e => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   e.preventDefault();
                   this.onCreateNewCollection();
-                } else if (e.key === "Escape") {
+                } else if (e.key === 'Escape') {
                   e.preventDefault();
                   this.onCloseForm();
                 }
@@ -193,27 +193,27 @@ class MoreMenu extends Component {
             <ParentPopupState.Provider value={popupState}>
               <Menu
                 {...bindMenu(popupState)}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 disableAutoFocusItem
                 getContentAnchorEl={null}
-                open={status === "adding" ? true : popupState.isOpen}
+                open={status === 'adding' ? true : popupState.isOpen}
                 MenuListProps={{ dense: true }}
-                transformOrigin={{ vertical: "top", horizontal: "center" }}
+                transformOrigin={{ vertical: 'top', horizontal: 'center' }}
               >
                 {!isArchived
                   ? [
-                    <Submenu
-                      disableAutoFocusItem
-                      open={
-                          status === "adding"
+                      <Submenu
+                        disableAutoFocusItem
+                        open={
+                          status === 'adding'
                             ? true
                             : popupState._childPopupState
                         }
-                      popupId="allocationPopover"
-                      title="Add to collection…"
-                      key="allocationPopover"
-                    >
-                      {collections && collections.length > 0
+                        popupId="allocationPopover"
+                        title="Add to collection…"
+                        key="allocationPopover"
+                      >
+                        {collections && collections.length > 0
                           ? collections.map(collection => {
                               const { name, id } = collection;
                               const isAllocated = includes(allocation, id);
@@ -238,27 +238,27 @@ class MoreMenu extends Component {
                               );
                             })
                           : null}
-                      {collections && collections.length > 0 ? (
-                        <Divider key="allocationPopoverDivider" />
+                        {collections && collections.length > 0 ? (
+                          <Divider key="allocationPopoverDivider" />
                         ) : null}
+                        <MenuItem
+                          button={!status}
+                          onClick={!status ? this.onOpenForm : null}
+                          style={{ height: 'auto' }}
+                          key="newCollectionItem"
+                        >
+                          <ListItemText>
+                            {status === 'adding' ? form : `New Collection`}
+                          </ListItemText>
+                        </MenuItem>
+                      </Submenu>,
                       <MenuItem
-                        button={!status}
-                        onClick={!status ? this.onOpenForm : null}
-                        style={{ height: "auto" }}
-                        key="newCollectionItem"
+                        onClick={() => this.onManageDupes(popupState)}
+                        key="manageDupesItem"
                       >
-                        <ListItemText>
-                          {status === "adding" ? form : `New Collection`}
-                        </ListItemText>
-                      </MenuItem>
-                    </Submenu>,
-                    <MenuItem
-                      onClick={() => this.onManageDupes(popupState)}
-                      key="manageDupesItem"
-                    >
-                      <ListItemText>Manage duplicates</ListItemText>
-                    </MenuItem>,
-                    <Divider key="divider" />
+                        <ListItemText>Manage duplicates</ListItemText>
+                      </MenuItem>,
+                      <Divider key="divider" />,
                     ]
                   : null}
                 <MenuItem onClick={() => this.onDelete(popupState)}>
@@ -282,11 +282,11 @@ MoreMenu.propTypes = {
   onDelete: func.isRequired,
   onTriggerDelete: func.isRequired,
   onManageDupes: func.isRequired,
-  onUpdateAllocation: func.isRequired
+  onUpdateAllocation: func.isRequired,
 };
 
 MoreMenu.defaultProps = {
   allocation: [],
   collections: [],
-  isArchived: false
+  isArchived: false,
 };

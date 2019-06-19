@@ -1,15 +1,15 @@
-import { parseISO, format } from "date-fns";
-import { string } from "prop-types";
-import React from "react";
+import { parseISO, format } from 'date-fns';
+import { string } from 'prop-types';
+import React from 'react';
 
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography
-} from "@material-ui/core";
+  Typography,
+} from '@material-ui/core';
 
-import PublishIcon from "@material-ui/icons/Publish";
+import PublishIcon from '@material-ui/icons/Publish';
 
 const PublishedDateListItem = props => {
   const { pubDate } = props;
@@ -20,9 +20,9 @@ const PublishedDateListItem = props => {
       </ListItemIcon>
       <ListItemText>
         <Typography variant="body2">
-          Published{" "}
-          {format(parseISO(pubDate), "d MMMM YYYY", {
-            awareOfUnicodeTokens: true
+          Published{' '}
+          {format(parseISO(pubDate), 'd MMMM YYYY', {
+            awareOfUnicodeTokens: true,
           })}
         </Typography>
       </ListItemText>
@@ -33,5 +33,5 @@ const PublishedDateListItem = props => {
 export default PublishedDateListItem;
 
 PublishedDateListItem.propTypes = {
-  pubDate: string.isRequired
+  pubDate: string.isRequired,
 };
