@@ -37,6 +37,7 @@ import Keep from './of/Keep';
 import MoreMenu from './of/MoreMenu';
 import PublishedDate from './of/PublishedDate';
 import RecordedDate from './of/RecordedDate';
+import PlacesMap from './of/PlacesMap';
 
 // import Map from './Map';
 
@@ -64,6 +65,16 @@ const styles = {
 };
 
 class VideoMeta extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { map: false };
+    this.toggleMap = this.toggleMap.bind(this);
+  }
+
+  toggleMap() {
+    this.setState(prevState => ({ map: !prevState.map }));
+  }
+
   render() {
     const {
       arcDate,
@@ -71,9 +82,9 @@ class VideoMeta extends Component {
       classes,
       data,
       currentTime,
-      map,
       setMap,
     } = this.props;
+    const { map } = this.state;
     const isArchived = arcDate !== null && arcDate !== undefined;
 
     let videoPlaces = [];
@@ -102,13 +113,18 @@ class VideoMeta extends Component {
       )
       .filter(d => !!d);
 
-    // console.log(videoPlaces, videoPlacesData, mapData);
+    console.group('Video Meta');
+    console.log({ mapData });
+    console.groupEnd();
 
-    // console.group("VideoMeta");
-    // console.log(this.props);
-    // console.groupEnd();
-
-    return map ? null : ( // /> //   onClose={() => setMap(false)} //   isCompact={!map} //   expandMap={() => setMap(true)} //   data={mapData} //   currentTime={currentTime} //   collapseMap={() => setMap(false)} //   id="TopMap" // <Map
+    return map ? (
+      <PlacesMap
+        currentTime={currentTime}
+        mapAPIKey={this.props.mapAPIKey}
+        places={mapData}
+        toggleMap={this.toggleMap}
+      />
+    ) : (
       <Card square elevation={0} className={classes.Card}>
         <CardHeader
           style={{ paddingBottom: 0 }}
@@ -197,7 +213,7 @@ class VideoMeta extends Component {
               paddingTop: 16,
               paddingBottom: 16,
             }}
-            onClick={() => setMap(true)}
+            onClick={this.toggleMap}
           >
             <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} /> Set
             location
@@ -218,6 +234,7 @@ VideoMeta.propTypes = {
   collections: array,
   currentTime: number,
   favourited: bool,
+  mapAPIKey: string.isRequired,
   onCreateCollection: func.isRequired,
   onDelete: func.isRequired,
   onManageDupes: func.isRequired,
