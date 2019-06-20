@@ -70,7 +70,6 @@ class App extends Component {
   state = {
     anchorElNext: null,
     anchorElPrev: null,
-    map: false,
     mode: 'timeline',
   };
 
@@ -90,15 +89,10 @@ class App extends Component {
     this.setState({ anchorElNext: null });
   };
 
-  setMap = map => {
-    this.setState({ map });
-  };
-
   render() {
     console.log(this.props);
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
-    // const { map } = this.state;
 
     console.group('APP');
     console.log(this.props);
@@ -213,8 +207,6 @@ class App extends Component {
                             recDateOverriden={
                               data.gdVideoData.recorded_date_overridden
                             }
-                            // map={map}
-                            // setMap={this.setMap}
                           />
                         </Grid>
                         <Grid item sm={8}>
