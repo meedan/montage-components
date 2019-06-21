@@ -96,22 +96,34 @@ class VideoMeta extends Component {
     const persisted = window.localStorage.getItem('videoPlacesData');
     if (persisted) videoPlacesData = Flatted.parse(persisted);
 
-    const mapData = videoPlaces
-      .reduce(
-        (acc, p) => [
-          ...acc,
-          ...p.instances.map(i => {
-            if (!videoPlacesData) return null;
-            if (!videoPlacesData[p.id]) return null;
-            videoPlacesData[p.id].time = i.start_seconds;
-            videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
-            return videoPlacesData[p.id];
-          }),
-          // ...p.instances.filter(i => !!i.data).map(i => i.data),
-        ],
-        []
-      )
-      .filter(d => !!d);
+    // const mapData = videoPlaces
+    //   .reduce(
+    //     (acc, p) => [
+    //       ...acc,
+    //       ...p.instances.map(i => {
+    //         if (!videoPlacesData) return null;
+    //         if (!videoPlacesData[p.id]) return null;
+    //         videoPlacesData[p.id].time = i.start_seconds;
+    //         videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
+    //         return videoPlacesData[p.id];
+    //       }),
+    //       // ...p.instances.filter(i => !!i.data).map(i => i.data),
+    //     ],
+    //     []
+    //   )
+    //   .filter(d => !!d);
+
+    const mapData = [];
+    for (let v = 0; v < 23; v++) {
+      mapData.push({
+        lat: Math.random() * 180 - 90,
+        lng: Math.random() * 360 - 180,
+        type: 'marker',
+        time: Math.random() * 3600,
+      });
+    }
+
+    console.log(mapData);
 
     console.group('Video Meta');
     console.log({ mapData });
