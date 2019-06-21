@@ -9,7 +9,7 @@
     "status": "npx oao status",
     "clean": "npx oao clean",
     "build": "npx oao all 'yarn build'",
-    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN -e REACT_APP_GOOGLE_API_KEY=@react_app_google_api_key"
+    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN"
   },
   "workspaces": [
     "packages/*"
