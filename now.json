@@ -6,12 +6,12 @@
     {
       "src": "packages/video-timeline/package.json",
       "use": "@now/static-build",
-      "config": { "distDir": "build" },
-      "env": {
-        "REACT_APP_GOOGLE_API_KEY": "@react_app_google_api_key"
-      }
+      "config": { "distDir": "build" }
     }
   ],
+  "env": {
+    "REACT_APP_GOOGLE_API_KEY": "@react_app_google_api_key"
+  },
   "routes": [{ "src": "/(.*)", "dest": "/packages/video-timeline/$1" }],
   "version": 2
 }
