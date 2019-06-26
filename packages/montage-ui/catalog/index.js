@@ -9,8 +9,11 @@ import theme from './theme';
 
 import { version } from '../package.json';
 
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 ReactDOM.render(
   <ThemeProvider>
+    <CssBaseline />
     <Catalog
       pages={[
         {

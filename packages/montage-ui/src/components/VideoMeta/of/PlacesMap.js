@@ -48,6 +48,9 @@ class PlacesMap extends Component {
         this.setState({ center: { lat, lng } });
       }
     }
+    if (this.props.isCompact !== nextProps.isCompact) {
+      return true;
+    }
 
     return !equal(this.state, nextState);
   }
@@ -120,9 +123,6 @@ class PlacesMap extends Component {
   render() {
     const { classes, places, id } = this.props;
     const { marker } = this.state;
-
-    console.log('——PLACESMAP——');
-    console.log(this.props.mapAPIKey);
 
     let center = places
       .reduce(

@@ -64,7 +64,7 @@ const styles = {
   Root: {
     height: ROOT_HEIGHT,
     position: 'relative',
-    paddingBottom: '60px',
+    paddingBottom: MAP_HEIGHT,
   },
 };
 
