@@ -1,12 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Catalog</title>
-</head>
-<body>
-  <div id="catalog"></div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      function initMap() {
+        console.log('initMap', arguments);
+      }
+      // window.addEventListener('error', function(e) {
+      //   // prevent React's listener from firing
+      //   e.stopImmediatePropagation();
+      //   // prevent the browser's console error message
+      //   e.preventDefault();
+      // });
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_API_KEY%&callback=initMap&libraries=places,drawing,geometry"
+      async
+      defer
+    ></script>
+    <title>Catalog</title>
+  </head>
+  <body>
+    <div id="catalog"></div>
+  </body>
 </html>

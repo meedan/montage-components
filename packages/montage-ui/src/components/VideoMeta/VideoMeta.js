@@ -39,7 +39,8 @@ import PublishedDate from './of/PublishedDate';
 import RecordedDate from './of/RecordedDate';
 import PlacesMap from './of/PlacesMap';
 
-// import Map from './Map';
+const ROOT_HEIGHT = 380;
+const MAP_HEIGHT = 80;
 
 const MediaDescription = styled(Typography)`
   max-height: 50px;
@@ -57,8 +58,11 @@ const MediaDescription = styled(Typography)`
 `;
 
 const styles = {
-  Card: {
-    height: '380px',
+  Map: {
+    position: 'absolute',
+  },
+  Root: {
+    height: ROOT_HEIGHT,
     position: 'relative',
     paddingBottom: '60px',
   },
@@ -68,10 +72,11 @@ class VideoMeta extends Component {
   constructor(props) {
     super(props);
     this.state = { map: false };
-    this.toggleMap = this.toggleMap.bind(this);
+    this.switchMapDisplay = this.switchMapDisplay.bind(this);
   }
 
-  toggleMap() {
+  switchMapDisplay() {
+    console.log('switchMapDisplay()');
     this.setState(prevState => ({ map: !prevState.map }));
   }
 
@@ -123,21 +128,13 @@ class VideoMeta extends Component {
       });
     }
 
-    console.log(mapData);
-
     console.group('Video Meta');
+    console.log('state', this.state);
     console.log({ mapData });
     console.groupEnd();
 
-    return map ? (
-      <PlacesMap
-        currentTime={currentTime}
-        mapAPIKey={this.props.mapAPIKey}
-        places={mapData}
-        toggleMap={this.toggleMap}
-      />
-    ) : (
-      <Card square elevation={0} className={classes.Card}>
+    return (
+      <Card square elevation={0} className={classes.Root}>
         <CardHeader
           style={{ paddingBottom: 0 }}
           action={
@@ -216,20 +213,25 @@ class VideoMeta extends Component {
           </MediaDescription>
         </CardContent>
         <CardContent>
-          <Button
-            fullWidth
-            variant="contained"
+          <div
             style={{
-              borderRadius: 0,
-              boxShadow: 'none',
-              paddingTop: 16,
-              paddingBottom: 16,
+              bottom: 0,
+              height: this.state.map ? ROOT_HEIGHT : MAP_HEIGHT,
+              left: 0,
+              position: 'absolute',
+              right: 0,
+              top: this.state.map ? '0' : 'auto',
+              width: '100%',
             }}
-            onClick={this.toggleMap}
           >
-            <PlaceIcon fontSize="small" style={{ marginRight: '5px' }} /> Set
-            location
-          </Button>
+            <PlacesMap
+              currentTime={currentTime}
+              mapAPIKey={this.props.mapAPIKey}
+              places={mapData}
+              switchMapDisplay={this.switchMapDisplay}
+              isCompact={!this.state.map}
+            />
+          </div>
         </CardContent>
       </Card>
     );
