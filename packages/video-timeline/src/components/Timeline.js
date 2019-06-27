@@ -292,9 +292,9 @@ class Timeline extends Component {
   }
 }
 
-Timeline.defaultProps = {};
-
-Timeline.propTypes = {};
+// Timeline.defaultProps = {};
+//
+// Timeline.propTypes = {};
 
 export default connect(
   null,

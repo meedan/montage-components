@@ -213,7 +213,7 @@ class App extends Component {
                             recDateOverriden={
                               data.gdVideoData.recorded_date_overridden
                             }
-                            seekTo={this.props.seekTo}
+                            seekTo={payload => this.props.seekTo(payload) }
                           />
                         </Grid>
                         <Grid item sm={8}>
@@ -291,6 +291,4 @@ class App extends Component {
   }
 }
 
-export default connect(({ player, data }) => ({ player, data, seekTo }))(
-  withStyles(styles)(withSnackbar(App))
-);
+export default connect(({ player, data }) => ({ player, data }), { seekTo })(withStyles(styles)(withSnackbar(App)));

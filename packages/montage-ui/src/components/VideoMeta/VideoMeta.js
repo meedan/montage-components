@@ -229,7 +229,7 @@ class VideoMeta extends Component {
               isCompact={!this.state.map}
               mapAPIKey={this.props.mapAPIKey}
               places={mapData}
-              seekTo={this.props.seekTo}
+              seekTo={payload => this.props.seekTo(payload)}
               switchMapDisplay={this.switchMapDisplay}
             />
           </div>
