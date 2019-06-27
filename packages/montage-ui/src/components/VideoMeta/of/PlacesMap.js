@@ -62,7 +62,7 @@ class PlacesMap extends Component {
   }
 
   handleMarkerClick(time) {
-    this.props.seekTo(time);
+    this.props.seekTo({ seekTo: time, transport: 'map' });
   }
 
   handleMarkerUpdate() {
