@@ -226,10 +226,11 @@ class VideoMeta extends Component {
           >
             <PlacesMap
               currentTime={currentTime}
+              isCompact={!this.state.map}
               mapAPIKey={this.props.mapAPIKey}
               places={mapData}
+              seekTo={this.props.seekTo}
               switchMapDisplay={this.switchMapDisplay}
-              isCompact={!this.state.map}
             />
           </div>
         </CardContent>

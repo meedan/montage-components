@@ -45,6 +45,7 @@ span: 3
   videoId="11503"
   videoPlaces={[]}
   videoViewCount="222"
+  seekTo={(time) => console.log('seekTo, time:', time)}
 />
 ```
 
@@ -111,6 +112,7 @@ span: 3
   videoId="11503"
   videoPlaces={[]}
   videoViewCount="222"
+  seekTo={(time) => console.log('seekTo, time:', time)}
 />
 ```
 
@@ -159,6 +161,7 @@ span: 3
   videoId="11503"
   videoPlaces={[]}
   videoViewCount="222"
+  seekTo={(time) => console.log('seekTo, time:', time)}
 />
 ```
 
@@ -225,5 +228,6 @@ span: 3
   videoId="11503"
   videoPlaces={[]}
   videoViewCount="222"
+  seekTo={(time) => console.log('seekTo, time:', time)}
 />
 ```

@@ -93,15 +93,12 @@ class App extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
 
     console.group('APP');
     console.log(this.props);
     console.groupEnd();
-
-    console.log(this.props);
 
     return (
       <LoadScript
@@ -216,6 +213,7 @@ class App extends Component {
                             recDateOverriden={
                               data.gdVideoData.recorded_date_overridden
                             }
+                            seekTo={this.props.seekTo}
                           />
                         </Grid>
                         <Grid item sm={8}>
