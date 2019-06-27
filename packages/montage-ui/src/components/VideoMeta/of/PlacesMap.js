@@ -113,8 +113,6 @@ class PlacesMap extends Component {
 
     return (
       <GoogleMap
-        id={this.props.mapAPIKey}
-        key={this.props.mapAPIKey}
         mapContainerStyle={{ height: '100%', width: '100%' }}
         zoom={2.5}
         center={center}
@@ -186,7 +184,6 @@ export default PlacesMap;
 
 PlacesMap.propTypes = {
   currentTime: number,
-  mapAPIKey: string.isRequired,
   places: array,
 };
 PlacesMap.defaultProps = {

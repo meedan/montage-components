@@ -227,7 +227,6 @@ class VideoMeta extends Component {
             <PlacesMap
               currentTime={currentTime}
               isCompact={!this.state.map}
-              mapAPIKey={this.props.mapAPIKey}
               places={mapData}
               seekTo={this.props.seekTo}
               switchMapDisplay={this.switchMapDisplay}
@@ -249,7 +248,6 @@ VideoMeta.propTypes = {
   collections: array,
   currentTime: number,
   favourited: bool,
-  mapAPIKey: string.isRequired,
   onCreateCollection: func.isRequired,
   onDelete: func.isRequired,
   onManageDupes: func.isRequired,
@@ -262,6 +260,7 @@ VideoMeta.propTypes = {
   pubDate: string.isRequired,
   recDate: string,
   recDateOverriden: bool,
+  seekTo: func.isRequired,
   videoBackups: shape({ videoBackupIds: array, videoBackups: array }),
   videoDescription: string.isRequired,
   videoId: oneOfType([string, number]).isRequired,
