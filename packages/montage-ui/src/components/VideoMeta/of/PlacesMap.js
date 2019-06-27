@@ -16,17 +16,10 @@ class PlacesMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      saved: true,
       marker: this.props.marker || {},
       center: null, // { lat: 0, lng: 0 },
     };
-
-    this.searchRef = React.createRef();
-
     this.handleMarkerClick = this.handleMarkerClick.bind(this);
-    this.handleMarkerUpdate = this.handleMarkerUpdate.bind(this);
-    this.onPlaceChanged = this.onPlaceChanged.bind(this);
-    this.setStep = this.setStep.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -53,40 +46,8 @@ class PlacesMap extends Component {
     return !equal(this.state, nextState);
   }
 
-  onPlaceChanged() {
-    if (this.autocomplete !== null) {
-      console.log(this.autocomplete.getPlace());
-    } else {
-      console.log('Autocomplete is not loaded yet!');
-    }
-  }
-
   handleMarkerClick(time) {
     this.props.seekTo({ seekTo: time, transport: 'map' });
-  }
-
-  handleMarkerUpdate() {
-    setTimeout(() => {
-      const { lat, lng } = this.marker.getPosition();
-      const lt = lat();
-      const lg = lng();
-
-      if (lt !== this.state.marker.lat && lg !== this.state.marker.lng) {
-        this.setState({
-          marker: {
-            lat: lat(),
-            lng: lng(),
-            type: 'marker',
-            time: this.state.marker.currentTime,
-            viewport: this.map.getBounds().toJSON(),
-          },
-        });
-      }
-    }, 0);
-  }
-
-  setStep(step) {
-    this.setState({ step: step });
   }
 
   render() {
@@ -113,11 +74,8 @@ class PlacesMap extends Component {
 
     return (
       <GoogleMap
-        id={this.props.mapAPIKey}
-        key={this.props.mapAPIKey}
-        mapContainerStyle={{ height: '100%', width: '100%' }}
-        zoom={2.5}
         center={center}
+        mapContainerStyle={{ height: '100%', width: '100%' }}
         onClick={this.props.switchMapDisplay}
         onLoad={this.onLoad}
         options={{
@@ -129,6 +87,7 @@ class PlacesMap extends Component {
           rotateControl: this.props.isCompact ? false : true,
           fullscreenControl: this.props.isCompact ? false : true,
         }}
+        zoom={this.props.isCompact ? 10 : 2.5}
       >
         {this.state.marker.type === 'polygon' &&
         this.state.marker.polygon.length > 0 ? (
@@ -186,7 +145,6 @@ export default PlacesMap;
 
 PlacesMap.propTypes = {
   currentTime: number,
-  mapAPIKey: string.isRequired,
   places: array,
 };
 PlacesMap.defaultProps = {
