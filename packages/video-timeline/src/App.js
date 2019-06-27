@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { LoadScript } from '@react-google-maps/api';
 import DateFnsUtils from '@date-io/date-fns';
 import React, { Component } from 'react';
 import ErrorBoundary from 'react-error-boundary';
@@ -99,7 +100,11 @@ class App extends Component {
     console.groupEnd();
 
     return (
-      <>
+      <LoadScript
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+        id="script-loader"
+        loadingElement={<span />}
+      >
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <CssBaseline />
           <ThemeProvider>
@@ -279,7 +284,7 @@ class App extends Component {
             </Layout>
           </ThemeProvider>
         </MuiPickersUtilsProvider>
-      </>
+      </LoadScript>
     );
   }
 }

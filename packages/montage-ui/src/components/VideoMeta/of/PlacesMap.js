@@ -25,8 +25,6 @@ class PlacesMap extends Component {
 
     this.handleMarkerClick = this.handleMarkerClick.bind(this);
     this.handleMarkerUpdate = this.handleMarkerUpdate.bind(this);
-    this.handlePlaceSelect = this.handlePlaceSelect.bind(this);
-    this.onLoad = this.onLoad.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
     this.setStep = this.setStep.bind(this);
   }
@@ -53,35 +51,6 @@ class PlacesMap extends Component {
     }
 
     return !equal(this.state, nextState);
-  }
-
-  handlePlaceSelect(e) {
-    const place = this.autocomplete.getPlace();
-    console.log(place);
-    if (place && place.geometry) {
-      this.map.fitBounds(place.geometry.viewport.toJSON());
-
-      const { lat, lng } = place.geometry.location;
-      this.setState({
-        marker: {
-          lat: lat(),
-          lng: lng(),
-          viewport: place.geometry.viewport.toJSON(),
-          type: 'marker',
-          time: this.props.currentTime || 0,
-        },
-      });
-    }
-  }
-
-  onLoad(map) {
-    this.map = map;
-
-    this.autocomplete = new window.google.maps.places.Autocomplete(
-      this.searchRef.current,
-      {}
-    );
-    this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
   }
 
   onPlaceChanged() {
