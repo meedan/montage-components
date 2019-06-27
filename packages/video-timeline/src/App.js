@@ -22,6 +22,8 @@ import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
+import { seekTo } from './reducers/player';
+
 import hamock from './hamock.png';
 
 const Layout = styled.div`
@@ -98,6 +100,8 @@ class App extends Component {
     console.group('APP');
     console.log(this.props);
     console.groupEnd();
+
+    console.log(this.props);
 
     return (
       <LoadScript
@@ -289,6 +293,6 @@ class App extends Component {
   }
 }
 
-export default connect(({ player, data }) => ({ player, data }))(
+export default connect(({ player, data }) => ({ player, data, seekTo }))(
   withStyles(styles)(withSnackbar(App))
 );
