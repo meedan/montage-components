@@ -182,21 +182,11 @@ class Timeline extends Component {
     if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
   };
 
-  registerDuplicateAsClip = fn => {
-    this.duplicateAsClip = fn;
-  };
-
-  relayDuplicateAsClip = (entity, instance, entityType = 'tag') => {
-    // console.log(tag, instance);
-    if (this.duplicateAsClip)
-      this.duplicateAsClip(entity, instance, entityType);
-  };
-
   render() {
     const { time, skip, ffTime } = this.state;
     const { duration, transport, playing } = this.props;
 
-    const currentTime = skip ? ffTime : time;
+    const currentTime = this.props.currentTime; // skip ? ffTime : time;
 
     return (
       <TimelineWrapper>
@@ -221,7 +211,6 @@ class Timeline extends Component {
             title="Clips"
             entityType="clip"
             currentTime={currentTime}
-            registerDuplicateAsClip={fn => this.registerDuplicateAsClip(fn)}
             duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
@@ -244,7 +233,6 @@ class Timeline extends Component {
             title="Tags"
             entityType="tag"
             currentTime={currentTime}
-            duplicateAsClip={this.relayDuplicateAsClip}
             duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
@@ -256,6 +244,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoTags}
+            clips={this.props.data.videoClips}
             entitiesyKey={'videoTags'}
             playing={playing}
             transport={transport}
@@ -267,7 +256,6 @@ class Timeline extends Component {
             title="Places"
             entityType="location"
             currentTime={currentTime}
-            duplicateAsClip={this.relayDuplicateAsClip}
             duration={duration}
             onAfterChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
@@ -279,6 +267,7 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
             entities={this.props.data.videoPlaces}
+            clips={this.props.data.videoClips}
             entitiesyKey={'videoPlaces'}
             playing={playing}
             transport={transport}
