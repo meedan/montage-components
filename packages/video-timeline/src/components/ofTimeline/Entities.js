@@ -24,158 +24,152 @@ function getName(entity, entityType) {
 }
 
 class Entities extends Component {
-  state = {
-    values: {},
-  };
+  // state = {
+  //   values: {},
+  // };
 
-  static getDerivedStateFromProps(props, state) {
-    const { duration, skip, entityType, transport } = props;
-    let { entities } = props;
+  // static getDerivedStateFromProps(props, state) {
+  //   const { duration, skip, entityType, transport } = props;
+  //   let { entities } = props;
+  //
+  //   if (skip) return null;
+  //
+  //   const playlist = transport === entityType;
+  //
+  //   // TODO: move this upstream
+  //   // merge overlapping tag instances
+  //   // entities.forEach(e => {
+  //   //   e.isCreating = false;
+  //   //   e.instances = e.instances
+  //   //     .sort((j, i) => j.start_seconds - i.start_seconds)
+  //   //     .reduce((acc = [], i) => {
+  //   //       const j = acc.pop();
+  //   //
+  //   //       if (j) {
+  //   //         if (
+  //   //           j.start_seconds <= i.start_seconds &&
+  //   //           i.start_seconds < j.end_seconds
+  //   //         ) {
+  //   //           j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+  //   //           j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+  //   //           acc.push(j);
+  //   //           return acc;
+  //   //         }
+  //   //
+  //   //         acc.push(j);
+  //   //       }
+  //   //
+  //   //       return [...acc, i];
+  //   //     }, []);
+  //   // });
+  //
+  //   const segments = recomputeSegments(entities, duration);
+  //   return { segments, playlist };
+  // }
 
-    if (skip) return null;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (nextProps.skip) return false;
+  //
+  //   if (
+  //     nextProps.currentTime !== this.props.currentTime &&
+  //     this.props.transport === this.props.entityType
+  //   ) {
+  //     const segment = this.state.segments.find(
+  //       ([i, s, e]) => s <= nextProps.currentTime && nextProps.currentTime < e
+  //     );
+  //     if (!segment) {
+  //       const nextSegment = this.state.segments.find(
+  //         ([i, s]) => nextProps.currentTime < s
+  //       );
+  //       if (nextSegment) {
+  //         this.props.seekTo({
+  //           seekTo: nextSegment[1],
+  //           transport: this.props.entityType,
+  //         });
+  //       } else {
+  //         this.props.pause({ transport: null });
+  //       }
+  //     }
+  //   }
+  //
+  //   // if (
+  //   //   nextProps.currentTime !== this.props.currentTime &&
+  //   //   !this.state.playlist &&
+  //   //   nextState === this.state
+  //   // )
+  //   //   return false;
+  //
+  //   // TODO handle extenal video override, like end of video, buffering, etc
+  //
+  //   return true;
+  // }
 
-    const playlist = transport === entityType;
-
-    // TODO: move this upstream
-    // merge overlapping tag instances
-    // entities.forEach(e => {
-    //   e.isCreating = false;
-    //   e.instances = e.instances
-    //     .sort((j, i) => j.start_seconds - i.start_seconds)
-    //     .reduce((acc = [], i) => {
-    //       const j = acc.pop();
-    //
-    //       if (j) {
-    //         if (
-    //           j.start_seconds <= i.start_seconds &&
-    //           i.start_seconds < j.end_seconds
-    //         ) {
-    //           j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
-    //           j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
-    //           acc.push(j);
-    //           return acc;
-    //         }
-    //
-    //         acc.push(j);
-    //       }
-    //
-    //       return [...acc, i];
-    //     }, []);
-    // });
-
-    const segments = recomputeSegments(entities, duration);
-    return { segments, playlist };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.skip) return false;
-
-    if (
-      nextProps.currentTime !== this.props.currentTime &&
-      this.state.playlist
-    ) {
-      const segment = this.state.segments.find(
-        ([i, s, e]) => s <= nextProps.currentTime && nextProps.currentTime < e
-      );
-      if (!segment) {
-        const nextSegment = this.state.segments.find(
-          ([i, s]) => nextProps.currentTime < s
-        );
-        if (nextSegment) {
-          this.props.seekTo({
-            seekTo: nextSegment[1],
-            transport: this.props.entityType,
-          });
-        } else {
-          this.props.pause({ transport: null });
-        }
-      }
-    }
-
-    // if (
-    //   nextProps.currentTime !== this.props.currentTime &&
-    //   !this.state.playlist &&
-    //   nextState === this.state
-    // )
-    //   return false;
-
-    // TODO handle extenal video override, like end of video, buffering, etc
-
-    return true;
-  }
-
-  componentDidMount = () => {
-    if (this.props.registerDuplicateAsClip) {
-      this.props.registerDuplicateAsClip(this.duplicateAsClipHook);
-    }
-  };
-
-  duplicateAsClipHook = (entity, instance, entityType = 'tag') => {
-    console.log(entity, instance);
-    const entities = produce(this.props.entities, nextEntities => {
-      let clip = this.props.entities.find(
-        c => c.project_clip.name === getName(entity, entityType)
-      );
-
-      if (!clip) {
-        // this.startNewClip(null, tag.project_tag.name);
-        clip = {
-          id: Math.random()
-            .toString(36)
-            .substring(2),
-          isCreating: false,
-          instances: [
-            {
-              id: Math.random()
-                .toString(36)
-                .substring(2),
-              start_seconds: instance.start_seconds,
-              end_seconds: instance.end_seconds,
-            },
-          ],
-          project_clip: {
-            name: getName(entity, entityType),
-          },
-        };
-
-        nextEntities.splice(0, 0, clip);
-      } else {
-        const j = {
-          id: Math.random()
-            .toString(36)
-            .substring(2),
-          start_seconds: instance.start_seconds,
-          end_seconds: instance.end_seconds,
-        };
-
-        const overlappingInstance = clip.instances.find(
-          i =>
-            (j.start_seconds <= i.start_seconds &&
-              i.start_seconds <= j.end_seconds) ||
-            (j.start_seconds <= i.end_seconds &&
-              i.end_seconds <= j.end_seconds) ||
-            (i.start_seconds <= j.start_seconds &&
-              j.start_seconds <= i.end_seconds) ||
-            (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
-        );
-
-        if (overlappingInstance) {
-          overlappingInstance.start_seconds = Math.min(
-            overlappingInstance.start_seconds,
-            j.start_seconds
-          );
-          overlappingInstance.end_seconds = Math.max(
-            overlappingInstance.end_seconds,
-            j.end_seconds
-          );
-        } else {
-          clip.instances.push(j);
-        }
-      }
-    });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
-  };
+  // duplicateAsClipHook = (entity, instance, entityType = 'tag') => {
+  //   console.log(entity, instance);
+  //   const entities = produce(this.props.entities, nextEntities => {
+  //     let clip = this.props.entities.find(
+  //       c => c.project_clip.name === getName(entity, entityType)
+  //     );
+  //
+  //     if (!clip) {
+  //       // this.startNewClip(null, tag.project_tag.name);
+  //       clip = {
+  //         id: Math.random()
+  //           .toString(36)
+  //           .substring(2),
+  //         isCreating: false,
+  //         instances: [
+  //           {
+  //             id: Math.random()
+  //               .toString(36)
+  //               .substring(2),
+  //             start_seconds: instance.start_seconds,
+  //             end_seconds: instance.end_seconds,
+  //           },
+  //         ],
+  //         project_clip: {
+  //           name: getName(entity, entityType),
+  //         },
+  //       };
+  //
+  //       nextEntities.splice(0, 0, clip);
+  //     } else {
+  //       const j = {
+  //         id: Math.random()
+  //           .toString(36)
+  //           .substring(2),
+  //         start_seconds: instance.start_seconds,
+  //         end_seconds: instance.end_seconds,
+  //       };
+  //
+  //       const overlappingInstance = clip.instances.find(
+  //         i =>
+  //           (j.start_seconds <= i.start_seconds &&
+  //             i.start_seconds <= j.end_seconds) ||
+  //           (j.start_seconds <= i.end_seconds &&
+  //             i.end_seconds <= j.end_seconds) ||
+  //           (i.start_seconds <= j.start_seconds &&
+  //             j.start_seconds <= i.end_seconds) ||
+  //           (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
+  //       );
+  //
+  //       if (overlappingInstance) {
+  //         overlappingInstance.start_seconds = Math.min(
+  //           overlappingInstance.start_seconds,
+  //           j.start_seconds
+  //         );
+  //         overlappingInstance.end_seconds = Math.max(
+  //           overlappingInstance.end_seconds,
+  //           j.end_seconds
+  //         );
+  //       } else {
+  //         clip.instances.push(j);
+  //       }
+  //     }
+  //   });
+  //
+  //   this.props.update({ [this.props.entitiesyKey]: entities });
+  // };
 
   handlePlay = () => {
     console.log(this.props.entityType);
@@ -192,66 +186,66 @@ class Entities extends Component {
     this.props.pause({ transport: this.props.entityType });
   };
 
-  onAfterChange = (v, id) => {
-    const { values } = this.state;
-    const p = values[id] || [];
+  // onAfterChange = (v, id) => {
+  //   const { values } = this.state;
+  //   const p = values[id] || [];
+  //
+  //   if (p.length === v.length) {
+  //     const val = v.find((d, i) => p[i] !== d);
+  //     this.props.onAfterChange(val);
+  //   }
+  //
+  //   values[id] = v;
+  //   this.setState({ values, isDragging: false });
+  // };
 
-    if (p.length === v.length) {
-      const val = v.find((d, i) => p[i] !== d);
-      this.props.onAfterChange(val);
-    }
+  // onBeforeChange = (v, id) => {
+  //   const { values } = this.state;
+  //   const p = values[id] || [];
+  //
+  //   if (p.length === v.length) {
+  //     const val = v.find((d, i) => p[i] !== d);
+  //     this.props.onBeforeChange(val);
+  //   }
+  //
+  //   values[id] = v;
+  //   this.setState({
+  //     values,
+  //     // targetInstance: null,
+  //     // targetEntity: null,
+  //     // isDragging: true,
+  //   });
+  // };
 
-    values[id] = v;
-    this.setState({ values, isDragging: false });
-  };
-
-  onBeforeChange = (v, id) => {
-    const { values } = this.state;
-    const p = values[id] || [];
-
-    if (p.length === v.length) {
-      const val = v.find((d, i) => p[i] !== d);
-      this.props.onBeforeChange(val);
-    }
-
-    values[id] = v;
-    this.setState({
-      values,
-      targetInstance: null,
-      targetEntity: null,
-      isDragging: true,
-    });
-  };
-
-  onChange = (v, id) => {
-    const { values } = this.state;
-    const p = values[id] || [];
-
-    let val;
-    if (p.length === v.length) {
-      val = v.find((d, i) => p[i] !== d);
-      if (val) this.props.onChange(val);
-    }
-
-    const j = v.findIndex(d => d === val);
-
-    const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === id);
-      const t = nextEntities[ti];
-
-      const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
-        (j - (j % 2)) / 2
-      ];
-
-      if (i && j % 2 === 0) i.start_seconds = val;
-      if (i && j % 2 === 1) i.end_seconds = val;
-    });
-
-    values[id] = v;
-    this.setState({ values });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
-  };
+  // onChange = (v, id) => {
+  //   const { values } = this.state;
+  //   const p = values[id] || [];
+  //
+  //   let val;
+  //   if (p.length === v.length) {
+  //     val = v.find((d, i) => p[i] !== d);
+  //     if (val) this.props.onChange(val);
+  //   }
+  //
+  //   const j = v.findIndex(d => d === val);
+  //
+  //   const entities = produce(this.props.entities, nextEntities => {
+  //     const ti = nextEntities.findIndex(t => t.id === id);
+  //     const t = nextEntities[ti];
+  //
+  //     const i = t.instances.sort((p, q) => p.start_seconds - q.start_seconds)[
+  //       (j - (j % 2)) / 2
+  //     ];
+  //
+  //     if (i && j % 2 === 0) i.start_seconds = val;
+  //     if (i && j % 2 === 1) i.end_seconds = val;
+  //   });
+  //
+  //   values[id] = v;
+  //   this.setState({ values });
+  //
+  //   this.props.update({ [this.props.entitiesyKey]: entities });
+  // };
 
   startNewInstance = id => {
     const { currentTime } = this.props;
@@ -264,7 +258,12 @@ class Entities extends Component {
         i => i.start_seconds <= currentTime && currentTime < i.end_seconds
       );
       if (i) {
-        console.log('cannot make overlapping instances');
+        console.log(
+          'cannot make overlapping instances',
+          currentTime,
+          i.start_seconds,
+          i.end_seconds
+        );
       } else {
         t.instances.push({
           id: Math.random()
@@ -349,7 +348,7 @@ class Entities extends Component {
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
-  deleteInstance(entityId, instanceId) {
+  deleteInstance = (entityId, instanceId) => {
     // const { targetInstance } = this.state;
 
     const entities = produce(this.props.entities, nextEntities => {
@@ -362,25 +361,31 @@ class Entities extends Component {
       nextEntities[ti].instances.splice(ii, 1);
     });
 
-    this.setState({
-      targetInstance: null,
-      targetEntity: null,
-    });
+    // this.setState({
+    //   targetInstance: null,
+    //   targetEntity: null,
+    // });
 
     this.props.update({ [this.props.entitiesyKey]: entities });
-  }
-
-  duplicateAsClip = id => {
-    const { targetInstance } = this.state;
-    const entity = this.props.entities.find(t => t.id === id);
-    this.props.duplicateAsClip(entity, targetInstance, this.props.entityType);
-    this.setState({
-      targetInstance: null,
-      targetEntity: null,
-    });
   };
 
-  extendInstance(entityId, instanceId) {
+  duplicateAsClip = (entityId, instanceId) => {
+    const { entities, clips } = this.props;
+    const entity = entities.find(entity => entity.id === entityId);
+    const instance = entity.instances.find(
+      instance => instance.id === instanceId
+    );
+
+    console.log(entity, instance);
+
+    const videoClips = produce(clips, nextClips => {
+      // nextClips.append();
+    });
+
+    // this.props.update({ videoClips });
+  };
+
+  extendInstance = (entityId, instanceId) => {
     const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === entityId);
       const i = nextEntities[ti].instances.find(i => i.id === instanceId);
@@ -389,9 +394,9 @@ class Entities extends Component {
       nextEntities[ti].instances = [i];
     });
     this.props.update({ [this.props.entitiesyKey]: entities });
-  }
+  };
 
-  updateInstance(entityId, instanceId, { start_seconds, end_seconds }) {
+  updateInstance = (entityId, instanceId, { start_seconds, end_seconds }) => {
     const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === entityId);
       const i = nextEntities[ti].instances.find(i => i.id === instanceId);
@@ -399,11 +404,17 @@ class Entities extends Component {
       i.end_seconds = end_seconds;
     });
     this.props.update({ [this.props.entitiesyKey]: entities });
-  }
+  };
 
   render() {
-    const { entities, duration, suggestions, entityType } = this.props;
-    const { playlist } = this.state;
+    const {
+      entities,
+      duration,
+      suggestions,
+      entityType,
+      transport,
+    } = this.props;
+    const { playlist } = transport === entityType;
 
     return (
       <TableSection
@@ -468,7 +479,7 @@ class Entities extends Component {
                       clipInstance={
                         entityType !== 'clip'
                           ? instanceId =>
-                              console.log('clipInstance: ', instanceId)
+                              this.duplicateAsClip(entity.id, instanceId)
                           : null
                       }
                       checkInstance={
@@ -498,41 +509,41 @@ class Entities extends Component {
   }
 }
 
-const recomputeSegments = (entities, duration) => {
-  if (!entities) return [];
-
-  const instances = entities
-    .reduce((acc, t) => [...acc, ...t.instances], [])
-    .sort((j, i) => j.start_seconds - i.start_seconds);
-
-  const events = [
-    ...new Set(
-      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-        0,
-        duration,
-      ])
-    ),
-  ].sort((j, i) => j - i);
-
-  const segments = events
-    .reduce(
-      (acc, e, i) => {
-        if (i === 0) return acc;
-        return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
-      },
-      [0]
-    )
-    .reduce(
-      (acc, s, i) =>
-        !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-          ? [...acc, i]
-          : acc,
-      []
-    )
-    .map(i => [i, events[i - 1], events[i]]);
-
-  return segments;
-};
+// const recomputeSegments = (entities, duration) => {
+//   if (!entities) return [];
+//
+//   const instances = entities
+//     .reduce((acc, t) => [...acc, ...t.instances], [])
+//     .sort((j, i) => j.start_seconds - i.start_seconds);
+//
+//   const events = [
+//     ...new Set(
+//       instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
+//         0,
+//         duration,
+//       ])
+//     ),
+//   ].sort((j, i) => j - i);
+//
+//   const segments = events
+//     .reduce(
+//       (acc, e, i) => {
+//         if (i === 0) return acc;
+//         return [...acc, events[i - 1] + (events[i] - events[i - 1]) / 2];
+//       },
+//       [0]
+//     )
+//     .reduce(
+//       (acc, s, i) =>
+//         !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
+//           ? [...acc, i]
+//           : acc,
+//       []
+//     )
+//     .map(i => [i, events[i - 1], events[i]]);
+//
+//   return segments;
+// };
 
 export default connect(
   null,
