@@ -370,7 +370,7 @@ class Entities extends Component {
   };
 
   duplicateAsClip = (entityId, instanceId) => {
-    const { entities, clips } = this.props;
+    const { entities, clips, entityType } = this.props;
     const entity = entities.find(entity => entity.id === entityId);
     const instance = entity.instances.find(
       instance => instance.id === instanceId
@@ -379,10 +379,70 @@ class Entities extends Component {
     console.log(entity, instance);
 
     const videoClips = produce(clips, nextClips => {
-      // nextClips.append();
+      let clip = nextClips.find(
+        c => c.project_clip.name === getName(entity, entityType)
+      );
+
+      if (!clip) {
+        clip = {
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          isCreating: false,
+          instances: [
+            {
+              id: Math.random()
+                .toString(36)
+                .substring(2),
+              start_seconds: instance.start_seconds,
+              end_seconds: instance.end_seconds,
+            },
+          ],
+          project_clip: {
+            name: getName(entity, entityType),
+          },
+        };
+
+        console.log('new clip', clip);
+
+        nextClips.splice(0, 0, clip);
+      } else {
+        console.log('existing clip', clip);
+        const j = {
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          start_seconds: instance.start_seconds,
+          end_seconds: instance.end_seconds,
+        };
+
+        const overlappingInstance = clip.instances.find(
+          i =>
+            (j.start_seconds <= i.start_seconds &&
+              i.start_seconds <= j.end_seconds) ||
+            (j.start_seconds <= i.end_seconds &&
+              i.end_seconds <= j.end_seconds) ||
+            (i.start_seconds <= j.start_seconds &&
+              j.start_seconds <= i.end_seconds) ||
+            (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
+        );
+
+        if (overlappingInstance) {
+          overlappingInstance.start_seconds = Math.min(
+            overlappingInstance.start_seconds,
+            j.start_seconds
+          );
+          overlappingInstance.end_seconds = Math.max(
+            overlappingInstance.end_seconds,
+            j.end_seconds
+          );
+        } else {
+          clip.instances.push(j);
+        }
+      }
     });
 
-    // this.props.update({ videoClips });
+    this.props.update({ videoClips });
   };
 
   extendInstance = (entityId, instanceId) => {
