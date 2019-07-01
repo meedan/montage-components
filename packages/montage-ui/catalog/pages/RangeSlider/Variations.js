@@ -14,7 +14,9 @@ ${(
     <RangeSlider
       checkInstance={id => console.log('checkInstance, id: ', id)}
       deleteInstance={id => console.log('deleteInstance, id: ', id)}
-      updateInstance={id => console.log('updateInstance, id: ', id)}
+      updateInstance={(id, payload) =>
+        console.log('updateInstance, id, payload: ', id, payload)
+      }
       extendInstance={id => console.log('extendInstance, id: ', id)}
       duration={100}
       instances={[
@@ -45,7 +47,9 @@ ${(
     <RangeSlider
       clipInstance={id => console.log('clipInstance, id: ', id)}
       deleteInstance={id => console.log('deleteInstance, id: ', id)}
-      updateInstance={id => console.log('updateInstance, id: ', id)}
+      updateInstance={(id, payload) =>
+        console.log('updateInstance, id, payload: ', id, payload)
+      }
       extendInstance={id => console.log('extendInstance, id: ', id)}
       duration={100}
       instances={[

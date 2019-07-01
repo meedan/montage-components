@@ -42,7 +42,6 @@ class Instance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      coords: { x: 0, y: 0 },
       dragging: null,
       overHandle: null,
       overInstance: null,
@@ -57,6 +56,7 @@ class Instance extends Component {
     this.onInstanceEnter = this.onInstanceEnter.bind(this);
     this.onInstanceLeave = this.onInstanceLeave.bind(this);
 
+    this.setNewTime = this.setNewTime.bind(this);
     this.moveHandle = this.moveHandle.bind(this);
   }
 
@@ -105,15 +105,30 @@ class Instance extends Component {
     }));
   }
 
-  onMouseDown(edge) {
-    this.setState({ dragging: edge });
-    this.props.setDraggedInstance(this.props.id);
+  onMouseDown(e, edge) {
+    e.persist();
+    this.setState({ dragging: edge }, () => {
+      this.props.setDraggedInstance(this.props.id);
+      this.setNewTime(e);
+    });
   }
 
   onMouseMove(e) {
+    this.setNewTime(e);
+  }
+
+  onMouseUp(e) {
+    if (!this.state.dragging) return null;
+    this.setState({ dragging: null }, () => {
+      this.props.setDraggedInstance(null);
+      this.setNewTime(e);
+    });
+    return null;
+  }
+
+  setNewTime(e) {
     if (!e) return null;
     const coords = { x: e.pageX, y: e.pageY };
-    this.setState({ coords });
 
     if (!this.state.dragging) return null;
     const { duration, wrapper, instances } = this.props;
@@ -142,26 +157,21 @@ class Instance extends Component {
       newTime = start + MIN_LENGTH > duration ? duration : start + MIN_LENGTH;
     }
 
-    this.setState(prevState => ({
-      coords,
-      [dragging]:
-        newTime >= RANGE_MIN && newTime <= RANGE_MAX
-          ? newTime
-          : prevState[dragging],
-    }));
+    this.setState(
+      prevState => ({
+        [dragging]:
+          newTime >= RANGE_MIN && newTime <= RANGE_MAX
+            ? newTime
+            : prevState[dragging],
+      }),
+      () => {
+        this.props.updateInstance({
+          start_seconds: this.state.start,
+          end_seconds: this.state.end,
+        });
+      }
+    );
 
-    return null;
-  }
-
-  onMouseUp() {
-    if (!this.state.dragging) return null;
-    this.setState({ dragging: null }, () => {
-      this.props.setDraggedInstance(null);
-      this.props.updateInstance({
-        start_seconds: this.state.start,
-        end_seconds: this.state.end,
-      });
-    });
     return null;
   }
 
@@ -289,7 +299,7 @@ class Instance extends Component {
                       (this.state.overInstance && !this.state.dragging) ||
                       popupState.isOpen
                     }
-                    onMouseDown={() => this.onMouseDown(edge)}
+                    onMouseDown={e => this.onMouseDown(e, edge)}
                     onMouseEnter={e => this.onHandleEnter(e, edge)}
                     onMouseLeave={this.onHandleLeave}
                     style={{ left: edge === 'start' ? `${x1}px` : `${x2}px` }}
