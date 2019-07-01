@@ -73,6 +73,9 @@ class RangeSlider extends Component {
               instances={instances}
               isLocked={draggedInstance && draggedInstance !== id}
               key={id}
+              onDrag={payload => this.props.onDrag(payload)}
+              onDragEnd={payload => this.props.onDragEnd(payload)}
+              onDragStart={payload => this.props.onDragStart(payload)}
               setDraggedInstance={this.setDraggedInstance}
               start={start_seconds}
               updateInstance={payload => this.props.updateInstance(id, payload)}
@@ -90,11 +93,14 @@ export default RangeSlider;
 RangeSlider.propTypes = {
   checkInstance: func,
   clipInstance: func,
-  duration: number.isRequired,
-  instances: array.isRequired,
-  updateInstance: func.isRequired,
-  extendInstance: func.isRequired,
   deleteInstance: func.isRequired,
+  duration: number.isRequired,
+  extendInstance: func.isRequired,
+  instances: array.isRequired,
+  onDrag: func.isRequired,
+  onDragEnd: func.isRequired,
+  onDragStart: func.isRequired,
+  updateInstance: func.isRequired,
 };
 RangeSlider.defaultProps = {
   checkInstance: null,

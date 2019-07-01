@@ -110,19 +110,22 @@ class Instance extends Component {
     this.setState({ dragging: edge }, () => {
       this.props.setDraggedInstance(this.props.id);
       this.setNewTime(e);
+      this.props.onDragStart(this.state[edge]);
     });
   }
-
   onMouseMove(e) {
     this.setNewTime(e);
+    if (this.state.dragging) this.props.onDrag(this.state[this.state.dragging]);
   }
-
   onMouseUp(e) {
     if (!this.state.dragging) return null;
-    this.setState({ dragging: null }, () => {
-      this.props.setDraggedInstance(null);
-      this.setNewTime(e);
+    this.props.onDragEnd(this.state[this.state.dragging]);
+    this.props.updateInstance({
+      end_seconds: this.state.end,
+      start_seconds: this.state.start,
     });
+    this.setState({ dragging: null });
+    this.props.setDraggedInstance(null);
     return null;
   }
 
@@ -163,13 +166,13 @@ class Instance extends Component {
           newTime >= RANGE_MIN && newTime <= RANGE_MAX
             ? newTime
             : prevState[dragging],
-      }),
-      () => {
-        this.props.updateInstance({
-          start_seconds: this.state.start,
-          end_seconds: this.state.end,
-        });
-      }
+      })
+      // () => {
+      //   this.props.updateInstance({
+      //     start_seconds: this.state.start,
+      //     end_seconds: this.state.end,
+      //   });
+      // }
     );
 
     return null;
@@ -339,12 +342,15 @@ Instance.propTypes = {
   clipInstance: func,
   deleteInstance: func.isRequired,
   duration: number.isRequired,
-  isLocked: bool,
   end: number.isRequired,
-  setDraggedInstance: func.isRequired,
   extendInstance: func.isRequired,
-  instances: array.isRequired,
   instance: object.isRequired,
+  instances: array.isRequired,
+  isLocked: bool,
+  onDrag: func.isRequired,
+  onDragEnd: func.isRequired,
+  onDragStart: func.isRequired,
+  setDraggedInstance: func.isRequired,
   start: number.isRequired,
   updateInstance: func.isRequired,
   wrapper: shape({

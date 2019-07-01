@@ -36,6 +36,9 @@ ${(
           start_seconds: 70,
         },
       ]}
+      onDrag={newTime => console.log('onDrag: newTime', newTime)}
+      onDragEnd={newTime => console.log('onDragEnd: newTime', newTime)}
+      onDragStart={newTime => console.log('onDragStart: newTime', newTime)}
     />
   </ReactSpecimen>
 )}
@@ -69,6 +72,9 @@ ${(
           start_seconds: 70,
         },
       ]}
+      onDrag={newTime => console.log('onDrag: newTime', newTime)}
+      onDragEnd={newTime => console.log('onDragEnd: newTime', newTime)}
+      onDragStart={newTime => console.log('onDragStart: newTime', newTime)}
     />
   </ReactSpecimen>
 )}
