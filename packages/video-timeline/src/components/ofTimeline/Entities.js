@@ -558,14 +558,10 @@ class Entities extends Component {
                       deleteInstance={instanceId =>
                         this.deleteInstance(entity.id, instanceId)
                       }
-                      onDrag={newTime =>
-                        console.log('onDrag, newTime: ', newTime)
-                      }
-                      onDragEnd={newTime =>
-                        console.log('onDragEnd, newTime: ', newTime)
-                      }
+                      onDrag={newTime => this.props.onChange(newTime)}
+                      onDragEnd={newTime => this.props.onAfterChange(newTime)}
                       onDragStart={newTime =>
-                        console.log('onDragStart, newTime: ', newTime)
+                        this.props.onBeforeChange(newTime)
                       }
                     />
                   }

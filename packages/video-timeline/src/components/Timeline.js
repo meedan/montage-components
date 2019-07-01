@@ -186,7 +186,7 @@ class Timeline extends Component {
     const { time, skip, ffTime } = this.state;
     const { duration, transport, playing } = this.props;
 
-    const currentTime = this.props.currentTime; // skip ? ffTime : time;
+    const currentTime = skip ? ffTime : time;
 
     return (
       <TimelineWrapper>
