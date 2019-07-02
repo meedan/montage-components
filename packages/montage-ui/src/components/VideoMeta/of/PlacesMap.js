@@ -139,6 +139,19 @@ class PlacesMap extends Component {
   }
 }
 
+const polygonOptions = {
+  clickable: true,
+  draggable: false,
+  editable: false,
+  fillColor: '000',
+  fillOpacity: 0.1,
+  geodesic: false,
+  // strokeColor: color.brand, // FIXME @pio
+  strokeOpacity: 1,
+  strokeWeight: 2,
+  zIndex: 1,
+};
+
 export default PlacesMap;
 
 PlacesMap.propTypes = {

@@ -71,6 +71,8 @@ class Map extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.data !== nextProps.data) return true;
+
     if (this.props.currentTime !== nextProps.currentTime) {
       const match = this.props.data.find(
         ({ time, duration }) =>

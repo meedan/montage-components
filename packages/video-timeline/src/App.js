@@ -157,6 +157,7 @@ class App extends Component {
                             console.log('onUpdateAllocation()', arr)
                           }
                           currentTime={currentTime}
+                          videoPlaces={data.videoPlaces}
                           pubDate={data.ytVideoData.snippet.publishedAt}
                           channelTitle={data.ytVideoData.snippet.channelTitle}
                           videoViewCount={data.ytVideoData.statistics.viewCount}

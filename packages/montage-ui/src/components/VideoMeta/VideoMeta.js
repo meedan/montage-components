@@ -88,45 +88,24 @@ class VideoMeta extends Component {
       data,
       currentTime,
       setMap,
+      videoPlaces,
     } = this.props;
     const { map } = this.state;
     const isArchived = arcDate !== null && arcDate !== undefined;
 
-    let videoPlaces = [];
-    if (videoPlaces) ({ videoPlaces } = this.props);
-    const persisted2 = window.localStorage.getItem('videoPlaces');
-    if (persisted2) videoPlaces = Flatted.parse(persisted2);
-
-    let videoPlacesData = {};
-    const persisted = window.localStorage.getItem('videoPlacesData');
-    if (persisted) videoPlacesData = Flatted.parse(persisted);
-
-    // const mapData = videoPlaces
-    //   .reduce(
-    //     (acc, p) => [
-    //       ...acc,
-    //       ...p.instances.map(i => {
-    //         if (!videoPlacesData) return null;
-    //         if (!videoPlacesData[p.id]) return null;
-    //         videoPlacesData[p.id].time = i.start_seconds;
-    //         videoPlacesData[p.id].duration = i.end_seconds - i.start_seconds;
-    //         return videoPlacesData[p.id];
-    //       }),
-    //       // ...p.instances.filter(i => !!i.data).map(i => i.data),
-    //     ],
-    //     []
-    //   )
-    //   .filter(d => !!d);
-
-    const mapData = [];
-    for (let v = 0; v < 23; v++) {
-      mapData.push({
-        lat: Math.random() * 180 - 90,
-        lng: Math.random() * 360 - 180,
-        type: 'marker',
-        time: Math.random() * 3600,
-      });
-    }
+    const mapData = videoPlaces
+      .reduce(
+        (acc, p) => [
+          ...acc,
+          ...p.instances.map(({ start_seconds, end_seconds }) => ({
+            ...p.project_location,
+            time: start_seconds,
+            duration: end_seconds - start_seconds,
+          })),
+        ],
+        []
+      )
+      .filter(d => !!d);
 
     console.group('Video Meta');
     console.log('state', this.state);
