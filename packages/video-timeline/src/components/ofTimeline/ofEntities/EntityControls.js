@@ -1,4 +1,3 @@
-import Flatted from 'flatted/esm';
 import Popover from 'material-ui-popup-state/HoverPopover';
 import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import React, { Component } from 'react';
@@ -56,7 +55,8 @@ class NameControls extends Component {
     this.state = {
       flow: null,
     };
-    if (this.props.entityType === 'location') this.anchorRef = React.createRef();
+    if (this.props.entityType === 'location')
+      this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -83,20 +83,7 @@ class NameControls extends Component {
 
   onReposition = marker => {
     this.setState({ marker });
-    // this.props.renamePlace(this.state.entityName, this.state.marker);
-    // setTimeout(() => this.setState({ isProcessing: false }), 1000);
-
-    // if (!window.BIGNONO) window.BIGNONO = {};
-    // window.BIGNONO[this.props.entityId] = marker;
-    let videoPlacesData = window.localStorage.getItem('videoPlacesData');
-    if (videoPlacesData) {
-      videoPlacesData = Flatted.parse(videoPlacesData);
-    } else videoPlacesData = {};
-    videoPlacesData[this.props.entityId] = marker;
-    window.localStorage.setItem(
-      'videoPlacesData',
-      Flatted.stringify(videoPlacesData)
-    );
+    this.props.updateEntity(this.props.entityName, marker);
   };
 
   onRename = name => {
@@ -233,7 +220,7 @@ class NameControls extends Component {
         {flow === 'reposition' ? (
           <EntityMapPopover
             anchorRef={this.anchorRef.current}
-            data={[]}
+            data={[this.state.marker]}
             isCreating={isCreating}
             onClose={this.stop}
             onSave={marker => this.onReposition(marker)}

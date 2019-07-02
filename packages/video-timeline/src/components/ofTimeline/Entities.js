@@ -336,11 +336,18 @@ class Entities extends Component {
     this.props.update({ [this.props.entitiesyKey]: entities });
   };
 
-  updateEntity = (id, name) => {
+  updateEntity = (id, name, payload) => {
     const { entityType } = this.props;
 
     const entities = produce(this.props.entities, nextEntities => {
       const i = nextEntities.findIndex(t => t.id === id);
+      nextEntities[i][`project_${entityType}`].name = name;
+      if (payload)
+        nextEntities[i][`project_${entityType}`] = {
+          ...nextEntities[i][`project_${entityType}`],
+          ...payload,
+        };
+
       nextEntities[i][`project_${entityType}`].name = name;
       delete nextEntities[i].isCreating;
     });
@@ -531,7 +538,9 @@ class Entities extends Component {
                       startNewInstance={() => this.startNewInstance(entity.id)}
                       stopNewEntity={this.stopNewEntity}
                       suggestions={suggestions}
-                      updateEntity={name => this.updateEntity(entity.id, name)}
+                      updateEntity={(name, payload) =>
+                        this.updateEntity(entity.id, name, payload)
+                      }
                     />
                   }
                   rightColContent={

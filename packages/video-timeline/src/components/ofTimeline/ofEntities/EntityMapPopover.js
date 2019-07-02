@@ -58,12 +58,14 @@ class PlaceMap extends Component {
     this.state = {
       drawPolygon: false,
       dropPin: false,
-      marker: this.props.marker || {},
-      placeName: this.props.placeName,
       saved: true,
     };
 
     this.searchRef = React.createRef();
+  }
+
+  static getDerivedStateFromProps({ marker = {}, placeName }, { saved }) {
+    if (saved) return { marker, placeName };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -272,22 +274,24 @@ class PlaceMap extends Component {
     console.log('state', this.state);
     console.groupEnd();
 
-    let center = data
-      .reduce(
-        (acc, d) => {
-          const coords =
-            d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
-          return [...coords, ...acc];
-        },
-        [{ lat: 0, lng: 0 }]
-      )
-      .reverse()
-      .pop();
+    let center = { lat: 0, lng: 0 };
+    if (data)
+      center = data
+        .reduce(
+          (acc, d) => {
+            if (!d) return acc;
+            const coords =
+              d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
+            return [...coords, ...acc];
+          },
+          [{ lat: 0, lng: 0 }]
+        )
+        .reverse()
+        .pop();
 
     if (this.state.center) center = this.state.center;
     if (marker && marker.lat && marker.lng)
       center = { lat: marker.lat, lng: marker.lng };
-    // console.log(center, marker);
 
     if (this.map && this.map.center) center = this.map.center;
 
@@ -455,30 +459,36 @@ class PlaceMap extends Component {
                 onPositionChanged={this.handleMarkerUpdate}
               />
             ) : null}
-            {this.props.data
-              .filter(d => d.type === 'marker')
-              .map(({ lat, lng, time }, i) => (
-                <Marker
-                  key={`m-${i}`}
-                  draggable
-                  animation={window.google && window.google.maps.Animation.DROP}
-                  position={{ lat, lng }}
-                  onClick={() => this.handleMarkerClick(time)}
-                />
-              ))}
-            {this.props.data
-              .filter(d => d.type === 'polygon')
-              .map((polygon, i) => (
-                <Polygon
-                  key={`p-${i}`}
-                  onLoad={polygon => {
-                    console.log('polygon: ', polygon);
-                  }}
-                  path={polygon.polygon}
-                  options={polygonOptions}
-                  onClick={() => this.handleMarkerClick(polygon.time)}
-                />
-              ))}
+            {data
+              ? data
+                  .filter(d => d && d.type && d.type === 'marker')
+                  .map(({ lat, lng, time }, i) => (
+                    <Marker
+                      key={`m-${i}`}
+                      draggable
+                      animation={
+                        window.google && window.google.maps.Animation.DROP
+                      }
+                      position={{ lat, lng }}
+                      onClick={() => this.handleMarkerClick(time)}
+                    />
+                  ))
+              : null}
+            {data
+              ? data
+                  .filter(d => d && d.type && d.type === 'polygon')
+                  .map((polygon, i) => (
+                    <Polygon
+                      key={`p-${i}`}
+                      onLoad={polygon => {
+                        console.log('polygon: ', polygon);
+                      }}
+                      path={polygon.polygon}
+                      options={polygonOptions}
+                      onClick={() => this.handleMarkerClick(polygon.time)}
+                    />
+                  ))
+              : null}
           </GoogleMap>
         </Paper>
       </Popper>
