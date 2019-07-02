@@ -86,6 +86,23 @@ class PlaceMap extends Component {
     return !equal(this.state, nextState);
   }
 
+  componentDidMount() {
+    setTimeout(
+      () =>
+        this.keydown
+          ? this.keydown(
+              new KeyboardEvent('keydown', {
+                keyCode: 40,
+                which: 40,
+                code: 'ArrowDown',
+                key: 'ArrowDown',
+              })
+            )
+          : null,
+      700
+    );
+  }
+
   handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
     console.log(place);
@@ -108,11 +125,22 @@ class PlaceMap extends Component {
 
   onLoad = map => {
     this.map = map;
+
+    const originalAddEventListener = this.searchRef.current.addEventListener;
+
+    this.searchRef.current.addEventListener = (event, f) => {
+      if (event === 'keydown') {
+        this.keydown = f;
+        originalAddEventListener(event, e => f(e));
+      } else originalAddEventListener(event, f);
+    };
+
     this.autocomplete = new window.google.maps.places.Autocomplete(
       this.searchRef.current,
       {}
     );
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
+    // window.google.maps.event.trigger(this.searchRef.current, 'focus');
   };
 
   onPlaceChanged = () => {
