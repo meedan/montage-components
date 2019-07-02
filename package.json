@@ -15,6 +15,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "now": "^15.0.8"
+    "now": "^15.6.2"
   }
 }
