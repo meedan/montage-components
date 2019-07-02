@@ -8,6 +8,22 @@
       content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
     />
     <title>VideoPage</title>
+    <script>
+      function initMap() {
+        console.log('initMap', arguments);
+      }
+      // window.addEventListener('error', function(e) {
+      //   // prevent React's listener from firing
+      //   e.stopImmediatePropagation();
+      //   // prevent the browser's console error message
+      //   e.preventDefault();
+      // });
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_API_KEY%&callback=initMap&libraries=places,drawing,geometry"
+      async
+      defer
+    ></script>
   </head>
   <body>
     <noscript>

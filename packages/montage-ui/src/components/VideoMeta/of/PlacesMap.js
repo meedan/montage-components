@@ -10,8 +10,6 @@ import AddLocationIcon from '@material-ui/icons/AddLocation';
 import CloseIcon from '@material-ui/icons/Close';
 import FormatShapesIcon from '@material-ui/icons/FormatShapes';
 
-const google = window.google && window.google.maps ? window.google : {};
-
 class PlacesMap extends Component {
   constructor(props) {
     super(props);
