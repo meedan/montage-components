@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { GoogleMap, Marker, Polygon } from '@react-google-maps/api';
-import equal from 'fast-deep-equal';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
@@ -56,39 +55,18 @@ class PlaceMap extends Component {
     super(props);
 
     this.state = {
-      drawPolygon: false,
-      dropPin: false,
-      saved: true,
+      drawPolygon: !!this.props.marker && this.props.marker.type === 'polygon',
+      dropPin: !!this.props.marker && this.props.marker.type === 'marker',
+      saved: !this.props.marker,
+      marker: this.props.marker ? this.props.marker : {},
+      placeName: this.props.placeName,
     };
 
     this.searchRef = React.createRef();
   }
 
-  static getDerivedStateFromProps({ marker = {}, placeName }, { saved }) {
-    if (saved) return { marker, placeName };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.currentTime !== nextProps.currentTime) {
-      const match = this.props.data.find(
-        ({ time, duration }) =>
-          time <= nextProps.currentTime &&
-          nextProps.currentTime < time + duration
-      );
-      if (match && this.map) {
-        const { lat, lng, viewport } =
-          match.type === 'marker' ? match : match.polygon[0];
-        this.map.panTo({ lat, lng });
-        viewport && this.map.fitBounds(viewport);
-      }
-    }
-
-    return !equal(this.state, nextState);
-  }
-
   handlePlaceSelect = e => {
     const place = this.autocomplete.getPlace();
-    console.log(place);
     if (place && place.geometry) {
       this.map.fitBounds(place.geometry.viewport.toJSON());
       const { lat, lng } = place.geometry.location;
@@ -99,11 +77,17 @@ class PlaceMap extends Component {
           lng: lng(),
           viewport: place.geometry.viewport.toJSON(),
           type: 'marker',
-          time: this.props.currentTime || 0,
         },
         saved: false,
       });
     }
+  };
+
+  handleBoundsChanged = e => {
+    const viewport = this.map.getBounds().toJSON();
+    const zoom = this.map.getZoom();
+    this.setState({ viewport, zoom });
+    return true;
   };
 
   onLoad = map => {
@@ -114,10 +98,11 @@ class PlaceMap extends Component {
       {}
     );
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
+    this.map.addListener('idle', this.handleBoundsChanged);
     // window.google.maps.event.trigger(this.searchRef.current, 'focus');
 
-    console.log(this.props.data);
-    if (this.props.data.length === 0)
+    const { marker } = this.props;
+    if (!this.props.marker) {
       setTimeout(
         () =>
           this.searchRef.current.dispatchEvent(
@@ -130,13 +115,16 @@ class PlaceMap extends Component {
           ),
         500
       );
-  };
-
-  onPlaceChanged = () => {
-    if (this.autocomplete !== null) {
-      console.log(this.autocomplete.getPlace());
     } else {
-      console.log('Autocomplete is not loaded yet!');
+      const { type } = marker;
+      const { lat, lng, viewport, zoom } =
+        type === 'marker' ? marker : marker.polygon[0];
+
+      setTimeout(() => {
+        this.map.setCenter({ lat, lng });
+        if (zoom) this.map.setZoom(zoom);
+        if (viewport) setTimeout(() => this.map.panToBounds(viewport), 500);
+      }, 500);
     }
   };
 
@@ -158,8 +146,8 @@ class PlaceMap extends Component {
         lat: lat(),
         lng: lng(),
         type: 'marker',
-        time: this.props.currentTime,
-        viewport: this.state.marker.viewport,
+        viewport: this.state.viewport,
+        zoom: this.state.zoom,
       };
 
       this.setState({
@@ -177,8 +165,7 @@ class PlaceMap extends Component {
       marker = {
         polygon: polygon,
         type: 'polygon',
-        time: this.props.currentTime,
-        viewport: this.state.marker.viewport,
+        viewport: this.state.viewport,
       };
 
       this.setState({
@@ -199,27 +186,15 @@ class PlaceMap extends Component {
     this.props.onClose();
   };
 
-  // deleteCurrent = () => {
-  //   this.setState({
-  //     drawPolygon: false,
-  //     dropPin: false,
-  //     marker: {},
-  //     saved: true,
-  //   });
-  // };
-
   handleMapClick = e => {
     if (this.state.dropPin) {
       const { lat, lng } = e.latLng;
-      console.log(lat, lng);
       this.setState({
         saved: false,
         marker: {
           lat: lat(),
           lng: lng(),
           type: 'marker',
-          time: this.props.currentTime || 0,
-          viewport: this.map.getBounds().toJSON(),
         },
       });
     }
@@ -234,15 +209,9 @@ class PlaceMap extends Component {
             { lat: lat(), lng: lng() },
           ],
           type: 'polygon',
-          currentTime: this.props.currentTime || 0,
-          viewport: this.map.getBounds().toJSON(),
         },
       });
     }
-  };
-
-  handleMarkerClick = time => {
-    if (this.props.player) this.props.player.seekTo(time);
   };
 
   handleMarkerUpdate = () => {
@@ -257,8 +226,6 @@ class PlaceMap extends Component {
             lat: lat(),
             lng: lng(),
             type: 'marker',
-            time: this.state.marker.currentTime,
-            viewport: this.map.getBounds().toJSON(),
           },
         });
       }
@@ -270,7 +237,7 @@ class PlaceMap extends Component {
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { classes } = this.props;
     const { dropPin, drawPolygon, marker } = this.state;
 
     const polygonOptions = {
@@ -286,32 +253,16 @@ class PlaceMap extends Component {
       zIndex: 1,
     };
 
-    console.group('PlaceMapPopper');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-
     let center = { lat: 0, lng: 0 };
-    if (data)
-      center = data
-        .reduce(
-          (acc, d) => {
-            if (!d) return acc;
-            const coords =
-              d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
-            return [...coords, ...acc];
-          },
-          [{ lat: 0, lng: 0 }]
-        )
-        .reverse()
-        .pop();
-
     if (this.state.center) center = this.state.center;
     if (marker && marker.lat && marker.lng)
       center = { lat: marker.lat, lng: marker.lng };
+    if (marker && marker.polygon && marker.polygon.length > 0)
+      center = { lat: marker.polygon[0].lat, lng: marker.polygon[0].lng };
 
     if (this.map && this.map.center) center = this.map.center;
 
+    let zoom = this.marker && this.marker.zoom ? this.marker.zoom : 2.5;
     return (
       <Popper
         placement="bottom-start"
@@ -334,7 +285,7 @@ class PlaceMap extends Component {
             onKeyPress={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
-                console.log('trigger search');
+                console.log('trigger search?');
               }
             }}
             placeholder="Find location…"
@@ -382,20 +333,6 @@ class PlaceMap extends Component {
                     </IconButton>
                   </Tooltip>
                   <Separator />
-                  {/* <Tooltip title="Delete">
-                      <IconButton
-                        color={
-                          this.state.marker &&
-                          this.state.marker.type &&
-                          !this.state.saved
-                            ? 'primary'
-                            : 'secondary'
-                        }
-                        onClick={this.deleteCurrent}
-                      >
-                        <DeleteOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip> */}
                   {this.state.marker.type ? (
                     <Tooltip title="Save location">
                       <Button
@@ -435,7 +372,7 @@ class PlaceMap extends Component {
               height: '240px',
               width: '400px',
             }}
-            zoom={2.5}
+            zoom={zoom}
             center={center}
             onClick={this.handleMapClick}
             onLoad={this.onLoad}
@@ -476,36 +413,6 @@ class PlaceMap extends Component {
                 onPositionChanged={this.handleMarkerUpdate}
               />
             ) : null}
-            {data
-              ? data
-                  .filter(d => d && d.type && d.type === 'marker')
-                  .map(({ lat, lng, time }, i) => (
-                    <Marker
-                      key={`m-${i}`}
-                      draggable
-                      animation={
-                        window.google && window.google.maps.Animation.DROP
-                      }
-                      position={{ lat, lng }}
-                      onClick={() => this.handleMarkerClick(time)}
-                    />
-                  ))
-              : null}
-            {data
-              ? data
-                  .filter(d => d && d.type && d.type === 'polygon')
-                  .map((polygon, i) => (
-                    <Polygon
-                      key={`p-${i}`}
-                      onLoad={polygon => {
-                        console.log('polygon: ', polygon);
-                      }}
-                      path={polygon.polygon}
-                      options={polygonOptions}
-                      onClick={() => this.handleMarkerClick(polygon.time)}
-                    />
-                  ))
-              : null}
           </GoogleMap>
         </Paper>
       </Popper>
