@@ -30,6 +30,16 @@ const theme = createMuiTheme({
           },
         },
       },
+      colorPrimary: {
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+      },
+      colorSecondary: {
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+      },
     },
     MuiTableCell: {
       root: {
