@@ -270,7 +270,7 @@ class Entities extends Component {
             .toString(36)
             .substring(2),
           start_seconds: currentTime,
-          end_seconds: currentTime + 5,
+          end_seconds: currentTime + 30,
         });
       }
     });
@@ -306,7 +306,7 @@ class Entities extends Component {
               .toString(36)
               .substring(2),
             start_seconds: currentTime,
-            end_seconds: currentTime + 5,
+            end_seconds: currentTime + 30,
           },
         ],
       });
