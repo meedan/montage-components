@@ -220,7 +220,7 @@ class NameControls extends Component {
         {flow === 'reposition' ? (
           <EntityMapPopover
             anchorRef={this.anchorRef.current}
-            data={[this.state.marker]}
+            data={this.state.marker ? [this.state.marker] : []}
             isCreating={isCreating}
             onClose={this.stop}
             onSave={marker => this.onReposition(marker)}

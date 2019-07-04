@@ -116,18 +116,20 @@ class PlaceMap extends Component {
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
     // window.google.maps.event.trigger(this.searchRef.current, 'focus');
 
-    setTimeout(
-      () =>
-        this.searchRef.current.dispatchEvent(
-          new KeyboardEvent('keydown', {
-            keyCode: 40,
-            which: 40,
-            code: 'ArrowDown',
-            key: 'ArrowDown',
-          })
-        ),
-      500
-    );
+    console.log(this.props.data);
+    if (this.props.data.length === 0)
+      setTimeout(
+        () =>
+          this.searchRef.current.dispatchEvent(
+            new KeyboardEvent('keydown', {
+              keyCode: 40,
+              which: 40,
+              code: 'ArrowDown',
+              key: 'ArrowDown',
+            })
+          ),
+        500
+      );
   };
 
   onPlaceChanged = () => {
