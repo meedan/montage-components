@@ -83,7 +83,6 @@ class VideoMeta extends Component {
   render() {
     const {
       arcDate,
-      //
       classes,
       data,
       currentTime,
@@ -105,7 +104,8 @@ class VideoMeta extends Component {
         ],
         []
       )
-      .filter(d => !!d);
+      .filter(d => !!d)
+      .filter(d => !!d.type);
 
     console.group('Video Meta');
     console.log('state', this.state);

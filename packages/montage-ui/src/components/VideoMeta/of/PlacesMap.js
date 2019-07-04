@@ -15,34 +15,51 @@ class PlacesMap extends Component {
     super(props);
     this.state = {
       marker: this.props.marker || {},
-      center: null, // { lat: 0, lng: 0 },
+      center: null,
     };
+
     this.handleMarkerClick = this.handleMarkerClick.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.currentTime !== nextProps.currentTime) {
-      const match = this.props.places.find(
+      const marker = this.props.places.find(
         ({ time, duration }) =>
           time <= nextProps.currentTime &&
           nextProps.currentTime < time + duration
       );
 
-      // console.log(match);
-      if (match && this.map) {
-        const { lat, lng, viewport } =
-          match.type === 'marker' ? match : match.polygon[0];
+      if (marker && this.map) {
+        const { viewport, zoom, type } = marker;
+        const { lat, lng } = type === 'marker' ? marker : marker.polygon[0];
+
+        this.setState({ marker, center: { lat, lng }, zoom: zoom });
+
         this.map.panTo({ lat, lng });
-        viewport && this.map.fitBounds(viewport);
-        this.setState({ center: { lat, lng } });
+        if (zoom) this.map.setZoom(zoom);
+        if (viewport) {
+          this.map.panToBounds(viewport);
+        }
+
+        // // this.map.setCenter({ lat, lng });
+        // this.map.panTo({ lat, lng });
+        // if (zoom) this.map.setZoom(zoom);
+        // if (viewport) setTimeout(() => this.map.panToBounds(viewport), 500);
       }
+
+      return false;
     }
+
     if (this.props.isCompact !== nextProps.isCompact) {
       return true;
     }
 
-    return !equal(this.state, nextState);
+    return !equal(this.props.places, nextProps.places);
   }
+
+  onLoad = map => {
+    this.map = map;
+  };
 
   handleMarkerClick(time) {
     this.props.seekTo({ seekTo: time, transport: 'map' });
@@ -70,6 +87,9 @@ class PlacesMap extends Component {
 
     if (this.map && this.map.center) center = this.map.center;
 
+    let zoom = this.props.isCompact ? 10 : 2.5;
+    if (this.state.zoom) center = this.state.zoom;
+
     return (
       <GoogleMap
         center={center}
@@ -85,31 +105,8 @@ class PlacesMap extends Component {
           rotateControl: this.props.isCompact ? false : true,
           fullscreenControl: this.props.isCompact ? false : true,
         }}
-        zoom={this.props.isCompact ? 10 : 2.5}
+        zoom={zoom}
       >
-        {this.state.marker.type === 'polygon' &&
-        this.state.marker.polygon.length > 0 ? (
-          <Polygon
-            key="poly"
-            editable={false}
-            path={this.state.marker.polygon}
-            onLoad={polygon => (this.polygon = polygon)}
-            options={polygonOptions}
-          />
-        ) : null}
-        {this.state.marker.type === 'marker' ? (
-          <Marker
-            key="marker"
-            draggable={false}
-            animation={window.google && window.google.maps.Animation.DROP}
-            position={{
-              lat: this.state.marker.lat,
-              lng: this.state.marker.lng,
-            }}
-            onLoad={marker => (this.marker = marker)}
-            onPositionChanged={this.handleMarkerUpdate}
-          />
-        ) : null}
         {this.props.places
           .filter(d => d.type === 'marker')
           .map(({ lat, lng, time }, i) => (
@@ -126,9 +123,6 @@ class PlacesMap extends Component {
           .map((polygon, i) => (
             <Polygon
               key={`p-${i}`}
-              onLoad={polygon => {
-                console.log('polygon: ', polygon);
-              }}
               path={polygon.polygon}
               options={polygonOptions}
               onClick={() => this.handleMarkerClick(polygon.time)}
