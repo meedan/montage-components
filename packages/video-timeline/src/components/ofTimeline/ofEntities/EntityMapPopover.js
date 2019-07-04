@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { GoogleMap, Marker, Polygon } from '@react-google-maps/api';
+import equal from 'fast-deep-equal';
 
 import { withStyles } from '@material-ui/core/styles';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
@@ -123,8 +124,8 @@ class PlaceMap extends Component {
       setTimeout(() => {
         this.map.setCenter({ lat, lng });
         if (zoom) this.map.setZoom(zoom);
-        if (viewport) setTimeout(() => this.map.panToBounds(viewport), 500);
-      }, 500);
+        this.map.panToBounds(viewport);
+      }, 100);
     }
   };
 
@@ -333,7 +334,10 @@ class PlaceMap extends Component {
                     </IconButton>
                   </Tooltip>
                   <Separator />
-                  {this.state.marker.type ? (
+                  {!equal(
+                    { ...this.state.marker, viewport: this.state.viewport },
+                    this.props.marker
+                  ) ? (
                     <Tooltip title="Save location">
                       <Button
                         disabled={this.state.saved}
