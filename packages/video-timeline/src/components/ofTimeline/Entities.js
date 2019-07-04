@@ -532,9 +532,7 @@ class Entities extends Component {
                       entityId={entity.id}
                       entityName={getName(entity, entityType)}
                       entityType={entityType}
-                      isCreating={
-                        entity.isCreating || entity.isCreating !== undefined
-                      }
+                      isCreating={entity.isCreating}
                       startNewInstance={() => this.startNewInstance(entity.id)}
                       stopNewEntity={this.stopNewEntity}
                       suggestions={suggestions}
