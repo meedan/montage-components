@@ -9,7 +9,7 @@ const parsed = Flatted.parse(DATA);
 // console.log(parsed);
 
 const { gdVideoData, ytVideoData, nextUrl, prevUrl, nextVideo, project, videoCollection } = JSON.parse(owtj(parsed));
-console.log({ gdVideoData, ytVideoData, nextUrl, prevUrl, nextVideo, project, videoCollection });
+// console.log({ gdVideoData, ytVideoData, nextUrl, prevUrl, nextVideo, project, videoCollection });
 
 
 export default { gdVideoData, ytVideoData, nextUrl, prevUrl, nextVideo, project, videoCollection };

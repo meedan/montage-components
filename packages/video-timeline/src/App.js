@@ -95,10 +95,6 @@ class App extends Component {
     const { data, classes, player } = this.props;
     const { currentTime, duration, playing, transport } = player;
 
-    console.group('APP');
-    console.log(this.props);
-    console.groupEnd();
-
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <CssBaseline />

@@ -56,8 +56,6 @@ const playerSlice = createSlice({
   },
 });
 
-console.log(playerSlice);
-
 const { actions, reducer } = playerSlice;
 export const {
   play,

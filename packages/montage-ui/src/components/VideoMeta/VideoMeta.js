@@ -107,11 +107,6 @@ class VideoMeta extends Component {
       .filter(d => !!d)
       .filter(d => !!d.type);
 
-    console.group('Video Meta');
-    console.log('state', this.state);
-    console.log({ mapData });
-    console.groupEnd();
-
     return (
       <Card square elevation={0} className={classes.Root}>
         <CardHeader

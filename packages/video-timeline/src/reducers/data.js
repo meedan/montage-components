@@ -26,8 +26,6 @@ const dataSlice = createSlice({
   },
 });
 
-console.log(dataSlice);
-
 const { actions, reducer } = dataSlice;
 export const { update, reset } = actions;
 export default reducer;

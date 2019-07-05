@@ -9,6 +9,6 @@ const parsed = Flatted.parse(DATA);
 // console.log(parsed);
 
 const { commentThreads, videoTags } = JSON.parse(owtj(parsed));
-console.log({ commentThreads, videoTags });
+// console.log({ commentThreads, videoTags });
 
 export default { commentThreads, videoTags };

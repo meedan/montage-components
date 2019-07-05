@@ -34,8 +34,6 @@ const VideoTimeline = props => {
 
   const store = configureAppStore(props.$scope ? { data } : {});
 
-  console.log(props, data);
-
   return (
     <Provider store={store}>
       <SnackbarProvider maxSnack={3}>
