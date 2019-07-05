@@ -21,6 +21,8 @@ import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
+import Transcript from './Transcript';
+
 import { seekTo } from './reducers/player';
 
 import hamock from './hamock.png';
@@ -111,19 +113,11 @@ class App extends Component {
                 wrap="nowrap"
               >
                 <Grid item sm={'auto'}>
-                  {data.prevVideo ? (
-                    <Preview data={data.prevVideo} isPrev />
-                  ) : null}
+                  {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
                 </Grid>
                 <Grid item sm={12}>
                   <Paper square>
-                    <Grid
-                      container
-                      justify="center"
-                      alignItems="stretch"
-                      spacing={0}
-                      direction="row-reverse"
-                    >
+                    <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
                       <Grid item sm={4}>
                         <VideoMeta
                           allocation={['collectionId1', 'collectionId2']}
@@ -141,26 +135,18 @@ class App extends Component {
                               id: 'collectionId3',
                             },
                           ]}
-                          onCreateCollection={str =>
-                            console.log('onCreateCollection()', str)
-                          }
+                          onCreateCollection={str => console.log('onCreateCollection()', str)}
                           onDelete={() => console.log('onDelete()')}
-                          onTriggerDelete={() =>
-                            console.log('onTriggerDelete()')
-                          }
+                          onTriggerDelete={() => console.log('onTriggerDelete()')}
                           onManageDupes={() => console.log('onManageDupes()')}
-                          onUpdateAllocation={arr =>
-                            console.log('onUpdateAllocation()', arr)
-                          }
+                          onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
                           currentTime={currentTime}
                           videoPlaces={data.videoPlaces}
                           pubDate={data.ytVideoData.snippet.publishedAt}
                           channelTitle={data.ytVideoData.snippet.channelTitle}
                           videoViewCount={data.ytVideoData.statistics.viewCount}
                           videoId={data.gdVideoData.id}
-                          videoDescription={
-                            data.ytVideoData.snippet.description
-                          }
+                          videoDescription={data.ytVideoData.snippet.description}
                           videoBackups={data.videoBackups}
                           onTriggerArchive={(payload, callback) => {
                             console.log('onTriggerArchive, payload:', payload);
@@ -172,22 +158,15 @@ class App extends Component {
                           onTriggerKeep={callback => {
                             console.log('onTriggerKeep');
                             setTimeout(() => {
-                              this.props.enqueueSnackbar(
-                                'Syncing with Keep finished'
-                              );
+                              this.props.enqueueSnackbar('Syncing with Keep finished');
                               callback();
                             }, 2000);
                           }}
                           onTriggerFavourite={(payload, callback) => {
-                            console.log(
-                              'onTriggerFavourite, payload:',
-                              payload
-                            );
+                            console.log('onTriggerFavourite, payload:', payload);
                             // ;
                             setTimeout(() => {
-                              this.props.enqueueSnackbar(
-                                'Video added to favourites'
-                              );
+                              this.props.enqueueSnackbar('Video added to favourites');
                               callback();
                             }, 1000);
                           }}
@@ -196,9 +175,7 @@ class App extends Component {
                             console.log(date);
                             callback();
                           }}
-                          recDateOverriden={
-                            data.gdVideoData.recorded_date_overridden
-                          }
+                          recDateOverriden={data.gdVideoData.recorded_date_overridden}
                           seekTo={payload => this.props.seekTo(payload)}
                         />
                       </Grid>
@@ -209,9 +186,7 @@ class App extends Component {
                   </Paper>
                 </Grid>
                 <Grid item sm={'auto'}>
-                  {data.nextVideo ? (
-                    <Preview data={data.nextVideo} isNext />
-                  ) : null}
+                  {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
                 </Grid>
               </Grid>
               <Transport
@@ -220,11 +195,7 @@ class App extends Component {
                 player={this.props.player}
                 transport={transport}
               />
-              <Tabs
-                value={this.state.mode}
-                centered
-                classes={{ indicator: classes.TabsIndicator }}
-              >
+              <Tabs value={this.state.mode} centered classes={{ indicator: classes.TabsIndicator }}>
                 <Tab
                   onClick={() => this.setState({ mode: 'transcript' })}
                   label="Transcript"
@@ -260,12 +231,14 @@ class App extends Component {
                 </ErrorBoundary>
               ) : (
                 <div style={{ textAlign: 'center' }}>
-                  <img
-                    alt=""
-                    src={hamock}
-                    style={{ margin: '0 auto' }}
-                    width="1024px"
+                  <Transcript
+                    data={data}
+                    transcript={data.transcripts[0]}
+                    currentTime={currentTime}
+                    seekTo={payload => this.props.seekTo(payload)}
                   />
+                  <hr />
+                  <img alt="" src={hamock} style={{ margin: '0 auto' }} width="1024px" />
                 </div>
               )}
             </BottomWrapper>
