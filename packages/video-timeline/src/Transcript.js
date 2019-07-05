@@ -7,14 +7,65 @@ import {
   convertFromRaw,
   convertToRaw,
   getDefaultKeyBinding,
-  Modifier,
   RichUtils,
 } from 'draft-js';
 import encodeInlineStyleRanges from '../../../node_modules/draft-js/lib/encodeInlineStyleRanges';
 import chunk from 'lodash.chunk';
+import range from 'lodash.range';
+import Combinatorics from 'js-combinatorics';
 import VisibilitySensor from 'react-visibility-sensor';
+import styled from 'styled-components';
 
-import './transcript.css';
+const MAX_OVERLAP = 5;
+const OVERLAPS = range(MAX_OVERLAP).map(n => `.B${n}`);
+const customStyleMap = OVERLAPS.map(n => n.substring(1)).reduce((acc, n) => ({ ...acc, [n]: { className: n } }), {});
+
+console.log(customStyleMap);
+
+const TranscriptWrapper = styled.div`
+  text-align: left;
+  background-color: #f0f0f0;
+  color: #222;
+  font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  ${Combinatorics.power(OVERLAPS)
+    .filter(subset => subset.length > 0)
+    .map(subset => `${subset.join('')} { background-color: rgba(255, 0, 0, ${0.2 + subset.length / MAX_OVERLAP}); }`)}
+`;
+
+const BlockWrapper = styled.div`
+  margin-bottom: 1em;
+  position: relative;
+`;
+
+const Speaker = styled.div`
+  user-select: none;
+  font-family: 'PT Sans Narrow', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+`;
+
+const Token = styled.span`
+  background-color: rgba(255, 255, 255, 1);
+`;
+
+const EditorWrapper = styled.section`
+  position: relative;
+
+  ::before {
+    position: absolute;
+    top: -5px;
+    font-size: 7px;
+    content: attr(data-editor-key);
+    color: red;
+  }
+
+  .public-DraftStyleDefault-block {
+    font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  }
+`;
 
 class Transcript extends React.Component {
   state = {};
@@ -76,7 +127,7 @@ class Transcript extends React.Component {
                 return {
                   offset: first.offset,
                   length: last.offset + last.length,
-                  style: `B${index % 3}`,
+                  style: `B${index % MAX_OVERLAP}`,
                 };
               })
               .filter(r => !!r);
@@ -119,12 +170,12 @@ class Transcript extends React.Component {
           const start = block.getData().get('start') || '';
 
           return (
-            <div className="WrapperBlock" key={`W${key}`}>
-              <div contentEditable={false} className="speaker">
+            <BlockWrapper className="BlockWrapper" key={`W${key}`}>
+              <Speaker contentEditable={false}>
                 {speaker}: {start}
-              </div>
+              </Speaker>
               <EditorBlock {...props} />
-            </div>
+            </BlockWrapper>
           );
         },
         props: {
@@ -210,88 +261,10 @@ class Transcript extends React.Component {
       editorState.getCurrentContent() === this.state.editors[editorIndex].editorState.getCurrentContent()
         ? null
         : editorState.getLastChangeType();
-    console.log(contentChange);
 
-    const blockKey = editorState.getSelection().getStartKey();
-
-    const blocks = editorState.getCurrentContent().getBlocksAsArray();
-    const blockIndex = blocks.findIndex(block => block.getKey() === blockKey);
-    // console.log(blockIndex);
-
-    // if (!contentChange && blockIndex === blocks.length - 1 && editorIndex < this.state.editors.length - 1) {
-    //   const editorStateA = editorState;
-    //   const editorStateB = this.state.editors[editorIndex + 1].editorState;
-    //
-    //   const blocksA = editorStateA
-    //     .getCurrentContent()
-    //     .getBlockMap()
-    //     .toArray();
-    //   const blocksB = editorStateB
-    //     .getCurrentContent()
-    //     .getBlockMap()
-    //     .toArray();
-    //
-    //   const blocks = [
-    //     ...createRaw(blocksA, editorStateA.getCurrentContent()),
-    //     ...createRaw(blocksB, editorStateB.getCurrentContent()),
-    //   ];
-    //
-    //   console.log(blocks, convertToRaw(editorState.getCurrentContent()));
-    //
-    //   const entityMap = createEntityMap(blocks);
-    //
-    //   // const editorStateAB = EditorState.createWithContent(
-    //   //   convertFromRaw({
-    //   //     blocks,
-    //   //     entityMap,
-    //   //   }),
-    //   //   decorator
-    //   // );
-    //
-    //   const editorStateAB = EditorState.set(
-    //     EditorState.createWithContent(
-    //       convertFromRaw({
-    //         blocks,
-    //         entityMap,
-    //       }),
-    //       decorator
-    //     ),
-    //     {
-    //       selection: editorStateA.getSelection(),
-    //       // undoStack: editorStateA.getUndoStack(),
-    //       // redoStack: editorStateA.getRedoStack(),
-    //       lastChangeType: editorStateA.getLastChangeType(),
-    //       allowUndo: false,
-    //     }
-    //   );
-    //
-    //   // const editorStateNoUndo = EditorState.set(editorStateA, { allowUndo: false });
-    //   // const editorState2 = EditorState.push(
-    //   //   editorStateNoUndo,
-    //   //   convertFromRaw({
-    //   //     blocks,
-    //   //     entityMap,
-    //   //   }),
-    //   //   'insert-fragment'
-    //   // );
-    //   // const editorStateAllowUndo = EditorState.set(editorState2, { allowUndo: true });
-    //   // const editorStateAB = EditorState.forceSelection(editorStateAllowUndo, editorStateA.getSelection());
-    //
-    //   this.past.push(this.state.editors);
-    //   this.future = [];
-    //   this.setState({
-    //     editors: [
-    //       ...this.state.editors.slice(0, editorIndex),
-    //       {
-    //         editorState: editorStateAB,
-    //         key,
-    //         previewState: createPreview(editorStateAB),
-    //       },
-    //       ...this.state.editors.slice(editorIndex + 2),
-    //     ],
-    //   });
-    // } else
     if (contentChange) {
+      console.log(contentChange);
+
       this.past.push(this.state.editors);
       this.future = [];
       this.setState({
@@ -302,7 +275,6 @@ class Transcript extends React.Component {
         ],
       });
     } else {
-      // console.log(editorState.getSelection());
       this.setState({
         editors: [
           ...this.state.editors.slice(0, editorIndex),
@@ -366,62 +338,51 @@ class Transcript extends React.Component {
     return getDefaultKeyBinding(event);
   };
 
-  handleFocus = (key, event) => {
-    console.log('click2');
-    // this.editorRefs[key].focus();
-    // Object.keys(this.editorRefs)
-    //   .filter(k => k !== key)
-    //   .forEach(k => this.editorRefs[k].blur());
-  };
-  // onClick={event => this.handleFocus(key, event)}
-  // onFocus={event => console.log(event.nativeEvent)}
-  // customStyleFn={customStyleFn}
-  renderEditor = ({ editorState, key, previewState }) => {
-    // const isVisible = true;
-
-    return (
-      <section key={`s-${key}`} data-editor-key={key}>
-        <VisibilitySensor
-          key={`vs-${key}`}
-          intervalCheck={true}
-          intervalDelay={1000}
-          scrollCheck={true}
-          partialVisibility={true}
-        >
-          {({ isVisible }) => (
-            <Editor
-              editorKey={key}
-              readOnly={true || !isVisible}
-              stripPastedStyles
-              editorState={isVisible ? editorState : previewState}
-              blockRendererFn={this.customBlockRenderer}
-              customStyleMap={customStyleMap}
-              keyBindingFn={event => this.filterKeyBindingFn(event)}
-              handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
-              onChange={editorState => this.onChange(editorState, key)}
-              ref={ref => this.setDomEditorRef(key, ref)}
-            />
-          )}
-        </VisibilitySensor>
-      </section>
-    );
-  };
+  renderEditor = ({ editorState, key, previewState }) => (
+    <EditorWrapper key={`s-${key}`} data-editor-key={key}>
+      <VisibilitySensor
+        key={`vs-${key}`}
+        intervalCheck={false}
+        intervalDelay={1000}
+        containment={this.props.scrollingContainer}
+        scrollCheck={true}
+        partialVisibility={true}
+      >
+        {({ isVisible }) => (
+          <Editor
+            editorKey={key}
+            readOnly={true || !isVisible}
+            stripPastedStyles
+            editorState={isVisible ? editorState : previewState}
+            blockRendererFn={this.customBlockRenderer}
+            customStyleMap={customStyleMap}
+            keyBindingFn={event => this.filterKeyBindingFn(event)}
+            handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
+            onChange={editorState => this.onChange(editorState, key)}
+            ref={ref => this.setDomEditorRef(key, ref)}
+          />
+        )}
+      </VisibilitySensor>
+    </EditorWrapper>
+  );
 
   render() {
-    return (
-      <div className="Transcript" onClick={event => this.handleClick(event)}>
-        <style scoped>
-          {`/* section[data-editor-key="${this.state.playheadEditorKey}"] { border-left: 1px solid blue; } */`}
-          {`/* div[data-offset-key="${this.state.playheadBlockKey}-0-0"] { border-right: 1px solid blue; } */`}
-          {`/* span[data-entity-key="${this.state.playheadEntityKey}"] { border-bottom: 1px solid blue; } */`}
+    const { playheadEditorKey, playheadBlockKey, playheadEntityKey } = this.state;
 
-          {`section[data-editor-key="${this.state.playheadEditorKey}"] ~ section .WrapperBlock > div[data-offset-key] > span { color: #696969 }`}
-          {`/* div[data-offset-key="${this.state.playheadBlockKey}-0-0"] > .WrapperBlock > div[data-offset-key] > span { color: black; } */`}
-          {`div[data-offset-key="${this.state.playheadBlockKey}-0-0"] ~ div > .WrapperBlock > div[data-offset-key] > span { color: #696969; }`}
-          {`span[data-entity-key="${this.state.playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }`}
+    return (
+      <TranscriptWrapper onClick={event => this.handleClick(event)}>
+        <style scoped>
+          {`
+            span[data-entity-key="${playheadEntityKey}"] { border-bottom: 1px solid blue; }
+
+            section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper > div[data-offset-key] > span { color: #696969 }
+            /* div[data-offset-key="${playheadBlockKey}-0-0"] > .BlockWrapper > div[data-offset-key] > span { color: black; } */
+            div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
+            span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
+          `}
         </style>
         {this.state.editors.map((editorState, index) => this.renderEditor(editorState))}
-      </div>
+      </TranscriptWrapper>
     );
   }
 }
@@ -441,9 +402,9 @@ const decorator = new CompositeDecorator([
     component: ({ entityKey, contentState, children }) => {
       const data = entityKey ? contentState.getEntity(entityKey).getData() : {};
       return (
-        <span data-start={data.start} data-entity-key={data.key} className="Token">
+        <Token data-start={data.start} data-entity-key={data.key} className="Token">
           {children}
-        </span>
+        </Token>
       );
     },
   },
@@ -517,17 +478,5 @@ const createRaw = (blocks, contentState) =>
       }),
     };
   });
-
-const customStyleMap = {
-  B0: {
-    className: 'B0',
-  },
-  B1: {
-    className: 'B1',
-  },
-  B2: {
-    className: 'B2',
-  },
-};
 
 export default Transcript;

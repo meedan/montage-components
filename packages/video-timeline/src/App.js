@@ -77,6 +77,9 @@ class App extends Component {
     mode: 'timeline',
   };
 
+  scrollingContainer = null;
+  setScrollingContainer = element => (this.scrollingContainer = element);
+
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
   };
@@ -218,7 +221,7 @@ class App extends Component {
                 />
               </Tabs>
             </TopWrapper>
-            <BottomWrapper>
+            <BottomWrapper ref={this.setScrollingContainer}>
               {this.state.mode === 'timeline' ? (
                 <ErrorBoundary>
                   <Timeline
@@ -233,6 +236,7 @@ class App extends Component {
                 <div style={{ textAlign: 'center' }}>
                   <Transcript
                     data={data}
+                    scrollingContainer={this.scrollingContainer}
                     transcript={data.transcripts[0]}
                     currentTime={currentTime}
                     seekTo={payload => this.props.seekTo(payload)}
