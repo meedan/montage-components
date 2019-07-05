@@ -9005,6 +9005,11 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
+lodash.chunk@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.chunk/-/lodash.chunk-4.2.0.tgz#66e5ce1f76ed27b4303d8c6512e8d1216e8106bc"
+  integrity sha1-ZuXOH3btJ7QwPYxlEujRIW6BBrw=
+
 lodash.frompairs@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.frompairs/-/lodash.frompairs-4.0.1.tgz#bc4e5207fa2757c136e573614e9664506b2b1bd2"
@@ -12355,6 +12360,13 @@ react-transition-group@^4.0.0:
   dependencies:
     dom-helpers "^3.4.0"
     loose-envify "^1.4.0"
+    prop-types "^15.6.2"
+
+react-visibility-sensor@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-visibility-sensor/-/react-visibility-sensor-5.1.0.tgz#3d3cec7df0c39da7a92ce12590be04a13dce8e14"
+  integrity sha512-DnM9+W3sHOPATMG+HLAS2vTqSnC6yizCiUrCFRdgg6whcq8Ed0Vr3hMm11Pkz8wTSgqYnkiKvSWXmviSBI99uQ==
+  dependencies:
     prop-types "^15.6.2"
 
 react2angular@4.0.6:

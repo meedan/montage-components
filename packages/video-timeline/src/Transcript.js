@@ -11,32 +11,35 @@ import {
   RichUtils,
 } from 'draft-js';
 import encodeInlineStyleRanges from '../../../node_modules/draft-js/lib/encodeInlineStyleRanges';
-// import chunk from 'lodash.chunk';
-// import VisibilitySensor from 'react-visibility-sensor';
+import chunk from 'lodash.chunk';
+import VisibilitySensor from 'react-visibility-sensor';
 
 import './transcript.css';
 
 class Transcript extends React.Component {
   state = {};
-
   past = [];
   future = [];
-
-  // player = React.createRef();
-
   editorRefs = {};
   setDomEditorRef = (key, ref) => (this.editorRefs[key] = ref);
 
   static getDerivedStateFromProps(props, state) {
     const { transcript } = props;
+
     if (transcript && !state.editors) {
-      const editors = [transcript.segments].map(segments => {
+      const tagInstances = props.data.videoTags.reduce((acc, entity) => {
+        // const instances = entity.instances.map(instance => ({ ...instance, entity }));
+        return [...acc, ...entity.instances];
+      }, []);
+
+      const editors = chunk(transcript.segments, 2).map(segments => {
         const blocks = segments
           .map(({ text, start, end, speaker, id, words }, index) => ({
             text,
             key: id,
             type: 'paragraph',
             data: { start, end, speaker, id },
+            // entityRanges: [],
             entityRanges: words.map(({ start, end, text, offset, length, id }) => ({
               start,
               end,
@@ -50,19 +53,12 @@ class Transcript extends React.Component {
           .map(block => {
             const { start, end } = block.data;
 
-            // console.log(props.data.videoTags);
-            const instances = props.data.videoTags
-              .reduce((acc, entity) => {
-                // const instances = entity.instances.map(instance => ({ ...instance, entity }));
-                return [...acc, ...entity.instances];
-              }, [])
-              .filter(
-                ({ start_seconds, end_seconds }) =>
-                  (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
-                  (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
-              );
+            const instances = tagInstances.filter(
+              ({ start_seconds, end_seconds }) =>
+                (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
+            );
 
-            // console.log(start, end, instances);
             block.inlineStyleRanges = instances
               .map(({ start_seconds, end_seconds }) =>
                 block.entityRanges.filter(
@@ -73,16 +69,19 @@ class Transcript extends React.Component {
                     end <= end_seconds * 1e3
                 )
               )
-              .map(entities => {
+              .map((entities, index) => {
+                if (entities.length === 0) return null;
                 const first = entities[0];
                 const last = entities[entities.length - 1];
                 return {
                   offset: first.offset,
                   length: last.offset + last.length,
-                  style: 'B1',
+                  style: `B${index % 3}`,
                 };
-              });
-            // console.log(block.inlineStyleRanges);
+              })
+              .filter(r => !!r);
+
+            // block.entityRanges = [];
             return block;
           });
 
@@ -101,6 +100,14 @@ class Transcript extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.currentTime !== this.props.currentTime) {
+      this.onTimeUpdate(nextProps.currentTime * 1e3);
+    }
+
+    return true;
+  }
+
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
     if (type === 'paragraph') {
@@ -109,11 +116,12 @@ class Transcript extends React.Component {
           const { block } = props;
           const key = block.getKey();
           const speaker = block.getData().get('speaker') || '';
+          const start = block.getData().get('start') || '';
 
           return (
             <div className="WrapperBlock" key={`W${key}`}>
               <div contentEditable={false} className="speaker">
-                {speaker}:
+                {speaker}: {start}
               </div>
               <EditorBlock {...props} />
             </div>
@@ -147,49 +155,53 @@ class Transcript extends React.Component {
     }
   };
 
-  // onTimeUpdate = event => {
-  //   const time = this.player.current.currentTime * 1e3;
-  //
-  //   this.state.editors.forEach(({ editorState, key }) => {
-  //     const contentState = editorState.getCurrentContent();
-  //     const blocks = contentState.getBlocksAsArray();
-  //     let playheadBlockIndex = -1;
-  //
-  //     playheadBlockIndex = blocks.findIndex(block => {
-  //       const start = block.getData().get('start');
-  //       const end = block.getData().get('end');
-  //       return start <= time && time < end;
-  //     });
-  //
-  //     if (playheadBlockIndex > -1) {
-  //       const playheadBlock = blocks[playheadBlockIndex];
-  //       const playheadEntity = [
-  //         ...new Set(
-  //           playheadBlock
-  //             .getCharacterList()
-  //             .toArray()
-  //             .map(character => character.getEntity())
-  //         ),
-  //       ]
-  //         .filter(value => !!value)
-  //         .find(entity => {
-  //           const { start, end } = contentState.getEntity(entity).getData();
-  //           return start <= time && time < end;
-  //         });
-  //
-  //       if (playheadEntity) {
-  //         const { key } = contentState.getEntity(playheadEntity).getData();
-  //         this.setState({
-  //           playheadEditorKey: key,
-  //           playheadBlockKey: playheadBlock.getKey(),
-  //           playheadEntityKey: key,
-  //         });
-  //       } else {
-  //         this.setState({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
-  //       }
-  //     }
-  //   });
-  // };
+  onTimeUpdate = time => {
+    this.state.editors.forEach(({ editorState, key }) => {
+      const contentState = editorState.getCurrentContent();
+      const blocks = contentState.getBlocksAsArray();
+      let playheadBlockIndex = -1;
+
+      playheadBlockIndex = blocks.findIndex(block => {
+        const start = block.getData().get('start');
+        const end = block.getData().get('end');
+        return start <= time && time < end;
+      });
+
+      if (playheadBlockIndex > -1) {
+        const playheadBlock = blocks[playheadBlockIndex];
+        const playheadEntity = [
+          ...new Set(
+            playheadBlock
+              .getCharacterList()
+              .toArray()
+              .map(character => character.getEntity())
+          ),
+        ]
+          .filter(value => !!value)
+          .find(entity => {
+            const { start, end } = contentState.getEntity(entity).getData();
+            return start <= time && time < end;
+          });
+
+        if (playheadEntity) {
+          const { key } = contentState.getEntity(playheadEntity).getData();
+          this.setState({
+            playheadEditorKey: key,
+            playheadBlockKey: playheadBlock.getKey(),
+            playheadEntityKey: key,
+          });
+          console.log({
+            playheadEditorKey: key,
+            playheadBlockKey: playheadBlock.getKey(),
+            playheadEntityKey: key,
+          });
+        } else {
+          // this.setState({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
+          // console.log({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
+        }
+      }
+    });
+  };
 
   onChange = (editorState, key) => {
     const editorIndex = this.state.editors.findIndex(editor => editor.key === key);
@@ -206,79 +218,80 @@ class Transcript extends React.Component {
     const blockIndex = blocks.findIndex(block => block.getKey() === blockKey);
     // console.log(blockIndex);
 
-    if (!contentChange && blockIndex === blocks.length - 1 && editorIndex < this.state.editors.length - 1) {
-      const editorStateA = editorState;
-      const editorStateB = this.state.editors[editorIndex + 1].editorState;
-
-      const blocksA = editorStateA
-        .getCurrentContent()
-        .getBlockMap()
-        .toArray();
-      const blocksB = editorStateB
-        .getCurrentContent()
-        .getBlockMap()
-        .toArray();
-
-      const blocks = [
-        ...createRaw(blocksA, editorStateA.getCurrentContent()),
-        ...createRaw(blocksB, editorStateB.getCurrentContent()),
-      ];
-
-      console.log(blocks, convertToRaw(editorState.getCurrentContent()));
-
-      const entityMap = createEntityMap(blocks);
-
-      // const editorStateAB = EditorState.createWithContent(
-      //   convertFromRaw({
-      //     blocks,
-      //     entityMap,
-      //   }),
-      //   decorator
-      // );
-
-      const editorStateAB = EditorState.set(
-        EditorState.createWithContent(
-          convertFromRaw({
-            blocks,
-            entityMap,
-          }),
-          decorator
-        ),
-        {
-          selection: editorStateA.getSelection(),
-          // undoStack: editorStateA.getUndoStack(),
-          // redoStack: editorStateA.getRedoStack(),
-          lastChangeType: editorStateA.getLastChangeType(),
-          allowUndo: false,
-        }
-      );
-
-      // const editorStateNoUndo = EditorState.set(editorStateA, { allowUndo: false });
-      // const editorState2 = EditorState.push(
-      //   editorStateNoUndo,
-      //   convertFromRaw({
-      //     blocks,
-      //     entityMap,
-      //   }),
-      //   'insert-fragment'
-      // );
-      // const editorStateAllowUndo = EditorState.set(editorState2, { allowUndo: true });
-      // const editorStateAB = EditorState.forceSelection(editorStateAllowUndo, editorStateA.getSelection());
-
-      this.past.push(this.state.editors);
-      this.future = [];
-      this.setState({
-        editors: [
-          ...this.state.editors.slice(0, editorIndex),
-          {
-            editorState: editorStateAB,
-            key,
-            previewState: createPreview(editorStateAB),
-          },
-          ...this.state.editors.slice(editorIndex + 2),
-        ],
-      });
-    } else if (contentChange) {
+    // if (!contentChange && blockIndex === blocks.length - 1 && editorIndex < this.state.editors.length - 1) {
+    //   const editorStateA = editorState;
+    //   const editorStateB = this.state.editors[editorIndex + 1].editorState;
+    //
+    //   const blocksA = editorStateA
+    //     .getCurrentContent()
+    //     .getBlockMap()
+    //     .toArray();
+    //   const blocksB = editorStateB
+    //     .getCurrentContent()
+    //     .getBlockMap()
+    //     .toArray();
+    //
+    //   const blocks = [
+    //     ...createRaw(blocksA, editorStateA.getCurrentContent()),
+    //     ...createRaw(blocksB, editorStateB.getCurrentContent()),
+    //   ];
+    //
+    //   console.log(blocks, convertToRaw(editorState.getCurrentContent()));
+    //
+    //   const entityMap = createEntityMap(blocks);
+    //
+    //   // const editorStateAB = EditorState.createWithContent(
+    //   //   convertFromRaw({
+    //   //     blocks,
+    //   //     entityMap,
+    //   //   }),
+    //   //   decorator
+    //   // );
+    //
+    //   const editorStateAB = EditorState.set(
+    //     EditorState.createWithContent(
+    //       convertFromRaw({
+    //         blocks,
+    //         entityMap,
+    //       }),
+    //       decorator
+    //     ),
+    //     {
+    //       selection: editorStateA.getSelection(),
+    //       // undoStack: editorStateA.getUndoStack(),
+    //       // redoStack: editorStateA.getRedoStack(),
+    //       lastChangeType: editorStateA.getLastChangeType(),
+    //       allowUndo: false,
+    //     }
+    //   );
+    //
+    //   // const editorStateNoUndo = EditorState.set(editorStateA, { allowUndo: false });
+    //   // const editorState2 = EditorState.push(
+    //   //   editorStateNoUndo,
+    //   //   convertFromRaw({
+    //   //     blocks,
+    //   //     entityMap,
+    //   //   }),
+    //   //   'insert-fragment'
+    //   // );
+    //   // const editorStateAllowUndo = EditorState.set(editorState2, { allowUndo: true });
+    //   // const editorStateAB = EditorState.forceSelection(editorStateAllowUndo, editorStateA.getSelection());
+    //
+    //   this.past.push(this.state.editors);
+    //   this.future = [];
+    //   this.setState({
+    //     editors: [
+    //       ...this.state.editors.slice(0, editorIndex),
+    //       {
+    //         editorState: editorStateAB,
+    //         key,
+    //         previewState: createPreview(editorStateAB),
+    //       },
+    //       ...this.state.editors.slice(editorIndex + 2),
+    //     ],
+    //   });
+    // } else
+    if (contentChange) {
       this.past.push(this.state.editors);
       this.future = [];
       this.setState({
@@ -364,22 +377,32 @@ class Transcript extends React.Component {
   // onFocus={event => console.log(event.nativeEvent)}
   // customStyleFn={customStyleFn}
   renderEditor = ({ editorState, key, previewState }) => {
-    const isVisible = true;
+    // const isVisible = true;
 
     return (
       <section key={`s-${key}`} data-editor-key={key}>
-        <Editor
-          editorKey={key}
-          readOnly={!isVisible}
-          stripPastedStyles
-          editorState={isVisible ? editorState : previewState}
-          blockRendererFn={this.customBlockRenderer}
-          customStyleMap={customStyleMap}
-          keyBindingFn={event => this.filterKeyBindingFn(event)}
-          handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
-          onChange={editorState => this.onChange(editorState, key)}
-          ref={ref => this.setDomEditorRef(key, ref)}
-        />
+        <VisibilitySensor
+          key={`vs-${key}`}
+          intervalCheck={true}
+          intervalDelay={1000}
+          scrollCheck={true}
+          partialVisibility={true}
+        >
+          {({ isVisible }) => (
+            <Editor
+              editorKey={key}
+              readOnly={true || !isVisible}
+              stripPastedStyles
+              editorState={isVisible ? editorState : previewState}
+              blockRendererFn={this.customBlockRenderer}
+              customStyleMap={customStyleMap}
+              keyBindingFn={event => this.filterKeyBindingFn(event)}
+              handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
+              onChange={editorState => this.onChange(editorState, key)}
+              ref={ref => this.setDomEditorRef(key, ref)}
+            />
+          )}
+        </VisibilitySensor>
       </section>
     );
   };
@@ -388,8 +411,12 @@ class Transcript extends React.Component {
     return (
       <div className="Transcript" onClick={event => this.handleClick(event)}>
         <style scoped>
+          {`/* section[data-editor-key="${this.state.playheadEditorKey}"] { border-left: 1px solid blue; } */`}
+          {`/* div[data-offset-key="${this.state.playheadBlockKey}-0-0"] { border-right: 1px solid blue; } */`}
+          {`/* span[data-entity-key="${this.state.playheadEntityKey}"] { border-bottom: 1px solid blue; } */`}
+
           {`section[data-editor-key="${this.state.playheadEditorKey}"] ~ section .WrapperBlock > div[data-offset-key] > span { color: #696969 }`}
-          {`div[data-offset-key="${this.state.currentBlockKey}-0-0"] > .WrapperBlock > div[data-offset-key] > span { color: black; }`}
+          {`/* div[data-offset-key="${this.state.playheadBlockKey}-0-0"] > .WrapperBlock > div[data-offset-key] > span { color: black; } */`}
           {`div[data-offset-key="${this.state.playheadBlockKey}-0-0"] ~ div > .WrapperBlock > div[data-offset-key] > span { color: #696969; }`}
           {`span[data-entity-key="${this.state.playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }`}
         </style>
@@ -429,7 +456,7 @@ const createPreview = editorState =>
         blocks: convertToRaw(editorState.getCurrentContent()).blocks.map(block => ({
           ...block,
           entityRanges: [],
-          inlineStyleRanges: [],
+          // inlineStyleRanges: [],
         })),
         entityMap: {},
       }),
@@ -492,17 +519,14 @@ const createRaw = (blocks, contentState) =>
   });
 
 const customStyleMap = {
+  B0: {
+    className: 'B0',
+  },
   B1: {
-    // backgroundColor: 'yellow',
     className: 'B1',
   },
   B2: {
-    color: 'blue',
     className: 'B2',
-  },
-  B3: {
-    borderBottom: '1px solid red',
-    className: 'B3',
   },
 };
 
