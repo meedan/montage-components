@@ -2,6 +2,7 @@ import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import React, { Component, createRef } from 'react';
+import produce from 'immer';
 import styled from 'styled-components';
 
 import Table from '@material-ui/core/Table';
@@ -221,7 +222,7 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
-            entities={this.props.data.videoClips}
+            entities={mergeInstances(this.props.data.videoClips)}
             entitiesyKey={'videoClips'}
             playing={playing}
             transport={transport}
@@ -243,7 +244,7 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
-            entities={this.props.data.videoTags}
+            entities={mergeInstances(this.props.data.videoTags)}
             clips={this.props.data.videoClips}
             entitiesyKey={'videoTags'}
             playing={playing}
@@ -266,7 +267,7 @@ class Timeline extends Component {
             onChange={v =>
               DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
             }
-            entities={this.props.data.videoPlaces}
+            entities={mergeInstances(this.props.data.videoPlaces)}
             clips={this.props.data.videoClips}
             entitiesyKey={'videoPlaces'}
             playing={playing}
@@ -281,9 +282,30 @@ class Timeline extends Component {
   }
 }
 
-// Timeline.defaultProps = {};
-//
-// Timeline.propTypes = {};
+const mergeInstances = entities => produce(entities, nextEntities => nextEntities.forEach(e => {
+  e.isCreating = false;
+  e.instances = e.instances
+    .sort((j, i) => j.start_seconds - i.start_seconds)
+    .reduce((acc = [], i) => {
+      const j = acc.pop();
+
+      if (j) {
+        if (
+          j.start_seconds <= i.start_seconds &&
+          i.start_seconds < j.end_seconds
+        ) {
+          j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+          j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+          acc.push(j);
+          return acc;
+        }
+
+        acc.push(j);
+      }
+
+      return [...acc, i];
+    }, []);
+}));
 
 export default connect(
   null,
