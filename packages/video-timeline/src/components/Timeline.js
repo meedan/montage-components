@@ -66,12 +66,6 @@ class Timeline extends Component {
     return { time, events, skip, disjoint };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.seekTo !== this.state.seekTo && !DISABLE_TIMELINE_TRANSPORT) {
-      this.props.seekTo({ seekTo: this.state.seekTo, transport: 'timeline' });
-    }
-  }
-
   componentDidMount() {
     window.addEventListener('resize', this.setPlayheadStyles.bind(this));
     document.addEventListener('resize', this.setPlayheadStyles.bind(this));
@@ -115,6 +109,7 @@ class Timeline extends Component {
       this.setState({ time: newTime, disjoint: true, seekTo: newTime });
       console.log(`seeking to ${newTime} (onTrackClick)`);
       if (!playing) play({ transport: 'timeline' });
+      this.YTseekTo(newTime);
     }
     return null;
   };
@@ -150,6 +145,8 @@ class Timeline extends Component {
 
     // pause
     if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
+
+    this.YTseekTo(val);
   };
 
   onDragEnd = (val, clip = false) => {
@@ -166,6 +163,8 @@ class Timeline extends Component {
         }),
       300
     );
+
+    this.YTseekTo(this.state.time);
   };
 
   onTimeChange = (time, skip = true, clip = false) => {
@@ -173,6 +172,7 @@ class Timeline extends Component {
 
     this.setState({
       time: clip ? this.state.time : time,
+      ffTime: clip ? this.state.time : time,
       clip,
       skip,
       seekTo: time,
@@ -183,6 +183,18 @@ class Timeline extends Component {
 
     // pause
     if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
+
+    this.YTseekTo(time);
+  };
+
+  YTseekTo = time => {
+    if (
+      !DISABLE_TIMELINE_TRANSPORT &&
+      window.internalPlayer &&
+      window.internalPlayer.seekTo
+    ) {
+      window.internalPlayer.seekTo(time, true);
+    }
   };
 
   render() {
@@ -199,20 +211,17 @@ class Timeline extends Component {
         >
           <TimelinePlayhead
             duration={duration}
-            onTimeChange={throttle(this.onTimeChange, 150)}
+            onTimeChange={this.onTimeChange}
             style={this.state.playheadTrackStyle}
-            time={this.state.time}
+            time={time}
           />
         </TimelinePlayheadTrackWrapper>
         <Table padding="dense">
-          <TimelineComments
-            {...this.props}
-            currentTime={currentTime}
-            skip={skip}
-          />
+          <TimelineComments {...this.props} currentTime={currentTime} />
           <Entities
             title="Clips"
             entityType="clip"
+            key="clip"
             currentTime={currentTime}
             duration={duration}
             onAfterChange={v =>
@@ -235,6 +244,7 @@ class Timeline extends Component {
           <Entities
             title="Tags"
             entityType="tag"
+            key="tag"
             currentTime={currentTime}
             duration={duration}
             onAfterChange={v =>
@@ -258,6 +268,7 @@ class Timeline extends Component {
           <Entities
             title="Places"
             entityType="location"
+            key="location"
             currentTime={currentTime}
             duration={duration}
             onAfterChange={v =>

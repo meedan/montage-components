@@ -25,6 +25,7 @@ class Player extends Component {
     const { update } = this.props;
 
     this.internalPlayer = this.player.getInternalPlayer();
+    window.internalPlayer = this.internalPlayer;
 
     update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
 
@@ -39,8 +40,7 @@ class Player extends Component {
   };
 
   handleOnProgress = ({ playedSeconds }) => {
-    const roundedSeconds = Math.round(playedSeconds * 1e3) / 1e3;
-    console.log(roundedSeconds, playedSeconds);
+    const roundedSeconds = playedSeconds; // Math.round(playedSeconds * 1e3) / 1e3;
     this.props.timeupdate(roundedSeconds);
   };
 
