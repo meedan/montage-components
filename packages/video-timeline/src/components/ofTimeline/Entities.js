@@ -24,7 +24,8 @@ function getName(entity, entityType) {
 }
 
 class Entities extends Component {
-  state = {};
+  state = {
+  };
 
   static getDerivedStateFromProps(props, state) {
     const { duration, skip, entityType, transport } = props;
@@ -63,12 +64,12 @@ class Entities extends Component {
       }
     }
 
-    if (
-      nextProps.currentTime !== this.props.currentTime &&
-      !this.state.playlist &&
-      nextState === this.state
-    )
-      return false;
+    // if (
+    //   nextProps.currentTime !== this.props.currentTime &&
+    //   !this.state.playlist &&
+    //   nextState === this.state
+    // )
+    //   return false;
 
     // TODO handle extenal video override, like end of video, buffering, etc
 
