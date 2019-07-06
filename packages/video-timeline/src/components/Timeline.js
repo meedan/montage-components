@@ -13,7 +13,7 @@ import TimelineComments from './ofTimeline/Comments';
 
 import { TimelinePlayhead } from '@montage/ui';
 
-import { play, pause, seekTo } from '../reducers/player';
+import { play, pause, seekTo, update } from '../reducers/player';
 
 const DISABLE_TIMELINE_TRANSPORT = false;
 const DISABLE_TRACK_TRANSPORT = false;
@@ -97,6 +97,8 @@ class Timeline extends Component {
         zIndex: '150',
       },
     });
+
+    this.props.update({ trackWidth: rect.width });
   }
 
   onTrackClick = e => {
@@ -282,32 +284,35 @@ class Timeline extends Component {
   }
 }
 
-const mergeInstances = entities => produce(entities, nextEntities => nextEntities.forEach(e => {
-  e.isCreating = false;
-  e.instances = e.instances
-    .sort((j, i) => j.start_seconds - i.start_seconds)
-    .reduce((acc = [], i) => {
-      const j = acc.pop();
+const mergeInstances = entities =>
+  produce(entities, nextEntities =>
+    nextEntities.forEach(e => {
+      e.isCreating = false;
+      e.instances = e.instances
+        .sort((j, i) => j.start_seconds - i.start_seconds)
+        .reduce((acc = [], i) => {
+          const j = acc.pop();
 
-      if (j) {
-        if (
-          j.start_seconds <= i.start_seconds &&
-          i.start_seconds < j.end_seconds
-        ) {
-          j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
-          j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
-          acc.push(j);
-          return acc;
-        }
+          if (j) {
+            if (
+              j.start_seconds <= i.start_seconds &&
+              i.start_seconds < j.end_seconds
+            ) {
+              j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+              j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+              acc.push(j);
+              return acc;
+            }
 
-        acc.push(j);
-      }
+            acc.push(j);
+          }
 
-      return [...acc, i];
-    }, []);
-}));
+          return [...acc, i];
+        }, []);
+    })
+  );
 
 export default connect(
   null,
-  { play, pause, seekTo }
+  { play, pause, seekTo, update }
 )(Timeline);
