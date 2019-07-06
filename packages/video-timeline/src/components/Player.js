@@ -38,6 +38,12 @@ class Player extends Component {
     );
   };
 
+  handleOnProgress = ({ playedSeconds }) => {
+    const roundedSeconds = Math.round(playedSeconds * 1e3) / 1e3;
+    console.log(roundedSeconds, playedSeconds);
+    this.props.timeupdate(roundedSeconds);
+  };
+
   render() {
     const { player, play, pause, duration, timeupdate } = this.props;
     const { playing, playbackRate } = player;
@@ -53,9 +59,7 @@ class Player extends Component {
             preload: true,
           },
         }}
-        url={`https://www.youtube.com/watch?v=${
-          this.props.data.ytVideoData.id
-        }`}
+        url={`https://www.youtube.com/watch?v=${this.props.data.ytVideoData.id}`}
         progressInterval={200}
         playbackRate={playbackRate}
         controls
@@ -68,7 +72,7 @@ class Player extends Component {
         onPause={() => pause()}
         onEnded={() => pause()}
         onDuration={d => duration(d)}
-        onProgress={({ playedSeconds }) => timeupdate(playedSeconds)}
+        onProgress={this.handleOnProgress}
         onReady={this.handleOnReady}
         onStart={e => console.info('onStart', e)}
         onSeek={e => console.info('onSeek', e)}
