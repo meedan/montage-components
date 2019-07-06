@@ -66,6 +66,11 @@ class Timeline extends Component {
     return { time, events, skip, disjoint };
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (!nextState.skip) return true;
+  //   return false;
+  // }
+
   componentDidMount() {
     window.addEventListener('resize', this.setPlayheadStyles.bind(this));
     document.addEventListener('resize', this.setPlayheadStyles.bind(this));
@@ -106,7 +111,12 @@ class Timeline extends Component {
     const newTime = ((e.pageX - rect.left) * duration) / rect.width;
 
     if (!DISABLE_TIMELINE_TRANSPORT) {
-      this.setState({ time: newTime, disjoint: true, seekTo: newTime });
+      this.setState({
+        time: newTime,
+        disjoint: true,
+        skip: false,
+        seekTo: newTime,
+      });
       console.log(`seeking to ${newTime} (onTrackClick)`);
       if (!playing) play({ transport: 'timeline' });
       this.YTseekTo(newTime);
@@ -228,10 +238,10 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={mergeInstances(this.props.data.videoClips)}
             entitiesyKey={'videoClips'}
@@ -251,10 +261,10 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={mergeInstances(this.props.data.videoTags)}
             clips={this.props.data.videoClips}
@@ -275,10 +285,10 @@ class Timeline extends Component {
               DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
             }
             onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
             }
             onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true)
+              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
             }
             entities={mergeInstances(this.props.data.videoPlaces)}
             clips={this.props.data.videoClips}
