@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
+    "@babel/plugin-proposal-class-properties": "7.5.0",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
     "@catalog/babel-preset": "0.0.5",
