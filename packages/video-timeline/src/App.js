@@ -25,8 +25,6 @@ import Transcript from './Transcript';
 
 import { seekTo } from './reducers/player';
 
-import hamock from './hamock.png';
-
 const Layout = styled.div`
   align-items: center;
   bottom: 0;
@@ -241,8 +239,6 @@ class App extends Component {
                     currentTime={currentTime}
                     seekTo={payload => this.props.seekTo(payload)}
                   />
-                  <hr />
-                  <img alt="" src={hamock} style={{ margin: '0 auto' }} width="1024px" />
                 </div>
               )}
             </BottomWrapper>
