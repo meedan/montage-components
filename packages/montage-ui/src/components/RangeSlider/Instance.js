@@ -160,20 +160,12 @@ class Instance extends Component {
       newTime = start + MIN_LENGTH > duration ? duration : start + MIN_LENGTH;
     }
 
-    this.setState(
-      prevState => ({
-        [dragging]:
-          newTime >= RANGE_MIN && newTime <= RANGE_MAX
-            ? newTime
-            : prevState[dragging],
-      })
-      // () => {
-      //   this.props.updateInstance({
-      //     start_seconds: this.state.start,
-      //     end_seconds: this.state.end,
-      //   });
-      // }
-    );
+    this.setState(prevState => ({
+      [dragging]:
+        newTime >= RANGE_MIN && newTime <= RANGE_MAX
+          ? newTime
+          : prevState[dragging],
+    }));
 
     return null;
   }
@@ -309,7 +301,11 @@ class Instance extends Component {
                     pos={edge}
                   >
                     <div
-                      style={{ width: `100%`, height: `28px` }}
+                      style={{
+                        height: `28px`,
+                        transform: 'translateX(-10px)',
+                        width: `24px`,
+                      }}
                       {...bindHover(popupState)}
                     >
                       {isHandleActive ? (
