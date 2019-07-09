@@ -17,16 +17,16 @@ class TimelineWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      time: 0,
+      // time: 0,
     };
-    this.updateTime = this.updateTime.bind(this);
+    // this.updateTime = this.updateTime.bind(this);
     this.measureRef = this.measureRef.bind(this);
     this.ref = createRef();
   }
 
-  static getDerivedStateFromProps({ time }) {
-    return { time };
-  }
+  // static getDerivedStateFromProps({ time, skip }) {
+  //   if (!skip) return { time };
+  // }
 
   componentDidMount() {
     this.measureRef();
@@ -44,20 +44,17 @@ class TimelineWrapper extends Component {
       this.setState({ rect: this.ref.current.getBoundingClientRect() });
   }
 
-  updateTime(time) {
-    this.setState({ time }, () => this.props.onTimeChange(time));
-  }
-
   render() {
-    const { rect, time } = this.state;
+    const { rect } = this.state;
+    const { time, duration, onTimeChange, style } = this.props;
 
     return (
-      <PlayheadTrack ref={this.ref} style={this.props.style}>
+      <PlayheadTrack ref={this.ref} style={style}>
         <Playhead
-          duration={this.props.duration}
+          duration={duration}
           rect={rect}
           time={time}
-          updateTime={this.updateTime}
+          updateTime={onTimeChange}
         />
       </PlayheadTrack>
     );
