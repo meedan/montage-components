@@ -24,7 +24,7 @@ console.log(customStyleMap);
 
 const TranscriptWrapper = styled.div`
   text-align: left;
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
   color: #222;
   font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -33,7 +33,9 @@ const TranscriptWrapper = styled.div`
 
   ${Combinatorics.power(OVERLAPS)
     .filter(subset => subset.length > 0)
-    .map(subset => `${subset.join('')} { background-color: rgba(255, 0, 0, ${0.2 + subset.length / MAX_OVERLAP}); }`)}
+    .map(
+      subset => `${subset.join('')} { background-color: rgba(71, 123, 181, ${0.2 + subset.length / MAX_OVERLAP}); }`
+    )}
 `;
 
 const BlockWrapper = styled.div`
@@ -48,7 +50,16 @@ const Speaker = styled.div`
 `;
 
 const Token = styled.span`
-  background-color: rgba(255, 255, 255, 1);
+  /* background-color: rgba(255, 255, 255, 1); */
+`;
+
+const SearchHighlight = styled.span`
+  color: orange;
+  border-bottom: 2px solid orange;
+  background-color: navajowhite;
+  span {
+    background-color: navajowhite;
+  }
 `;
 
 const EditorWrapper = styled.section`
@@ -64,21 +75,29 @@ const EditorWrapper = styled.section`
 
   .public-DraftStyleDefault-block {
     font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    box-sizing: border-box;
+    * {
+      box-sizing: border-box;
+    }
   }
 `;
 
 class Transcript extends React.Component {
-  state = {};
+  state = {
+    search: '',
+    searchFocused: false,
+    activeHighlightIndex: 0,
+  };
   past = [];
   future = [];
   editorRefs = {};
   setDomEditorRef = (key, ref) => (this.editorRefs[key] = ref);
 
   static getDerivedStateFromProps(props, state) {
-    const { transcript } = props;
+    const { transcript, data } = props;
 
-    if (transcript && !state.editors) {
-      const tagInstances = props.data.videoTags.reduce((acc, entity) => {
+    if (transcript !== state.transcript) {
+      const tagInstances = data.videoTags.reduce((acc, entity) => {
         // const instances = entity.instances.map(instance => ({ ...instance, entity }));
         return [...acc, ...entity.instances];
       }, []);
@@ -137,7 +156,10 @@ class Transcript extends React.Component {
           });
 
         const editorState = EditorState.set(
-          EditorState.createWithContent(convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }), decorator),
+          EditorState.createWithContent(
+            convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
+            generateDecorator()
+          ),
           { allowUndo: false }
         );
         return {
@@ -147,16 +169,70 @@ class Transcript extends React.Component {
         };
       });
 
-      return { editors };
+      return { transcript, editors };
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
-      this.onTimeUpdate(nextProps.currentTime * 1e3);
+      const time = nextProps.currentTime * 1e3;
+      this.state.editors.forEach(({ editorState, key }) => {
+        const contentState = editorState.getCurrentContent();
+        const blocks = contentState.getBlocksAsArray();
+        let playheadBlockIndex = -1;
+
+        playheadBlockIndex = blocks.findIndex(block => {
+          const start = block.getData().get('start');
+          const end = block.getData().get('end');
+          return start <= time && time < end;
+        });
+
+        if (playheadBlockIndex > -1) {
+          const playheadBlock = blocks[playheadBlockIndex];
+          const playheadEntity = [
+            ...new Set(
+              playheadBlock
+                .getCharacterList()
+                .toArray()
+                .map(character => character.getEntity())
+            ),
+          ]
+            .filter(value => !!value)
+            .find(entity => {
+              const { start, end } = contentState.getEntity(entity).getData();
+              return start <= time && time < end;
+            });
+
+          if (playheadEntity) {
+            const { key } = contentState.getEntity(playheadEntity).getData();
+            this.setState({
+              playheadEditorKey: key,
+              playheadBlockKey: playheadBlock.getKey(),
+              playheadEntityKey: key,
+            });
+            console.log({
+              playheadEditorKey: key,
+              playheadBlockKey: playheadBlock.getKey(),
+              playheadEntityKey: key,
+            });
+          } else {
+            // this.setState({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
+            // console.log({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
+          }
+        }
+      });
     }
 
     return true;
+  }
+
+  componentDidUpdate() {
+    const { search, matchKey } = this.state;
+
+    if (search !== '' && matchKey) {
+      const match = this.transcriptWrapper.querySelector(`span[data-offset-key="${matchKey}"]`);
+      if (match) match.scrollIntoView();
+    }
   }
 
   customBlockRenderer = contentBlock => {
@@ -206,55 +282,7 @@ class Transcript extends React.Component {
     }
   };
 
-  onTimeUpdate = time => {
-    this.state.editors.forEach(({ editorState, key }) => {
-      const contentState = editorState.getCurrentContent();
-      const blocks = contentState.getBlocksAsArray();
-      let playheadBlockIndex = -1;
-
-      playheadBlockIndex = blocks.findIndex(block => {
-        const start = block.getData().get('start');
-        const end = block.getData().get('end');
-        return start <= time && time < end;
-      });
-
-      if (playheadBlockIndex > -1) {
-        const playheadBlock = blocks[playheadBlockIndex];
-        const playheadEntity = [
-          ...new Set(
-            playheadBlock
-              .getCharacterList()
-              .toArray()
-              .map(character => character.getEntity())
-          ),
-        ]
-          .filter(value => !!value)
-          .find(entity => {
-            const { start, end } = contentState.getEntity(entity).getData();
-            return start <= time && time < end;
-          });
-
-        if (playheadEntity) {
-          const { key } = contentState.getEntity(playheadEntity).getData();
-          this.setState({
-            playheadEditorKey: key,
-            playheadBlockKey: playheadBlock.getKey(),
-            playheadEntityKey: key,
-          });
-          console.log({
-            playheadEditorKey: key,
-            playheadBlockKey: playheadBlock.getKey(),
-            playheadEntityKey: key,
-          });
-        } else {
-          // this.setState({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
-          // console.log({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
-        }
-      }
-    });
-  };
-
-  onChange = (editorState, key) => {
+  handleChange = (editorState, key) => {
     const editorIndex = this.state.editors.findIndex(editor => editor.key === key);
 
     const contentChange =
@@ -338,7 +366,45 @@ class Transcript extends React.Component {
     return getDefaultKeyBinding(event);
   };
 
-  renderEditor = ({ editorState, key, previewState }) => (
+  handleSearch = e => {
+    const search = e.target.value;
+    if (search === this.state.search) return;
+
+    this.setState({
+      search,
+      searchFocused: true,
+      activeHighlightIndex: 0,
+    });
+  };
+
+  handleSearchFocus = searchFocused => {
+    console.log('searchFocused', searchFocused);
+    this.setState({ searchFocused });
+  };
+
+  handleSearchKeyDown = e => {
+    if (e.keyCode === 13) {
+      this.setState({ searchFocused: false }, () => {
+        const allHighlights = this.transcriptWrapper.getElementsByClassName('SearchHighlight');
+        const index = this.state.activeHighlightIndex % allHighlights.length;
+        const matchKey = allHighlights[index] && allHighlights[index].firstElementChild.getAttribute('data-offset-key');
+
+        this.setState({
+          activeHighlightIndex: this.state.activeHighlightIndex + 1,
+          matchKey,
+          searchFocused: false,
+        });
+      });
+    } else if (e.keyCode === 27) {
+      this.setState({
+        activeHighlightIndex: 0,
+        matchKey: null,
+        searchFocused: false,
+      });
+    }
+  };
+
+  Editor = React.memo(({ editorState, key, previewState, search, searchFocused }) => (
     <EditorWrapper key={`s-${key}`} data-editor-key={key}>
       <VisibilitySensor
         key={`vs-${key}`}
@@ -353,24 +419,39 @@ class Transcript extends React.Component {
             editorKey={key}
             readOnly={true || !isVisible}
             stripPastedStyles
-            editorState={isVisible ? editorState : previewState}
+            editorState={
+              isVisible
+                ? searchFocused
+                  ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                  : search !== ''
+                  ? EditorState.set(editorState, { decorator: generateDecorator(search) })
+                  : editorState
+                : search.length > 2
+                ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                : previewState
+            }
             blockRendererFn={this.customBlockRenderer}
             customStyleMap={customStyleMap}
             keyBindingFn={event => this.filterKeyBindingFn(event)}
             handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
-            onChange={editorState => this.onChange(editorState, key)}
+            onChange={editorState => this.handleChange(editorState, key)}
             ref={ref => this.setDomEditorRef(key, ref)}
           />
         )}
       </VisibilitySensor>
     </EditorWrapper>
-  );
+  ));
 
   render() {
-    const { playheadEditorKey, playheadBlockKey, playheadEntityKey } = this.state;
+    const { playheadEditorKey, playheadBlockKey, playheadEntityKey, matchKey, search, searchFocused } = this.state;
 
     return (
-      <TranscriptWrapper onClick={event => this.handleClick(event)}>
+      <TranscriptWrapper
+        ref={ref => {
+          this.transcriptWrapper = ref;
+        }}
+        onClick={event => this.handleClick(event)}
+      >
         <style scoped>
           {`
             span[data-entity-key="${playheadEntityKey}"] { border-bottom: 1px solid blue; }
@@ -379,9 +460,34 @@ class Transcript extends React.Component {
             /* div[data-offset-key="${playheadBlockKey}-0-0"] > .BlockWrapper > div[data-offset-key] > span { color: black; } */
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
+
+            span[data-offset-key="${matchKey}"] { outline: 1px solid red; }
           `}
         </style>
-        {this.state.editors.map((editorState, index) => this.renderEditor(editorState))}
+        <VisibilitySensor
+          intervalCheck={false}
+          intervalDelay={1000}
+          containment={this.props.scrollingContainer}
+          scrollCheck={true}
+          partialVisibility={true}
+          onChange={isVisible => !isVisible && searchFocused && this.handleSearchFocus(false)}
+        >
+          {({ isVisible }) => (
+            <input
+              value={this.state.search}
+              onChange={this.handleSearch}
+              onFocus={() => this.handleSearchFocus(true)}
+              onBlur={() => this.handleSearchFocus(false)}
+              onMouseOver={() => this.handleSearchFocus(true)}
+              onMouseOut={() => this.handleSearchFocus(false)}
+              onKeyDown={this.handleSearchKeyDown}
+              placeholder="Search…"
+            />
+          )}
+        </VisibilitySensor>
+        {this.state.editors.map(({ editorState, key, previewState }) => (
+          <this.Editor {...{ editorState, key, previewState, search, searchFocused }} />
+        ))}
       </TranscriptWrapper>
     );
   }
@@ -396,19 +502,41 @@ const getEntityStrategy = mutability => (contentBlock, callback, contentState) =
   }, callback);
 };
 
-const decorator = new CompositeDecorator([
-  {
-    strategy: getEntityStrategy('MUTABLE'),
-    component: ({ entityKey, contentState, children }) => {
-      const data = entityKey ? contentState.getEntity(entityKey).getData() : {};
-      return (
-        <Token data-start={data.start} data-entity-key={data.key} className="Token">
-          {children}
-        </Token>
-      );
+const generateDecorator = (highlightTerm = '') => {
+  const regex = new RegExp(highlightTerm, 'gi');
+
+  return new CompositeDecorator([
+    {
+      strategy: (contentBlock, callback) => {
+        if (highlightTerm !== '') {
+          findWithRegex(regex, contentBlock, callback);
+        }
+      },
+      component: ({ children }) => <SearchHighlight className="SearchHighlight">{children}</SearchHighlight>,
     },
-  },
-]);
+    {
+      strategy: getEntityStrategy('MUTABLE'),
+      component: ({ entityKey, contentState, children }) => {
+        const data = entityKey ? contentState.getEntity(entityKey).getData() : {};
+        return (
+          <Token data-start={data.start} data-entity-key={data.key} className="Token">
+            {children}
+          </Token>
+        );
+      },
+    },
+  ]);
+};
+
+const findWithRegex = (regex, contentBlock, callback) => {
+  const text = contentBlock.getText();
+  let matchArr, start, end;
+  while ((matchArr = regex.exec(text)) !== null) {
+    start = matchArr.index;
+    end = start + matchArr[0].length;
+    callback(start, end);
+  }
+};
 
 const createPreview = editorState =>
   EditorState.set(
@@ -421,7 +549,7 @@ const createPreview = editorState =>
         })),
         entityMap: {},
       }),
-      decorator
+      generateDecorator()
     ),
     { allowUndo: false }
   );
