@@ -240,6 +240,12 @@ class Transcript extends React.Component {
     return true;
   }
 
+  YTseekTo = time => {
+    if (window.internalPlayer && window.internalPlayer.seekTo) {
+      window.internalPlayer.seekTo(time, true);
+    }
+  };
+
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
     if (type === 'paragraph') {
@@ -272,7 +278,8 @@ class Transcript extends React.Component {
     while (!element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
     if (element.hasAttribute('data-start')) {
       const t = parseFloat(element.getAttribute('data-start'));
-      this.props.seekTo({ seekTo: t / 1e3, transport: 'transcript' });
+      // this.props.seekTo({ seekTo: t / 1e3, transport: 'transcript' });
+      this.YTseekTo(t / 1e3);
     } else {
       element = event.nativeEvent.target;
       while (!element.hasAttribute('data-block') && element.parentElement) element = element.parentElement;
