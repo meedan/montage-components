@@ -21,7 +21,7 @@ import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transport from './components/Transport';
 
-import Transcript from './Transcript';
+import Transcript from './transcript/Transcript';
 
 import { seekTo } from './reducers/player';
 
