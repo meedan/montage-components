@@ -226,15 +226,6 @@ class Transcript extends React.Component {
     return true;
   }
 
-  componentDidUpdate() {
-    const { search, matchKey } = this.state;
-
-    if (search !== '' && matchKey) {
-      const match = this.transcriptWrapper.querySelector(`span[data-offset-key="${matchKey}"]`);
-      if (match) match.scrollIntoView();
-    }
-  }
-
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
     if (type === 'paragraph') {
@@ -382,28 +373,6 @@ class Transcript extends React.Component {
     this.setState({ searchFocused });
   };
 
-  handleSearchKeyDown = e => {
-    if (e.keyCode === 13) {
-      this.setState({ searchFocused: false }, () => {
-        const allHighlights = this.transcriptWrapper.getElementsByClassName('SearchHighlight');
-        const index = this.state.activeHighlightIndex % allHighlights.length;
-        const matchKey = allHighlights[index] && allHighlights[index].firstElementChild.getAttribute('data-offset-key');
-
-        this.setState({
-          activeHighlightIndex: this.state.activeHighlightIndex + 1,
-          matchKey,
-          searchFocused: false,
-        });
-      });
-    } else if (e.keyCode === 27) {
-      this.setState({
-        activeHighlightIndex: 0,
-        matchKey: null,
-        searchFocused: false,
-      });
-    }
-  };
-
   Editor = React.memo(({ editorState, key, previewState, search, searchFocused }) => (
     <EditorWrapper key={`s-${key}`} data-editor-key={key}>
       <VisibilitySensor
@@ -460,8 +429,6 @@ class Transcript extends React.Component {
             /* div[data-offset-key="${playheadBlockKey}-0-0"] > .BlockWrapper > div[data-offset-key] > span { color: black; } */
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
-
-            span[data-offset-key="${matchKey}"] { outline: 1px solid red; }
           `}
         </style>
         <VisibilitySensor
@@ -480,7 +447,6 @@ class Transcript extends React.Component {
               onBlur={() => this.handleSearchFocus(false)}
               onMouseOver={() => this.handleSearchFocus(true)}
               onMouseOut={() => this.handleSearchFocus(false)}
-              onKeyDown={this.handleSearchKeyDown}
               placeholder="Search…"
             />
           )}
@@ -512,7 +478,7 @@ const generateDecorator = (highlightTerm = '') => {
           findWithRegex(regex, contentBlock, callback);
         }
       },
-      component: ({ children }) => <SearchHighlight className="SearchHighlight">{children}</SearchHighlight>,
+      component: ({ children }) => <SearchHighlight>{children}</SearchHighlight>,
     },
     {
       strategy: getEntityStrategy('MUTABLE'),
