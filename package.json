@@ -16,7 +16,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "now": "^15.6.2",
+    "now": "^15.7.0",
     "patch-package": "^6.1.2",
     "postinstall-postinstall": "^2.0.0"
   }
