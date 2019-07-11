@@ -36,6 +36,20 @@ const TranscriptWrapper = styled.div`
     .map(
       subset => `${subset.join('')} { background-color: rgba(71, 123, 181, ${0.2 + subset.length / MAX_OVERLAP}); }`
     )}
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
 `;
 
 const BlockWrapper = styled.div`
@@ -237,7 +251,7 @@ class Transcript extends React.Component {
           const start = block.getData().get('start') || '';
 
           return (
-            <BlockWrapper className="BlockWrapper" key={`W${key}`}>
+            <BlockWrapper className="BlockWrapper" key={`W${key}`} data-start={start}>
               <Speaker contentEditable={false}>
                 {speaker}: {start}
               </Speaker>
@@ -384,28 +398,56 @@ class Transcript extends React.Component {
         partialVisibility={true}
       >
         {({ isVisible }) => (
-          <Editor
-            editorKey={key}
-            readOnly={true || !isVisible}
-            stripPastedStyles
-            editorState={
-              isVisible
-                ? searchFocused
-                  ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                  : search !== ''
-                  ? EditorState.set(editorState, { decorator: generateDecorator(search) })
-                  : editorState
-                : search.length > 2
-                ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                : previewState
-            }
-            blockRendererFn={this.customBlockRenderer}
-            customStyleMap={customStyleMap}
-            keyBindingFn={event => this.filterKeyBindingFn(event)}
-            handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
-            onChange={editorState => this.handleChange(editorState, key)}
-            ref={ref => this.setDomEditorRef(key, ref)}
-          />
+          <div className="row">
+            <div className="column">
+              <Editor
+                editorKey={key}
+                readOnly={true || !isVisible}
+                stripPastedStyles
+                editorState={
+                  isVisible
+                    ? searchFocused
+                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                      : search !== ''
+                      ? EditorState.set(editorState, { decorator: generateDecorator(search) })
+                      : editorState
+                    : search.length > 2
+                    ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                    : previewState
+                }
+                blockRendererFn={this.customBlockRenderer}
+                customStyleMap={customStyleMap}
+                keyBindingFn={event => this.filterKeyBindingFn(event)}
+                handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
+                onChange={editorState => this.handleChange(editorState, key)}
+                ref={ref => this.setDomEditorRef(key, ref)}
+              />
+            </div>
+            <div className="column">
+              <Editor
+                editorKey={key}
+                readOnly={true || !isVisible}
+                stripPastedStyles
+                editorState={
+                  isVisible
+                    ? searchFocused
+                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                      : search !== ''
+                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                      : previewState
+                    : search.length > 2
+                    ? EditorState.set(previewState, { decorator: generateDecorator(search) })
+                    : previewState
+                }
+                blockRendererFn={this.customBlockRenderer}
+                customStyleMap={customStyleMap}
+                keyBindingFn={event => this.filterKeyBindingFn(event)}
+                handleKeyCommand={(command, editorState) => this.handleKeyCommand(command, editorState, key)}
+                onChange={editorState => this.handleChange(editorState, key)}
+                ref={ref => this.setDomEditorRef(key, ref)}
+              />
+            </div>
+          </div>
         )}
       </VisibilitySensor>
     </EditorWrapper>
