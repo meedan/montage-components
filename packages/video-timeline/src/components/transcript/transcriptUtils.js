@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditorState, CompositeDecorator, convertFromRaw, convertToRaw } from 'draft-js';
 
-import encodeInlineStyleRanges from '../../../../node_modules/draft-js/lib/encodeInlineStyleRanges';
+import encodeInlineStyleRanges from '../../../../../node_modules/draft-js/lib/encodeInlineStyleRanges';
 
 import Token from './Token';
 import SearchHighlight from './SearchHighlight';
