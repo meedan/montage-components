@@ -1,8 +1,8 @@
 diff --git a/node_modules/draft-js/lib/DraftEditorLeaf.react.js b/node_modules/draft-js/lib/DraftEditorLeaf.react.js
-index abbd02f..89ac6fb 100644
+index b61a2a2..eeb69a8 100644
 --- a/node_modules/draft-js/lib/DraftEditorLeaf.react.js
 +++ b/node_modules/draft-js/lib/DraftEditorLeaf.react.js
-@@ -140,6 +140,11 @@ var DraftEditorLeaf = function (_React$Component) {
+@@ -137,6 +137,11 @@ function (_React$Component) {
          mergedStyles.textDecoration = [map.textDecoration, style.textDecoration].join(' ').trim();
        }
  
@@ -14,7 +14,7 @@ index abbd02f..89ac6fb 100644
        return _assign(map, style, mergedStyles);
      }, {});
  
-@@ -148,10 +153,16 @@ var DraftEditorLeaf = function (_React$Component) {
+@@ -145,8 +150,14 @@ function (_React$Component) {
        styleObj = _assign(styleObj, newStyles);
      }
  
@@ -23,11 +23,9 @@ index abbd02f..89ac6fb 100644
 +      styleObj.className = undefined;
 +    }
 +
-     return React.createElement(
-       'span',
-       {
-         'data-offset-key': offsetKey,
-+        className: className,
-         ref: function ref(_ref) {
-           return _this2.leaf = _ref;
-         },
+     return React.createElement("span", {
+       "data-offset-key": offsetKey,
++      className: className,
+       ref: function ref(_ref) {
+         return _this2.leaf = _ref;
+       },
