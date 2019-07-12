@@ -29,7 +29,7 @@ const EditorWrapper = styled.section`
 export default React.memo(
   ({
     editorState,
-    key,
+    editorKey,
     previewState,
     search,
     searchFocused,
@@ -41,9 +41,9 @@ export default React.memo(
     handleChange,
     setDomEditorRef,
   }) => (
-    <EditorWrapper key={`s-${key}`} data-editor-key={key}>
+    <EditorWrapper key={`s-${editorKey}`} data-editor-key={editorKey}>
       <VisibilitySensor
-        key={`vs-${key}`}
+        key={`vs-${editorKey}`}
         intervalCheck={false}
         intervalDelay={1000}
         containment={scrollingContainer}
@@ -54,7 +54,7 @@ export default React.memo(
           <div className="row">
             <div className="column">
               <Editor
-                editorKey={key}
+                editorKey={editorKey}
                 readOnly={true || !isVisible}
                 stripPastedStyles
                 editorState={
@@ -71,14 +71,14 @@ export default React.memo(
                 blockRendererFn={customBlockRenderer}
                 customStyleMap={customStyleMap}
                 keyBindingFn={event => filterKeyBindingFn(event)}
-                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, key)}
-                onChange={editorState => handleChange(editorState, key)}
-                ref={ref => setDomEditorRef(key, ref)}
+                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                onChange={editorState => handleChange(editorState, editorKey)}
+                ref={ref => setDomEditorRef(editorKey, ref)}
               />
             </div>
             <div className="column">
               <Editor
-                editorKey={key}
+                editorKey={`t${editorKey}`}
                 readOnly={true || !isVisible}
                 stripPastedStyles
                 editorState={
@@ -95,9 +95,9 @@ export default React.memo(
                 blockRendererFn={customBlockRenderer}
                 customStyleMap={customStyleMap}
                 keyBindingFn={event => filterKeyBindingFn(event)}
-                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, key)}
-                onChange={editorState => handleChange(editorState, key)}
-                ref={ref => setDomEditorRef(key, ref)}
+                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                onChange={editorState => handleChange(editorState, editorKey)}
+                ref={ref => setDomEditorRef(`t${editorKey}`, ref)}
               />
             </div>
           </div>

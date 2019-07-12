@@ -170,18 +170,12 @@ class Transcript extends React.Component {
           if (playheadEntity) {
             const { key } = contentState.getEntity(playheadEntity).getData();
             this.setState({
-              playheadEditorKey: key,
-              playheadBlockKey: playheadBlock.getKey(),
-              playheadEntityKey: key,
-            });
-            console.log({
-              playheadEditorKey: key,
+              playheadEditorKey: `editor-${blocks[0].key}`,
               playheadBlockKey: playheadBlock.getKey(),
               playheadEntityKey: key,
             });
           } else {
-            // this.setState({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
-            // console.log({ playheadEditorKey: key, playheadBlockKey: playheadBlock.getKey() });
+            this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
           }
         }
       });
@@ -342,10 +336,7 @@ class Transcript extends React.Component {
       >
         <style scoped>
           {`
-            span[data-entity-key="${playheadEntityKey}"] { border-bottom: 1px solid blue; }
-
-            section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper > div[data-offset-key] > span { color: #696969 }
-            /* div[data-offset-key="${playheadBlockKey}-0-0"] > .BlockWrapper > div[data-offset-key] > span { color: black; } */
+            section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
           `}
@@ -373,8 +364,9 @@ class Transcript extends React.Component {
         {this.state.segments.map(({ editorState, key, previewState }) => (
           <Segment
             {...{
-              editorState,
               key,
+              editorState,
+              editorKey: key,
               previewState,
               search,
               searchFocused,
