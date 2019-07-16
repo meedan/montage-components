@@ -51,6 +51,9 @@ class Transcript extends React.Component {
     search: '',
     searchFocused: false,
     activeHighlightIndex: 0,
+    originalEditable: false,
+    translationEditable: false,
+    translationVisible: true,
   };
   past = [];
   future = [];
@@ -130,6 +133,7 @@ class Transcript extends React.Component {
           editorState,
           key: `editor-${blocks[0].key}`,
           previewState: createPreview(editorState),
+          translationeditorState: createPreview(editorState), // EditorState.createEmpty(),
         };
       });
 
@@ -223,8 +227,9 @@ class Transcript extends React.Component {
     }
   };
 
-  handleChange = (editorState, key) => {
+  handleChange = (editorState, key, prefix = '') => {
     const editorIndex = this.state.segments.findIndex(editor => editor.key === key);
+    const segment = this.state.segments[editorIndex];
 
     const contentChange =
       editorState.getCurrentContent() === this.state.segments[editorIndex].editorState.getCurrentContent()
@@ -236,18 +241,24 @@ class Transcript extends React.Component {
 
       this.past.push(this.state.segments);
       this.future = [];
+
+      const change = { ...segment, [`${prefix}editorState`]: editorState };
+
       this.setState({
         segments: [
           ...this.state.segments.slice(0, editorIndex),
-          { editorState, key, previewState: createPreview(editorState) },
+          // { editorState, key, previewState: createPreview(editorState) },
+          change,
           ...this.state.segments.slice(editorIndex + 1),
         ],
       });
     } else {
+      const change = { ...segment, [`${prefix}editorState`]: editorState };
       this.setState({
         segments: [
           ...this.state.segments.slice(0, editorIndex),
-          { editorState, key, previewState: createPreview(editorState) },
+          // { editorState, key, previewState: createPreview(editorState) },
+          change,
           ...this.state.segments.slice(editorIndex + 1),
         ],
       });
@@ -323,8 +334,27 @@ class Transcript extends React.Component {
     this.setState({ searchFocused });
   };
 
+  handleCheckbox = event => {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  };
+
   render() {
-    const { playheadEditorKey, playheadBlockKey, playheadEntityKey, search, searchFocused } = this.state;
+    const {
+      playheadEditorKey,
+      playheadBlockKey,
+      playheadEntityKey,
+      search,
+      searchFocused,
+      originalEditable,
+      translationVisible,
+      translationEditable,
+    } = this.state;
     const { scrollingContainer } = this.props;
 
     return (
@@ -341,31 +371,74 @@ class Transcript extends React.Component {
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
           `}
         </style>
-        <VisibilitySensor
-          intervalCheck={false}
-          intervalDelay={1000}
-          containment={scrollingContainer}
-          scrollCheck={true}
-          partialVisibility={true}
-          onChange={isVisible => !isVisible && searchFocused && this.handleSearchFocus(false)}
-        >
-          {({ isVisible }) => (
-            <input
-              value={this.state.search}
-              onChange={this.handleSearch}
-              onFocus={() => this.handleSearchFocus(true)}
-              onBlur={() => this.handleSearchFocus(false)}
-              onMouseOver={() => this.handleSearchFocus(true)}
-              onMouseOut={() => this.handleSearchFocus(false)}
-              placeholder="Search…"
-            />
-          )}
-        </VisibilitySensor>
-        {this.state.segments.map(({ editorState, key, previewState }) => (
+        <fieldset>
+          <legend>Search</legend>
+          <VisibilitySensor
+            intervalCheck={false}
+            intervalDelay={1000}
+            containment={scrollingContainer}
+            scrollCheck={true}
+            partialVisibility={true}
+            onChange={isVisible => !isVisible && searchFocused && this.handleSearchFocus(false)}
+          >
+            {({ isVisible }) => (
+              <input
+                value={this.state.search}
+                onChange={this.handleSearch}
+                onFocus={() => this.handleSearchFocus(true)}
+                onBlur={() => this.handleSearchFocus(false)}
+                onMouseOver={() => this.handleSearchFocus(true)}
+                onMouseOut={() => this.handleSearchFocus(false)}
+                placeholder="Search…"
+              />
+            )}
+          </VisibilitySensor>
+        </fieldset>
+        <div className="row">
+          <div className="column">
+            <fieldset>
+              <legend>Original</legend>
+              <label>
+                <input
+                  name="originalEditable"
+                  type="checkbox"
+                  checked={this.state.originalEditable}
+                  onChange={this.handleCheckbox}
+                />
+                editable
+              </label>
+            </fieldset>
+          </div>
+          <div className="column">
+            <fieldset>
+              <legend>Translation</legend>
+              <label>
+                <input
+                  name="translationVisible"
+                  type="checkbox"
+                  checked={this.state.translationVisible}
+                  onChange={this.handleCheckbox}
+                />
+                enabled
+              </label>
+              <label>
+                <input
+                  name="translationEditable"
+                  type="checkbox"
+                  checked={this.state.translationEditable}
+                  onChange={this.handleCheckbox}
+                />
+                editable
+              </label>
+            </fieldset>
+          </div>
+        </div>
+        {this.state.segments.map(({ editorState, key, previewState, translationeditorState }) => (
           <Segment
             {...{
               key,
               editorState,
+              translationeditorState,
               editorKey: key,
               previewState,
               search,
@@ -377,6 +450,9 @@ class Transcript extends React.Component {
               handleKeyCommand: this.handleKeyCommand,
               handleChange: this.handleChange,
               setDomEditorRef: this.setDomEditorRef,
+              translationVisible,
+              translationEditable,
+              originalEditable,
             }}
           />
         ))}

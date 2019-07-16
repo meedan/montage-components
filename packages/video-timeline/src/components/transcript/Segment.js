@@ -31,6 +31,7 @@ export default React.memo(
     editorState,
     editorKey,
     previewState,
+    translationeditorState,
     search,
     searchFocused,
     customStyleMap,
@@ -40,6 +41,9 @@ export default React.memo(
     handleKeyCommand,
     handleChange,
     setDomEditorRef,
+    translationVisible,
+    translationEditable,
+    originalEditable,
   }) => (
     <EditorWrapper key={`s-${editorKey}`} data-editor-key={editorKey}>
       <VisibilitySensor
@@ -52,10 +56,10 @@ export default React.memo(
       >
         {({ isVisible }) => (
           <div className="row">
-            <div className="column">
+            <div className={translationVisible ? 'column' : ''}>
               <Editor
                 editorKey={editorKey}
-                readOnly={true || !isVisible}
+                readOnly={!originalEditable || !isVisible}
                 stripPastedStyles
                 editorState={
                   isVisible
@@ -76,30 +80,32 @@ export default React.memo(
                 ref={ref => setDomEditorRef(editorKey, ref)}
               />
             </div>
-            <div className="column">
-              <Editor
-                editorKey={`t${editorKey}`}
-                readOnly={true || !isVisible}
-                stripPastedStyles
-                editorState={
-                  isVisible
-                    ? searchFocused
-                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                      : search !== ''
-                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                      : previewState
-                    : search.length > 2
-                    ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                    : previewState
-                }
-                blockRendererFn={customBlockRenderer}
-                customStyleMap={customStyleMap}
-                keyBindingFn={event => filterKeyBindingFn(event)}
-                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                onChange={editorState => handleChange(editorState, editorKey)}
-                ref={ref => setDomEditorRef(`t${editorKey}`, ref)}
-              />
-            </div>
+            {translationVisible ? (
+              <div className="column">
+                <Editor
+                  editorKey={`t${editorKey}`}
+                  readOnly={!translationEditable || !isVisible}
+                  stripPastedStyles
+                  editorState={
+                    isVisible
+                      ? searchFocused
+                        ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
+                        : search !== ''
+                        ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
+                        : translationeditorState
+                      : search.length > 2
+                      ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
+                      : translationeditorState
+                  }
+                  blockRendererFn={customBlockRenderer}
+                  customStyleMap={customStyleMap}
+                  keyBindingFn={event => filterKeyBindingFn(event)}
+                  handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                  onChange={editorState => handleChange(editorState, editorKey, 'translation')}
+                  ref={ref => setDomEditorRef(`t${editorKey}`, ref)}
+                />
+              </div>
+            ) : null}
           </div>
         )}
       </VisibilitySensor>
