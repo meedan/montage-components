@@ -4,17 +4,13 @@ import { EditorState, convertFromRaw, getDefaultKeyBinding, RichUtils } from 'dr
 import { createEntityMap, generateDecorator, createPreview } from './transcriptUtils';
 
 import chunk from 'lodash.chunk';
-import range from 'lodash.range';
 import Combinatorics from 'js-combinatorics';
-import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
 
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
 
 const MAX_OVERLAP = 5;
-const OVERLAPS = range(MAX_OVERLAP).map(n => `.B${n}`);
-const customStyleMap = OVERLAPS.map(n => n.substring(1)).reduce((acc, n) => ({ ...acc, [n]: { className: n } }), {});
 
 const TranscriptWrapper = styled.div`
   text-align: left;
@@ -24,12 +20,6 @@ const TranscriptWrapper = styled.div`
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  ${Combinatorics.power(OVERLAPS)
-    .filter(subset => subset.length > 0)
-    .map(
-      subset => `${subset.join('')} { background-color: rgba(71, 123, 181, ${0.2 + subset.length / MAX_OVERLAP}); }`
-    )}
 
   .row {
     display: flex;
@@ -50,27 +40,55 @@ class Transcript extends React.Component {
   state = {
     search: '',
     searchFocused: false,
-    activeHighlightIndex: 0,
-    originalEditable: false,
-    translationEditable: false,
-    translationVisible: true,
+    editableA: false,
+    editableB: false,
+    visibleB: true,
   };
   past = [];
   future = [];
-  editorRefs = {};
-  setDomEditorRef = (key, ref) => (this.editorRefs[key] = ref);
 
   static getDerivedStateFromProps(props, state) {
-    const { transcript, data } = props;
+    const { transcript, commentThreads, videoTags, videoPlaces } = props;
+
+    const customStyleMap = {
+      ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
+      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
+      ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
+    };
+    // console.log(customStyleMap);
+
+    const tagInstances = videoTags.reduce((acc, entity) => {
+      const instances = entity.instances.map(instance => ({ ...instance, entity }));
+      return [...acc, ...instances];
+    }, []);
+
+    const placesInstances = videoPlaces.reduce((acc, entity) => {
+      const instances = entity.instances.map(instance => ({ ...instance, entity }));
+      return [...acc, ...instances];
+    }, []);
 
     if (transcript !== state.transcript) {
-      const tagInstances = data.videoTags.reduce((acc, entity) => {
-        // const instances = entity.instances.map(instance => ({ ...instance, entity }));
-        return [...acc, ...entity.instances];
-      }, []);
+      const segments = chunk(transcript.segments, 1).map(segment => {
+        const segmentStart = segment[0].start;
+        const segmentEnd = segment[segment.length - 1].end;
 
-      const segments = chunk(transcript.segments, 1).map(segments => {
-        const blocks = segments
+        const comments = commentThreads.filter(
+          ({ start_seconds }) => segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd
+        );
+
+        const tags = tagInstances.filter(
+          ({ start_seconds, end_seconds }) =>
+            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
+            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+        );
+
+        const places = placesInstances.filter(
+          ({ start_seconds, end_seconds }) =>
+            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
+            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+        );
+
+        const blocks = segment
           .map(({ text, start, end, speaker, id, words }, index) => ({
             text,
             key: id,
@@ -90,39 +108,78 @@ class Transcript extends React.Component {
           .map(block => {
             const { start, end } = block.data;
 
-            const instances = tagInstances.filter(
-              ({ start_seconds, end_seconds }) =>
-                (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
-                (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
-            );
-
-            block.inlineStyleRanges = instances
-              .map(({ start_seconds, end_seconds }) =>
-                block.entityRanges.filter(
-                  ({ start, end }) =>
-                    start_seconds * 1e3 <= start &&
-                    start < end_seconds * 1e3 &&
-                    start_seconds * 1e3 < end &&
-                    end <= end_seconds * 1e3
+            block.inlineStyleRanges = [
+              ...tags
+                .filter(
+                  ({ start_seconds, end_seconds }) =>
+                    (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                    (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
                 )
-              )
-              .map((entities, index) => {
-                if (entities.length === 0) return null;
-                const first = entities[0];
-                const last = entities[entities.length - 1];
-                return {
-                  offset: first.offset,
-                  length: last.offset + last.length,
-                  style: `B${index % MAX_OVERLAP}`,
-                };
-              })
-              .filter(r => !!r);
+                .map(({ start_seconds, end_seconds, entity }, index) => {
+                  const entities = block.entityRanges.filter(
+                    ({ start, end }) =>
+                      start_seconds * 1e3 <= start &&
+                      start < end_seconds * 1e3 &&
+                      start_seconds * 1e3 < end &&
+                      end <= end_seconds * 1e3
+                  );
+                  if (entities.length === 0) return null;
+
+                  const first = entities[0];
+                  const last = entities[entities.length - 1];
+                  return {
+                    offset: first.offset,
+                    length: last.offset + last.length,
+                    style: `T-${entity.id}`,
+                  };
+                })
+                .filter(r => !!r),
+              ...places
+                .filter(
+                  ({ start_seconds, end_seconds }) =>
+                    (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                    (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
+                )
+                .map(({ start_seconds, end_seconds, entity }, index) => {
+                  const entities = block.entityRanges.filter(
+                    ({ start, end }) =>
+                      start_seconds * 1e3 <= start &&
+                      start < end_seconds * 1e3 &&
+                      start_seconds * 1e3 < end &&
+                      end <= end_seconds * 1e3
+                  );
+                  if (entities.length === 0) return null;
+
+                  const first = entities[0];
+                  const last = entities[entities.length - 1];
+                  return {
+                    offset: first.offset,
+                    length: last.offset + last.length,
+                    style: `G-${entity.id}`,
+                  };
+                })
+                .filter(r => !!r),
+              ...comments
+                .filter(({ start_seconds }) => start <= start_seconds * 1e3 && start_seconds * 1e3 < end)
+                .map(({ start_seconds, id }) => {
+                  const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start);
+                  return entity
+                    ? {
+                        offset: entity.offset,
+                        length: entity.length,
+                        style: `C-${id}`,
+                      }
+                    : null;
+                })
+                .filter(r => !!r),
+            ];
 
             // block.entityRanges = [];
             return block;
           });
 
-        const editorState = EditorState.set(
+        // console.log(blocks);
+        const editorStateA = EditorState.set(
           EditorState.createWithContent(
             convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
             generateDecorator()
@@ -130,22 +187,25 @@ class Transcript extends React.Component {
           { allowUndo: false }
         );
         return {
-          editorState,
+          editorStateA,
           key: `editor-${blocks[0].key}`,
-          previewState: createPreview(editorState),
-          translationeditorState: createPreview(editorState), // EditorState.createEmpty(),
+          editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
+          customStyleMap,
+          comments,
+          tags: [...new Set(tags.map(({ entity }) => entity))],
+          places: [...new Set(places.map(({ entity }) => entity))],
         };
       });
 
-      return { transcript, segments };
+      return { transcript, segments, customStyleMap };
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
-      this.state.segments.forEach(({ editorState, key }) => {
-        const contentState = editorState.getCurrentContent();
+      this.state.segments.forEach(({ editorStateA, key }) => {
+        const contentState = editorStateA.getCurrentContent();
         const blocks = contentState.getBlocksAsArray();
         let playheadBlockIndex = -1;
 
@@ -199,9 +259,7 @@ class Transcript extends React.Component {
     if (type === 'paragraph') {
       return {
         component: BlockWrapper,
-        props: {
-          // TODO
-        },
+        props: {},
       };
     }
     return null;
@@ -227,12 +285,12 @@ class Transcript extends React.Component {
     }
   };
 
-  handleChange = (editorState, key, prefix = '') => {
+  handleChange = (editorState, key, suffix = 'A') => {
     const editorIndex = this.state.segments.findIndex(editor => editor.key === key);
     const segment = this.state.segments[editorIndex];
 
     const contentChange =
-      editorState.getCurrentContent() === this.state.segments[editorIndex].editorState.getCurrentContent()
+      editorState.getCurrentContent() === this.state.segments[editorIndex][`editorState${suffix}`].getCurrentContent()
         ? null
         : editorState.getLastChangeType();
 
@@ -242,23 +300,18 @@ class Transcript extends React.Component {
       this.past.push(this.state.segments);
       this.future = [];
 
-      const change = { ...segment, [`${prefix}editorState`]: editorState };
-
       this.setState({
         segments: [
           ...this.state.segments.slice(0, editorIndex),
-          // { editorState, key, previewState: createPreview(editorState) },
-          change,
+          { ...segment, [`editorState${suffix}`]: editorState },
           ...this.state.segments.slice(editorIndex + 1),
         ],
       });
     } else {
-      const change = { ...segment, [`${prefix}editorState`]: editorState };
       this.setState({
         segments: [
           ...this.state.segments.slice(0, editorIndex),
-          // { editorState, key, previewState: createPreview(editorState) },
-          change,
+          { ...segment, [`editorState${suffix}`]: editorState },
           ...this.state.segments.slice(editorIndex + 1),
         ],
       });
@@ -289,13 +342,13 @@ class Transcript extends React.Component {
     }
   };
 
-  handleKeyCommand = (command, editorState, key) => {
+  handleKeyCommand = (command, editorState, key, suffix = 'A') => {
     console.log(command);
     if (command === 'undo' || command === 'redo') return 'handled';
 
     const richTextState = RichUtils.handleKeyCommand(editorState, command);
     if (richTextState) {
-      this.onChange(richTextState, key);
+      this.onChange(richTextState, key, suffix);
       return true;
     }
 
@@ -325,13 +378,16 @@ class Transcript extends React.Component {
     this.setState({
       search,
       searchFocused: true,
-      activeHighlightIndex: 0,
     });
   };
 
   handleSearchFocus = searchFocused => {
     console.log('searchFocused', searchFocused);
     this.setState({ searchFocused });
+  };
+
+  higlightTag = className => {
+    this.setState({ activeTag: className });
   };
 
   handleCheckbox = event => {
@@ -349,13 +405,16 @@ class Transcript extends React.Component {
       playheadEditorKey,
       playheadBlockKey,
       playheadEntityKey,
+      activeTag,
       search,
       searchFocused,
-      originalEditable,
-      translationVisible,
-      translationEditable,
+      editableA,
+      visibleB,
+      editableB,
+      customStyleMap,
     } = this.state;
-    const { scrollingContainer } = this.props;
+    const { scrollingContainer, videoTags } = this.props;
+    const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
       <TranscriptWrapper
@@ -369,38 +428,62 @@ class Transcript extends React.Component {
             section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
+
+            span[class*='C-']{
+              position: relative;
+            }
+
+            span[class*='C-']:before {
+              position: absolute;
+              top: -0.5em;
+              left: -0.5em;
+              color: white;
+              background-color: red;
+              content: 'C';
+              font-size: 10px;
+            }
+
+            ${Combinatorics.power(videoTags.map(({ id }) => id))
+              .filter(subset => subset.length > 0)
+              .map(
+                subset => `
+                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.2 +
+                  subset.length / MAX_OVERLAP}); }
+                `
+              )
+              .join('\n')}
           `}
+          {activeTag
+            ? `
+              span[class*='T-']{
+                background-color: transparent;
+              }
+              .${activeTag}.${activeTag} {
+                background-color: rgba(71, 123, 181, .6);
+                border-bottom: 1px solid red;
+              }
+            `
+            : ''}
         </style>
         <fieldset>
           <legend>Search</legend>
-          <VisibilitySensor
-            intervalCheck={false}
-            intervalDelay={1000}
-            containment={scrollingContainer}
-            scrollCheck={true}
-            partialVisibility={true}
-            onChange={isVisible => !isVisible && searchFocused && this.handleSearchFocus(false)}
-          >
-            {({ isVisible }) => (
-              <input
-                value={this.state.search}
-                onChange={this.handleSearch}
-                onFocus={() => this.handleSearchFocus(true)}
-                onBlur={() => this.handleSearchFocus(false)}
-                onMouseOver={() => this.handleSearchFocus(true)}
-                onMouseOut={() => this.handleSearchFocus(false)}
-                placeholder="Search…"
-              />
-            )}
-          </VisibilitySensor>
+          <input
+            value={this.state.search}
+            onChange={this.handleSearch}
+            onFocus={() => this.handleSearchFocus(true)}
+            onBlur={() => this.handleSearchFocus(false)}
+            onMouseOver={() => this.handleSearchFocus(true)}
+            onMouseOut={() => this.handleSearchFocus(false)}
+            placeholder="Search…"
+          />
         </fieldset>
         <div className="row">
           <div className="column">
             <fieldset>
-              <legend>Original</legend>
+              <legend>A. Original</legend>
               <label>
                 <input
-                  name="originalEditable"
+                  name="editableA"
                   type="checkbox"
                   checked={this.state.originalEditable}
                   onChange={this.handleCheckbox}
@@ -411,10 +494,10 @@ class Transcript extends React.Component {
           </div>
           <div className="column">
             <fieldset>
-              <legend>Translation</legend>
+              <legend>B. Translation</legend>
               <label>
                 <input
-                  name="translationVisible"
+                  name="visibleB"
                   type="checkbox"
                   checked={this.state.translationVisible}
                   onChange={this.handleCheckbox}
@@ -423,7 +506,7 @@ class Transcript extends React.Component {
               </label>
               <label>
                 <input
-                  name="translationEditable"
+                  name="editableB"
                   type="checkbox"
                   checked={this.state.translationEditable}
                   onChange={this.handleCheckbox}
@@ -433,26 +516,28 @@ class Transcript extends React.Component {
             </fieldset>
           </div>
         </div>
-        {this.state.segments.map(({ editorState, key, previewState, translationeditorState }) => (
+        {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
           <Segment
             {...{
               key,
-              editorState,
-              translationeditorState,
               editorKey: key,
-              previewState,
+              editorStateA,
+              editorStateB,
+              comments,
+              tags,
+              places,
               search,
               searchFocused,
+              visibleB,
+              editableB,
+              editableA,
               customStyleMap,
-              customBlockRenderer: this.customBlockRenderer,
+              customBlockRenderer,
               scrollingContainer,
-              filterKeyBindingFn: this.filterKeyBindingFn,
-              handleKeyCommand: this.handleKeyCommand,
-              handleChange: this.handleChange,
-              setDomEditorRef: this.setDomEditorRef,
-              translationVisible,
-              translationEditable,
-              originalEditable,
+              filterKeyBindingFn,
+              handleKeyCommand,
+              handleChange,
+              higlightTag,
             }}
           />
         ))}

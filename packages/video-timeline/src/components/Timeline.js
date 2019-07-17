@@ -1,6 +1,5 @@
 import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
-import { throttle } from 'lodash';
 import React, { Component, createRef } from 'react';
 import produce from 'immer';
 import styled from 'styled-components';
@@ -135,8 +134,7 @@ class Timeline extends Component {
     });
 
     // pause
-    if (this.props.playing)
-      this.props.pause({ transport: clip ? 'downstream' : 'timeline' });
+    if (this.props.playing) this.props.pause({ transport: clip ? 'downstream' : 'timeline' });
   };
 
   onDrag = (val, skip = true, clip = false) => {
@@ -198,11 +196,7 @@ class Timeline extends Component {
   };
 
   YTseekTo = time => {
-    if (
-      !DISABLE_TIMELINE_TRANSPORT &&
-      window.internalPlayer &&
-      window.internalPlayer.seekTo
-    ) {
+    if (!DISABLE_TIMELINE_TRANSPORT && window.internalPlayer && window.internalPlayer.seekTo) {
       window.internalPlayer.seekTo(time, true);
     }
   };
@@ -215,10 +209,7 @@ class Timeline extends Component {
 
     return (
       <TimelineWrapper>
-        <TimelinePlayheadTrackWrapper
-          ref={this.playheadTrackEl}
-          onClick={e => this.onTrackClick(e)}
-        >
+        <TimelinePlayheadTrackWrapper ref={this.playheadTrackEl} onClick={e => this.onTrackClick(e)}>
           <TimelinePlayhead
             duration={duration}
             onTimeChange={this.onTimeChange}
@@ -234,15 +225,9 @@ class Timeline extends Component {
             key="clip"
             currentTime={currentTime}
             duration={duration}
-            onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
-            }
-            onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
-            }
-            onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
-            }
+            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true))}
+            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true))}
             entities={mergeInstances(this.props.data.videoClips)}
             entitiesyKey={'videoClips'}
             playing={playing}
@@ -257,15 +242,9 @@ class Timeline extends Component {
             key="tag"
             currentTime={currentTime}
             duration={duration}
-            onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
-            }
-            onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
-            }
-            onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
-            }
+            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true))}
+            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true))}
             entities={mergeInstances(this.props.data.videoTags)}
             clips={this.props.data.videoClips}
             entitiesyKey={'videoTags'}
@@ -281,15 +260,9 @@ class Timeline extends Component {
             key="location"
             currentTime={currentTime}
             duration={duration}
-            onAfterChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true)
-            }
-            onBeforeChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true)
-            }
-            onChange={v =>
-              DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true)
-            }
+            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, true, true))}
+            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, true, true))}
             entities={mergeInstances(this.props.data.videoPlaces)}
             clips={this.props.data.videoClips}
             entitiesyKey={'videoPlaces'}
@@ -315,10 +288,7 @@ const mergeInstances = entities =>
           const j = acc.pop();
 
           if (j) {
-            if (
-              j.start_seconds <= i.start_seconds &&
-              i.start_seconds < j.end_seconds
-            ) {
+            if (j.start_seconds <= i.start_seconds && i.start_seconds < j.end_seconds) {
               j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
               j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
               acc.push(j);

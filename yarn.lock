@@ -4231,6 +4231,11 @@ clean-css@4.2.x:
   dependencies:
     source-map "~0.6.0"
 
+clean-react-props@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/clean-react-props/-/clean-react-props-0.3.1.tgz#1f32a1e2f385bc90a337daad5c3f010805f805cc"
+  integrity sha512-WctlMCQttgGj2W8dvGJlxMOg62bHGWJNoYoM+3L4j9An9T3fp4XZcXmIKr/KgiWzXM0Oox7gJ/nSGwl5KBxUnw==
+
 cli-boxes@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-1.0.0.tgz#4fa917c3e59c94a004cd61f8ee509da651687143"
@@ -6440,7 +6445,7 @@ fast-diff@^1.1.2:
   resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.2.0.tgz#73ee11982d86caaf7959828d519cfe927fac5f03"
   integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
 
-fast-equals@^1.2.1:
+fast-equals@^1.2.1, fast-equals@^1.6.0:
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/fast-equals/-/fast-equals-1.6.3.tgz#84839a1ce20627c463e1892f2ae316380c81b459"
   integrity sha512-4WKW0AL5+WEqO0zWavAfYGY1qwLsBgE//DN4TTcVEN2UlINgkv9b3vm2iHicoenWKSX9mKWmGOsU/iI5IST7pQ==
@@ -6466,6 +6471,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fast-stringify@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/fast-stringify/-/fast-stringify-1.1.2.tgz#f109b792d54343aec271b47882598d279402401d"
+  integrity sha512-SfslXjiH8km0WnRiuPfpUKwlZjW5I878qsOm+2x8x3TgqmElOOLh1rgJFb+PolNdNRK3r8urEefqx0wt7vx1dA==
 
 fastparse@^1.1.1:
   version "1.1.2"
@@ -9839,6 +9849,11 @@ methods@~1.1.2:
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
 
+micro-memoize@^2.1.1:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/micro-memoize/-/micro-memoize-2.1.2.tgz#0787eeb1a12b4033a0fe162dfc9df4280291cee4"
+  integrity sha512-COjNutiFgnDHXZEIM/jYuZPwq2h8zMUeScf6Sh6so98a+REqdlpaNS7Cb2ffGfK5I+xfgoA3Rx49NGuNJTJq3w==
+
 microevent.ts@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/microevent.ts/-/microevent.ts-0.1.1.tgz#70b09b83f43df5172d0205a63025bce0f7357fa0"
@@ -10048,6 +10063,15 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+moize@^5.4.4:
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/moize/-/moize-5.4.4.tgz#6ae400cfd7ee29174428281b1a2ccfa89527f51c"
+  integrity sha512-1gMxNMxZum3EAU4fbt86tR4MYe/lRAa9tt+oXDsjGUtyb0EpUtgoQRITwbY/MJv7rBo2yeRMZFENtj2P8xc1qg==
+  dependencies:
+    fast-equals "^1.6.0"
+    fast-stringify "^1.1.0"
+    micro-memoize "^2.1.1"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -12722,6 +12746,14 @@ react-side-effect@^1.0.2:
   dependencies:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
+
+react-timecode@^1.1.18:
+  version "1.1.18"
+  resolved "https://registry.yarnpkg.com/react-timecode/-/react-timecode-1.1.18.tgz#bd443d3e626e0840be92053f81ebc1305df47f5f"
+  integrity sha512-puJm+54DOB5rfP7kufEuQGOHMdRNEWuczCN1hFur1F4LfwfdCoL1MOIchWymTw0CPlSUQydZhHhe/r6at5Sd7A==
+  dependencies:
+    clean-react-props "^0.3.1"
+    prop-types "^15.7.2"
 
 react-transition-group@^4.0.0:
   version "4.1.0"

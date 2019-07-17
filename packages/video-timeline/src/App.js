@@ -233,7 +233,9 @@ class App extends Component {
               ) : (
                 <div style={{ textAlign: 'center' }}>
                   <Transcript
-                    data={data}
+                    commentThreads={data.commentThreads}
+                    videoTags={data.videoTags}
+                    videoPlaces={data.videoPlaces}
                     scrollingContainer={this.scrollingContainer}
                     transcript={data.transcripts[0]}
                     currentTime={currentTime}

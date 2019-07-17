@@ -3,19 +3,9 @@ import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
 
-import { generateDecorator } from './transcriptUtils';
+import { generateDecorator, memoizedCreatePreview } from './transcriptUtils';
 
 const EditorWrapper = styled.section`
-  position: relative;
-
-  ::before {
-    position: absolute;
-    top: -5px;
-    font-size: 7px;
-    content: attr(data-editor-key);
-    color: red;
-  }
-
   .public-DraftStyleDefault-block {
     font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     box-sizing: border-box;
@@ -25,90 +15,135 @@ const EditorWrapper = styled.section`
   }
 `;
 
-// this
+const Legend = ({ comments, tags, places, higlightTag }) => (
+  <dl className="column" style={{ width: 200 }}>
+    <dt>comments</dt>
+    {comments.map(({ id, text }) => (
+      <dd onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
+        {text}
+      </dd>
+    ))}
+
+    <dt>tags</dt>
+    {tags.map(entity => (
+      <dd onMouseOver={() => higlightTag(`T-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+        {entity.project_tag.name}
+      </dd>
+    ))}
+
+    <dt>places</dt>
+    {places.map(entity => (
+      <dd onMouseOver={() => higlightTag(`G-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+        {entity.project_location.name}
+      </dd>
+    ))}
+  </dl>
+);
+
 export default React.memo(
   ({
-    editorState,
     editorKey,
-    previewState,
-    translationeditorState,
+    editorStateA,
+    editorStateB,
+    languageA = 'en-US',
+    languageB = 'en-US',
+    textDirectionalityA = 'LTR',
+    textDirectionalityB = 'LTR',
+    comments,
+    tags,
+    places,
     search,
     searchFocused,
+    visibleB,
+    editableB,
+    editableA,
     customStyleMap,
     customBlockRenderer,
     scrollingContainer,
     filterKeyBindingFn,
     handleKeyCommand,
     handleChange,
-    setDomEditorRef,
-    translationVisible,
-    translationEditable,
-    originalEditable,
-  }) => (
-    <EditorWrapper key={`s-${editorKey}`} data-editor-key={editorKey}>
-      <VisibilitySensor
-        key={`vs-${editorKey}`}
-        intervalCheck={false}
-        intervalDelay={1000}
-        containment={scrollingContainer}
-        scrollCheck={true}
-        partialVisibility={true}
-      >
-        {({ isVisible }) => (
-          <div className="row">
-            <div className={translationVisible ? 'column' : ''}>
-              <Editor
-                editorKey={editorKey}
-                readOnly={!originalEditable || !isVisible}
-                stripPastedStyles
-                editorState={
-                  isVisible
-                    ? searchFocused
-                      ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                      : search !== ''
-                      ? EditorState.set(editorState, { decorator: generateDecorator(search) })
-                      : editorState
-                    : search.length > 2
-                    ? EditorState.set(previewState, { decorator: generateDecorator(search) })
-                    : previewState
-                }
-                blockRendererFn={customBlockRenderer}
-                customStyleMap={customStyleMap}
-                keyBindingFn={event => filterKeyBindingFn(event)}
-                handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                onChange={editorState => handleChange(editorState, editorKey)}
-                ref={ref => setDomEditorRef(editorKey, ref)}
-              />
-            </div>
-            {translationVisible ? (
-              <div className="column">
+    higlightTag,
+  }) => {
+    const editable = editableA || editableB;
+    const previewStateA = memoizedCreatePreview(editorStateA);
+
+    return (
+      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey}>
+        <VisibilitySensor
+          intervalCheck={false}
+          intervalDelay={1000}
+          containment={scrollingContainer}
+          scrollCheck={true}
+          partialVisibility={true}
+        >
+          {({ isVisible }) => (
+            <div className="row">
+              {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
+              <div className={visibleB ? 'column' : ''} lang={languageA}>
                 <Editor
-                  editorKey={`t${editorKey}`}
-                  readOnly={!translationEditable || !isVisible}
+                  editorKey={`A${editorKey}`}
+                  readOnly={!editableA || !isVisible}
                   stripPastedStyles
                   editorState={
                     isVisible
                       ? searchFocused
-                        ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
+                        ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
                         : search !== ''
-                        ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
-                        : translationeditorState
+                        ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                        : editorStateA
                       : search.length > 2
-                      ? EditorState.set(translationeditorState, { decorator: generateDecorator(search) })
-                      : translationeditorState
+                      ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                      : previewStateA
                   }
                   blockRendererFn={customBlockRenderer}
                   customStyleMap={customStyleMap}
                   keyBindingFn={event => filterKeyBindingFn(event)}
                   handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                  onChange={editorState => handleChange(editorState, editorKey, 'translation')}
-                  ref={ref => setDomEditorRef(`t${editorKey}`, ref)}
+                  onChange={editorState => handleChange(editorState, editorKey)}
+                  textDirectionality={textDirectionalityA}
+                  autoCapitalize={false}
+                  autoComplete={false}
+                  autoCorrect={false}
+                  spellCheck={false}
+                  placeholder="Transcribe here…"
                 />
               </div>
-            ) : null}
-          </div>
-        )}
-      </VisibilitySensor>
-    </EditorWrapper>
-  )
+              {visibleB ? (
+                <div className="column" lang={languageB}>
+                  <Editor
+                    editorKey={`B${editorKey}`}
+                    readOnly={!editableB || !isVisible}
+                    stripPastedStyles
+                    editorState={
+                      isVisible
+                        ? searchFocused
+                          ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                          : search !== ''
+                          ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                          : editorStateB
+                        : search.length > 2
+                        ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                        : editorStateB
+                    }
+                    blockRendererFn={customBlockRenderer}
+                    customStyleMap={customStyleMap}
+                    keyBindingFn={event => filterKeyBindingFn(event)}
+                    handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                    onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                    textDirectionality={textDirectionalityB}
+                    autoCapitalize={false}
+                    autoComplete={false}
+                    autoCorrect={false}
+                    spellCheck={false}
+                    placeholder="Translate here…"
+                  />
+                </div>
+              ) : null}
+            </div>
+          )}
+        </VisibilitySensor>
+      </EditorWrapper>
+    );
+  }
 );

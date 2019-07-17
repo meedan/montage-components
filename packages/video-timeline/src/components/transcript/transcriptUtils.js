@@ -1,5 +1,6 @@
 import React from 'react';
 import { EditorState, CompositeDecorator, convertFromRaw, convertToRaw } from 'draft-js';
+import moize from 'moize';
 
 import encodeInlineStyleRanges from '../../../../../node_modules/draft-js/lib/encodeInlineStyleRanges';
 
@@ -66,6 +67,8 @@ export const createPreview = editorState =>
     ),
     { allowUndo: false }
   );
+
+export const memoizedCreatePreview = moize(createPreview);
 
 export const createEntityMap = blocks =>
   flatten(blocks.map(block => block.entityRanges)).reduce(
