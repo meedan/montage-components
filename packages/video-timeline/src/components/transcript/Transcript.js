@@ -89,11 +89,11 @@ class Transcript extends React.Component {
         );
 
         const blocks = segment
-          .map(({ text, start, end, speaker, id, words }, index) => ({
+          .map(({ text, start, end, speaker, id, words, translation }, index) => ({
             text,
             key: id,
             type: 'paragraph',
-            data: { start, end, speaker, id },
+            data: { start, end, speaker, id, translation },
             // entityRanges: [],
             entityRanges: words.map(({ start, end, text, offset, length, id }) => ({
               start,
@@ -189,7 +189,19 @@ class Transcript extends React.Component {
         return {
           editorStateA,
           key: `editor-${blocks[0].key}`,
-          editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
+          // editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
+          editorStateB: EditorState.set(
+            EditorState.createWithContent(
+              convertFromRaw({
+                blocks: blocks.map(block => {
+                  return { ...block, text: block.data.translation, entityRanges: [], inlineStyleRanges: [] };
+                }),
+                entityMap: createEntityMap(blocks),
+              }),
+              generateDecorator()
+            ),
+            { allowUndo: false }
+          ),
           customStyleMap,
           comments,
           tags: [...new Set(tags.map(({ entity }) => entity))],

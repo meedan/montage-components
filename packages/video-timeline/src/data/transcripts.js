@@ -4,6 +4,7 @@ import XRegExp from 'xregexp';
 // import yt from './9G8dmsnFjL4.srv3.json';
 // import ytEs from './9G8dmsnFjL4.srv3.es.json';
 import sm from './9G8dmsnFjL4.speechmatics.json';
+import translation from './translationSample';
 
 const generateID = () => {
   let id = null;
@@ -82,8 +83,11 @@ const convertSpeechmatics = ({ speakers, words, job: metadata }) => {
     }),
   };
 };
+
+const transcript = convertSpeechmatics(sm);
+transcript.segments.forEach((segment, i) => segment.translation = translation[i].text);
 const transcripts = [
-  convertSpeechmatics(sm),
+  transcript,
 ];
 
 console.log(transcripts);
