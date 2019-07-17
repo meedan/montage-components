@@ -1,7 +1,7 @@
 import React from 'react';
-import { EditorState, convertFromRaw, getDefaultKeyBinding, RichUtils } from 'draft-js';
+import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
 
-import { createEntityMap, generateDecorator, createPreview } from './transcriptUtils';
+import { createEntityMap, generateDecorator } from './transcriptUtils';
 
 import chunk from 'lodash.chunk';
 import Combinatorics from 'js-combinatorics';
@@ -357,12 +357,6 @@ class Transcript extends React.Component {
   handleKeyCommand = (command, editorState, key, suffix = 'A') => {
     console.log(command);
     if (command === 'undo' || command === 'redo') return 'handled';
-
-    const richTextState = RichUtils.handleKeyCommand(editorState, command);
-    if (richTextState) {
-      this.onChange(richTextState, key, suffix);
-      return true;
-    }
 
     return 'not-handled';
   };
