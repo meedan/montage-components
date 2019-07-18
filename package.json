@@ -9,12 +9,15 @@
     "status": "npx oao status",
     "clean": "npx oao clean",
     "build": "npx oao all 'yarn build'",
-    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN"
+    "deploy": "now --scope=badideafactory --target=production --no-clipboard --public --token=$NOW_TOKEN",
+    "postinstall": "patch-package"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "now": "^15.6.2"
+    "now": "^15.7.0",
+    "patch-package": "^6.1.2",
+    "postinstall-postinstall": "^2.0.0"
   }
 }

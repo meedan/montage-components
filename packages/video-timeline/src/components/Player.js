@@ -25,6 +25,7 @@ class Player extends Component {
     const { update } = this.props;
 
     this.internalPlayer = this.player.getInternalPlayer();
+    window.internalPlayer = this.internalPlayer;
 
     update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
 
@@ -36,6 +37,11 @@ class Player extends Component {
       'onPlaybackRateChange',
       ({ data: playbackRate }) => update({ playbackRate })
     );
+  };
+
+  handleOnProgress = ({ playedSeconds }) => {
+    const roundedSeconds = playedSeconds; // Math.round(playedSeconds * 1e3) / 1e3;
+    this.props.timeupdate(roundedSeconds);
   };
 
   render() {
@@ -53,9 +59,7 @@ class Player extends Component {
             preload: true,
           },
         }}
-        url={`https://www.youtube.com/watch?v=${
-          this.props.data.ytVideoData.id
-        }`}
+        url={`https://www.youtube.com/watch?v=${this.props.data.ytVideoData.id}`}
         progressInterval={200}
         playbackRate={playbackRate}
         controls
@@ -68,7 +72,7 @@ class Player extends Component {
         onPause={() => pause()}
         onEnded={() => pause()}
         onDuration={d => duration(d)}
-        onProgress={({ playedSeconds }) => timeupdate(playedSeconds)}
+        onProgress={this.handleOnProgress}
         onReady={this.handleOnReady}
         onStart={e => console.info('onStart', e)}
         onSeek={e => console.info('onSeek', e)}

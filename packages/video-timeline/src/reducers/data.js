@@ -4,6 +4,8 @@ import baseData from '../data/baseData';
 import timelineData from '../data/timelineData';
 import newData from '../data/newData';
 
+import transcripts from '../data/transcripts';
+
 const initialState = window.angular
   ? {}
   : {
@@ -15,6 +17,7 @@ const initialState = window.angular
       //   projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
       //   projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
       // },
+      transcripts,
     };
 
 const dataSlice = createSlice({
