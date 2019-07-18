@@ -29,13 +29,40 @@ class Entities extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { duration, skip, entityType, transport } = props;
-    const { entities } = props;
+    let { entities } = props;
 
     if (skip) return null;
 
     const playlist = transport === entityType;
-    const segments = recomputeSegments(entities, duration);
 
+    // TODO: move this upstream
+    // merge overlapping tag instances
+    // entities.forEach(e => {
+    //   e.isCreating = false;
+    //   e.instances = e.instances
+    //     .sort((j, i) => j.start_seconds - i.start_seconds)
+    //     .reduce((acc = [], i) => {
+    //       const j = acc.pop();
+    //
+    //       if (j) {
+    //         if (
+    //           j.start_seconds <= i.start_seconds &&
+    //           i.start_seconds < j.end_seconds
+    //         ) {
+    //           j.start_seconds = Math.min(j.start_seconds, i.start_seconds);
+    //           j.end_seconds = Math.max(j.end_seconds, i.end_seconds);
+    //           acc.push(j);
+    //           return acc;
+    //         }
+    //
+    //         acc.push(j);
+    //       }
+    //
+    //       return [...acc, i];
+    //     }, []);
+    // });
+
+    const segments = recomputeSegments(entities, duration);
     return { segments, playlist };
   }
 
