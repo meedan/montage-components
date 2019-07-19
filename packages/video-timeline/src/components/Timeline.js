@@ -11,7 +11,7 @@ import TimelineComments from './ofTimeline/Comments';
 
 import { TimelinePlayhead } from '@montage/ui';
 
-import { play, pause, seekTo, update } from '../reducers/player';
+import { play, pause, update } from '../reducers/player';
 
 const DISABLE_TIMELINE_TRANSPORT = false;
 const DISABLE_TRACK_TRANSPORT = false;
@@ -117,7 +117,7 @@ class Timeline extends Component {
       });
       console.log(`seeking to ${newTime} (onTrackClick)`);
       if (!playing) play({ transport: 'timeline' });
-      this.YTseekTo(newTime);
+      this.seekTo(newTime);
     }
     return null;
   };
@@ -153,7 +153,7 @@ class Timeline extends Component {
     // pause
     if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
 
-    this.YTseekTo(val);
+    this.seekTo(val);
   };
 
   onDragEnd = (val, clip = false) => {
@@ -171,7 +171,7 @@ class Timeline extends Component {
       300
     );
 
-    this.YTseekTo(this.state.time);
+    this.seekTo(this.state.time);
   };
 
   onTimeChange = (time, skip = true, clip = false) => {
@@ -191,12 +191,12 @@ class Timeline extends Component {
     // pause
     if (playing) pause({ transport: clip ? 'downstream' : 'timeline' });
 
-    this.YTseekTo(time);
+    this.seekTo(time);
   };
 
-  YTseekTo = time => {
-    if (!DISABLE_TIMELINE_TRANSPORT && window.internalPlayer && window.internalPlayer.seekTo) {
-      window.internalPlayer.seekTo(time, true);
+  seekTo = time => {
+    if (!DISABLE_TIMELINE_TRANSPORT) {
+      this.props.seekTo(time);
     }
   };
 
@@ -304,5 +304,5 @@ class Timeline extends Component {
 
 export default connect(
   null,
-  { play, pause, seekTo, update }
+  { play, pause, update }
 )(Timeline);

@@ -195,10 +195,12 @@
       "react-app"
     ],
     "plugins": [
-      "babel-plugin-styled-components"
+      "babel-plugin-styled-components",
+      "@babel/plugin-syntax-throw-expressions"
     ]
   },
   "devDependencies": {
+    "@babel/plugin-syntax-throw-expressions": "^7.2.0",
     "babel-plugin-styled-components": "1.10.6",
     "eslint-config-prettier": "6.0.0",
     "eslint-plugin-prettier": "3.1.0",

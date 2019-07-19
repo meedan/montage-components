@@ -12,7 +12,7 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { play, pause, seekTo } from '../reducers/player';
+import { play, pause } from '../reducers/player';
 
 const PlaybackControls = styled.div`
   padding-bottom: 16px;
@@ -119,5 +119,5 @@ const Transport = props => {
 
 export default connect(
   null,
-  { play, pause, seekTo }
+  { play, pause }
 )(withTheme(Transport));

@@ -5,11 +5,11 @@ const initialState = {
   playbackRates: [1], // available playback rates
   playbackRate: 1,
   duration: 0,
-  currentTime: 0,
+  // currentTime: 0,
   playing: false,
-  seeking: false,
-  seekTo: null,
-  seekAhead: true,
+  // seeking: false,
+  // seekTo: null,
+  // seekAhead: true,
   transport: null,
 };
 
@@ -29,15 +29,18 @@ const playerSlice = createSlice({
       playing: false,
     }),
 
-    seekTo: (state, { payload }) => {
-      const seekTo = isNaN(payload) ? payload.seekTo : payload;
-      const transport = isNaN(payload)
-        ? state.transport
-        : payload.transport
-        ? payload.transport
-        : state.transport;
-      const seekAhead = isNaN(payload) ? payload.seekAhead : state.seekAhead;
-      return { ...state, transport, seekTo, seekAhead };
+    // seekTo: (state, { payload }) => {
+    //   const seekTo = isNaN(payload) ? payload.seekTo : payload;
+    //   const transport = isNaN(payload)
+    //     ? state.transport
+    //     : payload.transport
+    //     ? payload.transport
+    //     : state.transport;
+    //   const seekAhead = isNaN(payload) ? payload.seekAhead : state.seekAhead;
+    //   return { ...state, transport, seekTo, seekAhead };
+    // },
+    seekTo: () => {
+      throw new Error('Obsolete: redux seekTo');
     },
 
     playbackRate: (state, { payload: playbackRate }) => ({
@@ -46,10 +49,13 @@ const playerSlice = createSlice({
     }),
 
     duration: (state, { payload: duration }) => ({ ...state, duration }),
-    timeupdate: (state, { payload: currentTime }) => ({
-      ...state,
-      currentTime,
-    }),
+    // timeupdate: (state, { payload: currentTime }) => ({
+    //   ...state,
+    //   currentTime,
+    // }),
+    timeupdate: () => {
+      throw new Error('Obsolete: redux timeupdate');
+    },
 
     update: (state, { payload }) => ({ ...state, ...payload }),
     reset: () => initialState,

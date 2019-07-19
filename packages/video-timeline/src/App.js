@@ -23,7 +23,7 @@ import Transport from './components/Transport';
 
 import Transcript from './components/transcript/Transcript';
 
-import { seekTo } from './reducers/player';
+import { update } from './reducers/player';
 
 const Layout = styled.div`
   align-items: center;
@@ -80,6 +80,13 @@ class App extends Component {
   setScrollingContainer = element => (this.scrollingContainer = element);
 
   setCurrentTime = currentTime => this.setState({ currentTime });
+
+  seekTo = payload => {
+    const time = isNaN(payload) ? payload.seekTo : payload;
+    if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
+    this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
+    if (payload.transport) this.props.update({ transport: payload.transport });
+  };
 
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
@@ -181,7 +188,7 @@ class App extends Component {
                             callback();
                           }}
                           recDateOverriden={data.gdVideoData.recorded_date_overridden}
-                          seekTo={payload => this.props.seekTo(payload)}
+                          seekTo={payload => this.seekTo(payload)}
                         />
                       </Grid>
                       <Grid item sm={8}>
@@ -199,6 +206,7 @@ class App extends Component {
                 duration={duration}
                 player={this.props.player}
                 transport={transport}
+                seekTo={this.seekTo}
               />
               <Tabs value={this.state.mode} centered classes={{ indicator: classes.TabsIndicator }}>
                 <Tab
@@ -232,6 +240,7 @@ class App extends Component {
                     duration={duration}
                     playing={playing}
                     transport={transport}
+                    seekTo={this.seekTo}
                   />
                 </ErrorBoundary>
               ) : (
@@ -243,7 +252,7 @@ class App extends Component {
                     scrollingContainer={this.scrollingContainer}
                     transcript={data.transcripts[0]}
                     currentTime={currentTime}
-                    seekTo={payload => this.props.seekTo(payload)}
+                    seekTo={this.seekTo}
                   />
                 </div>
               )}
@@ -256,6 +265,4 @@ class App extends Component {
 }
 
 export default connect(
-  ({ player, data }) => ({ player, data }),
-  { seekTo }
-)(withStyles(styles)(withSnackbar(App)));
+  ({ player, data }) => ({ player, data }), { update })(withStyles(styles)(withSnackbar(App)));
