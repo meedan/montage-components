@@ -227,7 +227,7 @@ class Transcript extends React.Component {
           // const start = block.getData().get('start');
           // const end = block.getData().get('end');
           const { start, end } = memoizedGetBlockTimings(contentState, block);
-          console.log({start, end});
+          // console.log({start, end});
           return start <= time && time < end;
         });
 
@@ -310,22 +310,35 @@ class Transcript extends React.Component {
 
     while (!element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
     if (element.hasAttribute('data-start')) {
-      const t = parseFloat(element.getAttribute('data-start'));
+      let t = parseFloat(element.getAttribute('data-start'));
       console.log('found data-start', t, element);
-      this.props.seekTo(t / 1e3);
-    } else {
-      console.log('no data-start, stopping at', element);
-      element = event.nativeEvent.target;
-      while (!element.hasAttribute('data-block') && element.parentElement) element = element.parentElement;
-      if (element.hasAttribute('data-block') && element.hasAttribute('data-offset-key')) {
-        const blockKey = element
-          .getAttribute('data-offset-key')
-          .split('-')
-          .reverse()
-          .pop();
-        console.log('found block?', blockKey);
+
+      if (element.classList.contains('BlockWrapper')) {
+        element = event.nativeEvent.target.parentElement.previousSibling;
+        while (!element.hasAttribute('data-start') && element.previousSibling) element = element.previousSibling;
+        if (element.hasAttribute('data-start')) {
+          t = parseFloat(element.getAttribute('data-start'));
+          console.log('found sibling data-start', t, element);
+        }
       }
+
+      this.props.seekTo(t / 1e3);
     }
+
+
+
+    // console.log('no data-start, stopping at', element);
+    // element = event.nativeEvent.target;
+    // while (!element.hasAttribute('data-block') && element.parentElement) element = element.parentElement;
+    // if (element.hasAttribute('data-block') && element.hasAttribute('data-offset-key')) {
+    //   const blockKey = element
+    //     .getAttribute('data-offset-key')
+    //     .split('-')
+    //     .reverse()
+    //     .pop();
+    //   console.log('found block?', blockKey);
+    // }
+
   };
 
   handleChange = (editorState, key, suffix = 'A') => {
