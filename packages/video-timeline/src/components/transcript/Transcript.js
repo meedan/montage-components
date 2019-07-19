@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
 
-import { createEntityMap, generateDecorator } from './transcriptUtils';
+import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 
 import chunk from 'lodash.chunk';
 import Combinatorics from 'js-combinatorics';
@@ -68,7 +68,7 @@ class Transcript extends React.Component {
     }, []);
 
     if (transcript !== state.transcript) {
-      const segments = chunk(transcript.segments, 1).map(segment => {
+      const segments = chunk(transcript.segments, 2).map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
 
@@ -187,6 +187,8 @@ class Transcript extends React.Component {
           { allowUndo: false }
         );
         return {
+          start: segmentStart,
+          end: segmentEnd,
           editorStateA,
           key: `editor-${blocks[0].key}`,
           // editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
@@ -216,14 +218,16 @@ class Transcript extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
-      this.state.segments.forEach(({ editorStateA, key }) => {
+      this.state.segments.filter(({start, end}) => start <= time && time < end).forEach(({ editorStateA, key }) => {
         const contentState = editorStateA.getCurrentContent();
         const blocks = contentState.getBlocksAsArray();
         let playheadBlockIndex = -1;
 
         playheadBlockIndex = blocks.findIndex(block => {
-          const start = block.getData().get('start');
-          const end = block.getData().get('end');
+          // const start = block.getData().get('start');
+          // const end = block.getData().get('end');
+          const { start, end } = memoizedGetBlockTimings(contentState, block);
+          console.log({start, end});
           return start <= time && time < end;
         });
 
@@ -253,6 +257,7 @@ class Transcript extends React.Component {
           // } else {
           //   this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
           // }
+
           if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead);
           this.idlePlayhead = requestIdleCallback(() => {
             if (playheadEntity) {
@@ -262,8 +267,15 @@ class Transcript extends React.Component {
                 playheadBlockKey: playheadBlock.getKey(),
                 playheadEntityKey: key,
               });
+
+              console.log({
+                playheadEditorKey: `editor-${blocks[0].key}`,
+                playheadBlockKey: playheadBlock.getKey(),
+                playheadEntityKey: key,
+              });
             } else {
               this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
+              console.log({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
             }
           }, { timeout: 500 });
         }
@@ -273,13 +285,13 @@ class Transcript extends React.Component {
     return true;
   }
 
-  YTseekTo = time => {
-    if (window.internalPlayer && window.internalPlayer.seekTo) {
-      // window.internalPlayer.seekTo(time, true);
-      if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
-      this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
-    }
-  };
+  // YTseekTo = time => {
+  //   if (window.internalPlayer && window.internalPlayer.seekTo) {
+  //     // window.internalPlayer.seekTo(time, true);
+  //     if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
+  //     this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
+  //   }
+  // };
 
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
@@ -294,11 +306,15 @@ class Transcript extends React.Component {
 
   handleClick = event => {
     let element = event.nativeEvent.target;
+    console.log('click', element);
+
     while (!element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
     if (element.hasAttribute('data-start')) {
       const t = parseFloat(element.getAttribute('data-start'));
-      this.YTseekTo(t / 1e3);
+      console.log('found data-start', t, element);
+      this.props.seekTo(t / 1e3);
     } else {
+      console.log('no data-start, stopping at', element);
       element = event.nativeEvent.target;
       while (!element.hasAttribute('data-block') && element.parentElement) element = element.parentElement;
       if (element.hasAttribute('data-block') && element.hasAttribute('data-offset-key')) {
@@ -307,7 +323,7 @@ class Transcript extends React.Component {
           .split('-')
           .reverse()
           .pop();
-        console.log(blockKey);
+        console.log('found block?', blockKey);
       }
     }
   };
@@ -326,6 +342,23 @@ class Transcript extends React.Component {
 
       this.past.push(this.state.segments);
       this.future = [];
+
+      // let newEditorState = editorState;
+      // const contentState = editorState.getCurrentContent();
+      // const prevContentState = this.state.segments[editorIndex][`editorState${suffix}`].getCurrentContent();
+
+      // if (contentChange === 'split-block' || contentState.getBlockMap().size > prevContentState.getBlockMap().size) {
+      // } else if (contentChange === 'backspace-character' || contentState.getBlockMap().size < prevContentState.getBlockMap().size) {
+      // }
+
+      // if (contentState.getBlockMap().size !== prevContentState.getBlockMap().size) {
+      //   const blocks = contentState.getBlocksAsArray();
+      //   const entityMap = contentState.getEntityMap();
+      //   newEditorState = EditorState.createWithContent(
+      //     ContentState.createFromBlockArray(blocks, entityMap),
+      //     generateDecorator()
+      //   );
+      // }
 
       this.setState({
         segments: [

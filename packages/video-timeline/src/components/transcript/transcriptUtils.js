@@ -33,7 +33,7 @@ export const generateDecorator = (highlightTerm = '') => {
       component: ({ entityKey, contentState, children }) => {
         const data = entityKey ? contentState.getEntity(entityKey).getData() : {};
         return (
-          <Token data-start={data.start} data-entity-key={data.key} className="Token">
+          <Token data-start={data.start} data-end={data.end}  data-entity-key={data.key} className="Token">
             {children}
           </Token>
         );
@@ -69,6 +69,23 @@ export const createPreview = editorState =>
   );
 
 export const memoizedCreatePreview = moize(createPreview);
+
+export const getBlockTimings = (contentState, block) => {
+  const entities = [];
+  block.findEntityRanges(() => true, offset => {
+    const key = block.getEntityAt(offset);
+    if (key) entities.push(contentState.getEntity(key).getData());
+  });
+
+  if (entities.length === 0) return {};
+
+  return {
+    start: entities[0].start,
+    end: entities[entities.length - 1].end,
+  };
+};
+
+export const memoizedGetBlockTimings = moize(getBlockTimings);
 
 export const createEntityMap = blocks =>
   flatten(blocks.map(block => block.entityRanges)).reduce(

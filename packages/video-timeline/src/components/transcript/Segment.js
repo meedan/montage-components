@@ -19,21 +19,21 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
   <dl className="column" style={{ width: 200 }}>
     <dt>comments</dt>
     {comments.map(({ id, text }) => (
-      <dd onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
+      <dd key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
         {text}
       </dd>
     ))}
 
     <dt>tags</dt>
     {tags.map(entity => (
-      <dd onMouseOver={() => higlightTag(`T-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+      <dd key={`T-${entity.id}`} onMouseOver={() => higlightTag(`T-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
         {entity.project_tag.name}
       </dd>
     ))}
 
     <dt>places</dt>
     {places.map(entity => (
-      <dd onMouseOver={() => higlightTag(`G-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+      <dd key={`G-${entity.id}`} onMouseOver={() => higlightTag(`G-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
         {entity.project_location.name}
       </dd>
     ))}
@@ -102,9 +102,6 @@ export default React.memo(
                   handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                   onChange={editorState => handleChange(editorState, editorKey)}
                   textDirectionality={textDirectionalityA}
-                  autoCapitalize={false}
-                  autoComplete={false}
-                  autoCorrect={false}
                   spellCheck={false}
                   placeholder="Transcribe here…"
                 />
@@ -132,9 +129,6 @@ export default React.memo(
                     handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                     onChange={editorState => handleChange(editorState, editorKey, 'B')}
                     textDirectionality={textDirectionalityB}
-                    autoCapitalize={false}
-                    autoComplete={false}
-                    autoCorrect={false}
                     spellCheck={false}
                     placeholder="Translate here…"
                   />
