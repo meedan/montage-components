@@ -285,14 +285,6 @@ class Transcript extends React.Component {
     return true;
   }
 
-  // YTseekTo = time => {
-  //   if (window.internalPlayer && window.internalPlayer.seekTo) {
-  //     // window.internalPlayer.seekTo(time, true);
-  //     if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
-  //     this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
-  //   }
-  // };
-
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
     if (type === 'paragraph') {
@@ -325,8 +317,6 @@ class Transcript extends React.Component {
       this.props.seekTo(t / 1e3);
     }
 
-
-
     // console.log('no data-start, stopping at', element);
     // element = event.nativeEvent.target;
     // while (!element.hasAttribute('data-block') && element.parentElement) element = element.parentElement;
@@ -355,23 +345,6 @@ class Transcript extends React.Component {
 
       this.past.push(this.state.segments);
       this.future = [];
-
-      // let newEditorState = editorState;
-      // const contentState = editorState.getCurrentContent();
-      // const prevContentState = this.state.segments[editorIndex][`editorState${suffix}`].getCurrentContent();
-
-      // if (contentChange === 'split-block' || contentState.getBlockMap().size > prevContentState.getBlockMap().size) {
-      // } else if (contentChange === 'backspace-character' || contentState.getBlockMap().size < prevContentState.getBlockMap().size) {
-      // }
-
-      // if (contentState.getBlockMap().size !== prevContentState.getBlockMap().size) {
-      //   const blocks = contentState.getBlocksAsArray();
-      //   const entityMap = contentState.getEntityMap();
-      //   newEditorState = EditorState.createWithContent(
-      //     ContentState.createFromBlockArray(blocks, entityMap),
-      //     generateDecorator()
-      //   );
-      // }
 
       this.setState({
         segments: [
