@@ -243,16 +243,29 @@ class Transcript extends React.Component {
               return start <= time && time < end;
             });
 
-          if (playheadEntity) {
-            const { key } = contentState.getEntity(playheadEntity).getData();
-            this.setState({
-              playheadEditorKey: `editor-${blocks[0].key}`,
-              playheadBlockKey: playheadBlock.getKey(),
-              playheadEntityKey: key,
-            });
-          } else {
-            this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
-          }
+          // if (playheadEntity) {
+          //   const { key } = contentState.getEntity(playheadEntity).getData();
+          //   this.setState({
+          //     playheadEditorKey: `editor-${blocks[0].key}`,
+          //     playheadBlockKey: playheadBlock.getKey(),
+          //     playheadEntityKey: key,
+          //   });
+          // } else {
+          //   this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
+          // }
+          if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead);
+          this.idlePlayhead = requestIdleCallback(() => {
+            if (playheadEntity) {
+              const { key } = contentState.getEntity(playheadEntity).getData();
+              this.setState({
+                playheadEditorKey: `editor-${blocks[0].key}`,
+                playheadBlockKey: playheadBlock.getKey(),
+                playheadEntityKey: key,
+              });
+            } else {
+              this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
+            }
+          }, { timeout: 500 });
         }
       });
     }
@@ -262,7 +275,9 @@ class Transcript extends React.Component {
 
   YTseekTo = time => {
     if (window.internalPlayer && window.internalPlayer.seekTo) {
-      window.internalPlayer.seekTo(time, true);
+      // window.internalPlayer.seekTo(time, true);
+      if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
+      this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
     }
   };
 
