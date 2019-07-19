@@ -21,9 +21,9 @@ const PlaybackControls = styled.div`
 `;
 
 const Transport = props => {
-  const { player, play, pause, seekTo, frameRate = 30 } = props;
+  const { player, play, pause, seekTo, frameRate = 30, currentTime } = props;
 
-  const { playing, currentTime } = player;
+  const { playing } = player;
 
   if (playing)
     return (

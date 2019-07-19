@@ -41,11 +41,12 @@ class Player extends Component {
 
   handleOnProgress = ({ playedSeconds }) => {
     const roundedSeconds = playedSeconds; // Math.round(playedSeconds * 1e3) / 1e3;
-    this.props.timeupdate(roundedSeconds);
+    // this.props.timeupdate(roundedSeconds);
+    this.props.onProgress(roundedSeconds);
   };
 
   render() {
-    const { player, play, pause, duration, timeupdate } = this.props;
+    const { player, play, pause, duration } = this.props;
     const { playing, playbackRate } = player;
 
     return (

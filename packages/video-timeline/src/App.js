@@ -70,6 +70,7 @@ const styles = {
 
 class App extends Component {
   state = {
+    currentTime: 0,
     anchorElNext: null,
     anchorElPrev: null,
     mode: 'timeline',
@@ -77,6 +78,8 @@ class App extends Component {
 
   scrollingContainer = null;
   setScrollingContainer = element => (this.scrollingContainer = element);
+
+  setCurrentTime = currentTime => this.setState({ currentTime });
 
   handlePopoverPrevOpen = event => {
     this.setState({ anchorElPrev: event.currentTarget });
@@ -96,7 +99,8 @@ class App extends Component {
 
   render() {
     const { data, classes, player } = this.props;
-    const { currentTime, duration, playing, transport } = player;
+    const { currentTime } = this.state;
+    const { duration, playing, transport } = player;
 
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -181,7 +185,7 @@ class App extends Component {
                         />
                       </Grid>
                       <Grid item sm={8}>
-                        <Player data={data} player={player} />
+                        <Player data={data} player={player} onProgress={this.setCurrentTime}/>
                       </Grid>
                     </Grid>
                   </Paper>
