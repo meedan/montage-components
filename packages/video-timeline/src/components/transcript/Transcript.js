@@ -68,7 +68,7 @@ class Transcript extends React.Component {
     }, []);
 
     if (transcript !== state.transcript) {
-      const segments = chunk(transcript.segments, 2).map(segment => {
+      const segments = chunk(transcript.segments, 1).map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
 
