@@ -73,7 +73,7 @@ class App extends Component {
     currentTime: 0,
     anchorElNext: null,
     anchorElPrev: null,
-    mode: 'timeline',
+    mode: 'transcript',
   };
 
   scrollingContainer = null;
