@@ -1,16 +1,29 @@
 import React from 'react';
+import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
-
-import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
-
 import chunk from 'lodash.chunk';
 import Combinatorics from 'js-combinatorics';
-import styled from 'styled-components';
 
+import { TranscriptSearch } from '@montage/ui';
+
+import EditIcon from '@material-ui/icons/Edit';
+import Fab from '@material-ui/core/Fab';
+import Grid from '@material-ui/core/Grid';
+import Toolbar from '@material-ui/core/Toolbar';
+
+import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
 
 const MAX_OVERLAP = 5;
+
+const Element = styled.div``;
+const ToolbarFabs = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+`;
 
 const TranscriptWrapper = styled.div`
   text-align: left;
@@ -218,68 +231,79 @@ class Transcript extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
-      this.state.segments.filter(({start, end}) => start <= time && time < end).forEach(({ editorStateA, key }) => {
-        const contentState = editorStateA.getCurrentContent();
-        const blocks = contentState.getBlocksAsArray();
-        let playheadBlockIndex = -1;
+      this.state.segments
+        .filter(({ start, end }) => start <= time && time < end)
+        .forEach(({ editorStateA, key }) => {
+          const contentState = editorStateA.getCurrentContent();
+          const blocks = contentState.getBlocksAsArray();
+          let playheadBlockIndex = -1;
 
-        playheadBlockIndex = blocks.findIndex(block => {
-          // const start = block.getData().get('start');
-          // const end = block.getData().get('end');
-          const { start, end } = memoizedGetBlockTimings(contentState, block);
-          // console.log({start, end});
-          return start <= time && time < end;
+          playheadBlockIndex = blocks.findIndex(block => {
+            // const start = block.getData().get('start');
+            // const end = block.getData().get('end');
+            const { start, end } = memoizedGetBlockTimings(contentState, block);
+            // console.log({start, end});
+            return start <= time && time < end;
+          });
+
+          if (playheadBlockIndex > -1) {
+            const playheadBlock = blocks[playheadBlockIndex];
+            const playheadEntity = [
+              ...new Set(
+                playheadBlock
+                  .getCharacterList()
+                  .toArray()
+                  .map(character => character.getEntity())
+              ),
+            ]
+              .filter(value => !!value)
+              .find(entity => {
+                const { start, end } = contentState.getEntity(entity).getData();
+                return start <= time && time < end;
+              });
+
+            // if (playheadEntity) {
+            //   const { key } = contentState.getEntity(playheadEntity).getData();
+            //   this.setState({
+            //     playheadEditorKey: `editor-${blocks[0].key}`,
+            //     playheadBlockKey: playheadBlock.getKey(),
+            //     playheadEntityKey: key,
+            //   });
+            // } else {
+            //   this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
+            // }
+
+            if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead);
+            this.idlePlayhead = requestIdleCallback(
+              () => {
+                if (playheadEntity) {
+                  const { key } = contentState.getEntity(playheadEntity).getData();
+                  this.setState({
+                    playheadEditorKey: `editor-${blocks[0].key}`,
+                    playheadBlockKey: playheadBlock.getKey(),
+                    playheadEntityKey: key,
+                  });
+
+                  console.log({
+                    playheadEditorKey: `editor-${blocks[0].key}`,
+                    playheadBlockKey: playheadBlock.getKey(),
+                    playheadEntityKey: key,
+                  });
+                } else {
+                  this.setState({
+                    playheadEditorKey: `editor-${blocks[0].key}`,
+                    playheadBlockKey: playheadBlock.getKey(),
+                  });
+                  console.log({
+                    playheadEditorKey: `editor-${blocks[0].key}`,
+                    playheadBlockKey: playheadBlock.getKey(),
+                  });
+                }
+              },
+              { timeout: 500 }
+            );
+          }
         });
-
-        if (playheadBlockIndex > -1) {
-          const playheadBlock = blocks[playheadBlockIndex];
-          const playheadEntity = [
-            ...new Set(
-              playheadBlock
-                .getCharacterList()
-                .toArray()
-                .map(character => character.getEntity())
-            ),
-          ]
-            .filter(value => !!value)
-            .find(entity => {
-              const { start, end } = contentState.getEntity(entity).getData();
-              return start <= time && time < end;
-            });
-
-          // if (playheadEntity) {
-          //   const { key } = contentState.getEntity(playheadEntity).getData();
-          //   this.setState({
-          //     playheadEditorKey: `editor-${blocks[0].key}`,
-          //     playheadBlockKey: playheadBlock.getKey(),
-          //     playheadEntityKey: key,
-          //   });
-          // } else {
-          //   this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
-          // }
-
-          if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead);
-          this.idlePlayhead = requestIdleCallback(() => {
-            if (playheadEntity) {
-              const { key } = contentState.getEntity(playheadEntity).getData();
-              this.setState({
-                playheadEditorKey: `editor-${blocks[0].key}`,
-                playheadBlockKey: playheadBlock.getKey(),
-                playheadEntityKey: key,
-              });
-
-              console.log({
-                playheadEditorKey: `editor-${blocks[0].key}`,
-                playheadBlockKey: playheadBlock.getKey(),
-                playheadEntityKey: key,
-              });
-            } else {
-              this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
-              console.log({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
-            }
-          }, { timeout: 500 });
-        }
-      });
     }
 
     return true;
@@ -328,7 +352,6 @@ class Transcript extends React.Component {
     //     .pop();
     //   console.log('found block?', blockKey);
     // }
-
   };
 
   handleChange = (editorState, key, suffix = 'A') => {
@@ -411,12 +434,20 @@ class Transcript extends React.Component {
     return getDefaultKeyBinding(event);
   };
 
-  handleSearch = e => {
-    const search = e.target.value;
-    if (search === this.state.search) return;
+  // handleSearch = e => {
+  //   const search = e.target.value;
+  //   if (search === this.state.search) return;
 
+  //   this.setState({
+  //     search,
+  //     searchFocused: true,
+  //   });
+  // };
+
+  onSearch = payload => {
+    if (payload === this.state.search) return;
     this.setState({
-      search,
+      search: payload,
       searchFocused: true,
     });
   };
@@ -457,14 +488,45 @@ class Transcript extends React.Component {
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
-      <TranscriptWrapper
-        ref={ref => {
-          this.transcriptWrapper = ref;
-        }}
-        onClick={event => this.handleClick(event)}
-      >
-        <style scoped>
-          {`
+      <Element>
+        <Toolbar>
+          <Grid container>
+            <Grid item xs={6}>
+              Source
+            </Grid>
+            <Grid item xs={6}>
+              Translation
+            </Grid>
+            <ToolbarFabs>
+              <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
+
+              {/* <fieldset>
+                <legend>Search</legend>
+                <input
+                  value={this.state.search}
+                  onChange={this.handleSearch}
+                  onFocus={() => this.handleSearchFocus(true)}
+                  onBlur={() => this.handleSearchFocus(false)}
+                  onMouseOver={() => this.handleSearchFocus(true)}
+                  onMouseOut={() => this.handleSearchFocus(false)}
+                />
+              </fieldset> */}
+
+              <Fab color="primary" aria-label="Edit">
+                <EditIcon />
+              </Fab>
+            </ToolbarFabs>
+          </Grid>
+        </Toolbar>
+
+        <TranscriptWrapper
+          ref={ref => {
+            this.transcriptWrapper = ref;
+          }}
+          onClick={event => this.handleClick(event)}
+        >
+          <style scoped>
+            {`
             section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
@@ -493,8 +555,8 @@ class Transcript extends React.Component {
               )
               .join('\n')}
           `}
-          {activeTag
-            ? `
+            {activeTag
+              ? `
               span[class*='T-']{
                 background-color: transparent;
               }
@@ -503,85 +565,74 @@ class Transcript extends React.Component {
                 border-bottom: 1px solid red;
               }
             `
-            : ''}
-        </style>
-        <fieldset>
-          <legend>Search</legend>
-          <input
-            value={this.state.search}
-            onChange={this.handleSearch}
-            onFocus={() => this.handleSearchFocus(true)}
-            onBlur={() => this.handleSearchFocus(false)}
-            onMouseOver={() => this.handleSearchFocus(true)}
-            onMouseOut={() => this.handleSearchFocus(false)}
-            placeholder="Search…"
-          />
-        </fieldset>
-        <div className="row">
-          <div className="column">
-            <fieldset>
-              <legend>A. Original</legend>
-              <label>
-                <input
-                  name="editableA"
-                  type="checkbox"
-                  checked={this.state.originalEditable}
-                  onChange={this.handleCheckbox}
-                />
-                editable
-              </label>
-            </fieldset>
+              : ''}
+          </style>
+          <div className="row">
+            <div className="column">
+              <fieldset>
+                <legend>A. Original</legend>
+                <label>
+                  <input
+                    name="editableA"
+                    type="checkbox"
+                    checked={this.state.originalEditable}
+                    onChange={this.handleCheckbox}
+                  />
+                  editable
+                </label>
+              </fieldset>
+            </div>
+            <div className="column">
+              <fieldset>
+                <legend>B. Translation</legend>
+                <label>
+                  <input
+                    name="visibleB"
+                    type="checkbox"
+                    checked={this.state.translationVisible}
+                    onChange={this.handleCheckbox}
+                  />
+                  enabled
+                </label>
+                <label>
+                  <input
+                    name="editableB"
+                    type="checkbox"
+                    checked={this.state.translationEditable}
+                    onChange={this.handleCheckbox}
+                  />
+                  editable
+                </label>
+              </fieldset>
+            </div>
           </div>
-          <div className="column">
-            <fieldset>
-              <legend>B. Translation</legend>
-              <label>
-                <input
-                  name="visibleB"
-                  type="checkbox"
-                  checked={this.state.translationVisible}
-                  onChange={this.handleCheckbox}
-                />
-                enabled
-              </label>
-              <label>
-                <input
-                  name="editableB"
-                  type="checkbox"
-                  checked={this.state.translationEditable}
-                  onChange={this.handleCheckbox}
-                />
-                editable
-              </label>
-            </fieldset>
-          </div>
-        </div>
-        {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
-          <Segment
-            {...{
-              key,
-              editorKey: key,
-              editorStateA,
-              editorStateB,
-              comments,
-              tags,
-              places,
-              search,
-              searchFocused,
-              visibleB,
-              editableB,
-              editableA,
-              customStyleMap,
-              customBlockRenderer,
-              scrollingContainer,
-              filterKeyBindingFn,
-              handleKeyCommand,
-              handleChange,
-              higlightTag,
-            }}
-          />
-        ))}
-      </TranscriptWrapper>
+          {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
+            <Segment
+              {...{
+                key,
+                editorKey: key,
+                editorStateA,
+                editorStateB,
+                comments,
+                tags,
+                places,
+                search,
+                searchFocused,
+                visibleB,
+                editableB,
+                editableA,
+                customStyleMap,
+                customBlockRenderer,
+                scrollingContainer,
+                filterKeyBindingFn,
+                handleKeyCommand,
+                handleChange,
+                higlightTag,
+              }}
+            />
+          ))}
+        </TranscriptWrapper>
+      </Element>
     );
   }
 }
