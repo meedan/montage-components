@@ -5,6 +5,9 @@ export { default as VideoMeta } from './VideoMeta/VideoMeta';
 export {
   default as TimelinePlayhead,
 } from './TimelinePlayhead/TimelinePlayhead';
+export {
+  default as TranscriptSearch,
+} from './TranscriptSearch/TranscriptSearch';
 
 export { default as CheckIcon } from './Icons/Check';
 export { default as ClipboardIcon } from './Icons/Clipboard';

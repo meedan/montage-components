@@ -192,7 +192,7 @@ class App extends Component {
                         />
                       </Grid>
                       <Grid item sm={8}>
-                        <Player data={data} player={player} onProgress={this.setCurrentTime}/>
+                        <Player data={data} player={player} onProgress={this.setCurrentTime} />
                       </Grid>
                     </Grid>
                   </Paper>
@@ -265,4 +265,6 @@ class App extends Component {
 }
 
 export default connect(
-  ({ player, data }) => ({ player, data }), { update })(withStyles(styles)(withSnackbar(App)));
+  ({ player, data }) => ({ player, data }),
+  { update }
+)(withStyles(styles)(withSnackbar(App)));
