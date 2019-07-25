@@ -42,7 +42,7 @@ class Transcript extends React.Component {
     searchFocused: false,
     editableA: false,
     editableB: false,
-    visibleB: true,
+    visibleB: false,
   };
   past = [];
   future = [];
