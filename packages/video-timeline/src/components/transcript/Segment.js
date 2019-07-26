@@ -27,46 +27,54 @@ const EditorWrapper = styled.section`
 `;
 
 const Legend = ({ comments, tags, places, higlightTag }) => (
-  <dl className="column" style={{ width: 200 }}>
-    <dt>
+  <>
+    {comments.length > 0 ? (
       <Tooltip title="Comments">
         <CommentIcon fontSize="small" color="disabled" size=""></CommentIcon>
       </Tooltip>
-    </dt>
+    ) : null}
     {comments.map(({ id, text }) => (
-      <dd key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
+      <div key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
         <Typography variant="caption" noWrap>
           {text}
         </Typography>
-      </dd>
+      </div>
     ))}
 
-    <dt>
+    {tags.length > 0 ? (
       <Tooltip title="Tags">
         <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
       </Tooltip>
-    </dt>
+    ) : null}
     {tags.map(entity => (
-      <dd key={`T-${entity.id}`} onMouseOver={() => higlightTag(`T-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+      <div
+        key={`T-${entity.id}`}
+        onMouseOver={() => higlightTag(`T-${entity.id}`)}
+        onMouseOut={() => higlightTag(null)}
+      >
         <Typography variant="caption" noWrap>
           {entity.project_tag.name}
         </Typography>
-      </dd>
+      </div>
     ))}
 
-    <dt>
+    {places.length > 0 ? (
       <Tooltip title="Locations">
         <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
       </Tooltip>
-    </dt>
+    ) : null}
     {places.map(entity => (
-      <dd key={`G-${entity.id}`} onMouseOver={() => higlightTag(`G-${entity.id}`)} onMouseOut={() => higlightTag(null)}>
+      <div
+        key={`G-${entity.id}`}
+        onMouseOver={() => higlightTag(`G-${entity.id}`)}
+        onMouseOut={() => higlightTag(null)}
+      >
         <Typography variant="caption" noWrap>
           {entity.project_location.name}
         </Typography>
-      </dd>
+      </div>
     ))}
-  </dl>
+  </>
 );
 
 export default React.memo(
