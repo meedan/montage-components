@@ -121,8 +121,8 @@ export default React.memo(
               </TranscriptSide>
               <TranscriptMain>
                 <Grid container>
-                  <Grid item xs={6}>
-                    <div className={visibleB ? 'column' : ''} lang={languageA}>
+                  <Grid item xs={visibleB ? 6 : 12}>
+                    <div lang={languageA}>
                       <Editor
                         editorKey={`A${editorKey}`}
                         readOnly={!editableA || !isVisible}
@@ -150,9 +150,9 @@ export default React.memo(
                     </div>
                   </Grid>
 
-                  <Grid item xs={6}>
-                    {visibleB ? (
-                      <div className="column" lang={languageB}>
+                  {visibleB ? (
+                    <Grid item xs={6}>
+                      <div lang={languageB}>
                         <Editor
                           editorKey={`B${editorKey}`}
                           readOnly={!editableB || !isVisible}
@@ -178,8 +178,8 @@ export default React.memo(
                           placeholder="Translate here…"
                         />
                       </div>
-                    ) : null}
-                  </Grid>
+                    </Grid>
+                  ) : null}
                 </Grid>
               </TranscriptMain>
               <TranscriptSide></TranscriptSide>

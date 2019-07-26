@@ -7,9 +7,9 @@ import Combinatorics from 'js-combinatorics';
 import { TranscriptSearch } from '@montage/ui';
 
 import EditIcon from '@material-ui/icons/Edit';
+import CheckIcon from '@material-ui/icons/Check';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -481,6 +481,12 @@ class Transcript extends React.Component {
     });
   };
 
+  toggleSourceEdit = () => {
+    this.setState(prevState => ({
+      editableA: !prevState.editableA,
+    }));
+  };
+
   render() {
     const {
       playheadEditorKey,
@@ -530,8 +536,8 @@ class Transcript extends React.Component {
                 />
               </fieldset> */}
 
-                <Fab color="primary" aria-label="Edit">
-                  <EditIcon />
+                <Fab color={this.state.editableA ? 'primary' : null} aria-label="Edit" onClick={this.toggleSourceEdit}>
+                  {this.state.editableA ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
                 </Fab>
               </ToolbarFabs>
             </Grid>
@@ -594,7 +600,7 @@ class Transcript extends React.Component {
             <TranscriptMain>
               <Grid container>
                 <Grid item xs={6}>
-                  <fieldset>
+                  {/* <fieldset>
                     <legend>A. Original</legend>
                     <label>
                       <input
@@ -605,7 +611,7 @@ class Transcript extends React.Component {
                       />
                       editable
                     </label>
-                  </fieldset>
+                  </fieldset> */}
                 </Grid>
                 <Grid item xs={6}>
                   <fieldset>
