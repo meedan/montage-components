@@ -50,8 +50,6 @@ const TopWrapper = styled.div`
 const BottomWrapper = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
-  padding-left: 50px;
-  padding-right: 50px;
   width: 100%;
 `;
 
@@ -244,17 +242,15 @@ class App extends Component {
                   />
                 </ErrorBoundary>
               ) : (
-                <div style={{ textAlign: 'center' }}>
-                  <Transcript
-                    commentThreads={data.commentThreads}
-                    videoTags={data.videoTags}
-                    videoPlaces={data.videoPlaces}
-                    scrollingContainer={this.scrollingContainer}
-                    transcript={data.transcripts[0]}
-                    currentTime={currentTime}
-                    seekTo={this.seekTo}
-                  />
-                </div>
+                <Transcript
+                  commentThreads={data.commentThreads}
+                  videoTags={data.videoTags}
+                  videoPlaces={data.videoPlaces}
+                  scrollingContainer={this.scrollingContainer}
+                  transcript={data.transcripts[0]}
+                  currentTime={currentTime}
+                  seekTo={this.seekTo}
+                />
               )}
             </BottomWrapper>
           </Layout>

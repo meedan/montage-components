@@ -10,14 +10,24 @@ import EditIcon from '@material-ui/icons/Edit';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
+// import { classes } from 'coa';
+
+import TranscriptSide from './TranscriptSide';
+import TranscriptMain from './TranscriptMain';
+import TranscriptContainer from './TranscriptContainer';
 
 const MAX_OVERLAP = 5;
 
-const Element = styled.div``;
+const Element = styled.div`
+  background: white;
+`;
+
 const ToolbarFabs = styled.div`
   position: absolute;
   top: 50%;
@@ -33,21 +43,21 @@ const TranscriptWrapper = styled.div`
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  .row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .column {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    flex: 1;
-  }
 `;
+
+const styles = {
+  toolbarRoot: {
+    left: 0,
+    position: 'fixed',
+    right: 0,
+    zIndex: 100,
+  },
+  toolbar: {
+    maxWidth: '800px',
+    position: 'relative',
+    width: '100%',
+  },
+};
 
 class Transcript extends React.Component {
   state = {
@@ -484,23 +494,31 @@ class Transcript extends React.Component {
       editableB,
       customStyleMap,
     } = this.state;
-    const { scrollingContainer, videoTags } = this.props;
+    const { classes, scrollingContainer, videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
       <Element>
-        <Toolbar>
-          <Grid container>
-            <Grid item xs={6}>
-              Source
-            </Grid>
-            <Grid item xs={6}>
-              Translation
-            </Grid>
-            <ToolbarFabs>
-              <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
+        <TranscriptContainer
+          style={{ position: 'fixed', left: 0, height: '60px', padding: '12px 0', right: 0, zIndex: 100 }}
+        >
+          <TranscriptSide></TranscriptSide>
+          <TranscriptMain>
+            <Grid container>
+              <Grid item xs={6}>
+                <Typography align="left" color="textSecondary" variant="subtitle2">
+                  Original Transcript
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography align="left" color="textSecondary" variant="subtitle2">
+                  Translation
+                </Typography>
+              </Grid>
+              <ToolbarFabs>
+                <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
 
-              {/* <fieldset>
+                {/* <fieldset>
                 <legend>Search</legend>
                 <input
                   value={this.state.search}
@@ -512,18 +530,21 @@ class Transcript extends React.Component {
                 />
               </fieldset> */}
 
-              <Fab color="primary" aria-label="Edit">
-                <EditIcon />
-              </Fab>
-            </ToolbarFabs>
-          </Grid>
-        </Toolbar>
+                <Fab color="primary" aria-label="Edit">
+                  <EditIcon />
+                </Fab>
+              </ToolbarFabs>
+            </Grid>
+          </TranscriptMain>
+          <TranscriptSide></TranscriptSide>
+        </TranscriptContainer>
 
         <TranscriptWrapper
           ref={ref => {
             this.transcriptWrapper = ref;
           }}
           onClick={event => this.handleClick(event)}
+          style={{ paddingTop: '80px' }}
         >
           <style scoped>
             {`
@@ -567,45 +588,52 @@ class Transcript extends React.Component {
             `
               : ''}
           </style>
-          <div className="row">
-            <div className="column">
-              <fieldset>
-                <legend>A. Original</legend>
-                <label>
-                  <input
-                    name="editableA"
-                    type="checkbox"
-                    checked={this.state.originalEditable}
-                    onChange={this.handleCheckbox}
-                  />
-                  editable
-                </label>
-              </fieldset>
-            </div>
-            <div className="column">
-              <fieldset>
-                <legend>B. Translation</legend>
-                <label>
-                  <input
-                    name="visibleB"
-                    type="checkbox"
-                    checked={this.state.translationVisible}
-                    onChange={this.handleCheckbox}
-                  />
-                  enabled
-                </label>
-                <label>
-                  <input
-                    name="editableB"
-                    type="checkbox"
-                    checked={this.state.translationEditable}
-                    onChange={this.handleCheckbox}
-                  />
-                  editable
-                </label>
-              </fieldset>
-            </div>
-          </div>
+
+          <TranscriptContainer>
+            <TranscriptSide></TranscriptSide>
+            <TranscriptMain>
+              <Grid container>
+                <Grid item xs={6}>
+                  <fieldset>
+                    <legend>A. Original</legend>
+                    <label>
+                      <input
+                        name="editableA"
+                        type="checkbox"
+                        checked={this.state.originalEditable}
+                        onChange={this.handleCheckbox}
+                      />
+                      editable
+                    </label>
+                  </fieldset>
+                </Grid>
+                <Grid item xs={6}>
+                  <fieldset>
+                    <legend>B. Translation</legend>
+                    <label>
+                      <input
+                        name="visibleB"
+                        type="checkbox"
+                        checked={this.state.translationVisible}
+                        onChange={this.handleCheckbox}
+                      />
+                      enabled
+                    </label>
+                    <label>
+                      <input
+                        name="editableB"
+                        type="checkbox"
+                        checked={this.state.translationEditable}
+                        onChange={this.handleCheckbox}
+                      />
+                      editable
+                    </label>
+                  </fieldset>
+                </Grid>
+              </Grid>
+            </TranscriptMain>
+            <TranscriptSide></TranscriptSide>
+          </TranscriptContainer>
           {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
             <Segment
               {...{
@@ -637,4 +665,4 @@ class Transcript extends React.Component {
   }
 }
 
-export default Transcript;
+export default withStyles(styles)(Transcript);
