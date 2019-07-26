@@ -8,6 +8,7 @@ import { TranscriptSearch } from '@montage/ui';
 
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
+import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -511,19 +512,20 @@ class Transcript extends React.Component {
           <TranscriptSide></TranscriptSide>
           <TranscriptMain>
             <Grid container>
-              <Grid item xs={6}>
+              <Grid item xs={this.state.visibleB ? 6 : 12}>
                 <Typography align="left" color="textSecondary" variant="subtitle2">
                   Original Transcript
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography align="left" color="textSecondary" variant="subtitle2">
-                  Translation
-                </Typography>
-              </Grid>
+              {this.state.visibleB ? (
+                <Grid item xs={6}>
+                  <Typography align="left" color="textSecondary" variant="subtitle2">
+                    Translation
+                  </Typography>
+                </Grid>
+              ) : null}
               <ToolbarFabs>
                 <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
-
                 {/* <fieldset>
                 <legend>Search</legend>
                 <input
@@ -535,10 +537,15 @@ class Transcript extends React.Component {
                   onMouseOut={() => this.handleSearchFocus(false)}
                 />
               </fieldset> */}
-
-                <Fab color={this.state.editableA ? 'primary' : null} aria-label="Edit" onClick={this.toggleSourceEdit}>
-                  {this.state.editableA ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
-                </Fab>
+                <Tooltip title="Edit transcript">
+                  <Fab
+                    color={this.state.editableA ? 'primary' : null}
+                    aria-label="Edit"
+                    onClick={this.toggleSourceEdit}
+                  >
+                    {this.state.editableA ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
+                  </Fab>
+                </Tooltip>
               </ToolbarFabs>
             </Grid>
           </TranscriptMain>

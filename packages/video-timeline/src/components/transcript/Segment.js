@@ -26,54 +26,75 @@ const EditorWrapper = styled.section`
   }
 `;
 
+const LegendContainer = styled.div`
+  padding-left: 24px;
+  position: relative;
+`;
+const LegendLabel = styled.div`
+  position: absolute;
+  left: 0;
+`;
+
 const Legend = ({ comments, tags, places, higlightTag }) => (
   <>
-    {comments.length > 0 ? (
-      <Tooltip title="Comments">
-        <CommentIcon fontSize="small" color="disabled" size=""></CommentIcon>
-      </Tooltip>
-    ) : null}
-    {comments.map(({ id, text }) => (
-      <div key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
-        <Typography variant="caption" noWrap>
-          {text}
-        </Typography>
-      </div>
-    ))}
+    <LegendContainer>
+      {comments.length > 0 ? (
+        <LegendLabel>
+          <Tooltip title="Comments">
+            <CommentIcon fontSize="small" color="disabled" size=""></CommentIcon>
+          </Tooltip>
+        </LegendLabel>
+      ) : null}
+      {comments.map(({ id, text }) => (
+        <div key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
+          <Typography variant="caption" noWrap>
+            {text}
+          </Typography>
+        </div>
+      ))}
+    </LegendContainer>
 
-    {tags.length > 0 ? (
-      <Tooltip title="Tags">
-        <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
-      </Tooltip>
-    ) : null}
-    {tags.map(entity => (
-      <div
-        key={`T-${entity.id}`}
-        onMouseOver={() => higlightTag(`T-${entity.id}`)}
-        onMouseOut={() => higlightTag(null)}
-      >
-        <Typography variant="caption" noWrap>
-          {entity.project_tag.name}
-        </Typography>
-      </div>
-    ))}
+    <LegendContainer>
+      {tags.length > 0 ? (
+        <LegendLabel>
+          <Tooltip title="Tags">
+            <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
+          </Tooltip>
+        </LegendLabel>
+      ) : null}
+      {tags.map(entity => (
+        <div
+          key={`T-${entity.id}`}
+          onMouseOver={() => higlightTag(`T-${entity.id}`)}
+          onMouseOut={() => higlightTag(null)}
+        >
+          <Typography variant="caption" noWrap>
+            {entity.project_tag.name}
+          </Typography>
+        </div>
+      ))}
+    </LegendContainer>
 
-    {places.length > 0 ? (
-      <Tooltip title="Locations">
-        <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
-      </Tooltip>
-    ) : null}
-    {places.map(entity => (
-      <div
-        key={`G-${entity.id}`}
-        onMouseOver={() => higlightTag(`G-${entity.id}`)}
-        onMouseOut={() => higlightTag(null)}
-      >
-        <Typography variant="caption" noWrap>
-          {entity.project_location.name}
-        </Typography>
-      </div>
-    ))}
+    <LegendContainer>
+      {places.length > 0 ? (
+        <LegendLabel>
+          <Tooltip title="Locations">
+            <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
+          </Tooltip>
+        </LegendLabel>
+      ) : null}
+      {places.map(entity => (
+        <div
+          key={`G-${entity.id}`}
+          onMouseOver={() => higlightTag(`G-${entity.id}`)}
+          onMouseOut={() => higlightTag(null)}
+        >
+          <Typography variant="caption" noWrap>
+            {entity.project_location.name}
+          </Typography>
+        </div>
+      ))}
+    </LegendContainer>
   </>
 );
 
