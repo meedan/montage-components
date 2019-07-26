@@ -123,7 +123,9 @@ class App extends Component {
                 wrap="nowrap"
               >
                 <Grid item sm={'auto'}>
-                  {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
+                  <div style={{ width: '50px' }}>
+                    {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
+                  </div>
                 </Grid>
                 <Grid item sm={12}>
                   <Paper square>
@@ -196,7 +198,9 @@ class App extends Component {
                   </Paper>
                 </Grid>
                 <Grid item sm={'auto'}>
-                  {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
+                  <div style={{ width: '50px' }}>
+                    {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
+                  </div>
                 </Grid>
               </Grid>
               <Transport

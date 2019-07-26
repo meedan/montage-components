@@ -10,62 +10,41 @@ import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
-// import { classes } from 'coa';
-
+import TranscriptWrapper from './TranscriptWrapper';
+import TranscriptContainer from './TranscriptContainer';
 import TranscriptSide from './TranscriptSide';
 import TranscriptMain from './TranscriptMain';
-import TranscriptContainer from './TranscriptContainer';
+import TranscriptText from './TranscriptText';
 
 const MAX_OVERLAP = 5;
 
-const Element = styled.div`
-  background: white;
-`;
-
-const ToolbarFabs = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-`;
-
-const TranscriptWrapper = styled.div`
-  text-align: left;
-  /* background-color: #f0f0f0; */
-  color: #222;
-  font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-`;
-
 const styles = {
-  toolbarRoot: {
-    left: 0,
-    position: 'fixed',
-    right: 0,
-    zIndex: 100,
-  },
-  toolbar: {
-    maxWidth: '800px',
-    position: 'relative',
-    width: '100%',
+  toolbarHeading: {
+    lineHeight: '50px',
   },
 };
+
+const TranscriptToolbar = styled.div`
+  background: ${({ pin }) => (pin ? 'white' : 'transparent')};
+  box-shadow: ${({ pin }) => (pin ? '0 1px 5px rgba(0,0,0,0.1)' : '')};
+  height: ${({ pin }) => (pin ? '50px' : 'inherit')};
+  left: 0;
+  position: ${({ pin }) => (pin ? 'fixed' : 'inherit')};
+  right: 0;
+  z-index: 100;
+`;
 
 class Transcript extends React.Component {
   state = {
     search: '',
     searchFocused: false,
-    editableA: false,
-    editableB: false,
+    editable: false,
     visibleB: false,
   };
   past = [];
@@ -484,7 +463,7 @@ class Transcript extends React.Component {
 
   toggleSourceEdit = () => {
     this.setState(prevState => ({
-      editableA: !prevState.editableA,
+      editable: !prevState.editable,
     }));
   };
 
@@ -496,37 +475,51 @@ class Transcript extends React.Component {
       activeTag,
       search,
       searchFocused,
-      editableA,
+      editable,
       visibleB,
-      editableB,
       customStyleMap,
     } = this.state;
     const { classes, scrollingContainer, videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
-      <Element>
-        <TranscriptContainer
-          style={{ position: 'fixed', left: 0, height: '60px', padding: '12px 0', right: 0, zIndex: 100 }}
-        >
-          <TranscriptSide></TranscriptSide>
-          <TranscriptMain>
-            <Grid container>
-              <Grid item xs={this.state.visibleB ? 6 : 12}>
-                <Typography align="left" color="textSecondary" variant="subtitle2">
-                  Original Transcript
-                </Typography>
-              </Grid>
-              {this.state.visibleB ? (
-                <Grid item xs={6}>
-                  <Typography align="left" color="textSecondary" variant="subtitle2">
-                    Translation
+      <>
+        <TranscriptToolbar pin={true}>
+          <TranscriptWrapper stretch={this.state.visibleB}>
+            <TranscriptContainer>
+              <TranscriptSide></TranscriptSide>
+              <TranscriptMain>
+                <TranscriptText stretch={!this.state.visibleB}>
+                  <Typography align="left" color="textSecondary" variant="subtitle2" className={classes.toolbarHeading}>
+                    Original Transcript
                   </Typography>
-                </Grid>
-              ) : null}
-              <ToolbarFabs>
+                </TranscriptText>
+                {this.state.visibleB ? (
+                  <TranscriptText>
+                    <Typography
+                      align="left"
+                      color="textSecondary"
+                      variant="subtitle2"
+                      className={classes.toolbarHeading}
+                    >
+                      Translation
+                    </Typography>
+                  </TranscriptText>
+                ) : null}
+              </TranscriptMain>
+              <TranscriptSide>
                 <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
-                {/* <fieldset>
+                <Tooltip title="Edit transcript">
+                  <Fab color={this.state.editable ? 'primary' : null} aria-label="Edit" onClick={this.toggleSourceEdit}>
+                    {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
+                  </Fab>
+                </Tooltip>
+              </TranscriptSide>
+            </TranscriptContainer>
+          </TranscriptWrapper>
+        </TranscriptToolbar>
+        <TranscriptWrapper stretch={this.state.visibleB}>
+          {/* <fieldset>
                 <legend>Search</legend>
                 <input
                   value={this.state.search}
@@ -537,30 +530,15 @@ class Transcript extends React.Component {
                   onMouseOut={() => this.handleSearchFocus(false)}
                 />
               </fieldset> */}
-                <Tooltip title="Edit transcript">
-                  <Fab
-                    color={this.state.editableA ? 'primary' : null}
-                    aria-label="Edit"
-                    onClick={this.toggleSourceEdit}
-                  >
-                    {this.state.editableA ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
-                  </Fab>
-                </Tooltip>
-              </ToolbarFabs>
-            </Grid>
-          </TranscriptMain>
-          <TranscriptSide></TranscriptSide>
-        </TranscriptContainer>
-
-        <TranscriptWrapper
-          ref={ref => {
-            this.transcriptWrapper = ref;
-          }}
-          onClick={event => this.handleClick(event)}
-          style={{ paddingTop: '80px' }}
-        >
-          <style scoped>
-            {`
+          <div
+            ref={ref => {
+              this.transcriptWrapper = ref;
+            }}
+            onClick={event => this.handleClick(event)}
+            style={{ paddingTop: '50px' }}
+          >
+            <style scoped>
+              {`
             section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
@@ -589,8 +567,8 @@ class Transcript extends React.Component {
               )
               .join('\n')}
           `}
-            {activeTag
-              ? `
+              {activeTag
+                ? `
               span[class*='T-']{
                 background-color: transparent;
               }
@@ -599,19 +577,14 @@ class Transcript extends React.Component {
                 border-bottom: 1px solid red;
               }
             `
-              : ''}
-          </style>
+                : ''}
+            </style>
 
-          <TranscriptContainer>
-            <TranscriptSide></TranscriptSide>
-            <TranscriptMain>
-              <Grid container>
-                <Grid item xs={6}>
-                  {/* <fieldset>
+            {/* <fieldset>
                     <legend>A. Original</legend>
                     <label>
                       <input
-                        name="editableA"
+                        name="editable"
                         type="checkbox"
                         checked={this.state.originalEditable}
                         onChange={this.handleCheckbox}
@@ -619,20 +592,18 @@ class Transcript extends React.Component {
                       editable
                     </label>
                   </fieldset> */}
-                </Grid>
-                <Grid item xs={6}>
-                  <fieldset>
-                    <legend>B. Translation</legend>
-                    <label>
-                      <input
-                        name="visibleB"
-                        type="checkbox"
-                        checked={this.state.translationVisible}
-                        onChange={this.handleCheckbox}
-                      />
-                      enabled
-                    </label>
-                    <label>
+            <fieldset>
+              <legend>B. Translation</legend>
+              <label>
+                <input
+                  name="visibleB"
+                  type="checkbox"
+                  checked={this.state.translationVisible}
+                  onChange={this.handleCheckbox}
+                />
+                enabled
+              </label>
+              {/* <label>
                       <input
                         name="editableB"
                         type="checkbox"
@@ -640,40 +611,37 @@ class Transcript extends React.Component {
                         onChange={this.handleCheckbox}
                       />
                       editable
-                    </label>
-                  </fieldset>
-                </Grid>
-              </Grid>
-            </TranscriptMain>
-            <TranscriptSide></TranscriptSide>
-          </TranscriptContainer>
-          {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
-            <Segment
-              {...{
-                key,
-                editorKey: key,
-                editorStateA,
-                editorStateB,
-                comments,
-                tags,
-                places,
-                search,
-                searchFocused,
-                visibleB,
-                editableB,
-                editableA,
-                customStyleMap,
-                customBlockRenderer,
-                scrollingContainer,
-                filterKeyBindingFn,
-                handleKeyCommand,
-                handleChange,
-                higlightTag,
-              }}
-            />
-          ))}
+                    </label> */}
+            </fieldset>
+            {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
+              <Segment
+                {...{
+                  key,
+                  editorKey: key,
+                  editorStateA,
+                  editorStateB,
+                  comments,
+                  tags,
+                  places,
+                  search,
+                  searchFocused,
+                  visibleB,
+                  // editableB,
+                  // editableA,
+                  editable,
+                  customStyleMap,
+                  customBlockRenderer,
+                  scrollingContainer,
+                  filterKeyBindingFn,
+                  handleKeyCommand,
+                  handleChange,
+                  higlightTag,
+                }}
+              />
+            ))}
+          </div>
         </TranscriptWrapper>
-      </Element>
+      </>
     );
   }
 }

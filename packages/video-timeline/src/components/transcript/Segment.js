@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { generateDecorator, memoizedCreatePreview } from './transcriptUtils';
 
 import Tooltip from '@material-ui/core/Tooltip';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LabelIcon from '@material-ui/icons/Label';
 import CommentIcon from '@material-ui/icons/ModeComment';
@@ -15,6 +14,7 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import TranscriptSide from './TranscriptSide';
 import TranscriptMain from './TranscriptMain';
 import TranscriptContainer from './TranscriptContainer';
+import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
   .public-DraftStyleDefault-block {
@@ -113,8 +113,7 @@ export default React.memo(
     search,
     searchFocused,
     visibleB,
-    editableB,
-    editableA,
+    editable,
     customStyleMap,
     customBlockRenderer,
     scrollingContainer,
@@ -123,7 +122,6 @@ export default React.memo(
     handleChange,
     higlightTag,
   }) => {
-    const editable = editableA || editableB;
     const previewStateA = memoizedCreatePreview(editorStateA);
 
     return (
@@ -141,67 +139,61 @@ export default React.memo(
                 {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
               </TranscriptSide>
               <TranscriptMain>
-                <Grid container>
-                  <Grid item xs={visibleB ? 6 : 12}>
-                    <div lang={languageA}>
-                      <Editor
-                        editorKey={`A${editorKey}`}
-                        readOnly={!editableA || !isVisible}
-                        stripPastedStyles
-                        editorState={
-                          isVisible
-                            ? searchFocused
-                              ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
-                              : search !== ''
-                              ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
-                              : editorStateA
-                            : search.length > 2
-                            ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
-                            : previewStateA
-                        }
-                        blockRendererFn={customBlockRenderer}
-                        customStyleMap={customStyleMap}
-                        keyBindingFn={event => filterKeyBindingFn(event)}
-                        handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                        onChange={editorState => handleChange(editorState, editorKey)}
-                        textDirectionality={textDirectionalityA}
-                        spellCheck={false}
-                        placeholder="Transcribe here…"
-                      />
-                    </div>
-                  </Grid>
+                <TranscriptText lang={languageA} stretch={!visibleB}>
+                  <Editor
+                    editorKey={`A${editorKey}`}
+                    readOnly={!editable || !isVisible}
+                    stripPastedStyles
+                    editorState={
+                      isVisible
+                        ? searchFocused
+                          ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                          : search !== ''
+                          ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                          : editorStateA
+                        : search.length > 2
+                        ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                        : previewStateA
+                    }
+                    blockRendererFn={customBlockRenderer}
+                    customStyleMap={customStyleMap}
+                    keyBindingFn={event => filterKeyBindingFn(event)}
+                    handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                    onChange={editorState => handleChange(editorState, editorKey)}
+                    textDirectionality={textDirectionalityA}
+                    spellCheck={false}
+                    placeholder="Transcribe here…"
+                  />
+                </TranscriptText>
 
-                  {visibleB ? (
-                    <Grid item xs={6}>
-                      <div lang={languageB}>
-                        <Editor
-                          editorKey={`B${editorKey}`}
-                          readOnly={!editableB || !isVisible}
-                          stripPastedStyles
-                          editorState={
-                            isVisible
-                              ? searchFocused
-                                ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
-                                : search !== ''
-                                ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
-                                : editorStateB
-                              : search.length > 2
-                              ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
-                              : editorStateB
-                          }
-                          blockRendererFn={customBlockRenderer}
-                          customStyleMap={customStyleMap}
-                          keyBindingFn={event => filterKeyBindingFn(event)}
-                          handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                          onChange={editorState => handleChange(editorState, editorKey, 'B')}
-                          textDirectionality={textDirectionalityB}
-                          spellCheck={false}
-                          placeholder="Translate here…"
-                        />
-                      </div>
-                    </Grid>
-                  ) : null}
-                </Grid>
+                {visibleB ? (
+                  <TranscriptText lang={languageB}>
+                    <Editor
+                      editorKey={`B${editorKey}`}
+                      readOnly={!editable || !isVisible}
+                      stripPastedStyles
+                      editorState={
+                        isVisible
+                          ? searchFocused
+                            ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                            : search !== ''
+                            ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                            : editorStateB
+                          : search.length > 2
+                          ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                          : editorStateB
+                      }
+                      blockRendererFn={customBlockRenderer}
+                      customStyleMap={customStyleMap}
+                      keyBindingFn={event => filterKeyBindingFn(event)}
+                      handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                      textDirectionality={textDirectionalityB}
+                      spellCheck={false}
+                      placeholder="Translate here…"
+                    />
+                  </TranscriptText>
+                ) : null}
               </TranscriptMain>
               <TranscriptSide></TranscriptSide>
             </TranscriptContainer>
