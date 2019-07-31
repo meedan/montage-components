@@ -1,26 +1,39 @@
 {
-  "name": "@montage/ui",
+  "name": "@montage/docs",
   "version": "0.0.1",
   "main": "index.js",
   "license": "BSD-3-Clause",
-  "dependencies": {
-    "@date-io/date-fns": "1.3.8",
-    "@material-ui/core": "4.2.1",
-    "@material-ui/icons": "4.2.1",
-    "@material-ui/pickers": "3.2.0",
-    "fast-deep-equal": "2.0.1",
-    "lodash": "4.17.15",
-    "material-ui-popup-state": "1.4.0",
-    "notistack": "0.8.9",
-    "react": "16.8.6",
-    "react-copy-to-clipboard": "5.0.1",
-    "react-dom": "16.8.6",
-    "react-error-boundary": "1.2.5",
-    "styled-components": "4.3.2"
-  },
   "scripts": {
     "start": "catalog start",
     "build": "catalog build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.{js,jsx}": [
+        "prettier --write",
+        "git add"
+      ],
+      "*.{md,html}": [
+        "prettier --write",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "node_modules",
+      "public"
+    ]
+  },
+  "dependencies": {
+    "@material-ui/core": "4.3.0",
+    "@montage/ui": "0.0.1",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "styled-components": "4.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.5.5",
@@ -31,16 +44,19 @@
     "@catalog/cli": "0.0.1",
     "babel-eslint": "10.0.2",
     "babel-loader": "8.0.6",
+    "babel-plugin-styled-components": "1.10.6",
     "css-loader": "3.1.0",
     "eslint": "6.1.0",
     "eslint-config-prettier": "6.0.0",
     "eslint-plugin-prettier": "3.1.0",
     "eslint-plugin-react": "7.14.3",
-    "mdx-loader": "3.0.2",
+    "husky": "3.0.2",
+    "lint-staged": "9.2.1",
     "prettier": "1.18.2",
     "prettier-eslint": "9.0.0",
     "prettier-stylelint": "0.4.2",
-    "react-hot-loader": "4.12.9",
+    "pretty-quick": "1.11.1",
+    "react-hot-loader": "4.12.10",
     "style-loader": "0.23.1",
     "stylelint-prettier": "1.1.1"
   }

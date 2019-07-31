@@ -1,7 +1,7 @@
 import React from 'react';
 import { markdown, ReactSpecimen } from '@catalog/core';
 
-import { RangeSlider } from '@montage/ui/src/components';
+import { RangeSlider } from '@montage/ui/components';
 
 export default () => markdown`
 

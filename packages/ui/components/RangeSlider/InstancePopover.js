@@ -6,7 +6,7 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { CheckIcon, CutIcon, ExpandIcon } from '@montage/ui/src/components';
+import { CheckIcon, CutIcon, ExpandIcon } from '@montage/ui/components';
 
 const InstancePopover = ({
   checkInstance,

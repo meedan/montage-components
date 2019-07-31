@@ -22,7 +22,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { KeepIcon, ClipboardIcon } from '@montage/ui/src/components';
+import { KeepIcon, ClipboardIcon } from '@montage/ui/components';
 
 class KeepStatus extends Component {
   constructor(props) {

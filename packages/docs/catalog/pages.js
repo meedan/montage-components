@@ -13,12 +13,12 @@ import {
   // partials
 } from '@montage/ui';
 
-import Archive from '@montage/ui/src/components/VideoMeta/of/Archive';
-import Favourite from '@montage/ui/src/components/VideoMeta/of/Favourite';
-import Keep from '@montage/ui/src/components/VideoMeta/of/Keep';
-import MoreMenu from '@montage/ui/src/components/VideoMeta/of/MoreMenu';
-import PublishedDate from '@montage/ui/src/components/VideoMeta/of/PublishedDate';
-import RecordedDate from '@montage/ui/src/components/VideoMeta/of/RecordedDate';
+import Archive from '@montage/ui/components/VideoMeta/of/Archive';
+import Favourite from '@montage/ui/components/VideoMeta/of/Favourite';
+import Keep from '@montage/ui/components/VideoMeta/of/Keep';
+import MoreMenu from '@montage/ui/components/VideoMeta/of/MoreMenu';
+import PublishedDate from '@montage/ui/components/VideoMeta/of/PublishedDate';
+import RecordedDate from '@montage/ui/components/VideoMeta/of/RecordedDate';
 
 const pages = [
   {

@@ -451,15 +451,15 @@ class Transcript extends React.Component {
     this.setState({ activeTag: className });
   };
 
-  handleCheckbox = event => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+  // handleCheckbox = event => {
+  //   const target = event.target;
+  //   const value = target.type === 'checkbox' ? target.checked : target.value;
+  //   const name = target.name;
 
-    this.setState({
-      [name]: value,
-    });
-  };
+  //   this.setState({
+  //     [name]: value,
+  //   });
+  // };
 
   toggleSourceEdit = () => {
     this.setState(prevState => ({
@@ -592,7 +592,7 @@ class Transcript extends React.Component {
                       editable
                     </label>
                   </fieldset> */}
-            <fieldset>
+            {/* <fieldset>
               <legend>B. Translation</legend>
               <label>
                 <input
@@ -603,7 +603,7 @@ class Transcript extends React.Component {
                 />
                 enabled
               </label>
-              {/* <label>
+              <label>
                       <input
                         name="editableB"
                         type="checkbox"
@@ -611,8 +611,8 @@ class Transcript extends React.Component {
                         onChange={this.handleCheckbox}
                       />
                       editable
-                    </label> */}
-            </fieldset>
+                    </label>
+            </fieldset> */}
             {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
               <Segment
                 {...{

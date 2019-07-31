@@ -1,4 +1,4 @@
-# Welcome to Montage Components
+# Welcome to Montage Docs
 
 ## Develop
 

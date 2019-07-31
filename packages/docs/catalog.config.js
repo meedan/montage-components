@@ -12,14 +12,25 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-      // {
-      //   test: /\.mdx?$/,
-      //   use: ["babel-loader", "mdx-loader"]
-      // },
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
-        use: ['babel-loader'],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['@babel/preset-env', { modules: 'commonjs' }],
+                '@babel/preset-react',
+                '@catalog/babel-preset',
+              ],
+              plugins: [
+                '@babel/plugin-proposal-class-properties',
+                'babel-plugin-styled-components',
+              ],
+            },
+          },
+        ],
       }
     );
 

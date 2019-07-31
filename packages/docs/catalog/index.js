@@ -2,7 +2,7 @@ import { Catalog } from '@catalog/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ThemeProvider from '@montage/ui/src/providers/ThemeProvider';
+import ThemeProvider from '@montage/ui/providers/ThemeProvider';
 
 import pages from './pages';
 import theme from './theme';

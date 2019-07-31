@@ -3,7 +3,7 @@ import React, { Component, createRef } from 'react';
 import styled from 'styled-components';
 
 import { MeTooltip, formatSeconds } from '@montage/ui';
-import { color } from '@montage/ui/src/config/';
+import { color } from '@montage/ui/config/';
 
 const El = styled.div`
   cursor: -webkit-grab;
