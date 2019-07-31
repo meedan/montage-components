@@ -1,26 +1,26 @@
+import Combinatorics from 'js-combinatorics';
 import React from 'react';
+import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
-import chunk from 'lodash.chunk';
-import Combinatorics from 'js-combinatorics';
 
 import { TranscriptSearch } from '@montage/ui';
 
-import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
-import Tooltip from '@material-ui/core/Tooltip';
+import EditIcon from '@material-ui/icons/Edit';
 import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
-import TranscriptWrapper from './TranscriptWrapper';
 import TranscriptContainer from './TranscriptContainer';
-import TranscriptSide from './TranscriptSide';
 import TranscriptMain from './TranscriptMain';
+import TranscriptSide from './TranscriptSide';
 import TranscriptText from './TranscriptText';
+import TranscriptWrapper from './TranscriptWrapper';
+import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 
 const MAX_OVERLAP = 5;
 
@@ -424,16 +424,6 @@ class Transcript extends React.Component {
     return getDefaultKeyBinding(event);
   };
 
-  // handleSearch = e => {
-  //   const search = e.target.value;
-  //   if (search === this.state.search) return;
-
-  //   this.setState({
-  //     search,
-  //     searchFocused: true,
-  //   });
-  // };
-
   onSearch = payload => {
     if (payload === this.state.search) return;
     this.setState({
@@ -450,16 +440,6 @@ class Transcript extends React.Component {
   higlightTag = className => {
     this.setState({ activeTag: className });
   };
-
-  // handleCheckbox = event => {
-  //   const target = event.target;
-  //   const value = target.type === 'checkbox' ? target.checked : target.value;
-  //   const name = target.name;
-
-  //   this.setState({
-  //     [name]: value,
-  //   });
-  // };
 
   toggleSourceEdit = () => {
     this.setState(prevState => ({
@@ -519,17 +499,6 @@ class Transcript extends React.Component {
           </TranscriptWrapper>
         </TranscriptToolbar>
         <TranscriptWrapper stretch={this.state.visibleB}>
-          {/* <fieldset>
-                <legend>Search</legend>
-                <input
-                  value={this.state.search}
-                  onChange={this.handleSearch}
-                  onFocus={() => this.handleSearchFocus(true)}
-                  onBlur={() => this.handleSearchFocus(false)}
-                  onMouseOver={() => this.handleSearchFocus(true)}
-                  onMouseOut={() => this.handleSearchFocus(false)}
-                />
-              </fieldset> */}
           <div
             ref={ref => {
               this.transcriptWrapper = ref;
@@ -580,62 +549,27 @@ class Transcript extends React.Component {
                 : ''}
             </style>
 
-            {/* <fieldset>
-                    <legend>A. Original</legend>
-                    <label>
-                      <input
-                        name="editable"
-                        type="checkbox"
-                        checked={this.state.originalEditable}
-                        onChange={this.handleCheckbox}
-                      />
-                      editable
-                    </label>
-                  </fieldset> */}
-            {/* <fieldset>
-              <legend>B. Translation</legend>
-              <label>
-                <input
-                  name="visibleB"
-                  type="checkbox"
-                  checked={this.state.translationVisible}
-                  onChange={this.handleCheckbox}
-                />
-                enabled
-              </label>
-              <label>
-                      <input
-                        name="editableB"
-                        type="checkbox"
-                        checked={this.state.translationEditable}
-                        onChange={this.handleCheckbox}
-                      />
-                      editable
-                    </label>
-            </fieldset> */}
             {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
               <Segment
                 {...{
-                  key,
+                  comments,
+                  customBlockRenderer,
+                  customStyleMap,
+                  editable,
                   editorKey: key,
                   editorStateA,
                   editorStateB,
-                  comments,
-                  tags,
+                  filterKeyBindingFn,
+                  handleChange,
+                  handleKeyCommand,
+                  higlightTag,
+                  key,
                   places,
+                  scrollingContainer,
                   search,
                   searchFocused,
+                  tags,
                   visibleB,
-                  // editableB,
-                  // editableA,
-                  editable,
-                  customStyleMap,
-                  customBlockRenderer,
-                  scrollingContainer,
-                  filterKeyBindingFn,
-                  handleKeyCommand,
-                  handleChange,
-                  higlightTag,
                 }}
               />
             ))}
