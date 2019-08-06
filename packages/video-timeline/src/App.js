@@ -8,13 +8,13 @@ import { withSnackbar } from 'notistack';
 
 import { ThemeProvider, VideoMeta } from '@montage/ui';
 
-import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import grey from '@material-ui/core/colors/grey';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import grey from '@material-ui/core/colors/grey';
+import { withStyles } from '@material-ui/core/styles';
 
 import Player from './components/Player';
 import Preview from './components/Preview';
@@ -48,9 +48,12 @@ const TopWrapper = styled.div`
   }
 `;
 const BottomWrapper = styled.div`
+  background: white;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   width: 100%;
+  position: relative;
+  flex: 1 1 100%;
 `;
 
 const styles = {

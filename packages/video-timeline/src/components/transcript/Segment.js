@@ -37,64 +37,74 @@ const LegendLabel = styled.div`
 
 const Legend = ({ comments, tags, places, higlightTag }) => (
   <>
-    <LegendContainer>
-      {comments.length > 0 ? (
+    {comments.length > 0 ? (
+      <LegendContainer>
         <LegendLabel>
           <Tooltip title="Comments">
             <CommentIcon fontSize="small" color="disabled" size=""></CommentIcon>
           </Tooltip>
         </LegendLabel>
-      ) : null}
-      {comments.map(({ id, text }) => (
-        <div key={`C-${id}`} onMouseOver={() => higlightTag(`C-${id}`)} onMouseOut={() => higlightTag(null)}>
-          <Typography variant="caption" noWrap>
-            {text}
-          </Typography>
-        </div>
-      ))}
-    </LegendContainer>
+        {comments.map(({ id, text }) => (
+          <div key={`C-${id}`} onMouseOut={() => higlightTag(null)} onMouseOver={() => higlightTag(`C-${id}`)}>
+            <Typography variant="caption" noWrap style={{ display: 'block', width: '120px' }} title={text}>
+              {text}
+            </Typography>
+          </div>
+        ))}
+      </LegendContainer>
+    ) : null}
 
-    <LegendContainer>
-      {tags.length > 0 ? (
+    {tags.length > 0 ? (
+      <LegendContainer>
         <LegendLabel>
           <Tooltip title="Tags">
             <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
           </Tooltip>
         </LegendLabel>
-      ) : null}
-      {tags.map(entity => (
-        <div
-          key={`T-${entity.id}`}
-          onMouseOver={() => higlightTag(`T-${entity.id}`)}
-          onMouseOut={() => higlightTag(null)}
-        >
-          <Typography variant="caption" noWrap>
-            {entity.project_tag.name}
-          </Typography>
-        </div>
-      ))}
-    </LegendContainer>
+        {tags.map(entity => (
+          <div
+            key={`T-${entity.id}`}
+            onMouseOver={() => higlightTag(`T-${entity.id}`)}
+            onMouseOut={() => higlightTag(null)}
+          >
+            <Typography
+              noWrap
+              style={{ display: 'block', width: '120px' }}
+              title={entity.project_tag.name}
+              variant="caption"
+            >
+              {entity.project_tag.name}
+            </Typography>
+          </div>
+        ))}
+      </LegendContainer>
+    ) : null}
 
-    <LegendContainer>
-      {places.length > 0 ? (
+    {places.length > 0 ? (
+      <LegendContainer>
         <LegendLabel>
           <Tooltip title="Locations">
             <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
           </Tooltip>
         </LegendLabel>
-      ) : null}
-      {places.map(entity => (
-        <div
-          key={`G-${entity.id}`}
-          onMouseOver={() => higlightTag(`G-${entity.id}`)}
-          onMouseOut={() => higlightTag(null)}
-        >
-          <Typography variant="caption" noWrap>
-            {entity.project_location.name}
-          </Typography>
-        </div>
-      ))}
-    </LegendContainer>
+        {places.map(entity => (
+          <div
+            key={`G-${entity.id}`}
+            onMouseOver={() => higlightTag(`G-${entity.id}`)}
+            onMouseOut={() => higlightTag(null)}
+          >
+            <Typography
+              noWrap
+              style={{ display: 'block', width: '120px' }}
+              title={entity.project_location.name}
+              variant="caption"
+            >
+              {entity.project_location.name}
+            </Typography>
+          </div>
+        ))}
+      </LegendContainer>
+    ) : null}
   </>
 );
 
@@ -135,7 +145,7 @@ export default React.memo(
         >
           {({ isVisible }) => (
             <TranscriptContainer>
-              <TranscriptSide>
+              <TranscriptSide left separate>
                 {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
               </TranscriptSide>
               <TranscriptMain>
@@ -195,7 +205,7 @@ export default React.memo(
                   </TranscriptText>
                 ) : null}
               </TranscriptMain>
-              <TranscriptSide></TranscriptSide>
+              <TranscriptSide right separate></TranscriptSide>
             </TranscriptContainer>
           )}
         </VisibilitySensor>

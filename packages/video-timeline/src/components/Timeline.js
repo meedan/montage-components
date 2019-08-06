@@ -17,6 +17,14 @@ const DISABLE_TIMELINE_TRANSPORT = false;
 const DISABLE_TRACK_TRANSPORT = false;
 const TIMELINE_OFFSET = 224;
 
+const TimelineRoot = styled.div`
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
 const TimelineWrapper = styled.div`
   border-left: 1px solid ${grey[300]};
   border-right: 1px solid ${grey[300]};
@@ -207,72 +215,74 @@ class Timeline extends Component {
     const currentTime = skip ? ffTime : time;
 
     return (
-      <TimelineWrapper>
-        <TimelinePlayheadTrackWrapper ref={this.playheadTrackEl} onClick={e => this.onTrackClick(e)}>
-          <TimelinePlayhead
-            duration={duration}
-            onTimeChange={this.onTimeChange}
-            style={this.state.playheadTrackStyle}
-            time={time}
-          />
-        </TimelinePlayheadTrackWrapper>
-        <Table padding="dense">
-          <TimelineComments {...this.props} currentTime={currentTime} />
-          <Entities
-            title="Clips"
-            entityType="clip"
-            key="clip"
-            currentTime={currentTime}
-            duration={duration}
-            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
-            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
-            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
-            entities={this.props.data.videoClips}
-            entitiesyKey={'videoClips'}
-            playing={playing}
-            transport={transport}
-            suggestions={this.props.data.project.projectclips}
-            skip={skip}
-            timelineOffset={this.props.x1}
-          />
-          <Entities
-            title="Tags"
-            entityType="tag"
-            key="tag"
-            currentTime={currentTime}
-            duration={duration}
-            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
-            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
-            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
-            entities={this.props.data.videoTags}
-            clips={this.props.data.videoClips}
-            entitiesyKey={'videoTags'}
-            playing={playing}
-            transport={transport}
-            suggestions={this.props.data.project.projecttags}
-            skip={skip}
-            timelineOffset={this.props.x1}
-          />
-          <Entities
-            title="Places"
-            entityType="location"
-            key="location"
-            currentTime={currentTime}
-            duration={duration}
-            onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
-            onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
-            onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
-            entities={this.props.data.videoPlaces}
-            clips={this.props.data.videoClips}
-            entitiesyKey={'videoPlaces'}
-            playing={playing}
-            transport={transport}
-            suggestions={this.props.data.project.projectplaces}
-            skip={skip}
-            timelineOffset={this.props.x1}
-          />
-        </Table>
-      </TimelineWrapper>
+      <TimelineRoot>
+        <TimelineWrapper>
+          <TimelinePlayheadTrackWrapper ref={this.playheadTrackEl} onClick={e => this.onTrackClick(e)}>
+            <TimelinePlayhead
+              duration={duration}
+              onTimeChange={this.onTimeChange}
+              style={this.state.playheadTrackStyle}
+              time={time}
+            />
+          </TimelinePlayheadTrackWrapper>
+          <Table padding="dense">
+            <TimelineComments {...this.props} currentTime={currentTime} />
+            <Entities
+              title="Clips"
+              entityType="clip"
+              key="clip"
+              currentTime={currentTime}
+              duration={duration}
+              onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+              onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
+              onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
+              entities={this.props.data.videoClips}
+              entitiesyKey={'videoClips'}
+              playing={playing}
+              transport={transport}
+              suggestions={this.props.data.project.projectclips}
+              skip={skip}
+              timelineOffset={this.props.x1}
+            />
+            <Entities
+              title="Tags"
+              entityType="tag"
+              key="tag"
+              currentTime={currentTime}
+              duration={duration}
+              onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+              onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
+              onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
+              entities={this.props.data.videoTags}
+              clips={this.props.data.videoClips}
+              entitiesyKey={'videoTags'}
+              playing={playing}
+              transport={transport}
+              suggestions={this.props.data.project.projecttags}
+              skip={skip}
+              timelineOffset={this.props.x1}
+            />
+            <Entities
+              title="Places"
+              entityType="location"
+              key="location"
+              currentTime={currentTime}
+              duration={duration}
+              onAfterChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragEnd(v, true))}
+              onBeforeChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDragStart(v, false, true))}
+              onChange={v => (DISABLE_TRACK_TRANSPORT ? null : this.onDrag(v, false, true))}
+              entities={this.props.data.videoPlaces}
+              clips={this.props.data.videoClips}
+              entitiesyKey={'videoPlaces'}
+              playing={playing}
+              transport={transport}
+              suggestions={this.props.data.project.projectplaces}
+              skip={skip}
+              timelineOffset={this.props.x1}
+            />
+          </Table>
+        </TimelineWrapper>
+      </TimelineRoot>
     );
   }
 }

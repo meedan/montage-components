@@ -8,6 +8,7 @@ import { TranscriptSearch } from '@montage/ui';
 
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
+import grey from '@material-ui/core/colors/grey';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -26,18 +27,34 @@ const MAX_OVERLAP = 5;
 
 const styles = {
   toolbarHeading: {
-    lineHeight: '50px',
+    lineHeight: '80px',
   },
 };
 
-const TranscriptToolbar = styled.div`
-  background: ${({ pin }) => (pin ? 'white' : 'transparent')};
-  box-shadow: ${({ pin }) => (pin ? '0 1px 5px rgba(0,0,0,0.1)' : '')};
-  height: ${({ pin }) => (pin ? '50px' : 'inherit')};
+const TranscriptRoot = styled.div`
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   left: 0;
-  position: ${({ pin }) => (pin ? 'fixed' : 'inherit')};
+  position: absolute;
   right: 0;
-  z-index: 100;
+  top: 0;
+`;
+const TranscriptChild = styled.div`
+  flex: 1 1 100%;
+  overflow-y: auto;
+`;
+const TranscriptToolbar = styled.div`
+  background: white;
+  border-bottom: ${({ pin }) => (pin ? `1px solid ${grey[100]}` : 'none')};
+  flex: 0 0 80px;
+`;
+const TranscriptFabs = styled.div`
+  left: -20px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
 `;
 
 class Transcript extends React.Component {
@@ -45,7 +62,7 @@ class Transcript extends React.Component {
     search: '',
     searchFocused: false,
     editable: false,
-    visibleB: false,
+    visibleB: true,
   };
   past = [];
   future = [];
@@ -463,11 +480,11 @@ class Transcript extends React.Component {
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
-      <>
+      <TranscriptRoot>
         <TranscriptToolbar pin={true}>
           <TranscriptWrapper stretch={this.state.visibleB}>
             <TranscriptContainer>
-              <TranscriptSide></TranscriptSide>
+              <TranscriptSide left></TranscriptSide>
               <TranscriptMain>
                 <TranscriptText stretch={!this.state.visibleB}>
                   <Typography align="left" color="textSecondary" variant="subtitle2" className={classes.toolbarHeading}>
@@ -487,27 +504,33 @@ class Transcript extends React.Component {
                   </TranscriptText>
                 ) : null}
               </TranscriptMain>
-              <TranscriptSide>
-                <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
-                <Tooltip title="Edit transcript">
-                  <Fab color={this.state.editable ? 'primary' : null} aria-label="Edit" onClick={this.toggleSourceEdit}>
-                    {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
-                  </Fab>
-                </Tooltip>
+              <TranscriptSide right>
+                <TranscriptFabs>
+                  <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
+                  <Tooltip title="Edit transcript">
+                    <Fab
+                      color={this.state.editable ? 'primary' : null}
+                      aria-label="Edit"
+                      onClick={this.toggleSourceEdit}
+                    >
+                      {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
+                    </Fab>
+                  </Tooltip>
+                </TranscriptFabs>
               </TranscriptSide>
             </TranscriptContainer>
           </TranscriptWrapper>
         </TranscriptToolbar>
-        <TranscriptWrapper stretch={this.state.visibleB}>
-          <div
-            ref={ref => {
-              this.transcriptWrapper = ref;
-            }}
-            onClick={event => this.handleClick(event)}
-            style={{ paddingTop: '50px' }}
-          >
-            <style scoped>
-              {`
+        <TranscriptChild>
+          <TranscriptWrapper stretch={this.state.visibleB}>
+            <div
+              ref={ref => {
+                this.transcriptWrapper = ref;
+              }}
+              onClick={event => this.handleClick(event)}
+            >
+              <style scoped>
+                {`
             section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
             div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
             span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
@@ -536,8 +559,8 @@ class Transcript extends React.Component {
               )
               .join('\n')}
           `}
-              {activeTag
-                ? `
+                {activeTag
+                  ? `
               span[class*='T-']{
                 background-color: transparent;
               }
@@ -546,36 +569,37 @@ class Transcript extends React.Component {
                 border-bottom: 1px solid red;
               }
             `
-                : ''}
-            </style>
+                  : ''}
+              </style>
 
-            {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
-              <Segment
-                {...{
-                  comments,
-                  customBlockRenderer,
-                  customStyleMap,
-                  editable,
-                  editorKey: key,
-                  editorStateA,
-                  editorStateB,
-                  filterKeyBindingFn,
-                  handleChange,
-                  handleKeyCommand,
-                  higlightTag,
-                  key,
-                  places,
-                  scrollingContainer,
-                  search,
-                  searchFocused,
-                  tags,
-                  visibleB,
-                }}
-              />
-            ))}
-          </div>
-        </TranscriptWrapper>
-      </>
+              {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
+                <Segment
+                  {...{
+                    comments,
+                    customBlockRenderer,
+                    customStyleMap,
+                    editable,
+                    editorKey: key,
+                    editorStateA,
+                    editorStateB,
+                    filterKeyBindingFn,
+                    handleChange,
+                    handleKeyCommand,
+                    higlightTag,
+                    key,
+                    places,
+                    scrollingContainer,
+                    search,
+                    searchFocused,
+                    tags,
+                    visibleB,
+                  }}
+                />
+              ))}
+            </div>
+          </TranscriptWrapper>
+        </TranscriptChild>
+      </TranscriptRoot>
     );
   }
 }
