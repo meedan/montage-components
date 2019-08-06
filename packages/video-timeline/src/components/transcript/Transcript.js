@@ -237,15 +237,6 @@ class Transcript extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.toggleOffset();
-    this.transcriptRef.addEventListener('scroll', this.toggleOffset);
-  }
-
-  componentWillUnmount() {
-    this.transcriptRef.removeEventListener('scroll', this.toggleOffset);
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
