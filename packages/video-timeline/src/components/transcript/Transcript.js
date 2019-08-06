@@ -28,6 +28,7 @@ const MAX_OVERLAP = 5;
 const styles = {
   toolbarHeading: {
     lineHeight: '80px',
+    transition: 'line-height 0.5s',
   },
 };
 
@@ -48,7 +49,8 @@ const TranscriptChild = styled.div`
 const TranscriptToolbar = styled.div`
   background: white;
   border-bottom: ${({ pin }) => (pin ? `1px solid ${grey[100]}` : 'none')};
-  flex: 0 0 80px;
+  flex: 0 0 ${({ pin }) => (pin ? '60px' : '80px')};
+  transition: flex-basis 0.25s;
 `;
 const TranscriptFabs = styled.div`
   left: -20px;
@@ -235,6 +237,15 @@ class Transcript extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.toggleOffset();
+    this.transcriptRef.addEventListener('scroll', this.toggleOffset);
+  }
+
+  componentWillUnmount() {
+    this.transcriptRef.removeEventListener('scroll', this.toggleOffset);
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
@@ -326,6 +337,13 @@ class Transcript extends React.Component {
     }
     return null;
   };
+
+  toggleOffset(e) {
+    // console.log('toggleOffset()');
+    // console.log({ e });
+    if (!e) return null;
+    this.setState({ transcriptRefScrollTop: e.target.scrollTop });
+  }
 
   handleClick = event => {
     let element = event.nativeEvent.target;
@@ -465,6 +483,7 @@ class Transcript extends React.Component {
   };
 
   render() {
+    console.log(this.transcriptRef);
     const {
       playheadEditorKey,
       playheadBlockKey,
@@ -481,13 +500,19 @@ class Transcript extends React.Component {
 
     return (
       <TranscriptRoot>
-        <TranscriptToolbar pin={true}>
+        <TranscriptToolbar pin={this.state.transcriptRefScrollTop > 0}>
           <TranscriptWrapper stretch={this.state.visibleB}>
             <TranscriptContainer>
               <TranscriptSide left></TranscriptSide>
               <TranscriptMain>
                 <TranscriptText stretch={!this.state.visibleB}>
-                  <Typography align="left" color="textSecondary" variant="subtitle2" className={classes.toolbarHeading}>
+                  <Typography
+                    align="left"
+                    className={classes.toolbarHeading}
+                    color="textSecondary"
+                    style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '60px' : '80px' }}
+                    variant="subtitle2"
+                  >
                     Original Transcript
                   </Typography>
                 </TranscriptText>
@@ -495,9 +520,10 @@ class Transcript extends React.Component {
                   <TranscriptText>
                     <Typography
                       align="left"
-                      color="textSecondary"
-                      variant="subtitle2"
                       className={classes.toolbarHeading}
+                      color="textSecondary"
+                      style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '60px' : '80px' }}
+                      variant="subtitle2"
                     >
                       Translation
                     </Typography>
@@ -521,11 +547,11 @@ class Transcript extends React.Component {
             </TranscriptContainer>
           </TranscriptWrapper>
         </TranscriptToolbar>
-        <TranscriptChild>
+        <TranscriptChild onScroll={this.toggleOffset.bind(this)}>
           <TranscriptWrapper stretch={this.state.visibleB}>
             <div
               ref={ref => {
-                this.transcriptWrapper = ref;
+                this.transcriptRef = ref;
               }}
               onClick={event => this.handleClick(event)}
             >
