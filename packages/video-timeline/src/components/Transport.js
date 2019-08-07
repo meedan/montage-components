@@ -15,8 +15,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { play, pause } from '../reducers/player';
 
 const PlaybackControls = styled.div`
-  padding-bottom: 16px;
-  padding-top: 16px;
   text-align: center;
 `;
 
@@ -29,49 +27,25 @@ const Transport = props => {
     return (
       <PlaybackControls>
         <Tooltip disableFocusListener title="Jump backward 5 seconds">
-          <IconButton
-            color="secondary"
-            onClick={() =>
-              seekTo({ seekTo: currentTime - 5, transport: 'transport' })
-            }
-          >
+          <IconButton color="inherit" onClick={() => seekTo({ seekTo: currentTime - 5, transport: 'transport' })}>
             <FastRewindIcon />
           </IconButton>
         </Tooltip>
         <Tooltip disableFocusListener title="Jump backward 1 second">
-          <IconButton
-            color="secondary"
-            onClick={() =>
-              seekTo({ seekTo: currentTime - 1, transport: 'transport' })
-            }
-          >
+          <IconButton color="inherit" onClick={() => seekTo({ seekTo: currentTime - 1, transport: 'transport' })}>
             <SkipPreviousIcon />
           </IconButton>
         </Tooltip>
-        <IconButton
-          color="secondary"
-          key="playPause"
-          onClick={() => pause({ transport: 'transport' })}
-        >
+        <IconButton color="inherit" key="playPause" onClick={() => pause({ transport: 'transport' })}>
           <PauseIcon />
         </IconButton>
         <Tooltip disableFocusListener title="Jump forward 1 second">
-          <IconButton
-            color="secondary"
-            onClick={() =>
-              seekTo({ seekTo: currentTime + 1, transport: 'transport' })
-            }
-          >
+          <IconButton color="inherit" onClick={() => seekTo({ seekTo: currentTime + 1, transport: 'transport' })}>
             <SkipNextIcon />
           </IconButton>
         </Tooltip>
         <Tooltip disableFocusListener title="Jump forward 5 seconds">
-          <IconButton
-            color="secondary"
-            onClick={() =>
-              seekTo({ seekTo: currentTime + 5, transport: 'transport' })
-            }
-          >
+          <IconButton color="inherit" onClick={() => seekTo({ seekTo: currentTime + 5, transport: 'transport' })}>
             <FastForwardIcon />
           </IconButton>
         </Tooltip>
@@ -82,7 +56,7 @@ const Transport = props => {
     <PlaybackControls>
       <Tooltip disableFocusListener title="Jump backward 1 frame">
         <IconButton
-          color="secondary"
+          color="inherit"
           onClick={() =>
             seekTo({
               seekTo: currentTime - 1 / frameRate,
@@ -93,16 +67,12 @@ const Transport = props => {
           <SkipPreviousIcon />
         </IconButton>
       </Tooltip>
-      <IconButton
-        key="playPause"
-        color="secondary"
-        onClick={() => play({ transport: 'transport' })}
-      >
+      <IconButton key="playPause" color="inherit" onClick={() => play({ transport: 'transport' })}>
         <PlayArrowIcon />
       </IconButton>
       <Tooltip disableFocusListener title="Jump forward 1 frame">
         <IconButton
-          color="secondary"
+          color="inherit"
           onClick={() =>
             seekTo({
               seekTo: currentTime + 1 / frameRate,

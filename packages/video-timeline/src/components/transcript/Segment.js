@@ -27,6 +27,7 @@ const EditorWrapper = styled.section`
 `;
 
 const LegendContainer = styled.div`
+  margin-top: 10px;
   padding-left: 24px;
   position: relative;
 `;

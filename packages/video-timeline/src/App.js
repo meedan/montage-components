@@ -10,9 +10,13 @@ import { ThemeProvider, VideoMeta } from '@montage/ui';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
+import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import Tooltip from '@material-ui/core/Tooltip';
 import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -24,6 +28,27 @@ import Transport from './components/Transport';
 import Transcript from './components/transcript/Transcript';
 
 import { update } from './reducers/player';
+
+const TheatreToggle = styled.div`
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  z-index: 1000;
+`;
+
+const MontagePlayer = styled.div`
+  background: black;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+const MontagePlayerVideo = styled.div`
+  flex: 1 1 100%;
+`;
+const MontagePlayerControls = styled.div`
+  flex: 0 0 auto;
+  color: white;
+`;
 
 const Layout = styled.div`
   align-items: center;
@@ -37,10 +62,11 @@ const Layout = styled.div`
   right: 0;
   top: 0;
 `;
-const TopWrapper = styled.div`
-  background-color: ${grey[600]};
+const Theatre = styled.div`
+  background-color: ${grey[100]};
   flex: 0 0 auto;
   width: 100%;
+  border-bottom: 1px solid ${grey[200]};
   & > * {
     margin-left: auto;
     margin-right: auto;
@@ -49,32 +75,31 @@ const TopWrapper = styled.div`
 `;
 const BottomWrapper = styled.div`
   background: white;
-  overflow-x: hidden;
-  overflow-y: hidden;
   width: 100%;
   position: relative;
   flex: 1 1 100%;
 `;
 
 const styles = {
-  Tab: {
-    color: 'white',
-  },
-  TabSelected: {
-    borderColor: 'white',
-    color: 'white',
-  },
+  // Tab: {
+  //   color: 'white',
+  // },
+  // TabSelected: {
+  //   borderColor: 'white',
+  //   color: 'white',
+  // },
   TabsIndicator: {
-    background: 'white',
+    background: '#ff6d01',
   },
 };
 
 class App extends Component {
   state = {
-    currentTime: 0,
     anchorElNext: null,
     anchorElPrev: null,
+    currentTime: 0,
     mode: 'transcript',
+    theatre: true,
   };
 
   scrollingContainer = null;
@@ -116,103 +141,132 @@ class App extends Component {
         <ThemeProvider>
           <style scoped>{'.popover { pointer-events: none; }'}</style>
           <Layout>
-            <TopWrapper>
-              <Grid
-                alignItems="center"
-                alignContent="space-between"
-                container
-                justify="center"
-                spacing={0}
-                wrap="nowrap"
-              >
-                <Grid item sm={'auto'}>
-                  <div style={{ width: '50px' }}>
-                    {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
-                  </div>
-                </Grid>
-                <Grid item sm={12}>
-                  <Paper square>
-                    <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
-                      <Grid item sm={4}>
-                        <VideoMeta
-                          allocation={['collectionId1', 'collectionId2']}
-                          collections={[
-                            {
-                              name: 'A collection',
-                              id: 'collectionId1',
-                            },
-                            {
-                              name: 'Another collection',
-                              id: 'collectionId2',
-                            },
-                            {
-                              name: 'Third collection',
-                              id: 'collectionId3',
-                            },
-                          ]}
-                          onCreateCollection={str => console.log('onCreateCollection()', str)}
-                          onDelete={() => console.log('onDelete()')}
-                          onTriggerDelete={() => console.log('onTriggerDelete()')}
-                          onManageDupes={() => console.log('onManageDupes()')}
-                          onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
-                          currentTime={currentTime}
-                          videoPlaces={data.videoPlaces}
-                          pubDate={data.ytVideoData.snippet.publishedAt}
-                          channelTitle={data.ytVideoData.snippet.channelTitle}
-                          videoViewCount={data.ytVideoData.statistics.viewCount}
-                          videoId={data.gdVideoData.id}
-                          videoDescription={data.ytVideoData.snippet.description}
-                          videoBackups={data.videoBackups}
-                          onTriggerArchive={(payload, callback) => {
-                            console.log('onTriggerArchive, payload:', payload);
-                            setTimeout(() => {
-                              this.props.enqueueSnackbar('Video archived');
-                              callback();
-                            }, 1000);
-                          }}
-                          onTriggerKeep={callback => {
-                            console.log('onTriggerKeep');
-                            setTimeout(() => {
-                              this.props.enqueueSnackbar('Syncing with Keep finished');
-                              callback();
-                            }, 2000);
-                          }}
-                          onTriggerFavourite={(payload, callback) => {
-                            console.log('onTriggerFavourite, payload:', payload);
-                            // ;
-                            setTimeout(() => {
-                              this.props.enqueueSnackbar('Video added to favourites');
-                              callback();
-                            }, 1000);
-                          }}
-                          //
-                          onRecDateChange={(date, callback) => {
-                            console.log(date);
-                            callback();
-                          }}
-                          recDateOverriden={data.gdVideoData.recorded_date_overridden}
-                          seekTo={payload => this.seekTo(payload)}
-                        />
-                      </Grid>
-                      <Grid item sm={8}>
-                        <Player data={data} player={player} onProgress={this.setCurrentTime} />
-                      </Grid>
+            <Theatre>
+              {this.state.theatre ? (
+                <>
+                  <Grid
+                    alignItems="center"
+                    alignContent="space-between"
+                    container
+                    justify="center"
+                    spacing={0}
+                    wrap="nowrap"
+                  >
+                    <Grid item sm={'auto'}>
+                      <div style={{ width: '50px' }}>
+                        {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
+                      </div>
                     </Grid>
-                  </Paper>
-                </Grid>
-                <Grid item sm={'auto'}>
-                  <div style={{ width: '50px' }}>
-                    {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
-                  </div>
-                </Grid>
-              </Grid>
-              <Transport
-                currentTime={currentTime}
-                duration={duration}
-                player={this.props.player}
-                transport={transport}
-                seekTo={this.seekTo}
-              />
+                    <Grid item sm={12}>
+                      <Paper square>
+                        <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
+                          <Grid item sm={4}>
+                            <VideoMeta
+                              allocation={['collectionId1', 'collectionId2']}
+                              collections={[
+                                {
+                                  name: 'A collection',
+                                  id: 'collectionId1',
+                                },
+                                {
+                                  name: 'Another collection',
+                                  id: 'collectionId2',
+                                },
+                                {
+                                  name: 'Third collection',
+                                  id: 'collectionId3',
+                                },
+                              ]}
+                              onCreateCollection={str => console.log('onCreateCollection()', str)}
+                              onDelete={() => console.log('onDelete()')}
+                              onTriggerDelete={() => console.log('onTriggerDelete()')}
+                              onManageDupes={() => console.log('onManageDupes()')}
+                              onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
+                              currentTime={currentTime}
+                              videoPlaces={data.videoPlaces}
+                              pubDate={data.ytVideoData.snippet.publishedAt}
+                              channelTitle={data.ytVideoData.snippet.channelTitle}
+                              videoViewCount={data.ytVideoData.statistics.viewCount}
+                              videoId={data.gdVideoData.id}
+                              videoDescription={data.ytVideoData.snippet.description}
+                              videoBackups={data.videoBackups}
+                              onTriggerArchive={(payload, callback) => {
+                                console.log('onTriggerArchive, payload:', payload);
+                                setTimeout(() => {
+                                  this.props.enqueueSnackbar('Video archived');
+                                  callback();
+                                }, 1000);
+                              }}
+                              onTriggerKeep={callback => {
+                                console.log('onTriggerKeep');
+                                setTimeout(() => {
+                                  this.props.enqueueSnackbar('Syncing with Keep finished');
+                                  callback();
+                                }, 2000);
+                              }}
+                              onTriggerFavourite={(payload, callback) => {
+                                console.log('onTriggerFavourite, payload:', payload);
+                                // ;
+                                setTimeout(() => {
+                                  this.props.enqueueSnackbar('Video added to favourites');
+                                  callback();
+                                }, 1000);
+                              }}
+                              //
+                              onRecDateChange={(date, callback) => {
+                                console.log(date);
+                                callback();
+                              }}
+                              recDateOverriden={data.gdVideoData.recorded_date_overridden}
+                              seekTo={payload => this.seekTo(payload)}
+                            />
+                          </Grid>
+                          <Grid item sm={8}>
+                            <MontagePlayer>
+                              <MontagePlayerVideo>
+                                <Player data={data} player={player} onProgress={this.setCurrentTime} />
+                              </MontagePlayerVideo>
+                              <MontagePlayerControls>
+                                <Transport
+                                  currentTime={currentTime}
+                                  duration={duration}
+                                  player={this.props.player}
+                                  transport={transport}
+                                  seekTo={this.seekTo}
+                                />
+                              </MontagePlayerControls>
+                            </MontagePlayer>
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                    <Grid item sm={'auto'}>
+                      <div style={{ width: '50px' }}>
+                        {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
+                      </div>
+                    </Grid>
+                  </Grid>
+                </>
+              ) : null}
+
+              <TheatreToggle>
+                <Tooltip title="Toggle Theatre">
+                  <IconButton
+                    onClick={() =>
+                      this.setState(prevState => ({
+                        theatre: !prevState.theatre,
+                      }))
+                    }
+                  >
+                    {this.state.theatre ? (
+                      <UnfoldLessIcon aria-label="Hide Theatre" fontSize="medium"></UnfoldLessIcon>
+                    ) : (
+                      <UnfoldMoreIcon aria-label="Show Theatre" fontSize="medium"></UnfoldMoreIcon>
+                    )}
+                  </IconButton>
+                </Tooltip>
+              </TheatreToggle>
+
               <Tabs value={this.state.mode} centered classes={{ indicator: classes.TabsIndicator }}>
                 <Tab
                   onClick={() => this.setState({ mode: 'transcript' })}
@@ -235,7 +289,7 @@ class App extends Component {
                   value={'timeline'}
                 />
               </Tabs>
-            </TopWrapper>
+            </Theatre>
             <BottomWrapper ref={this.setScrollingContainer}>
               {this.state.mode === 'timeline' ? (
                 <ErrorBoundary>

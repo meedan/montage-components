@@ -3,13 +3,20 @@ import { EditorBlock } from 'draft-js';
 import styled from 'styled-components';
 import Timecode from 'react-timecode';
 
+import { formatSeconds } from '@montage/ui';
+
+import Tooltip from '@material-ui/core/Tooltip';
+import grey from '@material-ui/core/colors/grey';
+
 const TimeCodeWrapper = styled.div`
-  user-select: none;
-  font-family: 'PT Sans Narrow', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: ${grey[200]};
+  border-radius: 20px;
+  height: 10px;
+  left: 0;
   position: absolute;
   top: -1em;
-  left: 0;
+  user-select: none;
+  width: 10px;
 `;
 
 const BlockWrapper = styled.div`
@@ -23,9 +30,11 @@ export default props => {
 
   return (
     <BlockWrapper className="BlockWrapper" key={`W${key}`} data-start={start}>
-      <TimeCodeWrapper contentEditable={false}>
-        <Timecode time={start} />
-      </TimeCodeWrapper>
+      <Tooltip title={formatSeconds(start)}>
+        <TimeCodeWrapper contentEditable={false}>
+          <Timecode time={start} />
+        </TimeCodeWrapper>
+      </Tooltip>
       <EditorBlock {...props} />
     </BlockWrapper>
   );

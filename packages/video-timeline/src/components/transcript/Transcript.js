@@ -27,7 +27,7 @@ const MAX_OVERLAP = 5;
 
 const styles = {
   toolbarHeading: {
-    lineHeight: '80px',
+    lineHeight: '50px',
     transition: 'line-height 0.5s',
   },
 };
@@ -48,8 +48,8 @@ const TranscriptChild = styled.div`
 `;
 const TranscriptToolbar = styled.div`
   background: white;
-  border-bottom: ${({ pin }) => (pin ? `1px solid ${grey[100]}` : 'none')};
-  flex: 0 0 ${({ pin }) => (pin ? '60px' : '80px')};
+  border-bottom: 1px solid ${grey[100]};
+  flex: 0 0 ${({ pin }) => (pin ? '30px' : '50px')};
   transition: flex-basis 0.25s;
 `;
 const TranscriptFabs = styled.div`
@@ -501,7 +501,7 @@ class Transcript extends React.Component {
                     align="left"
                     className={classes.toolbarHeading}
                     color="textSecondary"
-                    style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '60px' : '80px' }}
+                    style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '30px' : '50px' }}
                     variant="subtitle2"
                   >
                     Original Transcript
@@ -513,7 +513,7 @@ class Transcript extends React.Component {
                       align="left"
                       className={classes.toolbarHeading}
                       color="textSecondary"
-                      style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '60px' : '80px' }}
+                      style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '30px' : '50px' }}
                       variant="subtitle2"
                     >
                       Translation
