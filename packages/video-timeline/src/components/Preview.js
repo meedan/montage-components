@@ -1,8 +1,4 @@
-import {
-  usePopupState,
-  bindHover,
-  bindPopover,
-} from 'material-ui-popup-state/hooks';
+import { usePopupState, bindHover, bindPopover } from 'material-ui-popup-state/hooks';
 import Popover from 'material-ui-popup-state/HoverPopover';
 import React from 'react';
 import styled from 'styled-components';
@@ -53,15 +49,11 @@ function Preview(props) {
 
   return (
     <>
-      <IconButton
-        {...bindHover(popupState)}
-        color="secondary"
-        onClick={changeTheatre}
-      >
+      <IconButton {...bindHover(popupState)} onClick={changeTheatre}>
         {isPrev ? (
-          <KeyboardArrowLeftIcon fontSize="large" />
+          <KeyboardArrowLeftIcon fontSize="large" color="inherit" />
         ) : (
-          <KeyboardArrowRightIcon fontSize="large" />
+          <KeyboardArrowRightIcon fontSize="large" color="inherit" />
         )}
       </IconButton>
       <Popover
@@ -93,11 +85,7 @@ function Preview(props) {
           <CardContent>
             <Typography component="p" variant="body2">
               {data.name}{' '}
-              <Typography
-                component="span"
-                variant="caption"
-                style={{ color: grey[500] }}
-              >
+              <Typography component="span" variant="caption" style={{ color: grey[500] }}>
                 {`by ${data.channel_name}`}
               </Typography>
             </Typography>

@@ -476,7 +476,6 @@ class Transcript extends React.Component {
   };
 
   render() {
-    console.log(this.transcriptRef);
     const {
       playheadEditorKey,
       playheadBlockKey,
