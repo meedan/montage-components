@@ -21,7 +21,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { color } from '@montage/ui';
 
 const Separator = styled.span`
-  border-left: 1px solid ${grey[300]};
+  border-left: 1px solid ${grey[200]};
   display: inline-block;
   height: 18px;
   margin-left: 4px;
@@ -94,10 +94,7 @@ class PlaceMap extends Component {
   onLoad = map => {
     this.map = map;
 
-    this.autocomplete = new window.google.maps.places.Autocomplete(
-      this.searchRef.current,
-      {}
-    );
+    this.autocomplete = new window.google.maps.places.Autocomplete(this.searchRef.current, {});
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
     this.map.addListener('idle', this.handleBoundsChanged);
     // window.google.maps.event.trigger(this.searchRef.current, 'focus');
@@ -118,8 +115,7 @@ class PlaceMap extends Component {
       );
     } else {
       const { type } = marker;
-      const { lat, lng, viewport, zoom } =
-        type === 'marker' ? marker : marker.polygon[0];
+      const { lat, lng, viewport, zoom } = type === 'marker' ? marker : marker.polygon[0];
 
       setTimeout(() => {
         this.map.setCenter({ lat, lng });
@@ -159,9 +155,7 @@ class PlaceMap extends Component {
       });
     } else if (this.state.marker.type === 'polygon' && this.polygon) {
       const polygon = [];
-      this.polygon
-        .getPath()
-        .forEach(({ lat, lng }) => polygon.push({ lat: lat(), lng: lng() }));
+      this.polygon.getPath().forEach(({ lat, lng }) => polygon.push({ lat: lat(), lng: lng() }));
 
       marker = {
         polygon: polygon,
@@ -205,10 +199,7 @@ class PlaceMap extends Component {
       this.setState({
         saved: false,
         marker: {
-          polygon: [
-            ...(this.state.marker.polygon || []),
-            { lat: lat(), lng: lng() },
-          ],
+          polygon: [...(this.state.marker.polygon || []), { lat: lat(), lng: lng() }],
           type: 'polygon',
         },
       });
@@ -256,8 +247,7 @@ class PlaceMap extends Component {
 
     let center = { lat: 0, lng: 0 };
     if (this.state.center) center = this.state.center;
-    if (marker && marker.lat && marker.lng)
-      center = { lat: marker.lat, lng: marker.lng };
+    if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
     if (marker && marker.polygon && marker.polygon.length > 0)
       center = { lat: marker.polygon[0].lat, lng: marker.polygon[0].lng };
 
@@ -298,10 +288,7 @@ class PlaceMap extends Component {
                 <InputAdornment position="start">
                   <Tooltip title="Change name…">
                     <IconButton onClick={this.props.startPlaceRename}>
-                      <KeyboardBackspaceIcon
-                        fontSize="small"
-                        color="disabled"
-                      />
+                      <KeyboardBackspaceIcon fontSize="small" color="disabled" />
                     </IconButton>
                   </Tooltip>
                 </InputAdornment>
@@ -311,11 +298,7 @@ class PlaceMap extends Component {
                   <Separator />
                   <Tooltip title="Drop a pin">
                     <IconButton
-                      color={
-                        dropPin && marker.type !== 'marker'
-                          ? 'primary'
-                          : 'secondary'
-                      }
+                      color={dropPin && marker.type !== 'marker' ? 'primary' : 'secondary'}
                       onClick={this.toggleDropPin}
                     >
                       <AddLocationIcon fontSize="small" />
@@ -323,21 +306,14 @@ class PlaceMap extends Component {
                   </Tooltip>
                   <Tooltip title="Mark an area">
                     <IconButton
-                      color={
-                        drawPolygon && marker.type !== 'polygon'
-                          ? 'primary'
-                          : 'secondary'
-                      }
+                      color={drawPolygon && marker.type !== 'polygon' ? 'primary' : 'secondary'}
                       onClick={this.toggleDrawPolygon}
                     >
                       <FormatShapesIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Separator />
-                  {!equal(
-                    { ...this.state.marker, viewport: this.state.viewport },
-                    this.props.marker
-                  ) ? (
+                  {!equal({ ...this.state.marker, viewport: this.state.viewport }, this.props.marker) ? (
                     <Tooltip title="Save location">
                       <Button
                         disabled={this.state.saved}
@@ -346,21 +322,12 @@ class PlaceMap extends Component {
                         onClick={this.saveCurrent}
                         variant="contained"
                       >
-                        <CheckIcon
-                          fontSize="small"
-                          className={classes.SaveIcon}
-                        />
+                        <CheckIcon fontSize="small" className={classes.SaveIcon} />
                       </Button>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Close">
-                      <IconButton
-                        onClick={
-                          this.props.isCreating
-                            ? this.props.stopNewPlace
-                            : this.props.onClose
-                        }
-                      >
+                      <IconButton onClick={this.props.isCreating ? this.props.stopNewPlace : this.props.onClose}>
                         <CloseIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
@@ -381,21 +348,15 @@ class PlaceMap extends Component {
             onClick={this.handleMapClick}
             onLoad={this.onLoad}
             options={{
-              draggableCursor:
-                this.state.dropPin || this.state.drawPolygon
-                  ? 'crosshair'
-                  : 'grab',
+              draggableCursor: this.state.dropPin || this.state.drawPolygon ? 'crosshair' : 'grab',
               mapTypeControl: false,
               streetViewControl: true,
               streetViewControlOptions: {
-                position:
-                  window.google &&
-                  window.google.maps.ControlPosition.LEFT_BOTTOM,
+                position: window.google && window.google.maps.ControlPosition.LEFT_BOTTOM,
               },
             }}
           >
-            {this.state.marker.type === 'polygon' &&
-            this.state.marker.polygon.length > 0 ? (
+            {this.state.marker.type === 'polygon' && this.state.marker.polygon.length > 0 ? (
               <Polygon
                 key="poly"
                 editable={this.state.drawPolygon}

@@ -48,7 +48,7 @@ const TranscriptChild = styled.div`
 `;
 const TranscriptToolbar = styled.div`
   background: white;
-  border-bottom: 1px solid ${grey[100]};
+  border-bottom: 1px solid ${grey[200]};
   flex: 0 0 ${({ pin }) => (pin ? '30px' : '50px')};
   transition: flex-basis 0.25s;
 `;

@@ -26,7 +26,7 @@ const MapWrapper = styled.div`
   overflow: hidden;
 `;
 const Separator = styled.span`
-  border-left: 1px solid ${grey[300]};
+  border-left: 1px solid ${grey[200]};
   display: inline-block;
   height: 18px;
   margin-left: 4px;
@@ -75,15 +75,12 @@ class Map extends Component {
 
     if (this.props.currentTime !== nextProps.currentTime) {
       const match = this.props.data.find(
-        ({ time, duration }) =>
-          time <= nextProps.currentTime &&
-          nextProps.currentTime < time + duration
+        ({ time, duration }) => time <= nextProps.currentTime && nextProps.currentTime < time + duration
       );
 
       // console.log(match);
       if (match && this.map) {
-        const { lat, lng, viewport } =
-          match.type === 'marker' ? match : match.polygon[0];
+        const { lat, lng, viewport } = match.type === 'marker' ? match : match.polygon[0];
         this.map.panTo({ lat, lng });
         viewport && this.map.fitBounds(viewport);
         this.setState({ center: { lat, lng } });
@@ -116,10 +113,7 @@ class Map extends Component {
   onLoad = map => {
     this.map = map;
 
-    this.autocomplete = new window.google.maps.places.Autocomplete(
-      this.searchRef.current,
-      {}
-    );
+    this.autocomplete = new window.google.maps.places.Autocomplete(this.searchRef.current, {});
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect);
   };
 
@@ -161,9 +155,7 @@ class Map extends Component {
       });
     } else if (this.state.marker.type === 'polygon' && this.polygon) {
       const polygon = [];
-      this.polygon
-        .getPath()
-        .forEach(({ lat, lng }) => polygon.push({ lat: lat(), lng: lng() }));
+      this.polygon.getPath().forEach(({ lat, lng }) => polygon.push({ lat: lat(), lng: lng() }));
 
       marker = {
         polygon: polygon,
@@ -222,10 +214,7 @@ class Map extends Component {
         marker: {
           lat: lat(), // TODO use center
           lng: lng(),
-          polygon: [
-            ...(this.state.marker.polygon || []),
-            { lat: lat(), lng: lng() },
-          ],
+          polygon: [...(this.state.marker.polygon || []), { lat: lat(), lng: lng() }],
           type: 'polygon',
           currentTime: this.props.currentTime || 0,
           viewport: this.map.getBounds().toJSON(),
@@ -287,8 +276,7 @@ class Map extends Component {
     let center = data
       .reduce(
         (acc, d) => {
-          const coords =
-            d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
+          const coords = d.type === 'marker' ? [{ lat: d.lat, lng: d.lng }] : d.polygon;
           return [...coords, ...acc];
         },
         [{ lat: 0, lng: 0 }]
@@ -297,8 +285,7 @@ class Map extends Component {
       .pop();
 
     if (this.state.center) center = this.state.center;
-    if (marker && marker.lat && marker.lng)
-      center = { lat: marker.lat, lng: marker.lng };
+    if (marker && marker.lat && marker.lng) center = { lat: marker.lat, lng: marker.lng };
     // console.log(center, marker);
 
     if (this.map && this.map.center) center = this.map.center;
@@ -328,11 +315,7 @@ class Map extends Component {
                 <Separator />
                 <Tooltip title="Drop a pin">
                   <IconButton
-                    color={
-                      dropPin && marker.type !== 'marker'
-                        ? 'primary'
-                        : 'secondary'
-                    }
+                    color={dropPin && marker.type !== 'marker' ? 'primary' : 'secondary'}
                     onClick={this.toggleDropPin}
                   >
                     <AddLocationIcon fontSize="small" />
@@ -340,11 +323,7 @@ class Map extends Component {
                 </Tooltip>
                 <Tooltip title="Mark an area">
                   <IconButton
-                    color={
-                      drawPolygon && marker.type !== 'polygon'
-                        ? 'primary'
-                        : 'secondary'
-                    }
+                    color={drawPolygon && marker.type !== 'polygon' ? 'primary' : 'secondary'}
                     onClick={this.toggleDrawPolygon}
                   >
                     <FormatShapesIcon fontSize="small" />
@@ -374,21 +353,12 @@ class Map extends Component {
                       onClick={this.saveCurrent}
                       variant="contained"
                     >
-                      <CheckIcon
-                        fontSize="small"
-                        className={classes.SaveIcon}
-                      />
+                      <CheckIcon fontSize="small" className={classes.SaveIcon} />
                     </Button>
                   </Tooltip>
                 ) : (
                   <Tooltip title="Close">
-                    <IconButton
-                      onClick={
-                        this.props.isCreating
-                          ? this.props.stopNewPlace
-                          : this.props.onClose
-                      }
-                    >
+                    <IconButton onClick={this.props.isCreating ? this.props.stopNewPlace : this.props.onClose}>
                       <CloseIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
@@ -409,20 +379,15 @@ class Map extends Component {
           onClick={this.handleMapClick}
           onLoad={this.onLoad}
           options={{
-            draggableCursor:
-              this.state.dropPin || this.state.drawPolygon
-                ? 'crosshair'
-                : 'grab',
+            draggableCursor: this.state.dropPin || this.state.drawPolygon ? 'crosshair' : 'grab',
             mapTypeControl: false,
             streetViewControl: true,
             streetViewControlOptions: {
-              position:
-                window.google && window.google.maps.ControlPosition.LEFT_BOTTOM,
+              position: window.google && window.google.maps.ControlPosition.LEFT_BOTTOM,
             },
           }}
         >
-          {this.state.marker.type === 'polygon' &&
-          this.state.marker.polygon.length > 0 ? (
+          {this.state.marker.type === 'polygon' && this.state.marker.polygon.length > 0 ? (
             <Polygon
               key="poly"
               editable={this.state.drawPolygon}

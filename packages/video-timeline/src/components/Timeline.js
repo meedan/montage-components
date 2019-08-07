@@ -26,8 +26,8 @@ const TimelineRoot = styled.div`
   top: 0;
 `;
 const TimelineWrapper = styled.div`
-  border-left: 1px solid ${grey[300]};
-  border-right: 1px solid ${grey[300]};
+  border-left: 1px solid ${grey[200]};
+  border-right: 1px solid ${grey[200]};
   margin-left: auto;
   margin-right: auto;
   max-width: 1500px;
