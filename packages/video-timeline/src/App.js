@@ -250,7 +250,7 @@ class App extends Component {
               ) : null}
 
               <TheatreToggle>
-                <Tooltip title="Toggle Theatre">
+                <Tooltip title={this.state.theatre ? 'Hide Theatre' : 'Show Theatre'}>
                   <IconButton
                     onClick={() =>
                       this.setState(prevState => ({
