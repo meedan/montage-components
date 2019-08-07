@@ -314,15 +314,17 @@ class Transcript extends React.Component {
     let element = event.nativeEvent.target;
     console.log('click', element);
 
-    while (!element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
-    if (element.hasAttribute('data-start')) {
+    if (element.classList.contains('public-DraftStyleDefault-block')) return;
+    while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
+    if (element && element.hasAttribute('data-start')) {
       let t = parseFloat(element.getAttribute('data-start'));
       console.log('found data-start', t, element);
 
       if (element.classList.contains('BlockWrapper')) {
         element = event.nativeEvent.target.parentElement.previousSibling;
-        while (!element.hasAttribute('data-start') && element.previousSibling) element = element.previousSibling;
-        if (element.hasAttribute('data-start')) {
+        while (element && !element.hasAttribute('data-start') && element.previousSibling)
+          element = element.previousSibling;
+        if (element && element.hasAttribute('data-start')) {
           t = parseFloat(element.getAttribute('data-start'));
           console.log('found sibling data-start', t, element);
         }
