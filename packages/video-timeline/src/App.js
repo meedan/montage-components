@@ -81,13 +81,6 @@ const BottomWrapper = styled.div`
 `;
 
 const styles = {
-  // Tab: {
-  //   color: 'white',
-  // },
-  // TabSelected: {
-  //   borderColor: 'white',
-  //   color: 'white',
-  // },
   TabsIndicator: {
     background: '#ff6d01',
   },
@@ -142,112 +135,110 @@ class App extends Component {
           <style scoped>{'.popover { pointer-events: none; }'}</style>
           <Layout>
             <Theatre>
-              {this.state.theatre ? (
-                <>
-                  <Grid
-                    alignItems="center"
-                    alignContent="space-between"
-                    container
-                    justify="center"
-                    spacing={0}
-                    wrap="nowrap"
-                  >
-                    <Grid item sm={'auto'}>
-                      <div style={{ width: '50px' }}>
-                        {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
-                      </div>
-                    </Grid>
-                    <Grid item sm={12}>
-                      <Paper square>
-                        <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
-                          <Grid item sm={4}>
-                            <VideoMeta
-                              allocation={['collectionId1', 'collectionId2']}
-                              collections={[
-                                {
-                                  name: 'A collection',
-                                  id: 'collectionId1',
-                                },
-                                {
-                                  name: 'Another collection',
-                                  id: 'collectionId2',
-                                },
-                                {
-                                  name: 'Third collection',
-                                  id: 'collectionId3',
-                                },
-                              ]}
-                              onCreateCollection={str => console.log('onCreateCollection()', str)}
-                              onDelete={() => console.log('onDelete()')}
-                              onTriggerDelete={() => console.log('onTriggerDelete()')}
-                              onManageDupes={() => console.log('onManageDupes()')}
-                              onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
-                              currentTime={currentTime}
-                              videoPlaces={data.videoPlaces}
-                              pubDate={data.ytVideoData.snippet.publishedAt}
-                              channelTitle={data.ytVideoData.snippet.channelTitle}
-                              videoViewCount={data.ytVideoData.statistics.viewCount}
-                              videoId={data.gdVideoData.id}
-                              videoDescription={data.ytVideoData.snippet.description}
-                              videoBackups={data.videoBackups}
-                              onTriggerArchive={(payload, callback) => {
-                                console.log('onTriggerArchive, payload:', payload);
-                                setTimeout(() => {
-                                  this.props.enqueueSnackbar('Video archived');
-                                  callback();
-                                }, 1000);
-                              }}
-                              onTriggerKeep={callback => {
-                                console.log('onTriggerKeep');
-                                setTimeout(() => {
-                                  this.props.enqueueSnackbar('Syncing with Keep finished');
-                                  callback();
-                                }, 2000);
-                              }}
-                              onTriggerFavourite={(payload, callback) => {
-                                console.log('onTriggerFavourite, payload:', payload);
-                                // ;
-                                setTimeout(() => {
-                                  this.props.enqueueSnackbar('Video added to favourites');
-                                  callback();
-                                }, 1000);
-                              }}
-                              //
-                              onRecDateChange={(date, callback) => {
-                                console.log(date);
-                                callback();
-                              }}
-                              recDateOverriden={data.gdVideoData.recorded_date_overridden}
-                              seekTo={payload => this.seekTo(payload)}
-                            />
-                          </Grid>
-                          <Grid item sm={8}>
-                            <MontagePlayer>
-                              <MontagePlayerVideo>
-                                <Player data={data} player={player} onProgress={this.setCurrentTime} />
-                              </MontagePlayerVideo>
-                              <MontagePlayerControls>
-                                <Transport
-                                  currentTime={currentTime}
-                                  duration={duration}
-                                  player={this.props.player}
-                                  transport={transport}
-                                  seekTo={this.seekTo}
-                                />
-                              </MontagePlayerControls>
-                            </MontagePlayer>
-                          </Grid>
-                        </Grid>
-                      </Paper>
-                    </Grid>
-                    <Grid item sm={'auto'}>
-                      <div style={{ width: '50px' }}>
-                        {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
-                      </div>
-                    </Grid>
+              <div style={{ display: this.state.theatre ? 'block' : 'none' }}>
+                <Grid
+                  alignItems="center"
+                  alignContent="space-between"
+                  container
+                  justify="center"
+                  spacing={0}
+                  wrap="nowrap"
+                >
+                  <Grid item sm={'auto'}>
+                    <div style={{ width: '50px' }}>
+                      {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
+                    </div>
                   </Grid>
-                </>
-              ) : null}
+                  <Grid item sm={12}>
+                    <Paper square>
+                      <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
+                        <Grid item sm={4}>
+                          <VideoMeta
+                            allocation={['collectionId1', 'collectionId2']}
+                            collections={[
+                              {
+                                name: 'A collection',
+                                id: 'collectionId1',
+                              },
+                              {
+                                name: 'Another collection',
+                                id: 'collectionId2',
+                              },
+                              {
+                                name: 'Third collection',
+                                id: 'collectionId3',
+                              },
+                            ]}
+                            onCreateCollection={str => console.log('onCreateCollection()', str)}
+                            onDelete={() => console.log('onDelete()')}
+                            onTriggerDelete={() => console.log('onTriggerDelete()')}
+                            onManageDupes={() => console.log('onManageDupes()')}
+                            onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
+                            currentTime={currentTime}
+                            videoPlaces={data.videoPlaces}
+                            pubDate={data.ytVideoData.snippet.publishedAt}
+                            channelTitle={data.ytVideoData.snippet.channelTitle}
+                            videoViewCount={data.ytVideoData.statistics.viewCount}
+                            videoId={data.gdVideoData.id}
+                            videoDescription={data.ytVideoData.snippet.description}
+                            videoBackups={data.videoBackups}
+                            onTriggerArchive={(payload, callback) => {
+                              console.log('onTriggerArchive, payload:', payload);
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar('Video archived');
+                                callback();
+                              }, 1000);
+                            }}
+                            onTriggerKeep={callback => {
+                              console.log('onTriggerKeep');
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar('Syncing with Keep finished');
+                                callback();
+                              }, 2000);
+                            }}
+                            onTriggerFavourite={(payload, callback) => {
+                              console.log('onTriggerFavourite, payload:', payload);
+                              // ;
+                              setTimeout(() => {
+                                this.props.enqueueSnackbar('Video added to favourites');
+                                callback();
+                              }, 1000);
+                            }}
+                            //
+                            onRecDateChange={(date, callback) => {
+                              console.log(date);
+                              callback();
+                            }}
+                            recDateOverriden={data.gdVideoData.recorded_date_overridden}
+                            seekTo={payload => this.seekTo(payload)}
+                          />
+                        </Grid>
+                        <Grid item sm={8}>
+                          <MontagePlayer>
+                            <MontagePlayerVideo>
+                              <Player data={data} player={player} onProgress={this.setCurrentTime} />
+                            </MontagePlayerVideo>
+                            <MontagePlayerControls>
+                              <Transport
+                                currentTime={currentTime}
+                                duration={duration}
+                                player={this.props.player}
+                                transport={transport}
+                                seekTo={this.seekTo}
+                              />
+                            </MontagePlayerControls>
+                          </MontagePlayer>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                  <Grid item sm={'auto'}>
+                    <div style={{ width: '50px' }}>
+                      {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
+                    </div>
+                  </Grid>
+                </Grid>
+              </div>
 
               <TheatreToggle>
                 <Tooltip title={this.state.theatre ? 'Hide Theatre' : 'Show Theatre'}>
