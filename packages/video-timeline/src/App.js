@@ -41,6 +41,7 @@ const MontagePlayer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 1px;
 `;
 const MontagePlayerVideo = styled.div`
   flex: 1 1 100%;
