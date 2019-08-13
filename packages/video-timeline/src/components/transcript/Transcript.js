@@ -8,10 +8,11 @@ import { TranscriptSearch } from '@montage/ui';
 
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
-import grey from '@material-ui/core/colors/grey';
 import Fab from '@material-ui/core/Fab';
+import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 
 import BlockWrapper from './BlockWrapper';
@@ -524,16 +525,22 @@ class Transcript extends React.Component {
               </TranscriptMain>
               <TranscriptSide right>
                 <TranscriptFabs>
-                  <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
-                  <Tooltip title="Edit transcript">
-                    <Fab
-                      color={this.state.editable ? 'primary' : null}
-                      aria-label="Edit"
-                      onClick={this.toggleSourceEdit}
-                    >
-                      {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
-                    </Fab>
-                  </Tooltip>
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid item>
+                      <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
+                    </Grid>
+                    <Grid item>
+                      <Tooltip title={this.state.editable ? 'Save changes' : 'Edit transcript'}>
+                        <Fab
+                          color={this.state.editable ? 'primary' : null}
+                          aria-label="Edit"
+                          onClick={this.toggleSourceEdit}
+                        >
+                          {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
+                        </Fab>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
                 </TranscriptFabs>
               </TranscriptSide>
             </TranscriptContainer>

@@ -25,6 +25,8 @@ const styles = {
     width: '256px',
   },
   form: {
+    display: 'flex',
+    justifyContent: 'space-between',
     width: '100%',
   },
   input: {
