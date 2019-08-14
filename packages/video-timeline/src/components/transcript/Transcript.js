@@ -343,16 +343,14 @@ class Transcript extends React.Component {
 
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      console.log(range);
-
       const {
+        collapsed,
         commonAncestorContainer: { nodeType, classList },
         startContainer,
         startContainer: { nodeType: startNodeType, parentNode },
-      } = range;
+      } = selection.getRangeAt(0);
 
-      if (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block'))) {
+      if (!collapsed && (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block')))) {
         const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
         console.log(anchor);
         this.setState({ anchor });
