@@ -505,7 +505,7 @@ class Transcript extends React.Component {
       visibleB,
       customStyleMap,
     } = this.state;
-    const { classes, scrollingContainer, videoTags } = this.props;
+    const { classes, videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
@@ -557,7 +557,12 @@ class Transcript extends React.Component {
             </TranscriptContainer>
           </TranscriptWrapper>
         </TranscriptToolbar>
-        <TranscriptChild onScroll={this.toggleOffset.bind(this)}>
+        <TranscriptChild
+          onScroll={this.toggleOffset.bind(this)}
+          ref={ref => {
+            this.scrollingContainer = ref;
+          }}
+        >
           {this.state.anchor ? (
             <Popover
               id={'meh'}
@@ -642,7 +647,7 @@ class Transcript extends React.Component {
                     higlightTag,
                     key,
                     places,
-                    scrollingContainer,
+                    scrollingContainer: this.scrollingContainer,
                     search,
                     searchFocused,
                     tags,
