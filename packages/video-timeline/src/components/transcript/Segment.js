@@ -31,6 +31,9 @@ const LegendContainer = styled.div`
   padding-left: 24px;
   position: relative;
 `;
+const LegendItem = styled.div`
+  cursor: pointer;
+`;
 const LegendLabel = styled.div`
   position: absolute;
   left: 0;
@@ -63,7 +66,7 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
           </Tooltip>
         </LegendLabel>
         {tags.map(entity => (
-          <div
+          <LegendItem
             key={`T-${entity.id}`}
             onMouseOver={() => higlightTag(`T-${entity.id}`)}
             onMouseOut={() => higlightTag(null)}
@@ -76,7 +79,7 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             >
               {entity.project_tag.name}
             </Typography>
-          </div>
+          </LegendItem>
         ))}
       </LegendContainer>
     ) : null}

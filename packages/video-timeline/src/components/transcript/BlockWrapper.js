@@ -10,13 +10,13 @@ import grey from '@material-ui/core/colors/grey';
 const TimestampMarker = styled.div`
   background: ${grey[200]};
   border-radius: 20px;
-  height: 10px;
+  height: 7px;
   left: -20px;
   position: absolute;
   top: 0;
   transform: translate(-50%, 50%);
   user-select: none;
-  width: 10px;
+  width: 7px;
 `;
 
 const BlockWrapper = styled.div`
