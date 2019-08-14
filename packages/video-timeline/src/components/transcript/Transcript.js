@@ -3,6 +3,7 @@ import React from 'react';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
+import Popover from '@material-ui/core/Popover';
 
 import { TranscriptSearch } from '@montage/ui';
 
@@ -340,6 +341,25 @@ class Transcript extends React.Component {
     let element = event.nativeEvent.target;
     console.log('click', element);
 
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      console.log(range);
+
+      const {
+        commonAncestorContainer: { nodeType, classList },
+        startContainer,
+        startContainer: { nodeType: startNodeType, parentNode },
+      } = range;
+
+      if (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block'))) {
+        const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
+        console.log(anchor);
+        this.setState({ anchor });
+      } else window.getSelection().removeAllRanges();
+      return;
+    }
+
     if (element.classList.contains('public-DraftStyleDefault-block')) return;
     while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
     if (element && element.hasAttribute('data-start')) {
@@ -540,6 +560,24 @@ class Transcript extends React.Component {
           </TranscriptWrapper>
         </TranscriptToolbar>
         <TranscriptChild onScroll={this.toggleOffset.bind(this)}>
+          {this.state.anchor ? (
+            <Popover
+              id={'meh'}
+              open={!!this.state.anchor}
+              anchorEl={this.state.anchor}
+              onClose={() => this.setState({ anchor: null })}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <Typography className={classes.typography}>BABYMETAL</Typography>
+            </Popover>
+          ) : null}
           <TranscriptWrapper stretch={this.state.visibleB}>
             <div
               ref={ref => {
