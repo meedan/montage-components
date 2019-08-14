@@ -354,8 +354,8 @@ class Transcript extends React.Component {
         const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
         console.log(anchor);
         this.setState({ anchor });
+        return;
       } else window.getSelection().removeAllRanges();
-      return;
     }
 
     if (element.classList.contains('public-DraftStyleDefault-block')) return;
