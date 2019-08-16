@@ -141,7 +141,7 @@ export default React.memo(
     return (
       <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey}>
         <VisibilitySensor
-          intervalCheck={false}
+          intervalCheck={true}
           intervalDelay={1000}
           containment={scrollingContainer}
           scrollCheck={true}

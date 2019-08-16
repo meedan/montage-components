@@ -344,21 +344,19 @@ class Transcript extends React.Component {
 
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      console.log(range);
-
       const {
+        collapsed,
         commonAncestorContainer: { nodeType, classList },
         startContainer,
         startContainer: { nodeType: startNodeType, parentNode },
-      } = range;
+      } = selection.getRangeAt(0);
 
-      if (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block'))) {
+      if (!collapsed && (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block')))) {
         const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
         console.log(anchor);
         this.setState({ anchor });
+        return;
       } else window.getSelection().removeAllRanges();
-      return;
     }
 
     if (element.classList.contains('public-DraftStyleDefault-block')) return;
@@ -508,7 +506,7 @@ class Transcript extends React.Component {
       visibleB,
       customStyleMap,
     } = this.state;
-    const { classes, scrollingContainer, videoTags } = this.props;
+    const { classes, videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
@@ -566,7 +564,12 @@ class Transcript extends React.Component {
             </TranscriptContainer>
           </TranscriptWrapper>
         </TranscriptToolbar>
-        <TranscriptChild onScroll={this.toggleOffset.bind(this)}>
+        <TranscriptChild
+          onScroll={this.toggleOffset.bind(this)}
+          ref={ref => {
+            this.scrollingContainer = ref;
+          }}
+        >
           {this.state.anchor ? (
             <Popover
               id={'meh'}
@@ -651,7 +654,7 @@ class Transcript extends React.Component {
                     higlightTag,
                     key,
                     places,
-                    scrollingContainer,
+                    scrollingContainer: this.scrollingContainer,
                     search,
                     searchFocused,
                     tags,
