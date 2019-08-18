@@ -10,8 +10,8 @@ const TranscriptText = styled.div`
     padding-right: 20px;
   }
   &:last-child {
-    border-left: 1px solid ${grey[200]};
-    padding-left: 20px;
+    border-left: ${({ stretch }) => (stretch ? 'none' : `1px solid ${grey[200]}`)};
+    padding-left: ${({ stretch }) => (stretch ? 'none' : '20px')};
   }
 `;
 
