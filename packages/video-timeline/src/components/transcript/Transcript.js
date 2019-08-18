@@ -3,20 +3,15 @@ import React from 'react';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
-import Popover from '@material-ui/core/Popover';
-
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 
 import BlockWrapper from './BlockWrapper';
+import FloatingToolbar from './FloatingToolbar';
 import Segment from './Segment';
 import TranscriptToolbar from './TranscriptToolbar';
 import TranscriptWrapper from './TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 
 const MAX_OVERLAP = 5;
-
-const styles = theme => ({});
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -487,7 +482,7 @@ class Transcript extends React.Component {
       visibleB,
       customStyleMap,
     } = this.state;
-    const { classes, videoTags } = this.props;
+    const { videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     return (
@@ -507,24 +502,7 @@ class Transcript extends React.Component {
             this.scrollingContainer = ref;
           }}
         >
-          {this.state.anchor ? (
-            <Popover
-              id={'meh'}
-              open={!!this.state.anchor}
-              anchorEl={this.state.anchor}
-              onClose={() => this.setState({ anchor: null })}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-            >
-              <Typography className={classes.typography}>BABYMETAL</Typography>
-            </Popover>
-          ) : null}
+          {this.state.anchor ? <FloatingToolbar isVisible={this.state.anchor} /> : null}
           <TranscriptWrapper stretch={this.state.visibleB}>
             <div
               ref={ref => {
@@ -607,4 +585,4 @@ class Transcript extends React.Component {
   }
 }
 
-export default withStyles(styles)(Transcript);
+export default Transcript;
