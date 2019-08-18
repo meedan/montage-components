@@ -8,7 +8,6 @@ import {
   KeepIcon,
   // components
   TimelinePlayhead,
-  TranscriptSearch,
   VideoMeta,
   // partials
 } from '@montage/ui';
@@ -70,14 +69,6 @@ const pages = [
     title: 'Timeline playhead',
     imports: {
       TimelinePlayhead: TimelinePlayhead,
-    },
-  },
-  {
-    content: require('./pages/transcript-search.md'),
-    path: '/transcript-search',
-    title: 'Transcript search',
-    imports: {
-      TranscriptSearch: TranscriptSearch,
     },
   },
 ];

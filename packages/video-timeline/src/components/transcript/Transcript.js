@@ -5,34 +5,18 @@ import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
 import Popover from '@material-ui/core/Popover';
 
-import { TranscriptSearch } from '@montage/ui';
-
-import CheckIcon from '@material-ui/icons/Check';
-import EditIcon from '@material-ui/icons/Edit';
-import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 
 import BlockWrapper from './BlockWrapper';
 import Segment from './Segment';
-import TranscriptContainer from './TranscriptContainer';
-import TranscriptMain from './TranscriptMain';
-import TranscriptSide from './TranscriptSide';
-import TranscriptText from './TranscriptText';
+import TranscriptToolbar from './TranscriptToolbar';
 import TranscriptWrapper from './TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
 
 const MAX_OVERLAP = 5;
 
-const styles = {
-  toolbarHeading: {
-    lineHeight: '50px',
-    transition: 'line-height 0.5s',
-  },
-};
+const styles = theme => ({});
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -48,25 +32,13 @@ const TranscriptChild = styled.div`
   flex: 1 1 100%;
   overflow-y: auto;
 `;
-const TranscriptToolbar = styled.div`
-  background: white;
-  border-bottom: 1px solid ${grey[200]};
-  flex: 0 0 ${({ pin }) => (pin ? '30px' : '50px')};
-  transition: flex-basis 0.25s;
-`;
-const TranscriptFabs = styled.div`
-  left: -20px;
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-`;
 
 class Transcript extends React.Component {
   state = {
     search: '',
     searchFocused: false,
     editable: false,
-    visibleB: true,
+    visibleB: false,
   };
   past = [];
   future = [];
@@ -351,7 +323,11 @@ class Transcript extends React.Component {
         startContainer: { nodeType: startNodeType, parentNode },
       } = selection.getRangeAt(0);
 
-      if (!collapsed && (nodeType === document.TEXT_NODE || (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block')))) {
+      if (
+        !collapsed &&
+        (nodeType === document.TEXT_NODE ||
+          (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block')))
+      ) {
         const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
         console.log(anchor);
         this.setState({ anchor });
@@ -493,6 +469,11 @@ class Transcript extends React.Component {
       editable: !prevState.editable,
     }));
   };
+  toggleTranslate = () => {
+    this.setState(prevState => ({
+      visibleB: !prevState.visibleB,
+    }));
+  };
 
   render() {
     const {
@@ -511,59 +492,15 @@ class Transcript extends React.Component {
 
     return (
       <TranscriptRoot>
-        <TranscriptToolbar pin={this.state.transcriptRefScrollTop > 0}>
-          <TranscriptWrapper stretch={this.state.visibleB}>
-            <TranscriptContainer>
-              <TranscriptSide left></TranscriptSide>
-              <TranscriptMain>
-                <TranscriptText stretch={!this.state.visibleB}>
-                  <Typography
-                    align="left"
-                    className={classes.toolbarHeading}
-                    color="textSecondary"
-                    style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '30px' : '50px' }}
-                    variant="subtitle2"
-                  >
-                    Original Transcript
-                  </Typography>
-                </TranscriptText>
-                {this.state.visibleB ? (
-                  <TranscriptText>
-                    <Typography
-                      align="left"
-                      className={classes.toolbarHeading}
-                      color="textSecondary"
-                      style={{ lineHeight: this.state.transcriptRefScrollTop > 0 ? '30px' : '50px' }}
-                      variant="subtitle2"
-                    >
-                      Translation
-                    </Typography>
-                  </TranscriptText>
-                ) : null}
-              </TranscriptMain>
-              <TranscriptSide right>
-                <TranscriptFabs>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <TranscriptSearch onSearch={this.onSearch} onBlur={() => this.handleSearchFocus(false)} />
-                    </Grid>
-                    <Grid item>
-                      <Tooltip title={this.state.editable ? 'Save changes' : 'Edit transcript'}>
-                        <Fab
-                          color={this.state.editable ? 'primary' : null}
-                          aria-label="Edit"
-                          onClick={this.toggleSourceEdit}
-                        >
-                          {this.state.editable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
-                        </Fab>
-                      </Tooltip>
-                    </Grid>
-                  </Grid>
-                </TranscriptFabs>
-              </TranscriptSide>
-            </TranscriptContainer>
-          </TranscriptWrapper>
-        </TranscriptToolbar>
+        <TranscriptToolbar
+          isEditable={this.state.editable}
+          isTranslated={this.state.visibleB}
+          onSearch={this.onSearch}
+          onSearchBlur={() => this.handleSearchFocus(false)}
+          onToggleEdit={this.toggleSourceEdit}
+          onToggleTranslate={this.toggleTranslate}
+          pin={this.state.transcriptRefScrollTop > 0}
+        />
         <TranscriptChild
           onScroll={this.toggleOffset.bind(this)}
           ref={ref => {

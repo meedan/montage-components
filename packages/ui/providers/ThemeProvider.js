@@ -5,6 +5,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import grey from '@material-ui/core/colors/grey';
 
+import { color } from '@montage/ui';
+
 const mui = createMuiTheme();
 
 const theme = createMuiTheme({
@@ -15,6 +17,24 @@ const theme = createMuiTheme({
         backgroundColor: grey[800],
         fontSize: mui.typography.pxToRem(13),
         fontWeight: mui.typography.fontWeightRegular,
+      },
+    },
+    MuiFab: {
+      root: {
+        backgroundColor: mui.palette.common.white,
+        color: grey[700],
+        '&:hover': {
+          backgroundColor: mui.palette.common.white,
+          color: color.brand,
+        },
+      },
+      primary: {
+        backgroundColor: color.brand,
+        color: mui.palette.common.white,
+        '&:hover': {
+          backgroundColor: color.brand,
+          color: mui.palette.common.white,
+        },
       },
     },
     MuiIconButton: {
