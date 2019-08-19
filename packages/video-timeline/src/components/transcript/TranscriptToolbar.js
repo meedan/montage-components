@@ -44,8 +44,7 @@ const styles = theme => ({
   },
   paper: {
     alignItems: 'center',
-    border: `2px solid ${theme.palette.primary.main}`,
-    borderRadius: '100px',
+    border: 'none',
     display: 'flex',
     padding: '2px 4px',
     position: 'absolute',

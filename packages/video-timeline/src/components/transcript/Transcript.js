@@ -502,7 +502,9 @@ class Transcript extends React.Component {
             this.scrollingContainer = ref;
           }}
         >
-          {this.state.anchor ? <FloatingToolbar isVisible={this.state.anchor} /> : null}
+          {this.state.anchor ? (
+            <FloatingToolbar isVisible={this.state.anchor} onClose={() => this.setState({ anchor: null })} />
+          ) : null}
           <TranscriptWrapper stretch={this.state.visibleB}>
             <div
               ref={ref => {
