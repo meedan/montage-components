@@ -33,7 +33,7 @@ class Transcript extends React.Component {
     search: '',
     searchFocused: false,
     editable: false,
-    visibleB: false,
+    visibleB: true,
   };
   past = [];
   future = [];

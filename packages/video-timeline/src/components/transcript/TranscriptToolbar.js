@@ -22,6 +22,7 @@ import TranscriptContainer from './TranscriptContainer';
 import TranscriptMain from './TranscriptMain';
 import TranscriptSide from './TranscriptSide';
 import TranscriptText from './TranscriptText';
+import TranslationPicker from './TranslationPicker';
 import TranscriptWrapper from './TranscriptWrapper';
 
 const styles = theme => ({
@@ -30,13 +31,17 @@ const styles = theme => ({
     transition: 'line-height 0.5s',
   },
   translateFab: {
-    boxShadow: `inset 0 0 0 1px ${grey[200]}`,
     color: blue[500],
-    '&:hover': {
-      background: theme.palette.common.white,
-      boxShadow: `inset 0 0 0 1px ${grey[200]}`,
-      color: theme.palette.primary.main,
-    },
+    // boxShadow: `inset 0 0 0 1px ${grey[200]}`,
+    // '&:hover': {
+    //   background: theme.palette.common.white,
+    //   boxShadow: `inset 0 0 0 1px ${grey[200]}`,
+    //   color: theme.palette.primary.main,
+    // },
+  },
+  translateActiveFab: {
+    color: blue[500],
+    boxShadow: `inset 0 0 0 1px ${grey[200]}`,
   },
   root: {
     display: 'inline-block',
@@ -140,7 +145,8 @@ class TranscriptToolbar extends Component {
               </TranscriptText>
               {this.props.isTranslated ? (
                 <TranscriptText>
-                  <Typography
+                  <TranslationPicker />
+                  {/* <Typography
                     align="left"
                     className={classes.toolbarHeading}
                     color="textSecondary"
@@ -150,7 +156,7 @@ class TranscriptToolbar extends Component {
                     variant="subtitle2"
                   >
                     Translation
-                  </Typography>
+                  </Typography> */}
                 </TranscriptText>
               ) : null}
             </TranscriptMain>
@@ -161,7 +167,7 @@ class TranscriptToolbar extends Component {
                     <Tooltip title="Translate">
                       <Fab
                         aria-label="Edit"
-                        className={classes.translateFab}
+                        className={this.props.isTranslated ? classes.translateActiveFab : classes.translateFab}
                         onClick={this.props.onToggleTranslate}
                         size="small"
                       >

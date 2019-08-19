@@ -33,6 +33,10 @@ const LegendContainer = styled.div`
 `;
 const LegendItem = styled.div`
   cursor: pointer;
+  &:hover * {
+    color: #2f80ed;
+    text-decoration: underline;
+  }
 `;
 const LegendLabel = styled.div`
   position: absolute;
@@ -50,7 +54,13 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
         </LegendLabel>
         {comments.map(({ id, text }) => (
           <div key={`C-${id}`} onMouseOut={() => higlightTag(null)} onMouseOver={() => higlightTag(`C-${id}`)}>
-            <Typography variant="caption" noWrap style={{ display: 'block', width: '120px' }} title={text}>
+            <Typography
+              color="textSecondary"
+              noWrap
+              style={{ display: 'block', width: '120px' }}
+              title={text}
+              variant="caption"
+            >
               {text}
             </Typography>
           </div>
@@ -72,6 +82,7 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             onMouseOut={() => higlightTag(null)}
           >
             <Typography
+              color="textSecondary"
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_tag.name}
@@ -98,6 +109,7 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             onMouseOut={() => higlightTag(null)}
           >
             <Typography
+              color="textSecondary"
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_location.name}
