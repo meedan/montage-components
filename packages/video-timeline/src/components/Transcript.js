@@ -4,12 +4,12 @@ import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
 
-import BlockWrapper from './BlockWrapper';
-import FloatingToolbar from './FloatingToolbar';
-import Segment from './Segment';
-import TranscriptToolbar from './TranscriptToolbar';
-import TranscriptWrapper from './TranscriptWrapper';
-import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './transcriptUtils';
+import BlockWrapper from './ofTranscript/BlockWrapper';
+import FloatingToolbar from './ofTranscript/FloatingToolbar';
+import Segment from './ofTranscript/Segment';
+import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
+import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
+import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
 const MAX_OVERLAP = 5;
 
@@ -33,7 +33,9 @@ class Transcript extends React.Component {
     search: '',
     searchFocused: false,
     editable: false,
-    visibleB: true,
+    // visibleB: true,
+    selectedTranslation: null,
+    translations: ['it', 'pl'],
   };
   past = [];
   future = [];
@@ -470,6 +472,17 @@ class Transcript extends React.Component {
     }));
   };
 
+  toggleTranslation = languageISO => {
+    console.log('toggleTranslation()', languageISO);
+    this.setState({ selectedTranslation: languageISO });
+  };
+
+  createTranslation = languageISO => {
+    console.log('createTranslation()', languageISO);
+    // push new translation to translations array and then:
+    this.toggleTranslation(languageISO);
+  };
+
   render() {
     const {
       playheadEditorKey,
@@ -480,6 +493,7 @@ class Transcript extends React.Component {
       searchFocused,
       editable,
       visibleB,
+      selectedTranslation,
       customStyleMap,
     } = this.state;
     const { videoTags } = this.props;
@@ -495,6 +509,10 @@ class Transcript extends React.Component {
           onToggleEdit={this.toggleSourceEdit}
           onToggleTranslate={this.toggleTranslate}
           pin={this.state.transcriptRefScrollTop > 0}
+          toggleTranslation={this.toggleTranslation}
+          createTranslation={this.createTranslation}
+          selectedTranslation={this.state.selectedTranslation}
+          translations={this.state.translations}
         />
         <TranscriptChild
           onScroll={this.toggleOffset.bind(this)}

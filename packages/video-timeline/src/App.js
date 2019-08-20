@@ -23,9 +23,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Player from './components/Player';
 import Preview from './components/Preview';
 import Timeline from './components/Timeline';
+import Transcript from './components/Transcript';
 import Transport from './components/Transport';
-
-import Transcript from './components/transcript/Transcript';
 
 import { update } from './reducers/player';
 
@@ -251,9 +250,9 @@ class App extends Component {
                     }
                   >
                     {this.state.theatre ? (
-                      <UnfoldLessIcon aria-label="Hide Theatre" fontSize="medium"></UnfoldLessIcon>
+                      <UnfoldLessIcon aria-label="Hide Theatre"></UnfoldLessIcon>
                     ) : (
-                      <UnfoldMoreIcon aria-label="Show Theatre" fontSize="medium"></UnfoldMoreIcon>
+                      <UnfoldMoreIcon aria-label="Show Theatre"></UnfoldMoreIcon>
                     )}
                   </IconButton>
                 </Tooltip>

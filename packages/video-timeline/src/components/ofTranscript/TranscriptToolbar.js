@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { func, bool } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 
 import CheckIcon from '@material-ui/icons/Check';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -26,10 +26,6 @@ import TranslationPicker from './TranslationPicker';
 import TranscriptWrapper from './TranscriptWrapper';
 
 const styles = theme => ({
-  toolbarHeading: {
-    lineHeight: '50px',
-    transition: 'line-height 0.5s',
-  },
   translateFab: {
     color: blue[500],
     // boxShadow: `inset 0 0 0 1px ${grey[200]}`,
@@ -85,12 +81,21 @@ const TranscriptFabs = styled.div`
   top: 50%;
   transform: translate(0, -50%);
 `;
+const TranscriptHeading = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: ${({ pin }) => (pin ? '30px' : '50px')};
+  transition: height 0.25s;
+  transform: translate3d(0, 0, 0);
+`;
 
 class TranscriptToolbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isSearching: false,
+      translationISO: null,
       searchKeyword: '',
     };
     this.onSearchFieldChange = this.onSearchFieldChange.bind(this);
@@ -122,6 +127,10 @@ class TranscriptToolbar extends Component {
     this.props.onSearch(this.state.searchKeyword.trim());
   }
 
+  setTranslation = langISO => {
+    this.setState({ translationISO: langISO });
+  };
+
   render() {
     const { pin, classes } = this.props;
     return (
@@ -131,22 +140,21 @@ class TranscriptToolbar extends Component {
             <TranscriptSide left></TranscriptSide>
             <TranscriptMain>
               <TranscriptText stretch={!this.props.isTranslated}>
-                <Typography
-                  align="left"
-                  className={classes.toolbarHeading}
-                  color="textSecondary"
-                  style={{
-                    lineHeight: pin ? '30px' : '50px',
-                  }}
-                  variant="subtitle2"
-                >
-                  Original Transcript
-                </Typography>
+                <TranscriptHeading pin={pin}>
+                  <Typography align="left" color="textSecondary" variant="subtitle2">
+                    Original Transcript
+                  </Typography>
+                </TranscriptHeading>
               </TranscriptText>
               {this.props.isTranslated ? (
                 <TranscriptText>
-                  <TranslationPicker />
-                  {/* <Typography
+                  <TranscriptHeading>
+                    <TranslationPicker
+                      createTranslation={this.props.createTranslation}
+                      toggleTranslation={this.props.toggleTranslation}
+                      translations={this.props.translations}
+                    />
+                    {/* <Typography
                     align="left"
                     className={classes.toolbarHeading}
                     color="textSecondary"
@@ -157,6 +165,7 @@ class TranscriptToolbar extends Component {
                   >
                     Translation
                   </Typography> */}
+                  </TranscriptHeading>
                 </TranscriptText>
               ) : null}
             </TranscriptMain>
@@ -227,6 +236,12 @@ class TranscriptToolbar extends Component {
 
 export default withStyles(styles)(TranscriptToolbar);
 
-TranscriptToolbar.propTypes = { onToggleEdit: func.isRequired, isEditable: bool, isTranslated: bool };
+TranscriptToolbar.propTypes = {
+  onToggleEdit: func.isRequired,
+  isEditable: bool,
+  isTranslated: bool,
+  toggleTranslation: func.isRequired,
+  selectedTranslation: string,
+};
 
-TranscriptToolbar.defaultProps = { isEditable: false, isTranslated: false };
+TranscriptToolbar.defaultProps = { isEditable: false, isTranslated: false, selectedTranslation: null };
