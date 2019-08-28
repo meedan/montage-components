@@ -353,7 +353,9 @@ class Transcript extends React.Component {
         console.log(anchor);
         this.setState({ anchor });
         return;
-      } else window.getSelection().removeAllRanges();
+      } else {
+        // window.getSelection().removeAllRanges();
+      }
     }
 
     if (element.classList.contains('public-DraftStyleDefault-block')) return;

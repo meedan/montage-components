@@ -166,7 +166,6 @@ export default React.memo(
               </TranscriptSide>
               <TranscriptMain>
                 <TranscriptText lang={languageA} stretch={!visibleB}>
-                  editable {editable}
                   <Editor
                     editorKey={`A${editorKey}`}
                     readOnly={!editable || !isVisible}
