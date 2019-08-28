@@ -153,6 +153,7 @@ class TranscriptToolbar extends Component {
                       createTranslation={this.props.createTranslation}
                       toggleTranslation={this.props.toggleTranslation}
                       translations={this.props.translations}
+                      selectedTranslation={this.props.selectedTranslation}
                     />
                     {/* <Typography
                     align="left"

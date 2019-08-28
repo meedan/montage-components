@@ -11,7 +11,8 @@ import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
-const EMPTY_TRANSCRIPT = false;
+const EMPTY_TRANSCRIPT = true;
+const EMPTY_TRANSLATION = false;
 const MAX_OVERLAP = 5;
 
 const TranscriptRoot = styled.div`
@@ -35,8 +36,8 @@ class Transcript extends React.Component {
     searchFocused: false,
     editable: false,
     // visibleB: true,
-    selectedTranslation: null,
-    translations: ['it', 'pl'],
+    selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
+    translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
   };
   past = [];
   future = [];
@@ -519,7 +520,7 @@ class Transcript extends React.Component {
       searchFocused,
       editable,
       visibleB,
-      selectedTranslation,
+      // selectedTranslation,
       customStyleMap,
     } = this.state;
     const { videoTags } = this.props;
