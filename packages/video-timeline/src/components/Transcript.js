@@ -11,6 +11,7 @@ import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
+const EMPTY_TRANSCRIPT = true;
 const MAX_OVERLAP = 5;
 
 const TranscriptRoot = styled.div`
@@ -61,6 +62,26 @@ class Transcript extends React.Component {
     }, []);
 
     if (transcript !== state.transcript) {
+      if (EMPTY_TRANSCRIPT) {
+        return {
+          transcript: {},
+          segments: [
+            {
+              start: 0,
+              end: 0,
+              editorStateA: EditorState.createEmpty(),
+              key: 'editor-ZERO',
+              editorStateB: EditorState.createEmpty(),
+              customStyleMap,
+              comments: commentThreads,
+              tags: [...new Set(tagInstances.map(({ entity }) => entity))],
+              places: [...new Set(placesInstances.map(({ entity }) => entity))],
+            },
+          ],
+          customStyleMap,
+        };
+      }
+
       const segments = chunk(transcript.segments, 1).map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
