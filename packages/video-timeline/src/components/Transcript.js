@@ -11,8 +11,8 @@ import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
-const EMPTY_TRANSCRIPT = true;
-const EMPTY_TRANSLATION = false;
+const EMPTY_TRANSCRIPT = false;
+const EMPTY_TRANSLATION = true;
 const MAX_OVERLAP = 5;
 
 const TranscriptRoot = styled.div`

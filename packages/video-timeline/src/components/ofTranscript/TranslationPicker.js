@@ -1,4 +1,4 @@
-import { array, func, string } from 'prop-types';
+import { array, func, string, bool } from 'prop-types';
 import Menu from 'material-ui-popup-state/HoverMenu';
 import PopupState, { bindHover, bindMenu } from 'material-ui-popup-state';
 import React, { Component } from 'react';
@@ -125,11 +125,11 @@ class TranslationPicker extends Component {
         {popupState => (
           <>
             {translations && translations.length > 0 ? (
-              <Link {...bindHover(popupState)}>
-                <TranslateIcon /> {languages[this.props.selectedTranslation].name}
+              <Link {...bindHover(popupState)} className="Link" style={{lineHeight: this.props.pin ? '30px' : '50px'}}>
+                <TranslateIcon fontSize="small" /> {languages[this.props.selectedTranslation].name}
               </Link>
             ) : (
-              <Link {...bindHover(popupState)}>Add translation…</Link>
+              <Link className="Link" {...bindHover(popupState)} style={{lineHeight: this.props.pin ? '30px' : '50px'}}>Add translation…</Link>
             )}
             <ParentPopupState.Provider value={popupState}>
               <Menu
@@ -179,12 +179,14 @@ export default withStyles(styles)(TranslationPicker);
 
 TranslationPicker.propTypes = {
   createTranslation: func.isRequired,
+  pin: bool,
   selectedTranslation: string,
   toggleTranslation: func.isRequired,
   translations: array,
 };
 
 TranslationPicker.defaultProps = {
+  pin: null,
   selectedTranslation: null,
   translations: null,
 };

@@ -154,18 +154,8 @@ class TranscriptToolbar extends Component {
                       toggleTranslation={this.props.toggleTranslation}
                       translations={this.props.translations}
                       selectedTranslation={this.props.selectedTranslation}
+                      pin={pin}
                     />
-                    {/* <Typography
-                    align="left"
-                    className={classes.toolbarHeading}
-                    color="textSecondary"
-                    style={{
-                      lineHeight: pin ? '30px' : '50px',
-                    }}
-                    variant="subtitle2"
-                  >
-                    Translation
-                  </Typography> */}
                   </TranscriptHeading>
                 </TranscriptText>
               ) : null}
