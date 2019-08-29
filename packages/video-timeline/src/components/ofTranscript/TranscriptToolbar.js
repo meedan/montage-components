@@ -148,7 +148,7 @@ class TranscriptToolbar extends Component {
               </TranscriptText>
               {this.props.isTranslated ? (
                 <TranscriptText>
-                  <TranscriptHeading>
+                  <TranscriptHeading pin={pin}>
                     <TranslationPicker
                       createTranslation={this.props.createTranslation}
                       toggleTranslation={this.props.toggleTranslation}
