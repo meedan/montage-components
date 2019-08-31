@@ -18,9 +18,11 @@ import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
   .public-DraftStyleDefault-block {
-    font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier,
-      monospace;
+    font-family: noto_monoregular, 'PT Mono', Consolas, 'Liberation Mono', Menlo,
+      Courier, monospace;
     box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.7em;
     * {
       box-sizing: border-box;
     }
