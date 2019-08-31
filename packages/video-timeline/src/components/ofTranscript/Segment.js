@@ -18,7 +18,8 @@ import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
   .public-DraftStyleDefault-block {
-    font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-family: 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier,
+      monospace;
     box-sizing: border-box;
     * {
       box-sizing: border-box;
@@ -48,18 +49,26 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {comments.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title="Comments">
-            <CommentIcon fontSize="small" color="disabled" size=""></CommentIcon>
+          <Tooltip title='Comments'>
+            <CommentIcon
+              fontSize='small'
+              color='disabled'
+              size=''
+            ></CommentIcon>
           </Tooltip>
         </LegendLabel>
         {comments.map(({ id, text }) => (
-          <div key={`C-${id}`} onMouseOut={() => higlightTag(null)} onMouseOver={() => higlightTag(`C-${id}`)}>
+          <div
+            key={`C-${id}`}
+            onMouseOut={() => higlightTag(null)}
+            onMouseOver={() => higlightTag(`C-${id}`)}
+          >
             <Typography
-              color="textSecondary"
+              color='textSecondary'
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={text}
-              variant="caption"
+              variant='caption'
             >
               {text}
             </Typography>
@@ -71,8 +80,8 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {tags.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title="Tags">
-            <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
+          <Tooltip title='Tags'>
+            <LabelIcon fontSize='small' color='disabled' size=''></LabelIcon>
           </Tooltip>
         </LegendLabel>
         {tags.map(entity => (
@@ -82,11 +91,11 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             onMouseOut={() => higlightTag(null)}
           >
             <Typography
-              color="textSecondary"
+              color='textSecondary'
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_tag.name}
-              variant="caption"
+              variant='caption'
             >
               {entity.project_tag.name}
             </Typography>
@@ -98,8 +107,12 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {places.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title="Locations">
-            <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
+          <Tooltip title='Locations'>
+            <LocationIcon
+              fontSize='small'
+              color='disabled'
+              size=''
+            ></LocationIcon>
           </Tooltip>
         </LegendLabel>
         {places.map(entity => (
@@ -109,11 +122,11 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             onMouseOut={() => higlightTag(null)}
           >
             <Typography
-              color="textSecondary"
+              color='textSecondary'
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_location.name}
-              variant="caption"
+              variant='caption'
             >
               {entity.project_location.name}
             </Typography>
@@ -126,27 +139,27 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
 
 export default React.memo(
   ({
+    comments,
+    customBlockRenderer,
+    customStyleMap,
+    editable,
     editorKey,
     editorStateA,
     editorStateB,
+    filterKeyBindingFn,
+    handleChange,
+    handleKeyCommand,
+    higlightTag,
     languageA = 'en-US',
     languageB = 'en-US',
-    textDirectionalityA = 'LTR',
-    textDirectionalityB = 'LTR',
-    comments,
-    tags,
     places,
+    scrollingContainer,
     search,
     searchFocused,
-    visibleB,
-    editable,
-    customStyleMap,
-    customBlockRenderer,
-    scrollingContainer,
-    filterKeyBindingFn,
-    handleKeyCommand,
-    handleChange,
-    higlightTag,
+    showTranslation,
+    tags,
+    textDirectionalityA = 'LTR',
+    textDirectionalityB = 'LTR',
   }) => {
     const previewStateA = memoizedCreatePreview(editorStateA);
 
@@ -162,10 +175,12 @@ export default React.memo(
           {({ isVisible }) => (
             <TranscriptContainer>
               <TranscriptSide left separate>
-                {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
+                {!editable ? (
+                  <Legend {...{ comments, tags, places, higlightTag }} />
+                ) : null}
               </TranscriptSide>
               <TranscriptMain>
-                <TranscriptText lang={languageA} stretch={!visibleB}>
+                <TranscriptText lang={languageA} stretch={!showTranslation}>
                   <Editor
                     editorKey={`A${editorKey}`}
                     readOnly={!editable || !isVisible}
@@ -173,26 +188,36 @@ export default React.memo(
                     editorState={
                       isVisible
                         ? searchFocused
-                          ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                          ? EditorState.set(previewStateA, {
+                              decorator: generateDecorator(search),
+                            })
                           : search !== ''
-                          ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                          ? EditorState.set(previewStateA, {
+                              decorator: generateDecorator(search),
+                            })
                           : editorStateA
                         : search.length > 2
-                        ? EditorState.set(previewStateA, { decorator: generateDecorator(search) })
+                        ? EditorState.set(previewStateA, {
+                            decorator: generateDecorator(search),
+                          })
                         : previewStateA
                     }
                     blockRendererFn={customBlockRenderer}
                     customStyleMap={customStyleMap}
                     keyBindingFn={event => filterKeyBindingFn(event)}
-                    handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                    onChange={editorState => handleChange(editorState, editorKey)}
+                    handleKeyCommand={(command, editorState) =>
+                      handleKeyCommand(command, editorState, editorKey)
+                    }
+                    onChange={editorState =>
+                      handleChange(editorState, editorKey)
+                    }
                     textDirectionality={textDirectionalityA}
                     spellCheck={false}
-                    placeholder="Transcribe here…"
+                    placeholder='Transcribe here…'
                   />
                 </TranscriptText>
 
-                {visibleB ? (
+                {showTranslation ? (
                   <TranscriptText lang={languageB}>
                     <Editor
                       editorKey={`B${editorKey}`}
@@ -201,22 +226,32 @@ export default React.memo(
                       editorState={
                         isVisible
                           ? searchFocused
-                            ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
                             : search !== ''
-                            ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
                             : editorStateB
                           : search.length > 2
-                          ? EditorState.set(editorStateB, { decorator: generateDecorator(search) })
+                          ? EditorState.set(editorStateB, {
+                              decorator: generateDecorator(search),
+                            })
                           : editorStateB
                       }
                       blockRendererFn={customBlockRenderer}
                       customStyleMap={customStyleMap}
                       keyBindingFn={event => filterKeyBindingFn(event)}
-                      handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
-                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                      handleKeyCommand={(command, editorState) =>
+                        handleKeyCommand(command, editorState, editorKey)
+                      }
+                      onChange={editorState =>
+                        handleChange(editorState, editorKey, 'B')
+                      }
                       textDirectionality={textDirectionalityB}
                       spellCheck={false}
-                      placeholder="Translate here…"
+                      placeholder='Translate here…'
                     />
                   </TranscriptText>
                 ) : null}

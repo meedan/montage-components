@@ -125,13 +125,17 @@ class NameControls extends Component {
 
     const allowNewInstance = flow !== 'edit' && flow !== 'processing';
 
+    console.group('EntityControls');
+    console.log(this.props);
+    console.groupEnd();
+
     const read = (
       <Grid
-        alignItems="center"
+        alignItems='center'
         className={classes.Grid}
         container
-        justify="space-between"
-        wrap="nowrap"
+        justify='space-between'
+        wrap='nowrap'
       >
         <Grid item>
           <Tooltip title={entityName} enterDelay={750}>
@@ -139,7 +143,7 @@ class NameControls extends Component {
               className={classes.Typography}
               color={flow === 'reposition' ? 'primary' : 'textSecondary'}
               noWrap
-              variant="body2"
+              variant='body2'
             >
               {entityName}
             </Typography>
@@ -153,12 +157,12 @@ class NameControls extends Component {
                 className={classes.CircularProgress}
               />
             ) : (
-              <PopupState variant="popover" popupId="moreEntityControls">
+              <PopupState variant='popover' popupId='moreEntityControls'>
                 {popupState => (
                   <div>
                     <IconButton
                       {...bindHover(popupState)}
-                      aria-label="Options…"
+                      aria-label='Options…'
                     >
                       <MoreVertIcon />
                     </IconButton>

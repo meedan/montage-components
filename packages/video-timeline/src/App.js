@@ -103,7 +103,10 @@ class App extends Component {
   seekTo = payload => {
     const time = isNaN(payload) ? payload.seekTo : payload;
     if (this.idleSeekTo) cancelIdleCallback(this.idleSeekTo);
-    this.idleSeekTo = requestIdleCallback(() => window.internalPlayer.seekTo(time, true), { timeout: 500 });
+    this.idleSeekTo = requestIdleCallback(
+      () => window.internalPlayer.seekTo(time, true),
+      { timeout: 500 }
+    );
     if (payload.transport) this.props.update({ transport: payload.transport });
   };
 
@@ -137,21 +140,29 @@ class App extends Component {
             <Theatre>
               <div style={{ display: this.state.theatre ? 'block' : 'none' }}>
                 <Grid
-                  alignItems="center"
-                  alignContent="space-between"
+                  alignItems='center'
+                  alignContent='space-between'
                   container
-                  justify="center"
+                  justify='center'
                   spacing={0}
-                  wrap="nowrap"
+                  wrap='nowrap'
                 >
                   <Grid item sm={'auto'}>
                     <div style={{ width: '50px' }}>
-                      {data.prevVideo ? <Preview data={data.prevVideo} isPrev /> : null}
+                      {data.prevVideo ? (
+                        <Preview data={data.prevVideo} isPrev />
+                      ) : null}
                     </div>
                   </Grid>
                   <Grid item sm={12}>
                     <Paper square>
-                      <Grid container justify="center" alignItems="stretch" spacing={0} direction="row-reverse">
+                      <Grid
+                        container
+                        justify='center'
+                        alignItems='stretch'
+                        spacing={0}
+                        direction='row-reverse'
+                      >
                         <Grid item sm={4}>
                           <VideoMeta
                             allocation={['collectionId1', 'collectionId2']}
@@ -169,21 +180,34 @@ class App extends Component {
                                 id: 'collectionId3',
                               },
                             ]}
-                            onCreateCollection={str => console.log('onCreateCollection()', str)}
+                            onCreateCollection={str =>
+                              console.log('onCreateCollection()', str)
+                            }
                             onDelete={() => console.log('onDelete()')}
-                            onTriggerDelete={() => console.log('onTriggerDelete()')}
+                            onTriggerDelete={() =>
+                              console.log('onTriggerDelete()')
+                            }
                             onManageDupes={() => console.log('onManageDupes()')}
-                            onUpdateAllocation={arr => console.log('onUpdateAllocation()', arr)}
+                            onUpdateAllocation={arr =>
+                              console.log('onUpdateAllocation()', arr)
+                            }
                             currentTime={currentTime}
                             videoPlaces={data.videoPlaces}
                             pubDate={data.ytVideoData.snippet.publishedAt}
                             channelTitle={data.ytVideoData.snippet.channelTitle}
-                            videoViewCount={data.ytVideoData.statistics.viewCount}
+                            videoViewCount={
+                              data.ytVideoData.statistics.viewCount
+                            }
                             videoId={data.gdVideoData.id}
-                            videoDescription={data.ytVideoData.snippet.description}
+                            videoDescription={
+                              data.ytVideoData.snippet.description
+                            }
                             videoBackups={data.videoBackups}
                             onTriggerArchive={(payload, callback) => {
-                              console.log('onTriggerArchive, payload:', payload);
+                              console.log(
+                                'onTriggerArchive, payload:',
+                                payload
+                              );
                               setTimeout(() => {
                                 this.props.enqueueSnackbar('Video archived');
                                 callback();
@@ -192,15 +216,22 @@ class App extends Component {
                             onTriggerKeep={callback => {
                               console.log('onTriggerKeep');
                               setTimeout(() => {
-                                this.props.enqueueSnackbar('Syncing with Keep finished');
+                                this.props.enqueueSnackbar(
+                                  'Syncing with Keep finished'
+                                );
                                 callback();
                               }, 2000);
                             }}
                             onTriggerFavourite={(payload, callback) => {
-                              console.log('onTriggerFavourite, payload:', payload);
+                              console.log(
+                                'onTriggerFavourite, payload:',
+                                payload
+                              );
                               // ;
                               setTimeout(() => {
-                                this.props.enqueueSnackbar('Video added to favourites');
+                                this.props.enqueueSnackbar(
+                                  'Video added to favourites'
+                                );
                                 callback();
                               }, 1000);
                             }}
@@ -209,14 +240,20 @@ class App extends Component {
                               console.log(date);
                               callback();
                             }}
-                            recDateOverriden={data.gdVideoData.recorded_date_overridden}
+                            recDateOverriden={
+                              data.gdVideoData.recorded_date_overridden
+                            }
                             seekTo={payload => this.seekTo(payload)}
                           />
                         </Grid>
                         <Grid item sm={8}>
                           <MontagePlayer>
                             <MontagePlayerVideo>
-                              <Player data={data} player={player} onProgress={this.setCurrentTime} />
+                              <Player
+                                data={data}
+                                player={player}
+                                onProgress={this.setCurrentTime}
+                              />
                             </MontagePlayerVideo>
                             <MontagePlayerControls>
                               <Transport
@@ -234,14 +271,18 @@ class App extends Component {
                   </Grid>
                   <Grid item sm={'auto'}>
                     <div style={{ width: '50px' }}>
-                      {data.nextVideo ? <Preview data={data.nextVideo} isNext /> : null}
+                      {data.nextVideo ? (
+                        <Preview data={data.nextVideo} isNext />
+                      ) : null}
                     </div>
                   </Grid>
                 </Grid>
               </div>
 
               <TheatreToggle>
-                <Tooltip title={this.state.theatre ? 'Hide Theatre' : 'Show Theatre'}>
+                <Tooltip
+                  title={this.state.theatre ? 'Hide Theatre' : 'Show Theatre'}
+                >
                   <IconButton
                     onClick={() =>
                       this.setState(prevState => ({
@@ -250,18 +291,22 @@ class App extends Component {
                     }
                   >
                     {this.state.theatre ? (
-                      <UnfoldLessIcon aria-label="Hide Theatre"></UnfoldLessIcon>
+                      <UnfoldLessIcon aria-label='Hide Theatre'></UnfoldLessIcon>
                     ) : (
-                      <UnfoldMoreIcon aria-label="Show Theatre"></UnfoldMoreIcon>
+                      <UnfoldMoreIcon aria-label='Show Theatre'></UnfoldMoreIcon>
                     )}
                   </IconButton>
                 </Tooltip>
               </TheatreToggle>
 
-              <Tabs value={this.state.mode} centered classes={{ indicator: classes.TabsIndicator }}>
+              <Tabs
+                value={this.state.mode}
+                centered
+                classes={{ indicator: classes.TabsIndicator }}
+              >
                 <Tab
                   onClick={() => this.setState({ mode: 'transcript' })}
-                  label="Transcript"
+                  label='Transcript'
                   selected={this.state.mode === 'transcript'}
                   classes={{
                     root: classes.Tab,
@@ -272,7 +317,7 @@ class App extends Component {
                 <Tab
                   onClick={() => this.setState({ mode: 'timeline' })}
                   selected={this.state.mode === 'timeline'}
-                  label="Timeline"
+                  label='Timeline'
                   classes={{
                     root: classes.Tab,
                     selected: classes.TabSelected,
@@ -296,12 +341,13 @@ class App extends Component {
               ) : (
                 <Transcript
                   commentThreads={data.commentThreads}
-                  videoTags={data.videoTags}
-                  videoPlaces={data.videoPlaces}
-                  scrollingContainer={this.scrollingContainer}
-                  transcript={data.transcripts[0]}
                   currentTime={currentTime}
+                  data={data}
+                  scrollingContainer={this.scrollingContainer}
                   seekTo={this.seekTo}
+                  transcript={data.transcripts[0]}
+                  videoPlaces={data.videoPlaces}
+                  videoTags={data.videoTags}
                 />
               )}
             </BottomWrapper>

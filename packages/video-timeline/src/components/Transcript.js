@@ -9,10 +9,14 @@ import FloatingToolbar from './ofTranscript/FloatingToolbar';
 import Segment from './ofTranscript/Segment';
 import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
-import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
+import {
+  createEntityMap,
+  generateDecorator,
+  memoizedGetBlockTimings,
+} from './ofTranscript/transcriptUtils';
 
 const EMPTY_TRANSCRIPT = false;
-const EMPTY_TRANSLATION = true;
+const EMPTY_TRANSLATION = false;
 const MAX_OVERLAP = 5;
 
 const TranscriptRoot = styled.div`
@@ -35,7 +39,7 @@ class Transcript extends React.Component {
     search: '',
     searchFocused: false,
     editable: false,
-    // visibleB: true,
+    // showTranslation: true,
     selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
     translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
   };
@@ -46,19 +50,34 @@ class Transcript extends React.Component {
     const { transcript, commentThreads, videoTags, videoPlaces } = props;
 
     const customStyleMap = {
-      ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
-      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
-      ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
+      ...commentThreads.reduce(
+        (acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }),
+        []
+      ),
+      ...videoTags.reduce(
+        (acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }),
+        []
+      ),
+      ...videoPlaces.reduce(
+        (acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }),
+        []
+      ),
     };
     // console.log(customStyleMap);
 
     const tagInstances = videoTags.reduce((acc, entity) => {
-      const instances = entity.instances.map(instance => ({ ...instance, entity }));
+      const instances = entity.instances.map(instance => ({
+        ...instance,
+        entity,
+      }));
       return [...acc, ...instances];
     }, []);
 
     const placesInstances = videoPlaces.reduce((acc, entity) => {
-      const instances = entity.instances.map(instance => ({ ...instance, entity }));
+      const instances = entity.instances.map(instance => ({
+        ...instance,
+        entity,
+      }));
       return [...acc, ...instances];
     }, []);
 
@@ -91,38 +110,48 @@ class Transcript extends React.Component {
         const segmentEnd = segment[segment.length - 1].end;
 
         const comments = commentThreads.filter(
-          ({ start_seconds }) => segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd
+          ({ start_seconds }) =>
+            segmentStart <= start_seconds * 1e3 &&
+            start_seconds * 1e3 < segmentEnd
         );
 
         const tags = tagInstances.filter(
           ({ start_seconds, end_seconds }) =>
-            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
-            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+            (segmentStart <= start_seconds * 1e3 &&
+              start_seconds * 1e3 < segmentEnd) ||
+            (segmentStart < end_seconds * 1e3 &&
+              end_seconds * 1e3 <= segmentEnd)
         );
 
         const places = placesInstances.filter(
           ({ start_seconds, end_seconds }) =>
-            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
-            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+            (segmentStart <= start_seconds * 1e3 &&
+              start_seconds * 1e3 < segmentEnd) ||
+            (segmentStart < end_seconds * 1e3 &&
+              end_seconds * 1e3 <= segmentEnd)
         );
 
         const blocks = segment
-          .map(({ text, start, end, speaker, id, words, translation }, index) => ({
-            text,
-            key: id,
-            type: 'paragraph',
-            data: { start, end, speaker, id, translation },
-            // entityRanges: [],
-            entityRanges: words.map(({ start, end, text, offset, length, id }) => ({
-              start,
-              end,
+          .map(
+            ({ text, start, end, speaker, id, words, translation }, index) => ({
               text,
-              offset,
-              length,
               key: id,
-            })),
-            inlineStyleRanges: [],
-          }))
+              type: 'paragraph',
+              data: { start, end, speaker, id, translation },
+              // entityRanges: [],
+              entityRanges: words.map(
+                ({ start, end, text, offset, length, id }) => ({
+                  start,
+                  end,
+                  text,
+                  offset,
+                  length,
+                  key: id,
+                })
+              ),
+              inlineStyleRanges: [],
+            })
+          )
           .map(block => {
             const { start, end } = block.data;
 
@@ -130,7 +159,8 @@ class Transcript extends React.Component {
               ...tags
                 .filter(
                   ({ start_seconds, end_seconds }) =>
-                    (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                    (start <= start_seconds * 1e3 &&
+                      start_seconds * 1e3 < end) ||
                     (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
                 )
                 .map(({ start_seconds, end_seconds, entity }, index) => {
@@ -155,7 +185,8 @@ class Transcript extends React.Component {
               ...places
                 .filter(
                   ({ start_seconds, end_seconds }) =>
-                    (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                    (start <= start_seconds * 1e3 &&
+                      start_seconds * 1e3 < end) ||
                     (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
                 )
                 .map(({ start_seconds, end_seconds, entity }, index) => {
@@ -178,9 +209,14 @@ class Transcript extends React.Component {
                 })
                 .filter(r => !!r),
               ...comments
-                .filter(({ start_seconds }) => start <= start_seconds * 1e3 && start_seconds * 1e3 < end)
+                .filter(
+                  ({ start_seconds }) =>
+                    start <= start_seconds * 1e3 && start_seconds * 1e3 < end
+                )
                 .map(({ start_seconds, id }) => {
-                  const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start);
+                  const entity = block.entityRanges.find(
+                    ({ start, end }) => start_seconds * 1e3 <= start
+                  );
                   return entity
                     ? {
                         offset: entity.offset,
@@ -214,7 +250,12 @@ class Transcript extends React.Component {
             EditorState.createWithContent(
               convertFromRaw({
                 blocks: blocks.map(block => {
-                  return { ...block, text: block.data.translation, entityRanges: [], inlineStyleRanges: [] };
+                  return {
+                    ...block,
+                    text: block.data.translation,
+                    entityRanges: [],
+                    inlineStyleRanges: [],
+                  };
                 }),
                 entityMap: createEntityMap(blocks),
               }),
@@ -282,7 +323,9 @@ class Transcript extends React.Component {
             this.idlePlayhead = requestIdleCallback(
               () => {
                 if (playheadEntity) {
-                  const { key } = contentState.getEntity(playheadEntity).getData();
+                  const { key } = contentState
+                    .getEntity(playheadEntity)
+                    .getData();
                   this.setState({
                     playheadEditorKey: `editor-${blocks[0].key}`,
                     playheadBlockKey: playheadBlock.getKey(),
@@ -348,9 +391,11 @@ class Transcript extends React.Component {
       if (
         !collapsed &&
         (nodeType === document.TEXT_NODE ||
-          (nodeType === document.ELEMENT_NODE && classList.contains('public-DraftStyleDefault-block')))
+          (nodeType === document.ELEMENT_NODE &&
+            classList.contains('public-DraftStyleDefault-block')))
       ) {
-        const anchor = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
+        const anchor =
+          startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
         console.log(anchor);
         this.setState({ anchor });
         return;
@@ -360,14 +405,23 @@ class Transcript extends React.Component {
     }
 
     if (element.classList.contains('public-DraftStyleDefault-block')) return;
-    while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
+    while (
+      element &&
+      !element.hasAttribute('data-start') &&
+      element.parentElement
+    )
+      element = element.parentElement;
     if (element && element.hasAttribute('data-start')) {
       let t = parseFloat(element.getAttribute('data-start'));
       console.log('found data-start', t, element);
 
       if (element.classList.contains('BlockWrapper')) {
         element = event.nativeEvent.target.parentElement.previousSibling;
-        while (element && !element.hasAttribute('data-start') && element.previousSibling)
+        while (
+          element &&
+          !element.hasAttribute('data-start') &&
+          element.previousSibling
+        )
           element = element.previousSibling;
         if (element && element.hasAttribute('data-start')) {
           t = parseFloat(element.getAttribute('data-start'));
@@ -392,11 +446,16 @@ class Transcript extends React.Component {
   };
 
   handleChange = (editorState, key, suffix = 'A') => {
-    const editorIndex = this.state.segments.findIndex(editor => editor.key === key);
+    const editorIndex = this.state.segments.findIndex(
+      editor => editor.key === key
+    );
     const segment = this.state.segments[editorIndex];
 
     const contentChange =
-      editorState.getCurrentContent() === this.state.segments[editorIndex][`editorState${suffix}`].getCurrentContent()
+      editorState.getCurrentContent() ===
+      this.state.segments[editorIndex][
+        `editorState${suffix}`
+      ].getCurrentContent()
         ? null
         : editorState.getLastChangeType();
 
@@ -458,12 +517,20 @@ class Transcript extends React.Component {
   filterKeyBindingFn = event => {
     const { nativeEvent } = event;
 
-    if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && !nativeEvent.shiftKey) {
+    if (
+      nativeEvent.keyCode === 90 &&
+      nativeEvent.metaKey &&
+      !nativeEvent.shiftKey
+    ) {
       setTimeout(() => this.handleUndo(), 0);
       return 'undo';
     }
 
-    if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && nativeEvent.shiftKey) {
+    if (
+      nativeEvent.keyCode === 90 &&
+      nativeEvent.metaKey &&
+      nativeEvent.shiftKey
+    ) {
       setTimeout(() => this.handleRedo(), 0);
       return 'redo';
     }
@@ -495,7 +562,7 @@ class Transcript extends React.Component {
   };
   toggleTranslate = () => {
     this.setState(prevState => ({
-      visibleB: !prevState.visibleB,
+      showTranslation: !prevState.showTranslation,
     }));
   };
 
@@ -519,18 +586,28 @@ class Transcript extends React.Component {
       search,
       searchFocused,
       editable,
-      visibleB,
+      showTranslation,
       // selectedTranslation,
       customStyleMap,
     } = this.state;
     const { videoTags } = this.props;
-    const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
+    const {
+      customBlockRenderer,
+      filterKeyBindingFn,
+      handleKeyCommand,
+      handleChange,
+      higlightTag,
+    } = this;
+
+    console.group('Transcript.js');
+    console.log(this.props);
+    console.groupEnd();
 
     return (
       <TranscriptRoot>
         <TranscriptToolbar
           isEditable={this.state.editable}
-          isTranslated={this.state.visibleB}
+          isTranslated={this.state.showTranslation}
           onSearch={this.onSearch}
           onSearchBlur={() => this.handleSearchFocus(false)}
           onToggleEdit={this.toggleSourceEdit}
@@ -548,9 +625,14 @@ class Transcript extends React.Component {
           }}
         >
           {this.state.anchor ? (
-            <FloatingToolbar isVisible={this.state.anchor} onClose={() => this.setState({ anchor: null })} />
+            <FloatingToolbar
+              isVisible={this.state.anchor}
+              onClose={() => this.setState({ anchor: null })}
+              projectplaces={this.props.data.project.projectplaces}
+              projecttags={this.props.data.project.projecttags}
+            />
           ) : null}
-          <TranscriptWrapper stretch={this.state.visibleB}>
+          <TranscriptWrapper stretch={this.state.showTranslation}>
             <div
               ref={ref => {
                 this.transcriptRef = ref;
@@ -581,7 +663,9 @@ class Transcript extends React.Component {
               .filter(subset => subset.length > 0)
               .map(
                 subset => `
-                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.2 +
+                  .T-${subset.join(
+                    '.T-'
+                  )} { background-color: rgba(71, 123, 181, ${0.2 +
                   subset.length / MAX_OVERLAP}); }
                 `
               )
@@ -600,30 +684,39 @@ class Transcript extends React.Component {
                   : ''}
               </style>
 
-              {this.state.segments.map(({ key, editorStateA, editorStateB, comments, tags, places }) => (
-                <Segment
-                  {...{
-                    comments,
-                    customBlockRenderer,
-                    customStyleMap,
-                    editable,
-                    editorKey: key,
-                    editorStateA,
-                    editorStateB,
-                    filterKeyBindingFn,
-                    handleChange,
-                    handleKeyCommand,
-                    higlightTag,
-                    key,
-                    places,
-                    scrollingContainer: this.scrollingContainer,
-                    search,
-                    searchFocused,
-                    tags,
-                    visibleB,
-                  }}
-                />
-              ))}
+              {this.state.segments.map(
+                ({
+                  key,
+                  editorStateA,
+                  editorStateB,
+                  comments,
+                  tags,
+                  places,
+                }) => (
+                  <Segment
+                    {...{
+                      comments,
+                      customBlockRenderer,
+                      customStyleMap,
+                      editable,
+                      editorKey: key,
+                      editorStateA,
+                      editorStateB,
+                      filterKeyBindingFn,
+                      handleChange,
+                      handleKeyCommand,
+                      higlightTag,
+                      key,
+                      places,
+                      scrollingContainer: this.scrollingContainer,
+                      search,
+                      searchFocused,
+                      tags,
+                      showTranslation,
+                    }}
+                  />
+                )
+              )}
             </div>
           </TranscriptWrapper>
         </TranscriptChild>
