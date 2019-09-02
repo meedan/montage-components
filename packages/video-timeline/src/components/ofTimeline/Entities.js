@@ -24,8 +24,7 @@ function getName(entity, entityType) {
 }
 
 class Entities extends Component {
-  state = {
-  };
+  state = {};
 
   static getDerivedStateFromProps(props, state) {
     const { duration, skip, entityType, transport } = props;
@@ -69,17 +68,10 @@ class Entities extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.skip) return false;
 
-    if (
-      nextProps.currentTime !== this.props.currentTime &&
-      this.props.transport === this.props.entityType
-    ) {
-      const segment = this.state.segments.find(
-        ([i, s, e]) => s <= nextProps.currentTime && nextProps.currentTime < e
-      );
+    if (nextProps.currentTime !== this.props.currentTime && this.props.transport === this.props.entityType) {
+      const segment = this.state.segments.find(([i, s, e]) => s <= nextProps.currentTime && nextProps.currentTime < e);
       if (!segment) {
-        const nextSegment = this.state.segments.find(
-          ([i, s]) => nextProps.currentTime < s
-        );
+        const nextSegment = this.state.segments.find(([i, s]) => nextProps.currentTime < s);
         if (nextSegment) {
           this.props.seekTo({
             seekTo: nextSegment[1],
@@ -106,10 +98,7 @@ class Entities extends Component {
   handlePlay = () => {
     console.log(this.props.entityType);
 
-    const start =
-      this.state.segments && this.state.segments.length > 0
-        ? this.state.segments[0][1]
-        : 0;
+    const start = this.state.segments && this.state.segments.length > 0 ? this.state.segments[0][1] : 0;
     this.props.seekTo({ seekTo: start, transport: this.props.entityType });
     this.props.play({ transport: this.props.entityType });
   };
@@ -125,16 +114,9 @@ class Entities extends Component {
       const ti = nextEntities.findIndex(t => t.id === id);
       const t = nextEntities[ti];
 
-      const i = t.instances.find(
-        i => i.start_seconds <= currentTime && currentTime < i.end_seconds
-      );
+      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
       if (i) {
-        console.log(
-          'cannot make overlapping instances',
-          currentTime,
-          i.start_seconds,
-          i.end_seconds
-        );
+        console.log('cannot make overlapping instances', currentTime, i.start_seconds, i.end_seconds);
       } else {
         t.instances.push({
           id: Math.random()
@@ -208,6 +190,7 @@ class Entities extends Component {
   };
 
   updateEntity = (id, name, payload) => {
+    console.log(id, name, payload);
     const { entityType } = this.props;
 
     const entities = produce(this.props.entities, nextEntities => {
@@ -240,16 +223,12 @@ class Entities extends Component {
   duplicateAsClip = (entityId, instanceId) => {
     const { entities, clips, entityType } = this.props;
     const entity = entities.find(entity => entity.id === entityId);
-    const instance = entity.instances.find(
-      instance => instance.id === instanceId
-    );
+    const instance = entity.instances.find(instance => instance.id === instanceId);
 
     console.log(entity, instance);
 
     const videoClips = produce(clips, nextClips => {
-      let clip = nextClips.find(
-        c => c.project_clip.name === getName(entity, entityType)
-      );
+      let clip = nextClips.find(c => c.project_clip.name === getName(entity, entityType));
 
       if (!clip) {
         clip = {
@@ -286,24 +265,15 @@ class Entities extends Component {
 
         const overlappingInstance = clip.instances.find(
           i =>
-            (j.start_seconds <= i.start_seconds &&
-              i.start_seconds <= j.end_seconds) ||
-            (j.start_seconds <= i.end_seconds &&
-              i.end_seconds <= j.end_seconds) ||
-            (i.start_seconds <= j.start_seconds &&
-              j.start_seconds <= i.end_seconds) ||
+            (j.start_seconds <= i.start_seconds && i.start_seconds <= j.end_seconds) ||
+            (j.start_seconds <= i.end_seconds && i.end_seconds <= j.end_seconds) ||
+            (i.start_seconds <= j.start_seconds && j.start_seconds <= i.end_seconds) ||
             (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
         );
 
         if (overlappingInstance) {
-          overlappingInstance.start_seconds = Math.min(
-            overlappingInstance.start_seconds,
-            j.start_seconds
-          );
-          overlappingInstance.end_seconds = Math.max(
-            overlappingInstance.end_seconds,
-            j.end_seconds
-          );
+          overlappingInstance.start_seconds = Math.min(overlappingInstance.start_seconds, j.start_seconds);
+          overlappingInstance.end_seconds = Math.max(overlappingInstance.end_seconds, j.end_seconds);
         } else {
           clip.instances.push(j);
         }
@@ -325,6 +295,7 @@ class Entities extends Component {
   };
 
   updateInstance = (entityId, instanceId, { start_seconds, end_seconds }) => {
+    console.log((entityId, instanceId, { start_seconds, end_seconds }));
     const entities = produce(this.props.entities, nextEntities => {
       const ti = nextEntities.findIndex(t => t.id === entityId);
       const i = nextEntities[ti].instances.find(i => i.id === instanceId);
@@ -335,13 +306,7 @@ class Entities extends Component {
   };
 
   render() {
-    const {
-      entities,
-      duration,
-      suggestions,
-      entityType,
-      transport,
-    } = this.props;
+    const { entities, duration, suggestions, entityType, transport } = this.props;
     const { playlist } = transport === entityType;
 
     return (
@@ -351,11 +316,7 @@ class Entities extends Component {
         actions={
           <>
             <Tooltip title={playlist ? 'Pause all' : 'Play all'}>
-              <IconButton
-                onClick={() =>
-                  playlist ? this.handlePause() : this.handlePlay()
-                }
-              >
+              <IconButton onClick={() => (playlist ? this.handlePause() : this.handlePlay())}>
                 <PlayArrowIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -397,40 +358,23 @@ class Entities extends Component {
                       startNewInstance={() => this.startNewInstance(entity.id)}
                       stopNewEntity={this.stopNewEntity}
                       suggestions={suggestions}
-                      updateEntity={(name, payload) =>
-                        this.updateEntity(entity.id, name, payload)
-                      }
+                      updateEntity={(name, payload) => this.updateEntity(entity.id, name, payload)}
                     />
                   }
                   rightColContent={
                     <RangeSlider
                       clipInstance={
-                        entityType !== 'clip'
-                          ? instanceId =>
-                              this.duplicateAsClip(entity.id, instanceId)
-                          : null
+                        entityType !== 'clip' ? instanceId => this.duplicateAsClip(entity.id, instanceId) : null
                       }
-                      checkInstance={
-                        entityType === 'clip'
-                          ? instanceId => this.checkInstance(instanceId)
-                          : null
-                      }
-                      extendInstance={instanceId =>
-                        this.extendInstance(entity.id, instanceId)
-                      }
+                      checkInstance={entityType === 'clip' ? instanceId => this.checkInstance(instanceId) : null}
+                      extendInstance={instanceId => this.extendInstance(entity.id, instanceId)}
                       duration={duration}
                       instances={instances}
-                      updateInstance={(instanceId, payload) =>
-                        this.updateInstance(entity.id, instanceId, payload)
-                      }
-                      deleteInstance={instanceId =>
-                        this.deleteInstance(entity.id, instanceId)
-                      }
+                      updateInstance={(instanceId, payload) => this.updateInstance(entity.id, instanceId, payload)}
+                      deleteInstance={instanceId => this.deleteInstance(entity.id, instanceId)}
                       onDrag={newTime => this.props.onChange(newTime)}
                       onDragEnd={newTime => this.props.onAfterChange(newTime)}
-                      onDragStart={newTime =>
-                        this.props.onBeforeChange(newTime)
-                      }
+                      onDragStart={newTime => this.props.onBeforeChange(newTime)}
                     />
                   }
                 />
@@ -450,12 +394,7 @@ const recomputeSegments = (entities, duration) => {
     .sort((j, i) => j.start_seconds - i.start_seconds);
 
   const events = [
-    ...new Set(
-      instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [
-        0,
-        duration,
-      ])
-    ),
+    ...new Set(instances.reduce((acc, i) => [...acc, i.start_seconds, i.end_seconds], [0, duration])),
   ].sort((j, i) => j - i);
 
   const segments = events
@@ -466,13 +405,7 @@ const recomputeSegments = (entities, duration) => {
       },
       [0]
     )
-    .reduce(
-      (acc, s, i) =>
-        !!instances.find(j => j.start_seconds <= s && s < j.end_seconds)
-          ? [...acc, i]
-          : acc,
-      []
-    )
+    .reduce((acc, s, i) => (!!instances.find(j => j.start_seconds <= s && s < j.end_seconds) ? [...acc, i] : acc), [])
     .map(i => [i, events[i - 1], events[i]]);
 
   return segments;

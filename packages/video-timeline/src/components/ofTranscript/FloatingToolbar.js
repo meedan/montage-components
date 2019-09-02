@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import produce from 'immer';
+import { connect } from 'react-redux';
+
 import Popover from '@material-ui/core/Popover';
 
 import EntityControls from '../ofTimeline/ofEntities/EntityControls';
@@ -9,6 +12,8 @@ import PlaceIcon from '@material-ui/icons/Place';
 import LabelIcon from '@material-ui/icons/Label';
 import CommentIcon from '@material-ui/icons/Comment';
 import { withStyles } from '@material-ui/core/styles';
+
+import { update } from '../../reducers/data';
 
 const styles = theme => ({
   Popover: {
@@ -22,6 +27,32 @@ class FloatingToolbar extends Component {
       isCreating: null,
     };
   }
+
+  updateEntity = (name, payload) => {
+    const entityType = this.state.isCreating;
+    const entitiesyKey = entityType === 'tag' ? 'videoTags' : 'videoPlaces';
+
+    const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
+      nextEntities.splice(0, 0, {
+        [entityType === 'tag' ? 'project_tag' : 'project_location']: { name },
+        id: Math.random()
+          .toString(36)
+          .substring(2),
+        instances: [
+          {
+            id: Math.random()
+              .toString(36)
+              .substring(2),
+            start_seconds: this.props.start,
+            end_seconds: this.props.end,
+          },
+        ],
+      });
+    });
+
+    this.props.update({ [entitiesyKey]: entities });
+  };
+
   render() {
     const { classes } = this.props;
     const { isCreating } = this.state;
@@ -48,23 +79,19 @@ class FloatingToolbar extends Component {
       >
         {!isCreating ? (
           <>
-            <Tooltip title='Add tag'>
+            <Tooltip title="Add tag">
               <IconButton onClick={() => this.setState({ isCreating: 'tag' })}>
-                <LabelIcon fontSize='small' />
+                <LabelIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title='Add place'>
-              <IconButton
-                onClick={() => this.setState({ isCreating: 'place' })}
-              >
-                <PlaceIcon fontSize='small' />
+            <Tooltip title="Add place">
+              <IconButton onClick={() => this.setState({ isCreating: 'place' })}>
+                <PlaceIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title='Add comment'>
-              <IconButton
-                onClick={() => this.setState({ isCreating: 'comment' })}
-              >
-                <CommentIcon fontSize='small' />
+            <Tooltip title="Add comment">
+              <IconButton onClick={() => this.setState({ isCreating: 'comment' })}>
+                <CommentIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           </>
@@ -78,12 +105,8 @@ class FloatingToolbar extends Component {
             isCreating={true}
             // startNewInstance={() => this.startNewInstance(entity.id)}
             stopNewEntity={() => this.setState({ isCreating: null })}
-            suggestions={
-              isCreating === 'place'
-                ? this.props.projectplaces
-                : this.props.projecttags
-            }
-            updateEntity={(name, payload) => console.log(name, payload)}
+            suggestions={isCreating === 'place' ? this.props.projectplaces : this.props.projecttags}
+            updateEntity={this.updateEntity}
           />
         ) : null}
         {isCreating === 'comment' ? <>Nu comment thread</> : null}
@@ -92,4 +115,8 @@ class FloatingToolbar extends Component {
   }
 }
 
-export default withStyles(styles)(FloatingToolbar);
+// export default withStyles(styles)(FloatingToolbar);
+export default connect(
+  null,
+  { update }
+)(withStyles(styles)(FloatingToolbar));

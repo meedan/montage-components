@@ -55,8 +55,7 @@ class NameControls extends Component {
     this.state = {
       flow: null,
     };
-    if (this.props.entityType === 'location')
-      this.anchorRef = React.createRef();
+    if (this.props.entityType === 'location') this.anchorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -83,12 +82,14 @@ class NameControls extends Component {
 
   onReposition = marker => {
     this.setState({ marker });
+    console.log('updateEntity reposition', this.props.entityName, this.state.marker);
     this.props.updateEntity(this.props.entityName, marker);
   };
 
   onRename = name => {
     this.setState({ flow: 'processing' });
     const { entityType, isCreating } = this.props;
+    console.log('updateEntity rename', name, this.state.marker);
     this.props.updateEntity(name);
     console.log('onRename()', { isCreating });
     if (isCreating && entityType === 'location') {
@@ -99,6 +100,7 @@ class NameControls extends Component {
   };
   onUpdate = name => {
     this.setState({ flow: 'processing' });
+    console.log('updateEntity', name, this.state.marker);
     this.props.updateEntity(name, this.state.marker);
     setTimeout(() => this.setState({ flow: null }), 1000);
   };
@@ -125,25 +127,19 @@ class NameControls extends Component {
 
     const allowNewInstance = flow !== 'edit' && flow !== 'processing';
 
-    console.group('EntityControls');
-    console.log(this.props);
-    console.groupEnd();
+    // console.group('EntityControls');
+    // console.log(this.props);
+    // console.groupEnd();
 
     const read = (
-      <Grid
-        alignItems='center'
-        className={classes.Grid}
-        container
-        justify='space-between'
-        wrap='nowrap'
-      >
+      <Grid alignItems="center" className={classes.Grid} container justify="space-between" wrap="nowrap">
         <Grid item>
           <Tooltip title={entityName} enterDelay={750}>
             <Typography
               className={classes.Typography}
               color={flow === 'reposition' ? 'primary' : 'textSecondary'}
               noWrap
-              variant='body2'
+              variant="body2"
             >
               {entityName}
             </Typography>
@@ -152,18 +148,12 @@ class NameControls extends Component {
         <Grid item>
           <ElementAdornment onClick={e => e.stopPropagation()}>
             {flow === 'processing' ? (
-              <CircularProgress
-                size={18}
-                className={classes.CircularProgress}
-              />
+              <CircularProgress size={18} className={classes.CircularProgress} />
             ) : (
-              <PopupState variant='popover' popupId='moreEntityControls'>
+              <PopupState variant="popover" popupId="moreEntityControls">
                 {popupState => (
                   <div>
-                    <IconButton
-                      {...bindHover(popupState)}
-                      aria-label='Options…'
-                    >
+                    <IconButton {...bindHover(popupState)} aria-label="Options…">
                       <MoreVertIcon />
                     </IconButton>
                     <Popover
@@ -183,10 +173,7 @@ class NameControls extends Component {
                           <ListItemText>Rename</ListItemText>
                         </ListItem>
                         {entityType === 'location' ? (
-                          <ListItem
-                            button
-                            onClick={() => this.startReposition()}
-                          >
+                          <ListItem button onClick={() => this.startReposition()}>
                             <ListItemText>Reposition</ListItemText>
                           </ListItem>
                         ) : null}
