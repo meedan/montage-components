@@ -17,7 +17,7 @@ const TranscriptWrapper = styled.div`
     -webkit-font-smoothing: antialiased;
     content: '';
     font-family: 'iconfont' !important;
-    font-size: 16px;
+    font-size: 17px;
     speak: none;
   }
 `;
