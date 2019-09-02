@@ -32,25 +32,61 @@ class FloatingToolbar extends Component {
     const entityType = this.state.isCreating;
     const entitiesyKey = entityType === 'tag' ? 'videoTags' : 'videoPlaces';
 
-    const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
-      nextEntities.splice(0, 0, {
-        [entityType === 'tag' ? 'project_tag' : 'project_location']: { name },
-        id: Math.random()
-          .toString(36)
-          .substring(2),
-        instances: [
-          {
-            id: Math.random()
-              .toString(36)
-              .substring(2),
-            start_seconds: this.props.start,
-            end_seconds: this.props.end,
-          },
-        ],
-      });
-    });
+    const entity = (entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces).find(
+      e => e[entityType === 'tag' ? 'project_tag' : 'project_location'].name === name
+    );
 
-    this.props.update({ [entitiesyKey]: entities });
+    if (entity) {
+      const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
+        const ti = nextEntities.findIndex(t => t.id === entity.id);
+        const t = nextEntities[ti];
+
+        let { start, end } = this.props;
+        const i = t.instances.filter(
+          i => (i.start_seconds <= start && start < i.end_seconds) || (i.start_seconds < end && end <= i.end_seconds)
+        );
+
+        if (i.length > 0) {
+          console.log('overlapping instances adjusting from', start, end);
+          start = Math.min(...[start, ...i.map(({ start_seconds }) => start_seconds)]);
+          end = Math.max(...[end, ...i.map(({ end_seconds }) => end_seconds)]);
+          console.log('to', start, end);
+
+          t.instances = t.instances.reduce((acc, ii) => (i.includes(ii) ? acc : [...acc, ii]), []);
+        }
+        // } else {
+        t.instances.push({
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          start_seconds: start,
+          end_seconds: end,
+        });
+        // }
+      });
+
+      this.props.update({ [entitiesyKey]: entities });
+    } else {
+      const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
+        nextEntities.splice(0, 0, {
+          [entityType === 'tag' ? 'project_tag' : 'project_location']: { name },
+          id: Math.random()
+            .toString(36)
+            .substring(2),
+          instances: [
+            {
+              id: Math.random()
+                .toString(36)
+                .substring(2),
+              start_seconds: this.props.start,
+              end_seconds: this.props.end,
+            },
+          ],
+        });
+      });
+
+      this.props.update({ [entitiesyKey]: entities });
+    }
   };
 
   render() {
