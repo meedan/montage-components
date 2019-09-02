@@ -31,45 +31,43 @@ class FloatingToolbar extends Component {
   updateEntity = (name, payload) => {
     const entityType = this.state.isCreating;
     const entitiesyKey = entityType === 'tag' ? 'videoTags' : 'videoPlaces';
+    const entityName = entityType === 'tag' ? 'project_tag' : 'project_location';
+    const currentEntitites = entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces;
 
-    const entity = (entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces).find(
-      e => e[entityType === 'tag' ? 'project_tag' : 'project_location'].name === name
-    );
+    const existingEntity = currentEntitites.find(e => e[entityName].name === name);
 
-    if (entity) {
-      const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
-        const ti = nextEntities.findIndex(t => t.id === entity.id);
-        const t = nextEntities[ti];
+    if (existingEntity) {
+      const entities = produce(currentEntitites, nextEntities => {
+        const entity = nextEntities.find(e => e.id === existingEntity.id);
 
         let { start, end } = this.props;
-        const i = t.instances.filter(
+        const overlaps = entity.instances.filter(
           i => (i.start_seconds <= start && start < i.end_seconds) || (i.start_seconds < end && end <= i.end_seconds)
         );
 
-        if (i.length > 0) {
+        if (overlaps.length > 0) {
           console.log('overlapping instances adjusting from', start, end);
-          start = Math.min(...[start, ...i.map(({ start_seconds }) => start_seconds)]);
-          end = Math.max(...[end, ...i.map(({ end_seconds }) => end_seconds)]);
+          start = Math.min(...[start, ...overlaps.map(({ start_seconds }) => start_seconds)]);
+          end = Math.max(...[end, ...overlaps.map(({ end_seconds }) => end_seconds)]);
           console.log('to', start, end);
 
-          t.instances = t.instances.reduce((acc, ii) => (i.includes(ii) ? acc : [...acc, ii]), []);
+          entity.instances = entity.instances.reduce((acc, ii) => (overlaps.includes(ii) ? acc : [...acc, ii]), []);
         }
-        // } else {
-        t.instances.push({
+
+        entity.instances.push({
           id: Math.random()
             .toString(36)
             .substring(2),
           start_seconds: start,
           end_seconds: end,
         });
-        // }
       });
 
       this.props.update({ [entitiesyKey]: entities });
     } else {
-      const entities = produce(entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces, nextEntities => {
+      const entities = produce(currentEntitites, nextEntities => {
         nextEntities.splice(0, 0, {
-          [entityType === 'tag' ? 'project_tag' : 'project_location']: { name },
+          [entityName]: { name },
           id: Math.random()
             .toString(36)
             .substring(2),
