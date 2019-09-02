@@ -33,6 +33,7 @@ const LegendContainer = styled.div`
   margin-top: 10px;
   padding-left: 24px;
   position: relative;
+  user-select: none;
 `;
 const LegendItem = styled.div`
   cursor: pointer;
