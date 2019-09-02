@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+/** @format */
 
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DeleteIcon from '@material-ui/icons/Delete';
-import grey from '@material-ui/core/colors/grey';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import React, { useState } from 'react'
 
-import Comment from './Comment';
-import CommentForm from './CommentForm';
+import { withStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import DeleteIcon from '@material-ui/icons/Delete'
+import grey from '@material-ui/core/colors/grey'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
 
-import formatTime from '../formatTime';
+import Comment from './Comment'
+import CommentForm from './CommentForm'
+
+import formatTime from '../formatTime'
 
 const styles = {
   List: {
@@ -28,36 +30,29 @@ const styles = {
   buttonProgress: {
     marginRight: 8,
   },
-};
+}
 
 function CommentThread(props) {
-  const { classes, commentData, closePopup, isActionable } = props;
-  const {
-    c_pretty_created_date,
-    replies,
-    start_seconds,
-    text,
-    user,
-    id,
-  } = commentData;
-  const threadId = id;
+  const { classes, commentData, closePopup, isActionable } = props
+  const { c_pretty_created_date, replies, start_seconds, text, user, id } = commentData
+  const threadId = id
 
-  const [isProcessing, setProcessingStatus] = useState(false);
+  const [isProcessing, setProcessingStatus] = useState(false)
 
   const handleThreadReply = comment => {
     // TODO: wire adding new comments here, also log user data
-    console.group('handleThreadReply()');
-    console.log({ comment });
-    console.groupEnd();
-  };
+    console.group('handleThreadReply()')
+    console.log({ comment })
+    console.groupEnd()
+  }
   const handleThreadDelete = comment => {
     // TODO: wire deleting comment thread here
-    console.group('handleThreadDelete()');
-    console.log({ threadId });
-    console.groupEnd();
-    setProcessingStatus(true);
-    setTimeout(() => closePopup(), 1000);
-  };
+    console.group('handleThreadDelete()')
+    console.log({ threadId })
+    console.groupEnd()
+    setProcessingStatus(true)
+    setTimeout(() => closePopup(), 1000)
+  }
 
   return (
     <List
@@ -74,15 +69,9 @@ function CommentThread(props) {
             <ListItemSecondaryAction>
               {isActionable ? (
                 isProcessing ? (
-                  <CircularProgress
-                    size={16}
-                    className={classes.buttonProgress}
-                  />
+                  <CircularProgress size={16} className={classes.buttonProgress} />
                 ) : (
-                  <IconButton
-                    aria-label="Delete thread"
-                    onClick={handleThreadDelete}
-                  >
+                  <IconButton aria-label="Delete thread" onClick={handleThreadDelete}>
                     <Tooltip title="Delete thread">
                       <DeleteIcon fontSize="small" />
                     </Tooltip>
@@ -93,8 +82,7 @@ function CommentThread(props) {
           </ListItem>
         </>
       }
-      className={classes.List}
-    >
+      className={classes.List}>
       <Comment
         avatar={user.profile_img_url}
         date={c_pretty_created_date}
@@ -118,7 +106,7 @@ function CommentThread(props) {
             text={reply.text}
             threadId={reply.thread_id}
           />
-        );
+        )
       })}
       {isActionable ? (
         <ListItem>
@@ -128,7 +116,7 @@ function CommentThread(props) {
         </ListItem>
       ) : null}
     </List>
-  );
+  )
 }
 
-export default withStyles(styles)(CommentThread);
+export default withStyles(styles)(CommentThread)

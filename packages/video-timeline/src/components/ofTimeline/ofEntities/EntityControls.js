@@ -1,22 +1,24 @@
-import Popover from 'material-ui-popup-state/HoverPopover';
-import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
-import React, { Component } from 'react';
-import styled from 'styled-components';
+/** @format */
 
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import Popover from 'material-ui-popup-state/HoverPopover'
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state'
+import React, { Component } from 'react'
+import styled from 'styled-components'
 
-import EntityDeleteModal from './EntityDeleteModal';
-import EntityMapPopover from './EntityMapPopover';
-import EntityNameField from './EntityNameField';
+import { withStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+
+import EntityDeleteModal from './EntityDeleteModal'
+import EntityMapPopover from './EntityMapPopover'
+import EntityNameField from './EntityNameField'
 
 const styles = {
   Grid: {
@@ -31,11 +33,11 @@ const styles = {
     position: 'relative',
     left: '-8px',
   },
-};
+}
 
 const ElementAdornment = styled.div`
   visibility: hidden;
-`;
+`
 const Element = styled.div`
   cursor: pointer;
   width: 224px;
@@ -47,70 +49,70 @@ const Element = styled.div`
     }
   `
       : ''};
-`;
+`
 
 class NameControls extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       flow: null,
-    };
-    if (this.props.entityType === 'location') this.anchorRef = React.createRef();
+    }
+    if (this.props.entityType === 'location') this.anchorRef = React.createRef()
   }
 
   componentDidMount() {
-    this.setState({ flow: this.props.isCreating ? 'edit' : null });
+    this.setState({ flow: this.props.isCreating ? 'edit' : null })
   }
 
   startHover = () => {
-    const { flow } = this.state;
-    if (flow) return null;
-    this.setState({ flow: 'hover' });
-  };
+    const { flow } = this.state
+    if (flow) return null
+    this.setState({ flow: 'hover' })
+  }
   startRename = () => {
-    this.setState({ flow: 'edit' });
-  };
+    this.setState({ flow: 'edit' })
+  }
   startDelete = () => {
-    this.setState({ flow: 'delete' });
-  };
+    this.setState({ flow: 'delete' })
+  }
   startReposition = () => {
-    this.setState({ flow: 'reposition' });
-  };
+    this.setState({ flow: 'reposition' })
+  }
   stop = () => {
-    this.setState({ flow: null });
-  };
+    this.setState({ flow: null })
+  }
 
   onReposition = marker => {
-    this.setState({ marker });
-    console.log('updateEntity reposition', this.props.entityName, this.state.marker);
-    this.props.updateEntity(this.props.entityName, marker);
-  };
+    this.setState({ marker })
+    console.log('updateEntity reposition', this.props.entityName, this.state.marker)
+    this.props.updateEntity(this.props.entityName, marker)
+  }
 
   onRename = name => {
-    this.setState({ flow: 'processing' });
-    const { entityType, isCreating } = this.props;
-    console.log('updateEntity rename', name, this.state.marker);
-    this.props.updateEntity(name);
-    console.log('onRename()', { isCreating });
+    this.setState({ flow: 'processing' })
+    const { entityType, isCreating } = this.props
+    console.log('updateEntity rename', name, this.state.marker)
+    this.props.updateEntity(name)
+    console.log('onRename()', { isCreating })
     if (isCreating && entityType === 'location') {
-      this.startReposition();
+      this.startReposition()
     } else {
-      setTimeout(() => this.setState({ flow: null }), 1000);
+      setTimeout(() => this.setState({ flow: null }), 1000)
     }
-  };
+  }
   onUpdate = name => {
-    this.setState({ flow: 'processing' });
-    console.log('updateEntity', name, this.state.marker);
-    this.props.updateEntity(name, this.state.marker);
-    setTimeout(() => this.setState({ flow: null }), 1000);
-  };
+    this.setState({ flow: 'processing' })
+    console.log('updateEntity', name, this.state.marker)
+    this.props.updateEntity(name, this.state.marker)
+    setTimeout(() => this.setState({ flow: null }), 1000)
+  }
   onDelete = name => {
-    this.setState({ flow: 'processing' });
+    this.setState({ flow: 'processing' })
     setTimeout(() => {
-      this.props.deleteEntity();
-      this.setState({ flow: null });
-    }, 1000);
-  };
+      this.props.deleteEntity()
+      this.setState({ flow: null })
+    }, 1000)
+  }
 
   render() {
     const {
@@ -122,10 +124,10 @@ class NameControls extends Component {
       startNewInstance,
       stopNewEntity,
       suggestions,
-    } = this.props;
-    const { flow } = this.state;
+    } = this.props
+    const { flow } = this.state
 
-    const allowNewInstance = flow !== 'edit' && flow !== 'processing';
+    const allowNewInstance = flow !== 'edit' && flow !== 'processing'
 
     // console.group('EntityControls');
     // console.log(this.props);
@@ -139,8 +141,7 @@ class NameControls extends Component {
               className={classes.Typography}
               color={flow === 'reposition' ? 'primary' : 'textSecondary'}
               noWrap
-              variant="body2"
-            >
+              variant="body2">
               {entityName}
             </Typography>
           </Tooltip>
@@ -166,8 +167,7 @@ class NameControls extends Component {
                         vertical: 'top',
                         horizontal: 'center',
                       }}
-                      disableRestoreFocus
-                    >
+                      disableRestoreFocus>
                       <List dense onClick={popupState.close}>
                         <ListItem button onClick={() => this.startRename()}>
                           <ListItemText>Rename</ListItemText>
@@ -189,7 +189,7 @@ class NameControls extends Component {
           </ElementAdornment>
         </Grid>
       </Grid>
-    );
+    )
     const edit = (
       <EntityNameField
         name={entityName}
@@ -197,7 +197,7 @@ class NameControls extends Component {
         onSubmit={this.onRename}
         suggestions={suggestions}
       />
-    );
+    )
 
     return (
       <Element
@@ -205,8 +205,7 @@ class NameControls extends Component {
         onClick={allowNewInstance ? startNewInstance : null}
         onMouseEnter={this.startHover}
         onMouseLeave={flow === 'hover' ? this.stop : null}
-        ref={this.anchorRef}
-      >
+        ref={this.anchorRef}>
         {flow !== 'edit' ? read : edit}
         {flow === 'reposition' ? (
           <EntityMapPopover
@@ -230,8 +229,8 @@ class NameControls extends Component {
           />
         ) : null}
       </Element>
-    );
+    )
   }
 }
 
-export default withStyles(styles)(NameControls);
+export default withStyles(styles)(NameControls)

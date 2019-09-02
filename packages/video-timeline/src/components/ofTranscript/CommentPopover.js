@@ -1,32 +1,31 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+/** @format */
 
-import Popover from '@material-ui/core/Popover';
-import { withStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import { update } from '../../reducers/data';
+import Popover from '@material-ui/core/Popover'
+import { withStyles } from '@material-ui/core/styles'
 
-import CommentThread from '../ofTimeline/ofComments/CommentThread';
+import { update } from '../../reducers/data'
+
+import CommentThread from '../ofTimeline/ofComments/CommentThread'
 
 const styles = theme => ({
   Popover: {
     overflow: 'visible',
   },
-});
+})
 class CommentPopover extends Component {
   constructor(props) {
-    super(props);
-    this.state = {};
+    super(props)
+    this.state = {}
   }
 
   render() {
-    const { classes, commentData } = this.props;
-
-    console.log(commentData);
-
+    const { classes, commentData } = this.props
     return (
       <Popover
-        id='commentPopover'
+        id="commentPopover"
         open={!!this.props.isVisible}
         anchorEl={this.props.isVisible}
         onClose={this.props.onClose}
@@ -40,15 +39,18 @@ class CommentPopover extends Component {
         }}
         PaperProps={{
           className: classes.Popover,
-        }}
-      >
-        <CommentThread commentData={commentData} />
+        }}>
+        <CommentThread
+          closePopup={this.props.onClose}
+          commentData={commentData}
+          isActionable={this.props.isActionable}
+        />
       </Popover>
-    );
+    )
   }
 }
 
 export default connect(
   null,
   { update }
-)(withStyles(styles)(CommentPopover));
+)(withStyles(styles)(CommentPopover))
