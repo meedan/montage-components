@@ -369,10 +369,10 @@ class Transcript extends React.Component {
 
   handleClick = event => {
     let element = event.nativeEvent.target
-    // console.log('click', element);
+    console.log('click', element)
 
     const selection = window.getSelection()
-    if (selection.rangeCount > 0) {
+    if (selection.rangeCount > 0 && !this.state.editable) {
       const {
         collapsed,
         commonAncestorContainer: { nodeType, classList },
