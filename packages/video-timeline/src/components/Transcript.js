@@ -680,10 +680,10 @@ class Transcript extends React.Component {
       higlightTag,
     } = this;
 
-    console.group('Transcript.js');
-    console.log(this.state.comment);
-    console.log(this.state.commentAnchor);
-    console.groupEnd();
+    // console.group('Transcript.js');
+    // console.log(this.state.comment);
+    // console.log(this.state.commentAnchor);
+    // console.groupEnd();
 
     return (
       <TranscriptRoot>
@@ -718,13 +718,14 @@ class Transcript extends React.Component {
               videoPlaces={this.props.data.videoPlaces}
             />
           ) : null}
-          {this.state.commentAnchor ? (
+          {this.state.comment && this.state.commentAnchor ? (
             <CommentPopover
               isVisible={this.state.commentAnchor}
-              onClose={() => this.setState({ commentAnchor: null })}
-            >
-              Hello
-            </CommentPopover>
+              onClose={() =>
+                this.setState({ comment: null, commentAnchor: null })
+              }
+              commentData={this.state.comment}
+            ></CommentPopover>
           ) : null}
           <TranscriptWrapper stretch={this.state.showTranslation}>
             <div
