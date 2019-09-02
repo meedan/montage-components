@@ -32,6 +32,21 @@ const TranscriptChild = styled.div`
 
 class Transcript extends React.Component {
   state = {
+    transcript: {},
+    segments: [
+      {
+        start: 0,
+        end: 0,
+        editorStateA: EditorState.createEmpty(),
+        key: 'editor-ZERO',
+        editorStateB: EditorState.createEmpty(),
+        customStyleMap: [],
+        comments: [],
+        tags: [],
+        places: [],
+      },
+    ],
+    customStyleMap: [],
     search: '',
     searchFocused: false,
     editable: false,
@@ -42,209 +57,18 @@ class Transcript extends React.Component {
   past = [];
   future = [];
 
-  static getDerivedStateFromProps(props, state) {
-    const { transcript, commentThreads, videoTags, videoPlaces } = props;
-
-    const customStyleMap = {
-      ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
-      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
-      ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
-    };
-    // console.log(customStyleMap);
-
-    const tagInstances = videoTags.reduce((acc, entity) => {
-      const instances = entity.instances.map(instance => ({
-        ...instance,
-        entity,
-      }));
-      return [...acc, ...instances];
-    }, []);
-
-    const placesInstances = videoPlaces.reduce((acc, entity) => {
-      const instances = entity.instances.map(instance => ({
-        ...instance,
-        entity,
-      }));
-      return [...acc, ...instances];
-    }, []);
-
-    if (transcript !== state.transcript) {
-      if (EMPTY_TRANSCRIPT) {
-        return {
-          transcript: {},
-          segments: [
-            {
-              start: 0,
-              end: 0,
-              editorStateA: EditorState.createEmpty(),
-              key: 'editor-ZERO',
-              editorStateB: EditorState.createEmpty(),
-              customStyleMap,
-              // comments: commentThreads,
-              // tags: [...new Set(tagInstances.map(({ entity }) => entity))],
-              // places: [...new Set(placesInstances.map(({ entity }) => entity))],
-              comments: [],
-              tags: [],
-              places: [],
-            },
-          ],
-          customStyleMap,
-        };
-      }
-
-      const segments = chunk(transcript.segments, 2).map(segment => {
-        const segmentStart = segment[0].start;
-        const segmentEnd = segment[segment.length - 1].end;
-
-        const comments = commentThreads.filter(
-          ({ start_seconds }) => segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd
-        );
-
-        const tags = tagInstances.filter(
-          ({ start_seconds, end_seconds }) =>
-            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
-            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
-        );
-
-        const places = placesInstances.filter(
-          ({ start_seconds, end_seconds }) =>
-            (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
-            (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
-        );
-
-        const blocks = segment
-          .map(({ text, start, end, speaker, id, words, translation }, index) => ({
-            text,
-            key: id,
-            type: 'paragraph',
-            data: { start, end, speaker, id, translation },
-            // entityRanges: [],
-            entityRanges: words.map(({ start, end, text, offset, length, id }) => ({
-              start,
-              end,
-              text,
-              offset,
-              length,
-              key: id,
-            })),
-            inlineStyleRanges: [],
-          }))
-          .map(block => {
-            const { start, end } = block.data;
-
-            block.inlineStyleRanges = [
-              ...tags
-                .filter(
-                  ({ start_seconds, end_seconds }) =>
-                    (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
-                    (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
-                )
-                .map(({ start_seconds, end_seconds, entity }, index) => {
-                  const entities = block.entityRanges.filter(
-                    ({ start, end }) =>
-                      start_seconds * 1e3 <= start &&
-                      start < end_seconds * 1e3 &&
-                      start_seconds * 1e3 < end &&
-                      end <= end_seconds * 1e3
-                  );
-                  if (entities.length === 0) return null;
-
-                  const first = entities[0];
-                  const last = entities[entities.length - 1];
-                  return {
-                    offset: first.offset,
-                    length: last.offset - first.offset + last.length,
-                    style: `T-${entity.id}`,
-                  };
-                })
-                .filter(r => !!r),
-              // ...places
-              //   .filter(
-              //     ({ start_seconds, end_seconds }) =>
-              //       (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
-              //       (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
-              //   )
-              //   .map(({ start_seconds, end_seconds, entity }, index) => {
-              //     const entities = block.entityRanges.filter(
-              //       ({ start, end }) =>
-              //         start_seconds * 1e3 <= start &&
-              //         start < end_seconds * 1e3 &&
-              //         start_seconds * 1e3 < end &&
-              //         end <= end_seconds * 1e3
-              //     );
-              //     if (entities.length === 0) return null;
-
-              //     const first = entities[0];
-              //     const last = entities[entities.length - 1];
-              //     return {
-              //       offset: first.offset,
-              //       length: last.offset + last.length,
-              //       style: `G-${entity.id}`,
-              //     };
-              //   })
-              //   .filter(r => !!r),
-              ...comments
-                .filter(({ start_seconds }) => start <= start_seconds * 1e3 && start_seconds * 1e3 < end)
-                .map(({ start_seconds, id }) => {
-                  const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start);
-                  return entity
-                    ? {
-                        offset: entity.offset,
-                        length: entity.length,
-                        style: `C-${id}`,
-                      }
-                    : null;
-                })
-                .filter(r => !!r),
-            ];
-
-            // block.entityRanges = [];
-            return block;
-          });
-
-        console.log(blocks);
-        const editorStateA = EditorState.set(
-          EditorState.createWithContent(
-            convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
-            generateDecorator()
-          ),
-          { allowUndo: false }
-        );
-        return {
-          start: segmentStart,
-          end: segmentEnd,
-          editorStateA,
-          key: `editor-${blocks[0].key}`,
-          // editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
-          editorStateB: EditorState.set(
-            EditorState.createWithContent(
-              convertFromRaw({
-                blocks: blocks.map(block => {
-                  return {
-                    ...block,
-                    text: block.data.translation,
-                    entityRanges: [],
-                    inlineStyleRanges: [],
-                  };
-                }),
-                entityMap: createEntityMap(blocks),
-              }),
-              generateDecorator()
-            ),
-            { allowUndo: false }
-          ),
-          customStyleMap,
-          comments,
-          tags: [...new Set(tags.map(({ entity }) => entity))],
-          places: [...new Set(places.map(({ entity }) => entity))],
-        };
-      });
-
-      return { transcript, segments, customStyleMap };
-    }
+  componentDidMount() {
+    const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
+    this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
+
+    if (this.props.transcript !== transcript || videoTags !== this.props.videoTags) {
+      this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
+    }
+
     if (nextProps.currentTime !== this.props.currentTime) {
       const time = nextProps.currentTime * 1e3;
       this.state.segments
@@ -324,6 +148,180 @@ class Transcript extends React.Component {
 
     return true;
   }
+
+  loadTranscript = (transcript, commentThreads, videoTags, videoPlaces) => {
+    const customStyleMap = {
+      ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
+      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
+      ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
+    };
+
+    const tagInstances = videoTags.reduce((acc, entity) => {
+      const instances = entity.instances.map(instance => ({
+        ...instance,
+        entity,
+      }));
+      return [...acc, ...instances];
+    }, []);
+
+    const placesInstances = videoPlaces.reduce((acc, entity) => {
+      const instances = entity.instances.map(instance => ({
+        ...instance,
+        entity,
+      }));
+      return [...acc, ...instances];
+    }, []);
+
+    const segments = chunk(transcript.segments, 2).map(segment => {
+      const segmentStart = segment[0].start;
+      const segmentEnd = segment[segment.length - 1].end;
+
+      const comments = commentThreads.filter(
+        ({ start_seconds }) => segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd
+      );
+
+      const tags = tagInstances.filter(
+        ({ start_seconds, end_seconds }) =>
+          (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
+          (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+      );
+
+      const places = placesInstances.filter(
+        ({ start_seconds, end_seconds }) =>
+          (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
+          (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
+      );
+
+      const blocks = segment
+        .map(({ text, start, end, speaker, id, words, translation }, index) => ({
+          text,
+          key: id,
+          type: 'paragraph',
+          data: { start, end, speaker, id, translation },
+          // entityRanges: [],
+          entityRanges: words.map(({ start, end, text, offset, length, id }) => ({
+            start,
+            end,
+            text,
+            offset,
+            length,
+            key: id,
+          })),
+          inlineStyleRanges: [],
+        }))
+        .map(block => {
+          const { start, end } = block.data;
+
+          block.inlineStyleRanges = [
+            ...tags
+              .filter(
+                ({ start_seconds, end_seconds }) =>
+                  (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+                  (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
+              )
+              .map(({ start_seconds, end_seconds, entity }, index) => {
+                const entities = block.entityRanges.filter(
+                  ({ start, end }) =>
+                    start_seconds * 1e3 <= start &&
+                    start < end_seconds * 1e3 &&
+                    start_seconds * 1e3 < end &&
+                    end <= end_seconds * 1e3
+                );
+                if (entities.length === 0) return null;
+
+                const first = entities[0];
+                const last = entities[entities.length - 1];
+                return {
+                  offset: first.offset,
+                  length: last.offset - first.offset + last.length,
+                  style: `T-${entity.id}`,
+                };
+              })
+              .filter(r => !!r),
+            // ...places
+            //   .filter(
+            //     ({ start_seconds, end_seconds }) =>
+            //       (start <= start_seconds * 1e3 && start_seconds * 1e3 < end) ||
+            //       (start < end_seconds * 1e3 && end_seconds * 1e3 <= end)
+            //   )
+            //   .map(({ start_seconds, end_seconds, entity }, index) => {
+            //     const entities = block.entityRanges.filter(
+            //       ({ start, end }) =>
+            //         start_seconds * 1e3 <= start &&
+            //         start < end_seconds * 1e3 &&
+            //         start_seconds * 1e3 < end &&
+            //         end <= end_seconds * 1e3
+            //     );
+            //     if (entities.length === 0) return null;
+
+            //     const first = entities[0];
+            //     const last = entities[entities.length - 1];
+            //     return {
+            //       offset: first.offset,
+            //       length: last.offset + last.length,
+            //       style: `G-${entity.id}`,
+            //     };
+            //   })
+            //   .filter(r => !!r),
+            ...comments
+              .filter(({ start_seconds }) => start <= start_seconds * 1e3 && start_seconds * 1e3 < end)
+              .map(({ start_seconds, id }) => {
+                const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start);
+                return entity
+                  ? {
+                      offset: entity.offset,
+                      length: entity.length,
+                      style: `C-${id}`,
+                    }
+                  : null;
+              })
+              .filter(r => !!r),
+          ];
+
+          // block.entityRanges = [];
+          return block;
+        });
+
+      // console.log(blocks);
+      const editorStateA = EditorState.set(
+        EditorState.createWithContent(
+          convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
+          generateDecorator()
+        ),
+        { allowUndo: false }
+      );
+      return {
+        start: segmentStart,
+        end: segmentEnd,
+        editorStateA,
+        key: `editor-${blocks[0].key}`,
+        // editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
+        editorStateB: EditorState.set(
+          EditorState.createWithContent(
+            convertFromRaw({
+              blocks: blocks.map(block => {
+                return {
+                  ...block,
+                  text: block.data.translation,
+                  entityRanges: [],
+                  inlineStyleRanges: [],
+                };
+              }),
+              entityMap: createEntityMap(blocks),
+            }),
+            generateDecorator()
+          ),
+          { allowUndo: false }
+        ),
+        customStyleMap,
+        comments,
+        tags: [...new Set(tags.map(({ entity }) => entity))],
+        places: [...new Set(places.map(({ entity }) => entity))],
+      };
+    });
+
+    this.setState({ transcript, segments, customStyleMap });
+  };
 
   customBlockRenderer = contentBlock => {
     const type = contentBlock.getType();
@@ -579,9 +577,9 @@ class Transcript extends React.Component {
     const { videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
-    console.group('Transcript.js');
-    console.log(this.props);
-    console.groupEnd();
+    // console.group('Transcript.js');
+    // console.log(this.props);
+    // console.groupEnd();
 
     return (
       <TranscriptRoot>
@@ -625,44 +623,43 @@ class Transcript extends React.Component {
             >
               <style scoped>
                 {`
-            section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
-            div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
-            span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
+                  section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
+                  div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
+                  span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
 
-            span[class*='C-']{
-              position: relative;
-            }
+                  span[class*='C-']{
+                    position: relative;
+                  }
 
-            span[class*='C-']:before {
-              position: absolute;
-              top: -0.5em;
-              left: -0.5em;
-              color: white;
-              background-color: red;
-              content: 'C';
-              font-size: 10px;
-            }
+                  span[class*='C-']:before {
+                    position: absolute;
+                    top: -0.5em;
+                    left: -0.5em;
+                    color: white;
+                    background-color: red;
+                    content: 'C';
+                    font-size: 10px;
+                  }
 
-            ${Combinatorics.power(videoTags.map(({ id }) => id))
-              .filter(subset => subset.length > 0)
-              .map(
-                subset => `
-                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.2 +
-                  subset.length / MAX_OVERLAP}); }
-                `
-              )
-              .join('\n')}
-          `}
+                  ${Combinatorics.power(videoTags.map(({ id }) => id))
+                    .filter(subset => subset.length > 0)
+                    .map(
+                      subset =>
+                        `.T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.2 +
+                          subset.length / MAX_OVERLAP}); }`
+                    )
+                    .join('\n')}
+                  `}
                 {activeTag
                   ? `
-              span[class*='T-']{
-                background-color: transparent;
-              }
-              .${activeTag}.${activeTag} {
-                background-color: rgba(71, 123, 181, .6);
-                border-bottom: 1px solid red;
-              }
-            `
+                    span[class*='T-']{
+                      background-color: transparent;
+                    }
+                    .${activeTag}.${activeTag} {
+                      background-color: rgba(71, 123, 181, .6);
+                      border-bottom: 1px solid red;
+                    }
+                  `
                   : ''}
               </style>
 
