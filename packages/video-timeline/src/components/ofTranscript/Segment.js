@@ -22,7 +22,7 @@ const EditorWrapper = styled.section`
       Courier, monospace;
     box-sizing: border-box;
     font-size: 14px;
-    line-height: 1.7em;
+    line-height: 28px;
     * {
       box-sizing: border-box;
     }
