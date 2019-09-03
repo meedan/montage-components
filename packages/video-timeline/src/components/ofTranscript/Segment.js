@@ -1,3 +1,5 @@
+/** @format */
+
 import React from 'react';
 import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -8,7 +10,7 @@ import { generateDecorator, memoizedCreatePreview } from './transcriptUtils';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import LabelIcon from '@material-ui/icons/Label';
-import CommentIcon from '@material-ui/icons/ModeComment';
+import CommentIcon from '@material-ui/icons/Comment';
 import LocationIcon from '@material-ui/icons/LocationOn';
 
 import TranscriptSide from './TranscriptSide';
@@ -18,8 +20,7 @@ import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
   .public-DraftStyleDefault-block {
-    font-family: noto_monoregular, 'PT Mono', Consolas, 'Liberation Mono', Menlo,
-      Courier, monospace;
+    font-family: noto_monoregular, 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     box-sizing: border-box;
     font-size: 14px;
     line-height: 28px;
@@ -36,7 +37,6 @@ const LegendContainer = styled.div`
   user-select: none;
 `;
 const LegendItem = styled.div`
-  cursor: pointer;
   &:hover * {
     color: #2f80ed;
     text-decoration: underline;
@@ -52,27 +52,18 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {comments.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title='Comments'>
-            <CommentIcon
-              fontSize='small'
-              color='disabled'
-              size=''
-            ></CommentIcon>
+          <Tooltip title="Comments">
+            <CommentIcon fontSize="small" color="disabled" size="" style={{ height: '0.85em' }}></CommentIcon>
           </Tooltip>
         </LegendLabel>
         {comments.map(({ id, text }) => (
-          <div
-            key={`C-${id}`}
-            onMouseOut={() => higlightTag(null)}
-            onMouseOver={() => higlightTag(`C-${id}`)}
-          >
+          <div key={`C-${id}`} onMouseOut={() => higlightTag(null)} onMouseOver={() => higlightTag(`C-${id}`)}>
             <Typography
-              color='textSecondary'
+              color="textSecondary"
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={text}
-              variant='caption'
-            >
+              variant="caption">
               {text}
             </Typography>
           </div>
@@ -83,23 +74,21 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {tags.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title='Tags'>
-            <LabelIcon fontSize='small' color='disabled' size=''></LabelIcon>
+          <Tooltip title="Tags">
+            <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
           </Tooltip>
         </LegendLabel>
         {tags.map(entity => (
           <LegendItem
             key={`T-${entity.id}`}
             onMouseOver={() => higlightTag(`T-${entity.id}`)}
-            onMouseOut={() => higlightTag(null)}
-          >
+            onMouseOut={() => higlightTag(null)}>
             <Typography
-              color='textSecondary'
+              color="textSecondary"
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_tag.name}
-              variant='caption'
-            >
+              variant="caption">
               {entity.project_tag.name}
             </Typography>
           </LegendItem>
@@ -110,27 +99,21 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
     {places.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
-          <Tooltip title='Locations'>
-            <LocationIcon
-              fontSize='small'
-              color='disabled'
-              size=''
-            ></LocationIcon>
+          <Tooltip title="Locations">
+            <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
           </Tooltip>
         </LegendLabel>
         {places.map(entity => (
           <div
             key={`G-${entity.id}`}
             onMouseOver={() => higlightTag(`G-${entity.id}`)}
-            onMouseOut={() => higlightTag(null)}
-          >
+            onMouseOut={() => higlightTag(null)}>
             <Typography
-              color='textSecondary'
+              color="textSecondary"
               noWrap
               style={{ display: 'block', width: '120px' }}
               title={entity.project_location.name}
-              variant='caption'
-            >
+              variant="caption">
               {entity.project_location.name}
             </Typography>
           </div>
@@ -173,14 +156,11 @@ export default React.memo(
           intervalDelay={1000}
           containment={scrollingContainer}
           scrollCheck={true}
-          partialVisibility={true}
-        >
+          partialVisibility={true}>
           {({ isVisible }) => (
             <TranscriptContainer>
               <TranscriptSide left separate>
-                {!editable ? (
-                  <Legend {...{ comments, tags, places, higlightTag }} />
-                ) : null}
+                {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
               </TranscriptSide>
               <TranscriptMain>
                 <TranscriptText lang={languageA} stretch={!showTranslation}>
@@ -208,15 +188,11 @@ export default React.memo(
                     blockRendererFn={customBlockRenderer}
                     customStyleMap={customStyleMap}
                     keyBindingFn={event => filterKeyBindingFn(event)}
-                    handleKeyCommand={(command, editorState) =>
-                      handleKeyCommand(command, editorState, editorKey)
-                    }
-                    onChange={editorState =>
-                      handleChange(editorState, editorKey)
-                    }
+                    handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                    onChange={editorState => handleChange(editorState, editorKey)}
                     textDirectionality={textDirectionalityA}
                     spellCheck={false}
-                    placeholder='Transcribe here…'
+                    placeholder="Transcribe here…"
                   />
                 </TranscriptText>
 
@@ -246,15 +222,11 @@ export default React.memo(
                       blockRendererFn={customBlockRenderer}
                       customStyleMap={customStyleMap}
                       keyBindingFn={event => filterKeyBindingFn(event)}
-                      handleKeyCommand={(command, editorState) =>
-                        handleKeyCommand(command, editorState, editorKey)
-                      }
-                      onChange={editorState =>
-                        handleChange(editorState, editorKey, 'B')
-                      }
+                      handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
                       textDirectionality={textDirectionalityB}
                       spellCheck={false}
-                      placeholder='Translate here…'
+                      placeholder="Translate here…"
                     />
                   </TranscriptText>
                 ) : null}

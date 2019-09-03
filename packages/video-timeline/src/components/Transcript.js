@@ -1,24 +1,24 @@
 /** @format */
 
-import Combinatorics from 'js-combinatorics'
-import React from 'react'
-import chunk from 'lodash.chunk'
-import styled from 'styled-components'
-import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js'
+import Combinatorics from 'js-combinatorics';
+import React from 'react';
+import chunk from 'lodash.chunk';
+import styled from 'styled-components';
+import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
 
-import '@montage/ui/assets/fonts/iconfont/style.css'
+import '@montage/ui/assets/fonts/iconfont/style.css';
 
-import BlockWrapper from './ofTranscript/BlockWrapper'
-import CommentPopover from './ofTranscript/CommentPopover'
-import FloatingToolbar from './ofTranscript/FloatingToolbar'
-import Segment from './ofTranscript/Segment'
-import TranscriptToolbar from './ofTranscript/TranscriptToolbar'
-import TranscriptWrapper from './ofTranscript/TranscriptWrapper'
-import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils'
+import BlockWrapper from './ofTranscript/BlockWrapper';
+import CommentPopover from './ofTranscript/CommentPopover';
+import FloatingToolbar from './ofTranscript/FloatingToolbar';
+import Segment from './ofTranscript/Segment';
+import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
+import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
+import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
-const EMPTY_TRANSCRIPT = false
-const EMPTY_TRANSLATION = false
-const MAX_OVERLAP = 5
+const EMPTY_TRANSCRIPT = false;
+const EMPTY_TRANSLATION = false;
+const MAX_OVERLAP = 5;
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -29,11 +29,11 @@ const TranscriptRoot = styled.div`
   position: absolute;
   right: 0;
   top: 0;
-`
+`;
 const TranscriptChild = styled.div`
   flex: 1 1 100%;
   overflow-y: auto;
-`
+`;
 
 class Transcript extends React.Component {
   state = {
@@ -60,41 +60,41 @@ class Transcript extends React.Component {
     // showTranslation: true,
     selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
     translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
-  }
-  past = []
-  future = []
+  };
+  past = [];
+  future = [];
 
   componentDidMount() {
-    const { transcript, commentThreads, videoTags, videoPlaces } = this.props
-    this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces)
+    const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
+    this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { transcript, commentThreads, videoTags, videoPlaces } = nextProps
+    const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
 
     if (this.props.transcript !== transcript || videoTags !== this.props.videoTags) {
-      this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces)
+      this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
     }
 
     if (nextProps.currentTime !== this.props.currentTime) {
-      const time = nextProps.currentTime * 1e3
+      const time = nextProps.currentTime * 1e3;
       this.state.segments
         .filter(({ start, end }) => start <= time && time < end)
         .forEach(({ editorStateA, key }) => {
-          const contentState = editorStateA.getCurrentContent()
-          const blocks = contentState.getBlocksAsArray()
-          let playheadBlockIndex = -1
+          const contentState = editorStateA.getCurrentContent();
+          const blocks = contentState.getBlocksAsArray();
+          let playheadBlockIndex = -1;
 
           playheadBlockIndex = blocks.findIndex(block => {
             // const start = block.getData().get('start');
             // const end = block.getData().get('end');
-            const { start, end } = memoizedGetBlockTimings(contentState, block)
+            const { start, end } = memoizedGetBlockTimings(contentState, block);
             // console.log({start, end});
-            return start <= time && time < end
-          })
+            return start <= time && time < end;
+          });
 
           if (playheadBlockIndex > -1) {
-            const playheadBlock = blocks[playheadBlockIndex]
+            const playheadBlock = blocks[playheadBlockIndex];
             const playheadEntity = [
               ...new Set(
                 playheadBlock
@@ -105,9 +105,9 @@ class Transcript extends React.Component {
             ]
               .filter(value => !!value)
               .find(entity => {
-                const { start, end } = contentState.getEntity(entity).getData()
-                return start <= time && time < end
-              })
+                const { start, end } = contentState.getEntity(entity).getData();
+                return start <= time && time < end;
+              });
 
             // if (playheadEntity) {
             //   const { key } = contentState.getEntity(playheadEntity).getData();
@@ -120,40 +120,40 @@ class Transcript extends React.Component {
             //   this.setState({ playheadEditorKey: `editor-${blocks[0].key}`, playheadBlockKey: playheadBlock.getKey() });
             // }
 
-            if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead)
+            if (this.idlePlayhead) cancelIdleCallback(this.idlePlayhead);
             this.idlePlayhead = requestIdleCallback(
               () => {
                 if (playheadEntity) {
-                  const { key } = contentState.getEntity(playheadEntity).getData()
+                  const { key } = contentState.getEntity(playheadEntity).getData();
                   this.setState({
                     playheadEditorKey: `editor-${blocks[0].key}`,
                     playheadBlockKey: playheadBlock.getKey(),
                     playheadEntityKey: key,
-                  })
+                  });
 
                   console.log({
                     playheadEditorKey: `editor-${blocks[0].key}`,
                     playheadBlockKey: playheadBlock.getKey(),
                     playheadEntityKey: key,
-                  })
+                  });
                 } else {
                   this.setState({
                     playheadEditorKey: `editor-${blocks[0].key}`,
                     playheadBlockKey: playheadBlock.getKey(),
-                  })
+                  });
                   console.log({
                     playheadEditorKey: `editor-${blocks[0].key}`,
                     playheadBlockKey: playheadBlock.getKey(),
-                  })
+                  });
                 }
               },
               { timeout: 500 }
-            )
+            );
           }
-        })
+        });
     }
 
-    return true
+    return true;
   }
 
   loadTranscript = (transcript, commentThreads, videoTags, videoPlaces) => {
@@ -161,43 +161,43 @@ class Transcript extends React.Component {
       ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
       ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
       ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
-    }
+    };
 
     const tagInstances = videoTags.reduce((acc, entity) => {
       const instances = entity.instances.map(instance => ({
         ...instance,
         entity,
-      }))
-      return [...acc, ...instances]
-    }, [])
+      }));
+      return [...acc, ...instances];
+    }, []);
 
     const placesInstances = videoPlaces.reduce((acc, entity) => {
       const instances = entity.instances.map(instance => ({
         ...instance,
         entity,
-      }))
-      return [...acc, ...instances]
-    }, [])
+      }));
+      return [...acc, ...instances];
+    }, []);
 
     const segments = chunk(transcript.segments, 2).map(segment => {
-      const segmentStart = segment[0].start
-      const segmentEnd = segment[segment.length - 1].end
+      const segmentStart = segment[0].start;
+      const segmentEnd = segment[segment.length - 1].end;
 
       const comments = commentThreads.filter(
         ({ start_seconds }) => segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd
-      )
+      );
 
       const tags = tagInstances.filter(
         ({ start_seconds, end_seconds }) =>
           (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
           (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
-      )
+      );
 
       const places = placesInstances.filter(
         ({ start_seconds, end_seconds }) =>
           (segmentStart <= start_seconds * 1e3 && start_seconds * 1e3 < segmentEnd) ||
           (segmentStart < end_seconds * 1e3 && end_seconds * 1e3 <= segmentEnd)
-      )
+      );
 
       const blocks = segment
         .map(({ text, start, end, speaker, id, words, translation }, index) => ({
@@ -217,7 +217,7 @@ class Transcript extends React.Component {
           inlineStyleRanges: [],
         }))
         .map(block => {
-          const { start, end } = block.data
+          const { start, end } = block.data;
 
           block.inlineStyleRanges = [
             ...tags
@@ -233,16 +233,16 @@ class Transcript extends React.Component {
                     start < end_seconds * 1e3 &&
                     start_seconds * 1e3 < end &&
                     end <= end_seconds * 1e3
-                )
-                if (entities.length === 0) return null
+                );
+                if (entities.length === 0) return null;
 
-                const first = entities[0]
-                const last = entities[entities.length - 1]
+                const first = entities[0];
+                const last = entities[entities.length - 1];
                 return {
                   offset: first.offset,
                   length: last.offset - first.offset + last.length,
                   style: `T-${entity.id}`,
-                }
+                };
               })
               .filter(r => !!r),
             // ...places
@@ -273,21 +273,21 @@ class Transcript extends React.Component {
             ...comments
               .filter(({ start_seconds }) => start <= start_seconds * 1e3 && start_seconds * 1e3 < end)
               .map(({ start_seconds, id }) => {
-                const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start)
+                const entity = block.entityRanges.find(({ start, end }) => start_seconds * 1e3 <= start);
                 return entity
                   ? {
                       offset: entity.offset,
                       length: entity.length,
                       style: `C-${id}`,
                     }
-                  : null
+                  : null;
               })
               .filter(r => !!r),
-          ]
+          ];
 
           // block.entityRanges = [];
-          return block
-        })
+          return block;
+        });
 
       // console.log(blocks);
       const editorStateA = EditorState.set(
@@ -296,7 +296,7 @@ class Transcript extends React.Component {
           generateDecorator()
         ),
         { allowUndo: false }
-      )
+      );
       return {
         start: segmentStart,
         end: segmentEnd,
@@ -312,7 +312,7 @@ class Transcript extends React.Component {
                   text: block.data.translation,
                   entityRanges: [],
                   inlineStyleRanges: [],
-                }
+                };
               }),
               entityMap: createEntityMap(blocks),
             }),
@@ -324,54 +324,54 @@ class Transcript extends React.Component {
         comments,
         tags: [...new Set(tags.map(({ entity }) => entity))],
         places: [...new Set(places.map(({ entity }) => entity))],
-      }
-    })
+      };
+    });
 
-    this.setState({ transcript, segments, customStyleMap })
-  }
+    this.setState({ transcript, segments, customStyleMap });
+  };
 
   customBlockRenderer = contentBlock => {
-    const type = contentBlock.getType()
+    const type = contentBlock.getType();
     if (type === 'paragraph') {
       return {
         component: BlockWrapper,
         props: {},
-      }
+      };
     }
-    return null
-  }
+    return null;
+  };
 
   toggleOffset(e) {
     // console.log('toggleOffset()');
     // console.log({ e });
-    if (!e) return null
-    this.setState({ transcriptRefScrollTop: e.target.scrollTop })
+    if (!e) return null;
+    this.setState({ transcriptRefScrollTop: e.target.scrollTop });
   }
 
   handleMouseMove = ({ nativeEvent: { srcElement, path = [] } }) => {
-    let comment = null
+    let comment = null;
     srcElement.classList.forEach(c => {
-      if (c.startsWith('C-')) comment = c.substring(2)
-    })
+      if (c.startsWith('C-')) comment = c.substring(2);
+    });
 
     if (comment) {
       this.setState({
         comment: this.props.commentThreads.find(({ id }) => id === parseInt(comment)),
         commentAnchor: srcElement,
-      })
+      });
     } else {
       this.setState({
         comment: null,
         commentAnchor: null,
-      })
+      });
     }
-  }
+  };
 
   handleClick = event => {
-    let element = event.nativeEvent.target
-    console.log('click', element)
+    let element = event.nativeEvent.target;
+    console.log('click', element);
 
-    const selection = window.getSelection()
+    const selection = window.getSelection();
     if (selection.rangeCount > 0 && !this.state.editable) {
       const {
         collapsed,
@@ -380,7 +380,7 @@ class Transcript extends React.Component {
         endContainer,
         startContainer: { nodeType: startNodeType, parentNode },
         endContainer: { nodeType: endNodeType, parentNode: endParentNode },
-      } = selection.getRangeAt(0)
+      } = selection.getRangeAt(0);
 
       if (
         !collapsed &&
@@ -389,39 +389,39 @@ class Transcript extends React.Component {
       ) {
         // console.log(selection.getRangeAt(0));
 
-        const startElement = startNodeType !== document.TEXT_NODE ? startContainer : parentNode
-        const endElement = endNodeType !== document.TEXT_NODE ? endContainer : endParentNode
+        const startElement = startNodeType !== document.TEXT_NODE ? startContainer : parentNode;
+        const endElement = endNodeType !== document.TEXT_NODE ? endContainer : endParentNode;
         // console.log(startElement, endElement);
 
-        let start = startElement
-        let t0 = 0
-        while (start && !start.hasAttribute('data-start') && start.parentElement) start = start.parentElement
+        let start = startElement;
+        let t0 = 0;
+        while (start && !start.hasAttribute('data-start') && start.parentElement) start = start.parentElement;
         if (start && start.hasAttribute('data-start')) {
-          t0 = parseFloat(start.getAttribute('data-start'))
+          t0 = parseFloat(start.getAttribute('data-start'));
           // console.log('found data-start', t0, start);
 
           if (start.classList.contains('BlockWrapper')) {
-            start = startElement.parentElement.previousSibling
-            while (start && !start.hasAttribute('data-start') && start.previousSibling) start = start.previousSibling
+            start = startElement.parentElement.previousSibling;
+            while (start && !start.hasAttribute('data-start') && start.previousSibling) start = start.previousSibling;
             if (start && start.hasAttribute('data-start')) {
-              t0 = parseFloat(start.getAttribute('data-start'))
+              t0 = parseFloat(start.getAttribute('data-start'));
               // console.log('found sibling data-start', t0, start);
             }
           }
         }
 
-        let end = endElement
-        let t1 = 0
-        while (end && !end.hasAttribute('data-end') && end.parentElement) end = end.parentElement
+        let end = endElement;
+        let t1 = 0;
+        while (end && !end.hasAttribute('data-end') && end.parentElement) end = end.parentElement;
         if (end && end.hasAttribute('data-end')) {
-          t1 = parseFloat(end.getAttribute('data-end'))
+          t1 = parseFloat(end.getAttribute('data-end'));
           // console.log('found data-end', t1, end);
 
           if (end.classList.contains('BlockWrapper')) {
-            end = startElement.parentElement.previousSibling
-            while (end && !end.hasAttribute('data-end') && end.previousSibling) end = end.previousSibling
+            end = startElement.parentElement.previousSibling;
+            while (end && !end.hasAttribute('data-end') && end.previousSibling) end = end.previousSibling;
             if (end && end.hasAttribute('data-end')) {
-              t1 = parseFloat(end.getAttribute('data-end'))
+              t1 = parseFloat(end.getAttribute('data-end'));
               // console.log('found sibling data-end', t1, end);
             }
           }
@@ -432,30 +432,30 @@ class Transcript extends React.Component {
         this.setState({
           anchor: startElement,
           selection: { start: t0 / 1e3, end: t1 / 1e3 },
-        })
-        return
+        });
+        return;
       } else {
         // window.getSelection().removeAllRanges();
       }
     }
 
-    if (element.classList.contains('public-DraftStyleDefault-block')) return
-    while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement
+    if (element.classList.contains('public-DraftStyleDefault-block')) return;
+    while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
     if (element && element.hasAttribute('data-start')) {
-      let t = parseFloat(element.getAttribute('data-start'))
+      let t = parseFloat(element.getAttribute('data-start'));
       // console.log('found data-start', t, element);
 
       if (element.classList.contains('BlockWrapper')) {
-        element = event.nativeEvent.target.parentElement.previousSibling
+        element = event.nativeEvent.target.parentElement.previousSibling;
         while (element && !element.hasAttribute('data-start') && element.previousSibling)
-          element = element.previousSibling
+          element = element.previousSibling;
         if (element && element.hasAttribute('data-start')) {
-          t = parseFloat(element.getAttribute('data-start'))
+          t = parseFloat(element.getAttribute('data-start'));
           // console.log('found sibling data-start', t, element);
         }
       }
 
-      this.props.seekTo(t / 1e3)
+      this.props.seekTo(t / 1e3);
     }
 
     // console.log('no data-start, stopping at', element);
@@ -469,22 +469,22 @@ class Transcript extends React.Component {
     //     .pop();
     //   console.log('found block?', blockKey);
     // }
-  }
+  };
 
   handleChange = (editorState, key, suffix = 'A') => {
-    const editorIndex = this.state.segments.findIndex(editor => editor.key === key)
-    const segment = this.state.segments[editorIndex]
+    const editorIndex = this.state.segments.findIndex(editor => editor.key === key);
+    const segment = this.state.segments[editorIndex];
 
     const contentChange =
       editorState.getCurrentContent() === this.state.segments[editorIndex][`editorState${suffix}`].getCurrentContent()
         ? null
-        : editorState.getLastChangeType()
+        : editorState.getLastChangeType();
 
     if (contentChange) {
-      console.log(contentChange)
+      console.log(contentChange);
 
-      this.past.push(this.state.segments)
-      this.future = []
+      this.past.push(this.state.segments);
+      this.future = [];
 
       this.setState({
         segments: [
@@ -492,7 +492,7 @@ class Transcript extends React.Component {
           { ...segment, [`editorState${suffix}`]: editorState },
           ...this.state.segments.slice(editorIndex + 1),
         ],
-      })
+      });
     } else {
       this.setState({
         segments: [
@@ -500,95 +500,95 @@ class Transcript extends React.Component {
           { ...segment, [`editorState${suffix}`]: editorState },
           ...this.state.segments.slice(editorIndex + 1),
         ],
-      })
+      });
     }
-  }
+  };
 
   handleUndo = () => {
-    const { segments: present } = this.state
-    const futurePresent = this.past.pop()
+    const { segments: present } = this.state;
+    const futurePresent = this.past.pop();
 
     if (futurePresent) {
-      this.future.push(present)
+      this.future.push(present);
       this.setState({
         segments: futurePresent,
-      })
+      });
     }
-  }
+  };
 
   handleRedo = () => {
-    const { segments: present } = this.state
-    const futurePresent = this.future.pop()
+    const { segments: present } = this.state;
+    const futurePresent = this.future.pop();
 
     if (futurePresent) {
-      this.past.push(present)
+      this.past.push(present);
       this.setState({
         segments: futurePresent,
-      })
+      });
     }
-  }
+  };
 
   handleKeyCommand = (command, editorState, key, suffix = 'A') => {
-    console.log(command)
-    if (command === 'undo' || command === 'redo') return 'handled'
+    console.log(command);
+    if (command === 'undo' || command === 'redo') return 'handled';
 
-    return 'not-handled'
-  }
+    return 'not-handled';
+  };
 
   filterKeyBindingFn = event => {
-    const { nativeEvent } = event
+    const { nativeEvent } = event;
 
     if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && !nativeEvent.shiftKey) {
-      setTimeout(() => this.handleUndo(), 0)
-      return 'undo'
+      setTimeout(() => this.handleUndo(), 0);
+      return 'undo';
     }
 
     if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && nativeEvent.shiftKey) {
-      setTimeout(() => this.handleRedo(), 0)
-      return 'redo'
+      setTimeout(() => this.handleRedo(), 0);
+      return 'redo';
     }
 
-    return getDefaultKeyBinding(event)
-  }
+    return getDefaultKeyBinding(event);
+  };
 
   onSearch = payload => {
-    if (payload === this.state.search) return
+    if (payload === this.state.search) return;
     this.setState({
       search: payload,
       searchFocused: true,
-    })
-  }
+    });
+  };
 
   handleSearchFocus = searchFocused => {
-    console.log('searchFocused', searchFocused)
-    this.setState({ searchFocused })
-  }
+    console.log('searchFocused', searchFocused);
+    this.setState({ searchFocused });
+  };
 
   higlightTag = className => {
-    this.setState({ activeTag: className })
-  }
+    this.setState({ activeTag: className });
+  };
 
   toggleSourceEdit = () => {
     this.setState(prevState => ({
       editable: !prevState.editable,
-    }))
-  }
+    }));
+  };
   toggleTranslate = () => {
     this.setState(prevState => ({
       showTranslation: !prevState.showTranslation,
-    }))
-  }
+    }));
+  };
 
   toggleTranslation = languageISO => {
-    console.log('toggleTranslation()', languageISO)
-    this.setState({ selectedTranslation: languageISO })
-  }
+    console.log('toggleTranslation()', languageISO);
+    this.setState({ selectedTranslation: languageISO });
+  };
 
   createTranslation = languageISO => {
-    console.log('createTranslation()', languageISO)
+    console.log('createTranslation()', languageISO);
     // push new translation to translations array and then:
-    this.toggleTranslation(languageISO)
-  }
+    this.toggleTranslation(languageISO);
+  };
 
   render() {
     const {
@@ -602,9 +602,9 @@ class Transcript extends React.Component {
       showTranslation,
       // selectedTranslation,
       customStyleMap,
-    } = this.state
-    const { videoTags } = this.props
-    const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this
+    } = this.state;
+    const { videoTags } = this.props;
+    const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
     // console.group('Transcript.js');
     // console.log(this.state.comment);
@@ -629,7 +629,7 @@ class Transcript extends React.Component {
         <TranscriptChild
           onScroll={this.toggleOffset.bind(this)}
           ref={ref => {
-            this.scrollingContainer = ref
+            this.scrollingContainer = ref;
           }}>
           {this.state.anchor && this.state.selection ? (
             <FloatingToolbar
@@ -653,7 +653,7 @@ class Transcript extends React.Component {
           <TranscriptWrapper stretch={this.state.showTranslation}>
             <div
               ref={ref => {
-                this.transcriptRef = ref
+                this.transcriptRef = ref;
               }}
               onClick={event => this.handleClick(event)}
               onMouseMove={event => this.handleMouseMove(event)}>
@@ -683,7 +683,6 @@ class Transcript extends React.Component {
                     }
                     .${activeTag}.${activeTag} {
                       background-color: rgba(71, 123, 181, .6);
-                      border-bottom: 1px solid red;
                     }
                   `
                   : ''}
@@ -717,8 +716,8 @@ class Transcript extends React.Component {
           </TranscriptWrapper>
         </TranscriptChild>
       </TranscriptRoot>
-    )
+    );
   }
 }
 
-export default Transcript
+export default Transcript;
