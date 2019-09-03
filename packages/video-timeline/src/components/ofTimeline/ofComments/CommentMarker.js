@@ -1,3 +1,5 @@
+/** @format */
+
 import React from 'react';
 import { usePopupState, bindHover, bindTrigger, bindPopover } from 'material-ui-popup-state/hooks';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
@@ -51,10 +53,9 @@ function CommentPopover(props) {
           horizontal: 'center',
         }}
         disableRestoreFocus
-        onClick={e => e.stopPropagation()}
-      >
+        onClick={e => e.stopPropagation()}>
         <Card>
-          <CommentThread commentData={commentData} />
+          <CommentThread commentData={commentData} closePopup={readPopupState.close} />
         </Card>
       </HoverPopover>
       <TriggerPopover
@@ -68,8 +69,7 @@ function CommentPopover(props) {
           horizontal: 'center',
         }}
         disableRestoreFocus
-        onClick={e => e.stopPropagation()}
-      >
+        onClick={e => e.stopPropagation()}>
         <Card>
           <CommentThread closePopup={editPopupState.close} commentData={commentData} isActionable />
         </Card>

@@ -1,4 +1,7 @@
+/** @format */
+
 import React, { useState } from 'react';
+import { func } from 'prop-types';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -40,20 +43,14 @@ function CommentForm(props) {
       </Grid>
 
       <Grid item>
-        <Grid
-          container
-          direction="row-reverse"
-          justify="space-between"
-          wrap="nowrap"
-        >
+        <Grid container direction="row-reverse" justify="space-between" wrap="nowrap">
           <Grid item>
             <Button
               color="primary"
               disabled={!comment || comment.length === 0}
               mini
               onClick={() => props.onSubmit(comment)}
-              size="small"
-            >
+              size="small">
               {isEditing || isCreating ? 'Save' : 'Reply'}
             </Button>
           </Grid>
@@ -69,3 +66,8 @@ function CommentForm(props) {
 }
 
 export default CommentForm;
+
+CommentForm.propTypes = {
+  onCancel: func.isRequired,
+  onSubmit: func.isRequired,
+};

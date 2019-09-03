@@ -30,11 +30,11 @@ class CommentPopover extends Component {
         anchorEl={this.props.isVisible}
         onClose={this.props.onClose}
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'left',
         }}
         transformOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'center',
         }}
         PaperProps={{
