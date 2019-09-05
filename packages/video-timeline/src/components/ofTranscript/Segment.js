@@ -56,18 +56,9 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             <CommentIcon fontSize="small" color="disabled" size="" style={{ height: '0.85em' }}></CommentIcon>
           </Tooltip>
         </LegendLabel>
-        {comments.map(({ id, text }) => (
-          <div key={`C-${id}`} onMouseOut={() => higlightTag(null)} onMouseOver={() => higlightTag(`C-${id}`)}>
-            <Typography
-              color="textSecondary"
-              noWrap
-              style={{ display: 'block', width: '120px' }}
-              title={text}
-              variant="caption">
-              {text}
-            </Typography>
-          </div>
-        ))}
+        <Typography color="textSecondary" noWrap style={{ display: 'block', width: '120px' }} variant="caption">
+          {comments.length} comment thread{comments.length > 1 ? 's' : ''}
+        </Typography>
       </LegendContainer>
     ) : null}
 
