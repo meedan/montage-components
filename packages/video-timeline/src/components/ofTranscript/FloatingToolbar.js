@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { Component } from 'react';
 import produce from 'immer';
 import { connect } from 'react-redux';
@@ -5,10 +7,12 @@ import { connect } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 
 import EntityControls from '../ofTimeline/ofEntities/EntityControls';
+import CommentForm from '../ofTimeline/ofComments/CommentForm';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import PlaceIcon from '@material-ui/icons/Place';
+import Grid from '@material-ui/core/Grid';
 import LabelIcon from '@material-ui/icons/Label';
 import CommentIcon from '@material-ui/icons/Comment';
 import { withStyles } from '@material-ui/core/styles';
@@ -18,6 +22,11 @@ import { update } from '../../reducers/data';
 const styles = theme => ({
   Popover: {
     overflow: 'visible',
+    marginTop: '-20px',
+  },
+  Grid: {
+    margin: '16px',
+    width: '200px',
   },
 });
 class FloatingToolbar extends Component {
@@ -91,8 +100,6 @@ class FloatingToolbar extends Component {
     const { classes } = this.props;
     const { isCreating } = this.state;
 
-    console.log(this.props);
-
     return (
       <Popover
         id={'meh'}
@@ -101,7 +108,7 @@ class FloatingToolbar extends Component {
         onClose={this.props.onClose}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'bottom',
@@ -109,8 +116,7 @@ class FloatingToolbar extends Component {
         }}
         PaperProps={{
           className: classes.Popover,
-        }}
-      >
+        }}>
         {!isCreating ? (
           <>
             <Tooltip title="Add tag">
@@ -143,7 +149,18 @@ class FloatingToolbar extends Component {
             updateEntity={this.updateEntity}
           />
         ) : null}
-        {isCreating === 'comment' ? <>Nu comment thread</> : null}
+        {isCreating === 'comment' ? (
+          <Grid className={classes.Grid}>
+            <CommentForm
+              isCreating
+              onCancel={this.props.onClose}
+              onSubmit={text => {
+                console.log('new comment thread starts with:', text);
+                this.props.onClose();
+              }}
+            />
+          </Grid>
+        ) : null}
       </Popover>
     );
   }

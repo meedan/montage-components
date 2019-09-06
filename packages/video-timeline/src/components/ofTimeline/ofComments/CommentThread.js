@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react';
-import { func } from 'prop-types';
+import { func, bool, object } from 'prop-types';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -135,4 +135,11 @@ export default withStyles(styles)(CommentThread);
 
 CommentThread.propTypes = {
   closePopup: func.isRequired,
+  isActionable: bool,
+  commentData: object,
+};
+
+CommentThread.defaultProps = {
+  isActionable: null,
+  commentData: null,
 };
