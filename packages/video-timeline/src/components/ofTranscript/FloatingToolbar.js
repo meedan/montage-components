@@ -4,17 +4,16 @@ import React, { Component } from 'react';
 import produce from 'immer';
 import { connect } from 'react-redux';
 
-import Popover from '@material-ui/core/Popover';
-
 import EntityControls from '../ofTimeline/ofEntities/EntityControls';
 import CommentForm from '../ofTimeline/ofComments/CommentForm';
 
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import PlaceIcon from '@material-ui/icons/Place';
-import Grid from '@material-ui/core/Grid';
-import LabelIcon from '@material-ui/icons/Label';
 import CommentIcon from '@material-ui/icons/Comment';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import LabelIcon from '@material-ui/icons/Label';
+import PlaceIcon from '@material-ui/icons/Place';
+import Popover from '@material-ui/core/Popover';
+import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 
 import { update } from '../../reducers/data';
@@ -24,11 +23,14 @@ const styles = theme => ({
     overflow: 'visible',
     marginTop: '-20px',
   },
-  Grid: {
+  EntityGrid: {
+    margin: '8px',
+  },
+  CommentGrid: {
     margin: '16px',
-    width: '200px',
   },
 });
+
 class FloatingToolbar extends Component {
   constructor(props) {
     super(props);
@@ -100,9 +102,9 @@ class FloatingToolbar extends Component {
     const { classes } = this.props;
     const { isCreating } = this.state;
 
-    return (
+    const ToolbarPopover = (
       <Popover
-        id={'meh'}
+        id={'ToolbarPopover'}
         open={!!this.props.isVisible}
         anchorEl={this.props.isVisible}
         onClose={this.props.onClose}
@@ -117,26 +119,44 @@ class FloatingToolbar extends Component {
         PaperProps={{
           className: classes.Popover,
         }}>
-        {!isCreating ? (
-          <>
-            <Tooltip title="Add tag">
-              <IconButton onClick={() => this.setState({ isCreating: 'tag' })}>
-                <LabelIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Add place">
-              <IconButton onClick={() => this.setState({ isCreating: 'place' })}>
-                <PlaceIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Add comment">
-              <IconButton onClick={() => this.setState({ isCreating: 'comment' })}>
-                <CommentIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : null}
-        {isCreating === 'place' || isCreating === 'tag' ? (
+        <Grid className={classes.EntityGrid}>
+          <Tooltip title="Add tag">
+            <IconButton onClick={() => this.setState({ isCreating: 'tag' })}>
+              <LabelIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add place">
+            <IconButton onClick={() => this.setState({ isCreating: 'place' })}>
+              <PlaceIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add comment">
+            <IconButton onClick={() => this.setState({ isCreating: 'comment' })}>
+              <CommentIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      </Popover>
+    );
+
+    const NewEntityPopover = (
+      <Popover
+        id={'NewEntityPopover'}
+        open={!!this.props.isVisible}
+        anchorEl={this.props.isVisible}
+        onClose={this.props.onClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        PaperProps={{
+          className: classes.Popover,
+        }}>
+        <Grid className={classes.EntityGrid}>
           <EntityControls
             // deleteEntity={() => this.deleteEntity(entity.id)}
             // entityId={entity.id}
@@ -148,25 +168,52 @@ class FloatingToolbar extends Component {
             suggestions={isCreating === 'place' ? this.props.projectplaces : this.props.projecttags}
             updateEntity={this.updateEntity}
           />
-        ) : null}
-        {isCreating === 'comment' ? (
-          <Grid className={classes.Grid}>
-            <CommentForm
-              isCreating
-              onCancel={this.props.onClose}
-              onSubmit={text => {
-                console.log('new comment thread starts with:', text);
-                this.props.onClose();
-              }}
-            />
-          </Grid>
-        ) : null}
+        </Grid>
       </Popover>
     );
+
+    const NewThreadPopover = (
+      <Popover
+        id={'NewThreadPopover'}
+        open={!!this.props.isVisible}
+        anchorEl={this.props.isVisible}
+        onClose={this.props.onClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        PaperProps={{
+          className: classes.Popover,
+        }}>
+        <Grid className={classes.CommentGrid}>
+          <CommentForm
+            isCreating
+            onCancel={this.props.onClose}
+            onSubmit={text => {
+              console.log('new comment thread starts with:', text);
+              this.props.onClose();
+            }}
+          />
+        </Grid>
+      </Popover>
+    );
+
+    if (!isCreating) {
+      return ToolbarPopover;
+    } else {
+      if (isCreating === 'place' || isCreating === 'tag') {
+        return NewEntityPopover;
+      } else if (isCreating === 'comment') {
+        return NewThreadPopover;
+      }
+    }
   }
 }
 
-// export default withStyles(styles)(FloatingToolbar);
 export default connect(
   null,
   { update }
