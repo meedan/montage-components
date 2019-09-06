@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "@material-ui/core": "4.3.1",
+    "@material-ui/core": "4.4.0",
     "@montage/ui": "0.0.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
