@@ -32,11 +32,11 @@
     "@material-ui/pickers": "3.2.5",
     "fast-deep-equal": "2.0.1",
     "lodash": "4.17.15",
-    "react": "16.8.6",
     "material-ui-popup-state": "1.4.1",
     "notistack": "0.9.0",
+    "react": "16.9.0",
     "react-copy-to-clipboard": "5.0.1",
-    "react-dom": "16.8.6",
+    "react-dom": "16.9.0",
     "react-error-boundary": "1.2.5",
     "styled-components": "4.3.2"
   },
