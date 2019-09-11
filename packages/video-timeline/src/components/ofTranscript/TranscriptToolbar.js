@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { bool, func, string } from 'prop-types';
@@ -169,8 +171,7 @@ class TranscriptToolbar extends Component {
                         aria-label="Edit"
                         className={this.props.isTranslated ? classes.translateActiveFab : classes.translateFab}
                         onClick={this.props.onToggleTranslate}
-                        size="small"
-                      >
+                        size="small">
                         <TranslateIcon />
                       </Fab>
                     </Tooltip>
@@ -193,8 +194,7 @@ class TranscriptToolbar extends Component {
                                   'aria-label': 'Search in transcript and translation',
                                 }}
                                 onChange={this.onSearchFieldChange}
-                                placeholder="Search…"
-                              ></InputBase>
+                                placeholder="Search…"></InputBase>
                               <IconButton aria-label="Search" className={classes.iconbutton} onClick={this.onSearch}>
                                 <SearchIcon />
                               </IconButton>
@@ -209,9 +209,8 @@ class TranscriptToolbar extends Component {
                       <Fab
                         aria-label="Edit"
                         color={this.props.isEditable ? 'primary' : null}
-                        onClick={this.props.onToggleEdit}
-                      >
-                        {this.props.isEditable ? <CheckIcon fontSize="large" /> : <EditIcon fontSize="medium" />}
+                        onClick={this.props.onToggleEdit}>
+                        {this.props.isEditable ? <CheckIcon fontSize="large" /> : <EditIcon />}
                       </Fab>
                     </Tooltip>
                   </Grid>
