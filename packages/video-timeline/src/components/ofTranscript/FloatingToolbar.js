@@ -31,11 +31,17 @@ const styles = theme => ({
   },
 });
 
+// function getName(entity, entityType) {
+//   return entity[`project_${entityType}`].name;
+// }
+
 class FloatingToolbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isCreating: null,
+      newInstanceId: null,
+      newInstanceEntityName: null,
     };
   }
 
@@ -46,6 +52,10 @@ class FloatingToolbar extends Component {
     const currentEntitites = entityType === 'tag' ? this.props.videoTags : this.props.videoPlaces;
 
     const existingEntity = currentEntitites.find(e => e[entityName].name === name);
+
+    const newInstanceId = Math.random()
+      .toString(36)
+      .substring(2);
 
     if (existingEntity) {
       const entities = produce(currentEntitites, nextEntities => {
@@ -66,12 +76,12 @@ class FloatingToolbar extends Component {
         }
 
         entity.instances.push({
-          id: Math.random()
-            .toString(36)
-            .substring(2),
+          id: newInstanceId,
           start_seconds: start,
           end_seconds: end,
         });
+
+        this.setState({ newInstanceId, newInstanceEntityName: entity });
       });
 
       this.props.update({ [entitiesyKey]: entities });
@@ -79,20 +89,18 @@ class FloatingToolbar extends Component {
       const entities = produce(currentEntitites, nextEntities => {
         nextEntities.splice(0, 0, {
           [entityName]: { name },
-          id: Math.random()
-            .toString(36)
-            .substring(2),
+          id: newInstanceId,
           instances: [
             {
-              id: Math.random()
-                .toString(36)
-                .substring(2),
+              id: newInstanceId,
               start_seconds: this.props.start,
               end_seconds: this.props.end,
             },
           ],
         });
       });
+
+      this.setState({ newInstanceId, newInstanceEntityName: name });
 
       this.props.update({ [entitiesyKey]: entities });
     }
@@ -101,6 +109,11 @@ class FloatingToolbar extends Component {
   render() {
     const { classes } = this.props;
     const { isCreating } = this.state;
+
+    console.group('FloatingToolbar.js');
+    console.log('props:', this.props);
+    console.log('state:', this.state);
+    console.groupEnd();
 
     const ToolbarPopover = (
       <Popover
@@ -160,7 +173,7 @@ class FloatingToolbar extends Component {
           <EntityControls
             // deleteEntity={() => this.deleteEntity(entity.id)}
             // entityId={entity.id}
-            // entityName={getName(entity, entityType)}
+            entityName={this.state.newInstanceEntityName}
             entityType={isCreating}
             isCreating={true}
             // startNewInstance={() => this.startNewInstance(entity.id)}
