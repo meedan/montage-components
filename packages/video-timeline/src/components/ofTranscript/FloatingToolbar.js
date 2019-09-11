@@ -110,10 +110,10 @@ class FloatingToolbar extends Component {
     const { classes } = this.props;
     const { isCreating } = this.state;
 
-    console.group('FloatingToolbar.js');
-    console.log('props:', this.props);
-    console.log('state:', this.state);
-    console.groupEnd();
+    // console.group('FloatingToolbar.js');
+    // console.log('props:', this.props);
+    // console.log('state:', this.state);
+    // console.groupEnd();
 
     const ToolbarPopover = (
       <Popover

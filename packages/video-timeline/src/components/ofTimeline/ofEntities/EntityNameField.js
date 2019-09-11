@@ -5,10 +5,8 @@ import PropTypes from 'prop-types';
 import deburr from 'lodash/deburr';
 import Downshift from 'downshift';
 
-import { withStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import CloseIcon from '@material-ui/icons/Close';
-import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -16,6 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import grey from '@material-ui/core/colors/grey';
+import { withStyles } from '@material-ui/core/styles';
 
 function renderInput(inputProps) {
   const { InputProps, classes, ref, ...other } = inputProps;
