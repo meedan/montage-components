@@ -19,6 +19,7 @@ import TranscriptContainer from './TranscriptContainer';
 import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
+  user-select: auto;
   .public-DraftStyleDefault-block {
     font-family: noto_monoregular, 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     box-sizing: border-box;

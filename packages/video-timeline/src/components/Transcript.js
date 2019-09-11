@@ -29,6 +29,7 @@ const TranscriptRoot = styled.div`
   position: absolute;
   right: 0;
   top: 0;
+  user-select: none;
 `;
 const TranscriptChild = styled.div`
   flex: 1 1 100%;
