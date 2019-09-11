@@ -1,24 +1,24 @@
 /** @format */
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import deburr from 'lodash/deburr'
-import Downshift from 'downshift'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import deburr from 'lodash/deburr';
+import Downshift from 'downshift';
 
-import { withStyles } from '@material-ui/core/styles'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import CloseIcon from '@material-ui/icons/Close'
-import grey from '@material-ui/core/colors/grey'
-import IconButton from '@material-ui/core/IconButton'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import MenuItem from '@material-ui/core/MenuItem'
-import Paper from '@material-ui/core/Paper'
-import TextField from '@material-ui/core/TextField'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import CloseIcon from '@material-ui/icons/Close';
+import grey from '@material-ui/core/colors/grey';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 function renderInput(inputProps) {
-  const { InputProps, classes, ref, ...other } = inputProps
+  const { InputProps, classes, ref, ...other } = inputProps;
 
   return (
     <TextField
@@ -32,12 +32,12 @@ function renderInput(inputProps) {
       }}
       {...other}
     />
-  )
+  );
 }
 
-function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, selectedItem }) {
-  const isHighlighted = highlightedIndex === index
-  const isSelected = (selectedItem || '').indexOf(suggestion.name) > -1
+function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, selectedItem }, onSelect) {
+  const isHighlighted = highlightedIndex === index;
+  const isSelected = (selectedItem || '').indexOf(suggestion.name) > -1;
 
   return (
     <MenuItem
@@ -45,12 +45,13 @@ function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, sele
       key={suggestion.name}
       selected={isHighlighted}
       component="div"
+      onClick={() => onSelect(suggestion.name)}
       style={{
         fontWeight: isSelected ? 500 : 400,
       }}>
       {suggestion.name}
     </MenuItem>
-  )
+  );
 }
 renderSuggestion.propTypes = {
   highlightedIndex: PropTypes.number,
@@ -58,24 +59,24 @@ renderSuggestion.propTypes = {
   itemProps: PropTypes.object,
   selectedItem: PropTypes.string,
   suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired,
-}
+};
 
 function getSuggestions(value, suggestions = []) {
-  const inputValue = deburr(value.trim()).toLowerCase()
-  const inputLength = inputValue.length
-  let count = 0
+  const inputValue = deburr(value.trim()).toLowerCase();
+  const inputLength = inputValue.length;
+  let count = 0;
 
   return inputLength === 0
     ? []
     : suggestions.filter(suggestion => {
-        const keep = count < 5 && suggestion.name.slice(0, inputLength).toLowerCase() === inputValue
+        const keep = count < 5 && suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
 
         if (keep) {
-          count += 1
+          count += 1;
         }
 
-        return keep
-      })
+        return keep;
+      });
 }
 
 const styles = theme => ({
@@ -108,30 +109,30 @@ const styles = theme => ({
     paddingRight: 16,
     paddingTop: 8,
   },
-})
+});
 
 class EntityNameField extends Component {
   constructor(props) {
-    super(props)
-    this.state = { name: this.props.name }
+    super(props);
+    this.state = { name: this.props.name };
   }
 
   onChange = str => {
-    this.setState({ name: str })
-  }
+    this.setState({ name: str });
+  };
   onSubmit = () => {
-    this.props.onSubmit(this.state.name)
-  }
+    this.props.onSubmit(this.state.name);
+  };
   onClickAway = () => {
     if (!this.state.name || this.state.name.length === 0 || this.state.name === this.props.name) {
-      this.props.onCancel()
+      this.props.onCancel();
     } else {
-      this.onSubmit()
+      this.onSubmit();
     }
-  }
+  };
 
   render() {
-    const { classes, name, onCancel, suggestions } = this.props
+    const { classes, name, onCancel, suggestions } = this.props;
 
     return (
       <ClickAwayListener onClickAway={this.onClickAway}>
@@ -145,11 +146,11 @@ class EntityNameField extends Component {
                 required: true,
                 onKeyPress: e => {
                   if (e.key === 'Enter') {
-                    e.preventDefault()
-                    this.onSubmit()
+                    e.preventDefault();
+                    this.onSubmit();
                   } else if (e.key === 'Escape') {
-                    e.preventDefault()
-                    onCancel()
+                    e.preventDefault();
+                    onCancel();
                   }
                 },
                 InputProps: getInputProps({
@@ -174,13 +175,16 @@ class EntityNameField extends Component {
                       </Typography>
                     ) : null}
                     {getSuggestions(inputValue, suggestions).map((suggestion, index) =>
-                      renderSuggestion({
-                        suggestion,
-                        index,
-                        itemProps: getItemProps({ item: suggestion.name }),
-                        highlightedIndex,
-                        selectedItem,
-                      })
+                      renderSuggestion(
+                        {
+                          suggestion,
+                          index,
+                          itemProps: getItemProps({ item: suggestion.name }),
+                          highlightedIndex,
+                          selectedItem,
+                        },
+                        name => this.props.onSubmit(name)
+                      )
                     )}
                   </Paper>
                 ) : null}
@@ -189,8 +193,8 @@ class EntityNameField extends Component {
           )}
         </Downshift>
       </ClickAwayListener>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(EntityNameField)
+export default withStyles(styles)(EntityNameField);
