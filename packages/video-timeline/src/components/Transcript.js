@@ -628,6 +628,7 @@ class Transcript extends React.Component {
           translations={this.state.translations}
         />
         <TranscriptChild
+          className="sticky-scroll-area"
           onScroll={this.toggleOffset.bind(this)}
           ref={ref => {
             this.scrollingContainer = ref;
@@ -646,10 +647,10 @@ class Transcript extends React.Component {
           ) : null}
           {this.state.comment && this.state.commentAnchor ? (
             <CommentPopover
-              isVisible={this.state.commentAnchor}
-              onClose={() => this.setState({ comment: null, commentAnchor: null })}
               commentData={this.state.comment}
-              isActionable={false}></CommentPopover>
+              isActionable={false}
+              isVisible={this.state.commentAnchor}
+              onClose={() => this.setState({ comment: null, commentAnchor: null })}></CommentPopover>
           ) : null}
           <TranscriptWrapper stretch={this.state.showTranslation}>
             <div

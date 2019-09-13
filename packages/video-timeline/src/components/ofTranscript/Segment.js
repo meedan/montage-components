@@ -1,9 +1,8 @@
-/** @format */
-
 import React from 'react';
 import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
+import Sticky from 'react-sticky-el';
 
 import { generateDecorator, memoizedCreatePreview } from './transcriptUtils';
 
@@ -29,6 +28,9 @@ const EditorWrapper = styled.section`
       box-sizing: border-box;
     }
   }
+  .sticky {
+    transition: transform 0.2s, top 0.2s;
+  }
 `;
 
 const LegendContainer = styled.div`
@@ -49,7 +51,7 @@ const LegendLabel = styled.div`
 `;
 
 const Legend = ({ comments, tags, places, higlightTag }) => (
-  <>
+  <Sticky boundaryElement=".sticky-boundary-el" scrollElement=".sticky-scroll-area" hideOnBoundaryHit={false}>
     {comments.length > 0 ? (
       <LegendContainer>
         <LegendLabel>
@@ -112,7 +114,7 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
         ))}
       </LegendContainer>
     ) : null}
-  </>
+  </Sticky>
 );
 
 export default React.memo(
@@ -150,7 +152,7 @@ export default React.memo(
           scrollCheck={true}
           partialVisibility={true}>
           {({ isVisible }) => (
-            <TranscriptContainer>
+            <TranscriptContainer className="sticky-boundary-el">
               <TranscriptSide left separate>
                 {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
               </TranscriptSide>
