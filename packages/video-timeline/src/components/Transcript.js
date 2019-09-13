@@ -1,5 +1,3 @@
-/** @format */
-
 import Combinatorics from 'js-combinatorics';
 import React from 'react';
 import chunk from 'lodash.chunk';
@@ -607,10 +605,10 @@ class Transcript extends React.Component {
     const { videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
-    // console.group('Transcript.js');
-    // console.log(this.state.comment);
-    // console.log(this.state.commentAnchor);
-    // console.groupEnd();
+    console.group('Transcript.js');
+    console.log('props', this.props);
+    console.log('state', this.state);
+    console.groupEnd();
 
     return (
       <TranscriptRoot>
@@ -680,8 +678,11 @@ class Transcript extends React.Component {
           `}
                 {activeTag
                   ? `
-                    span[class*='T-']{
+                    span[class*='T-'] {
                       background-color: transparent;
+                    }
+                    span[class*='C-']:before {
+                      transform: scale(1.1);
                     }
                     .${activeTag}.${activeTag} {
                       background-color: rgba(71, 123, 181, .6);

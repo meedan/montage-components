@@ -59,9 +59,11 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
             <CommentIcon fontSize="small" color="disabled" size="" style={{ height: '0.85em' }}></CommentIcon>
           </Tooltip>
         </LegendLabel>
-        <Typography color="textSecondary" noWrap style={{ display: 'block', width: '120px' }} variant="caption">
-          {comments.length} comment thread{comments.length > 1 ? 's' : ''}
-        </Typography>
+        <LegendItem onMouseOver={() => higlightTag('C-*')} onMouseOut={() => higlightTag(null)}>
+          <Typography color="textSecondary" noWrap style={{ display: 'block', width: '120px' }} variant="caption">
+            {comments.length} comment thread{comments.length > 1 ? 's' : ''}
+          </Typography>
+        </LegendItem>
       </LegendContainer>
     ) : null}
 
