@@ -53,9 +53,7 @@ class FloatingToolbar extends Component {
 
     const existingEntity = currentEntitites.find(e => e[entityName].name === name);
 
-    const newInstanceId = Math.random()
-      .toString(36)
-      .substring(2);
+    const newInstanceId = Date.now();
 
     if (existingEntity) {
       const entities = produce(currentEntitites, nextEntities => {

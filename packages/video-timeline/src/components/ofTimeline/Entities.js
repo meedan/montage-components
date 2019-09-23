@@ -119,9 +119,7 @@ class Entities extends Component {
         console.log('cannot make overlapping instances', currentTime, i.start_seconds, i.end_seconds);
       } else {
         t.instances.push({
-          id: Math.random()
-            .toString(36)
-            .substring(2),
+          id: Date.now(),
           start_seconds: currentTime,
           end_seconds: currentTime + 30,
         });
@@ -133,9 +131,7 @@ class Entities extends Component {
 
   startNewEntity = () => {
     const { currentTime, entityType } = this.props;
-    const id = Math.random()
-      .toString(36)
-      .substring(2);
+    const id = Date.now();
 
     const entityName = (function() {
       if (entityType === 'tag') {
@@ -155,9 +151,7 @@ class Entities extends Component {
         isCreating: true,
         instances: [
           {
-            id: Math.random()
-              .toString(36)
-              .substring(2),
+            id: Date.now(),
             start_seconds: currentTime,
             end_seconds: currentTime + 30,
           },
@@ -232,15 +226,11 @@ class Entities extends Component {
 
       if (!clip) {
         clip = {
-          id: Math.random()
-            .toString(36)
-            .substring(2),
+          id: Date.now(),
           isCreating: false,
           instances: [
             {
-              id: Math.random()
-                .toString(36)
-                .substring(2),
+              id: Date.now(),
               start_seconds: instance.start_seconds,
               end_seconds: instance.end_seconds,
             },
@@ -256,9 +246,7 @@ class Entities extends Component {
       } else {
         console.log('existing clip', clip);
         const j = {
-          id: Math.random()
-            .toString(36)
-            .substring(2),
+          id: Date.now(),
           start_seconds: instance.start_seconds,
           end_seconds: instance.end_seconds,
         };
@@ -326,8 +314,7 @@ class Entities extends Component {
               </IconButton>
             </Tooltip>
           </>
-        }
-      >
+        }>
         {entities
           ? entities.map((entity, i) => {
               const { instances } = entity;
