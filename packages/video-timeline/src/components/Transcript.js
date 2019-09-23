@@ -400,10 +400,12 @@ class Transcript extends React.Component {
       tagInstances = tags.reduce(
         (acc, t) => [
           ...acc,
-          t.instances.filter(
-            ({ start_seconds, end_seconds }) =>
-              (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
-          ),
+          t.instances
+            .filter(
+              ({ start_seconds, end_seconds }) =>
+                (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
+            )
+            .sort((a, b) => a.end_seconds - a.start_seconds - (b.end_seconds - b.start_seconds)),
         ],
         []
       );
@@ -414,10 +416,12 @@ class Transcript extends React.Component {
       placeInstances = places.reduce(
         (acc, t) => [
           ...acc,
-          t.instances.filter(
-            ({ start_seconds, end_seconds }) =>
-              (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
-          ),
+          t.instances
+            .filter(
+              ({ start_seconds, end_seconds }) =>
+                (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
+            )
+            .sort((a, b) => a.end_seconds - a.start_seconds - (b.end_seconds - b.start_seconds)),
         ],
         []
       );
