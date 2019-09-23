@@ -139,7 +139,7 @@ class FloatingToolbar extends Component {
             </IconButton>
           </Tooltip>
           <Tooltip title="Add place">
-            <IconButton onClick={() => this.setState({ isCreating: 'place' })}>
+            <IconButton onClick={() => this.setState({ isCreating: 'location' })}>
               <PlaceIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -178,7 +178,7 @@ class FloatingToolbar extends Component {
             isCreating={true}
             // startNewInstance={() => this.startNewInstance(entity.id)}
             stopNewEntity={() => this.setState({ isCreating: null })}
-            suggestions={isCreating === 'place' ? this.props.projectplaces : this.props.projecttags}
+            suggestions={isCreating === 'location' ? this.props.projectplaces : this.props.projecttags}
             updateEntity={this.updateEntity}
           />
         </Grid>
@@ -218,7 +218,7 @@ class FloatingToolbar extends Component {
     if (!isCreating) {
       return ToolbarPopover;
     } else {
-      if (isCreating === 'place' || isCreating === 'tag') {
+      if (isCreating === 'location' || isCreating === 'tag') {
         return NewEntityPopover;
       } else if (isCreating === 'comment') {
         return NewThreadPopover;
