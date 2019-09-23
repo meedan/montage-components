@@ -21,7 +21,7 @@ export const configureAppStore = preloadedState => {
       // RavenMiddleware(SENTRY_DSN),
       logger,
       save({
-        namespace: 'pizza123',
+        namespace: 'pizza2',
         states: ['data'],
         debounce: 1000,
       }),
@@ -29,7 +29,7 @@ export const configureAppStore = preloadedState => {
     ],
     // preloadedState,
     preloadedState: load({
-      namespace: 'pizza321',
+      namespace: 'pizza2',
       states: ['data'],
       preloadedState,
     }),
