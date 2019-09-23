@@ -128,9 +128,9 @@ export default React.memo(
     editorKey,
     editorStateA,
     editorStateB,
-    filterKeyBindingFn,
+    // filterKeyBindingFn,
     handleChange,
-    handleKeyCommand,
+    // handleKeyCommand,
     higlightTag,
     languageA = 'en-US',
     languageB = 'en-US',
@@ -148,10 +148,12 @@ export default React.memo(
     return (
       <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey}>
         <VisibilitySensor
+          delayedCall={true}
           intervalCheck={true}
           intervalDelay={1000}
           containment={scrollingContainer}
           scrollCheck={true}
+          scrollDelay={500}
           partialVisibility={true}>
           {({ isVisible }) => (
             <TranscriptContainer className="sticky-boundary-el">
@@ -183,8 +185,8 @@ export default React.memo(
                     }
                     blockRendererFn={customBlockRenderer}
                     customStyleMap={customStyleMap}
-                    keyBindingFn={event => filterKeyBindingFn(event)}
-                    handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                    // keyBindingFn={event => filterKeyBindingFn(event)}
+                    // handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                     onChange={editorState => handleChange(editorState, editorKey)}
                     textDirectionality={textDirectionalityA}
                     spellCheck={false}
@@ -217,8 +219,8 @@ export default React.memo(
                       }
                       blockRendererFn={customBlockRenderer}
                       customStyleMap={customStyleMap}
-                      keyBindingFn={event => filterKeyBindingFn(event)}
-                      handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
+                      // keyBindingFn={event => filterKeyBindingFn(event)}
+                      // handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                       onChange={editorState => handleChange(editorState, editorKey, 'B')}
                       textDirectionality={textDirectionalityB}
                       spellCheck={false}

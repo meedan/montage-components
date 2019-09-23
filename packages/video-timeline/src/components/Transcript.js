@@ -60,8 +60,8 @@ class Transcript extends React.Component {
     selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
     translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
   };
-  past = [];
-  future = [];
+  // past = [];
+  // future = [];
 
   componentDidMount() {
     const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
@@ -294,7 +294,7 @@ class Transcript extends React.Component {
           convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
           generateDecorator()
         ),
-        { allowUndo: false }
+        { allowUndo: true }
       );
       return {
         start: segmentStart,
@@ -561,8 +561,8 @@ class Transcript extends React.Component {
     if (contentChange) {
       console.log(contentChange);
 
-      this.past.push(this.state.segments);
-      this.future = [];
+      // this.past.push(this.state.segments);
+      // this.future = [];
 
       this.setState({
         segments: [
@@ -582,52 +582,52 @@ class Transcript extends React.Component {
     }
   };
 
-  handleUndo = () => {
-    const { segments: present } = this.state;
-    const futurePresent = this.past.pop();
+  // handleUndo = () => {
+  //   const { segments: present } = this.state;
+  //   const futurePresent = this.past.pop();
 
-    if (futurePresent) {
-      this.future.push(present);
-      this.setState({
-        segments: futurePresent,
-      });
-    }
-  };
+  //   if (futurePresent) {
+  //     this.future.push(present);
+  //     this.setState({
+  //       segments: futurePresent,
+  //     });
+  //   }
+  // };
 
-  handleRedo = () => {
-    const { segments: present } = this.state;
-    const futurePresent = this.future.pop();
+  // handleRedo = () => {
+  //   const { segments: present } = this.state;
+  //   const futurePresent = this.future.pop();
 
-    if (futurePresent) {
-      this.past.push(present);
-      this.setState({
-        segments: futurePresent,
-      });
-    }
-  };
+  //   if (futurePresent) {
+  //     this.past.push(present);
+  //     this.setState({
+  //       segments: futurePresent,
+  //     });
+  //   }
+  // };
 
-  handleKeyCommand = (command, editorState, key, suffix = 'A') => {
-    console.log(command);
-    if (command === 'undo' || command === 'redo') return 'handled';
+  // handleKeyCommand = (command, editorState, key, suffix = 'A') => {
+  //   console.log(command);
+  //   if (command === 'undo' || command === 'redo') return 'handled';
 
-    return 'not-handled';
-  };
+  //   return 'not-handled';
+  // };
 
-  filterKeyBindingFn = event => {
-    const { nativeEvent } = event;
+  // filterKeyBindingFn = event => {
+  //   const { nativeEvent } = event;
 
-    if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && !nativeEvent.shiftKey) {
-      setTimeout(() => this.handleUndo(), 0);
-      return 'undo';
-    }
+  //   if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && !nativeEvent.shiftKey) {
+  //     setTimeout(() => this.handleUndo(), 0);
+  //     return 'undo';
+  //   }
 
-    if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && nativeEvent.shiftKey) {
-      setTimeout(() => this.handleRedo(), 0);
-      return 'redo';
-    }
+  //   if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && nativeEvent.shiftKey) {
+  //     setTimeout(() => this.handleRedo(), 0);
+  //     return 'redo';
+  //   }
 
-    return getDefaultKeyBinding(event);
-  };
+  //   return getDefaultKeyBinding(event);
+  // };
 
   onSearch = payload => {
     if (payload === this.state.search) return;
@@ -780,9 +780,9 @@ class Transcript extends React.Component {
                     editorKey: key,
                     editorStateA,
                     editorStateB,
-                    filterKeyBindingFn,
+                    // filterKeyBindingFn,
                     handleChange,
-                    handleKeyCommand,
+                    // handleKeyCommand,
                     higlightTag,
                     key,
                     places,
