@@ -349,21 +349,96 @@ class Transcript extends React.Component {
 
   handleMouseMove = ({ nativeEvent: { srcElement, path = [] } }) => {
     let comment = null;
+    let tags = [];
+    let places = [];
+    let tagInstances = [];
+    let placeInstances = [];
+
     srcElement.classList.forEach(c => {
       if (c.startsWith('C-')) comment = c.substring(2);
+      if (c.startsWith('T-')) tags.push(c.substring(2));
+      if (c.startsWith('G-')) places.push(c.substring(2));
+    });
+
+    srcElement.parentElement.classList.forEach(c => {
+      if (c.startsWith('C-')) comment = c.substring(2);
+      if (c.startsWith('T-')) tags.push(c.substring(2));
+      if (c.startsWith('G-')) places.push(c.substring(2));
     });
 
     if (comment) {
       this.setState({
         comment: this.props.commentThreads.find(({ id }) => id === parseInt(comment)),
         commentAnchor: srcElement,
+        tags: [],
+        places: [],
+        tagInstances,
+        placeInstances,
       });
+
+      return; // comment menu has precedence over tags
     } else {
       this.setState({
         comment: null,
         commentAnchor: null,
       });
     }
+
+    let start;
+    let end;
+    if (tags.length > 0 || places.length > 0) {
+      let element = srcElement;
+      while (element && !element.hasAttribute('data-start') && element.parentElement) element = element.parentElement;
+      if (element && element.hasAttribute('data-start')) {
+        start = parseFloat(element.getAttribute('data-start')) / 1e3;
+        end = parseFloat(element.getAttribute('data-end')) / 1e3;
+      }
+    }
+
+    if (tags.length > 0) {
+      tags = tags.map(t => this.props.videoTags.find(({ id }) => id === parseInt(t)));
+      tagInstances = tags.reduce(
+        (acc, t) => [
+          ...acc,
+          t.instances.filter(
+            ({ start_seconds, end_seconds }) =>
+              (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
+          ),
+        ],
+        []
+      );
+    }
+
+    if (places.length > 0) {
+      places = places.map(t => this.props.videoPlaces.find(({ id }) => id === parseInt(t)));
+      placeInstances = places.reduce(
+        (acc, t) => [
+          ...acc,
+          t.instances.filter(
+            ({ start_seconds, end_seconds }) =>
+              (start_seconds <= start && start < end_seconds) || (start_seconds < end && end <= end_seconds)
+          ),
+        ],
+        []
+      );
+    }
+
+    if (tags.length > 0 || places.length > 0)
+      console.log({
+        tags,
+        places,
+        tagInstances,
+        placeInstances,
+        tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
+      });
+
+    this.setState({
+      tags,
+      places,
+      tagInstances,
+      placeInstances,
+      tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
+    });
   };
 
   handleClick = event => {
@@ -605,10 +680,10 @@ class Transcript extends React.Component {
     const { videoTags } = this.props;
     const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
 
-    console.group('Transcript.js');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
+    // console.group('Transcript.js');
+    // console.log('props', this.props);
+    // console.log('state', this.state);
+    // console.groupEnd();
 
     return (
       <TranscriptRoot>
