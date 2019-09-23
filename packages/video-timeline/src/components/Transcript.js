@@ -361,7 +361,7 @@ class Transcript extends React.Component {
     });
 
     srcElement.parentElement.classList.forEach(c => {
-      if (c.startsWith('C-')) comment = c.substring(2);
+      // if (c.startsWith('C-')) comment = c.substring(2);
       if (c.startsWith('T-')) tags.push(c.substring(2));
       if (c.startsWith('G-')) places.push(c.substring(2));
     });
