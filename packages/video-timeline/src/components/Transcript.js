@@ -16,7 +16,7 @@ import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './o
 
 const EMPTY_TRANSCRIPT = false;
 const EMPTY_TRANSLATION = false;
-const MAX_OVERLAP = 5;
+const MAX_OVERLAP = 6;
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -749,7 +749,7 @@ class Transcript extends React.Component {
               .filter(subset => subset.length > 0)
               .map(
                 subset => `
-                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.2 +
+                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.1 +
                   subset.length / MAX_OVERLAP}); }
                 `
               )
@@ -764,7 +764,7 @@ class Transcript extends React.Component {
                       transform: scale(1.1);
                     }
                     .${activeTag}.${activeTag} {
-                      background-color: rgba(71, 123, 181, .6);
+                      background-color: rgba(71, 123, 181, .4);
                     }
                   `
                   : ''}
