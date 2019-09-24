@@ -152,8 +152,8 @@ export default React.memo(
           intervalCheck={true}
           intervalDelay={1000}
           containment={scrollingContainer}
-          scrollCheck={true}
-          scrollDelay={500}
+          scrollCheck={false}
+          scrollDelay={1000}
           partialVisibility={true}>
           {({ isVisible }) => (
             <TranscriptContainer className="sticky-boundary-el">
