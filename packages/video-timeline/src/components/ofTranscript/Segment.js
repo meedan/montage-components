@@ -14,11 +14,17 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 
 import TranscriptSide from './TranscriptSide';
 import TranscriptMain from './TranscriptMain';
-import TranscriptContainer from './TranscriptContainer';
 import TranscriptText from './TranscriptText';
 
 const EditorWrapper = styled.section`
   user-select: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1500px;
+
   .public-DraftStyleDefault-block {
     font-family: noto_monoregular, 'PT Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     box-sizing: border-box;
@@ -31,6 +37,9 @@ const EditorWrapper = styled.section`
   .sticky {
     transition: transform 0.2s, top 0.2s;
   }
+  .sticky-boundary-el {
+    position: relative;
+  }
 `;
 
 const LegendContainer = styled.div`
@@ -38,6 +47,7 @@ const LegendContainer = styled.div`
   padding-left: 24px;
   position: relative;
   user-select: none;
+  height: 100%;
 `;
 const LegendItem = styled.div`
   &:hover * {
@@ -146,7 +156,7 @@ export default React.memo(
     const previewStateA = memoizedCreatePreview(editorStateA);
 
     return (
-      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey}>
+      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
         <VisibilitySensor
           delayedCall={true}
           intervalCheck={true}
@@ -156,7 +166,7 @@ export default React.memo(
           scrollDelay={1000}
           partialVisibility={true}>
           {({ isVisible }) => (
-            <TranscriptContainer className="sticky-boundary-el">
+            <>
               <TranscriptSide left separate>
                 {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
               </TranscriptSide>
@@ -230,7 +240,7 @@ export default React.memo(
                 ) : null}
               </TranscriptMain>
               <TranscriptSide right separate></TranscriptSide>
-            </TranscriptContainer>
+            </>
           )}
         </VisibilitySensor>
       </EditorWrapper>
