@@ -2,7 +2,7 @@ import Combinatorics from 'js-combinatorics';
 import React from 'react';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
-import { EditorState, convertFromRaw, getDefaultKeyBinding } from 'draft-js';
+import { EditorState, convertFromRaw } from 'draft-js';
 
 import '@montage/ui/assets/fonts/iconfont/style.css';
 
@@ -14,9 +14,8 @@ import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
-const EMPTY_TRANSCRIPT = false;
 const EMPTY_TRANSLATION = false;
-const MAX_OVERLAP = 6;
+const OVERLAPS = ['#b5cae1', '#91b0d3', '#6c95c4', '#467ebd', '#1c62b1', '#0250a9'];
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -59,13 +58,13 @@ class Transcript extends React.Component {
     // showTranslation: true,
     selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
     translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
+    css: '',
   };
-  // past = [];
-  // future = [];
 
   componentDidMount() {
     const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
     this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
+    this.generateCSS(videoTags);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -73,6 +72,7 @@ class Transcript extends React.Component {
 
     if (this.props.transcript !== transcript || videoTags !== this.props.videoTags) {
       this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
+      this.generateCSS(videoTags);
     }
 
     if (nextProps.currentTime !== this.props.currentTime) {
@@ -85,10 +85,7 @@ class Transcript extends React.Component {
           let playheadBlockIndex = -1;
 
           playheadBlockIndex = blocks.findIndex(block => {
-            // const start = block.getData().get('start');
-            // const end = block.getData().get('end');
             const { start, end } = memoizedGetBlockTimings(contentState, block);
-            // console.log({start, end});
             return start <= time && time < end;
           });
 
@@ -154,6 +151,15 @@ class Transcript extends React.Component {
 
     return true;
   }
+
+  generateCSS = videoTags => {
+    this.setState({
+      css: Combinatorics.power(videoTags.map(({ id }) => id))
+        .filter(subset => subset.length > 0)
+        .map(subset => `.T-${subset.join('.T-')} { background-color: ${OVERLAPS[subset.length - 1]}; }`)
+        .join('\n'),
+    });
+  };
 
   loadTranscript = (transcript, commentThreads, videoTags, videoPlaces) => {
     const customStyleMap = {
@@ -288,7 +294,6 @@ class Transcript extends React.Component {
           return block;
         });
 
-      // console.log(blocks);
       const editorStateA = EditorState.set(
         EditorState.createWithContent(
           convertFromRaw({ blocks, entityMap: createEntityMap(blocks) }),
@@ -361,7 +366,6 @@ class Transcript extends React.Component {
     });
 
     srcElement.parentElement.classList.forEach(c => {
-      // if (c.startsWith('C-')) comment = c.substring(2);
       if (c.startsWith('T-')) tags.push(c.substring(2));
       if (c.startsWith('G-')) places.push(c.substring(2));
     });
@@ -447,7 +451,6 @@ class Transcript extends React.Component {
 
   handleClick = event => {
     let element = event.nativeEvent.target;
-    console.log('click', element);
 
     const selection = window.getSelection();
     if (selection.rangeCount > 0 && !this.state.editable) {
@@ -582,53 +585,6 @@ class Transcript extends React.Component {
     }
   };
 
-  // handleUndo = () => {
-  //   const { segments: present } = this.state;
-  //   const futurePresent = this.past.pop();
-
-  //   if (futurePresent) {
-  //     this.future.push(present);
-  //     this.setState({
-  //       segments: futurePresent,
-  //     });
-  //   }
-  // };
-
-  // handleRedo = () => {
-  //   const { segments: present } = this.state;
-  //   const futurePresent = this.future.pop();
-
-  //   if (futurePresent) {
-  //     this.past.push(present);
-  //     this.setState({
-  //       segments: futurePresent,
-  //     });
-  //   }
-  // };
-
-  // handleKeyCommand = (command, editorState, key, suffix = 'A') => {
-  //   console.log(command);
-  //   if (command === 'undo' || command === 'redo') return 'handled';
-
-  //   return 'not-handled';
-  // };
-
-  // filterKeyBindingFn = event => {
-  //   const { nativeEvent } = event;
-
-  //   if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && !nativeEvent.shiftKey) {
-  //     setTimeout(() => this.handleUndo(), 0);
-  //     return 'undo';
-  //   }
-
-  //   if (nativeEvent.keyCode === 90 && nativeEvent.metaKey && nativeEvent.shiftKey) {
-  //     setTimeout(() => this.handleRedo(), 0);
-  //     return 'redo';
-  //   }
-
-  //   return getDefaultKeyBinding(event);
-  // };
-
   onSearch = payload => {
     if (payload === this.state.search) return;
     this.setState({
@@ -680,9 +636,9 @@ class Transcript extends React.Component {
       showTranslation,
       // selectedTranslation,
       customStyleMap,
+      css,
     } = this.state;
-    const { videoTags } = this.props;
-    const { customBlockRenderer, filterKeyBindingFn, handleKeyCommand, handleChange, higlightTag } = this;
+    const { customBlockRenderer, handleChange, higlightTag } = this;
 
     // console.group('Transcript.js');
     // console.log('props', this.props);
@@ -706,7 +662,7 @@ class Transcript extends React.Component {
         />
         <TranscriptChild
           className="sticky-scroll-area"
-          onScroll={this.toggleOffset.bind(this)}
+          // onScroll={this.toggleOffset.bind(this)}
           ref={ref => {
             this.scrollingContainer = ref;
           }}>
@@ -738,23 +694,16 @@ class Transcript extends React.Component {
               onMouseMove={event => this.handleMouseMove(event)}>
               <style scoped>
                 {`
-            section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
-            div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
-            span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
+                  section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
+                  div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
+                  span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
 
-            span[class*='C-']{
-              position: relative;
-            }
-            ${Combinatorics.power(videoTags.map(({ id }) => id))
-              .filter(subset => subset.length > 0)
-              .map(
-                subset => `
-                  .T-${subset.join('.T-')} { background-color: rgba(71, 123, 181, ${0.1 +
-                  subset.length / MAX_OVERLAP}); }
-                `
-              )
-              .join('\n')}
-          `}
+                  span[class*='C-']{
+                    position: relative;
+                  }
+
+                  ${css}
+                `}
                 {activeTag
                   ? `
                     span[class*='T-'] {
@@ -780,9 +729,7 @@ class Transcript extends React.Component {
                     editorKey: key,
                     editorStateA,
                     editorStateB,
-                    // filterKeyBindingFn,
                     handleChange,
-                    // handleKeyCommand,
                     higlightTag,
                     key,
                     places,
