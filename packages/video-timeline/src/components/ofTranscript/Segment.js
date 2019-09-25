@@ -129,6 +129,8 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
   </Sticky>
 );
 
+const previewState = editorState => memoizedCreatePreview(editorState);
+
 export default React.memo(
   ({
     comments,
@@ -138,9 +140,7 @@ export default React.memo(
     editorKey,
     editorStateA,
     editorStateB,
-    // filterKeyBindingFn,
     handleChange,
-    // handleKeyCommand,
     higlightTag,
     languageA = 'en-US',
     languageB = 'en-US',
@@ -153,19 +153,10 @@ export default React.memo(
     textDirectionalityA = 'LTR',
     textDirectionalityB = 'LTR',
   }) => {
-    const previewStateA = memoizedCreatePreview(editorStateA);
+    const isVisible = true;
 
     return (
       <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
-        <VisibilitySensor
-          delayedCall={true}
-          intervalCheck={true}
-          intervalDelay={1000}
-          containment={scrollingContainer}
-          scrollCheck={false}
-          scrollDelay={1000}
-          partialVisibility={true}>
-          {({ isVisible }) => (
             <>
               <TranscriptSide left separate>
                 {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
@@ -179,24 +170,22 @@ export default React.memo(
                     editorState={
                       isVisible
                         ? searchFocused
-                          ? EditorState.set(previewStateA, {
+                          ? EditorState.set(previewState(editorStateA), {
                               decorator: generateDecorator(search),
                             })
                           : search !== ''
-                          ? EditorState.set(previewStateA, {
+                          ? EditorState.set(previewState(editorStateA), {
                               decorator: generateDecorator(search),
                             })
                           : editorStateA
                         : search.length > 2
-                        ? EditorState.set(previewStateA, {
+                        ? EditorState.set(previewState(editorStateA), {
                             decorator: generateDecorator(search),
                           })
-                        : previewStateA
+                        : previewState(editorStateA)
                     }
                     blockRendererFn={customBlockRenderer}
                     customStyleMap={customStyleMap}
-                    // keyBindingFn={event => filterKeyBindingFn(event)}
-                    // handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                     onChange={editorState => handleChange(editorState, editorKey)}
                     textDirectionality={textDirectionalityA}
                     spellCheck={false}
@@ -229,8 +218,6 @@ export default React.memo(
                       }
                       blockRendererFn={customBlockRenderer}
                       customStyleMap={customStyleMap}
-                      // keyBindingFn={event => filterKeyBindingFn(event)}
-                      // handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState, editorKey)}
                       onChange={editorState => handleChange(editorState, editorKey, 'B')}
                       textDirectionality={textDirectionalityB}
                       spellCheck={false}
@@ -241,8 +228,6 @@ export default React.memo(
               </TranscriptMain>
               <TranscriptSide right separate></TranscriptSide>
             </>
-          )}
-        </VisibilitySensor>
       </EditorWrapper>
     );
   }
