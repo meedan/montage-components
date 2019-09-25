@@ -152,83 +152,90 @@ export default React.memo(
     tags,
     textDirectionalityA = 'LTR',
     textDirectionalityB = 'LTR',
-  }) => {
-    const isVisible = true;
+  }) => (
+    <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
+      <VisibilitySensor
+        delayedCall={true}
+        intervalCheck={true}
+        intervalDelay={1000}
+        containment={scrollingContainer}
+        scrollCheck={false}
+        scrollDelay={1000}
+        partialVisibility={true}>
+        {({ isVisible }) => (
+          <>
+            <TranscriptSide left separate>
+              {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
+            </TranscriptSide>
+            <TranscriptMain>
+              <TranscriptText lang={languageA} stretch={!showTranslation}>
+                <Editor
+                  editorKey={`A${editorKey}`}
+                  readOnly={!editable || !isVisible}
+                  stripPastedStyles
+                  editorState={
+                    isVisible
+                      ? searchFocused
+                        ? EditorState.set(previewState(editorStateA), {
+                            decorator: generateDecorator(search),
+                          })
+                        : search !== ''
+                        ? EditorState.set(previewState(editorStateA), {
+                            decorator: generateDecorator(search),
+                          })
+                        : editorStateA
+                      : search.length > 2
+                      ? EditorState.set(previewState(editorStateA), {
+                          decorator: generateDecorator(search),
+                        })
+                      : previewState(editorStateA)
+                  }
+                  blockRendererFn={customBlockRenderer}
+                  customStyleMap={customStyleMap}
+                  onChange={editorState => handleChange(editorState, editorKey)}
+                  textDirectionality={textDirectionalityA}
+                  spellCheck={false}
+                  placeholder="Transcribe here…"
+                />
+              </TranscriptText>
 
-    return (
-      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
-            <>
-              <TranscriptSide left separate>
-                {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
-              </TranscriptSide>
-              <TranscriptMain>
-                <TranscriptText lang={languageA} stretch={!showTranslation}>
+              {showTranslation ? (
+                <TranscriptText lang={languageB}>
                   <Editor
-                    editorKey={`A${editorKey}`}
+                    editorKey={`B${editorKey}`}
                     readOnly={!editable || !isVisible}
                     stripPastedStyles
                     editorState={
                       isVisible
                         ? searchFocused
-                          ? EditorState.set(previewState(editorStateA), {
+                          ? EditorState.set(editorStateB, {
                               decorator: generateDecorator(search),
                             })
                           : search !== ''
-                          ? EditorState.set(previewState(editorStateA), {
-                              decorator: generateDecorator(search),
-                            })
-                          : editorStateA
-                        : search.length > 2
-                        ? EditorState.set(previewState(editorStateA), {
-                            decorator: generateDecorator(search),
-                          })
-                        : previewState(editorStateA)
-                    }
-                    blockRendererFn={customBlockRenderer}
-                    customStyleMap={customStyleMap}
-                    onChange={editorState => handleChange(editorState, editorKey)}
-                    textDirectionality={textDirectionalityA}
-                    spellCheck={false}
-                    placeholder="Transcribe here…"
-                  />
-                </TranscriptText>
-
-                {showTranslation ? (
-                  <TranscriptText lang={languageB}>
-                    <Editor
-                      editorKey={`B${editorKey}`}
-                      readOnly={!editable || !isVisible}
-                      stripPastedStyles
-                      editorState={
-                        isVisible
-                          ? searchFocused
-                            ? EditorState.set(editorStateB, {
-                                decorator: generateDecorator(search),
-                              })
-                            : search !== ''
-                            ? EditorState.set(editorStateB, {
-                                decorator: generateDecorator(search),
-                              })
-                            : editorStateB
-                          : search.length > 2
                           ? EditorState.set(editorStateB, {
                               decorator: generateDecorator(search),
                             })
                           : editorStateB
-                      }
-                      blockRendererFn={customBlockRenderer}
-                      customStyleMap={customStyleMap}
-                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
-                      textDirectionality={textDirectionalityB}
-                      spellCheck={false}
-                      placeholder="Translate here…"
-                    />
-                  </TranscriptText>
-                ) : null}
-              </TranscriptMain>
-              <TranscriptSide right separate></TranscriptSide>
-            </>
-      </EditorWrapper>
-    );
-  }
+                        : search.length > 2
+                        ? EditorState.set(editorStateB, {
+                            decorator: generateDecorator(search),
+                          })
+                        : editorStateB
+                    }
+                    blockRendererFn={customBlockRenderer}
+                    customStyleMap={customStyleMap}
+                    onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                    textDirectionality={textDirectionalityB}
+                    spellCheck={false}
+                    placeholder="Translate here…"
+                  />
+                </TranscriptText>
+              ) : null}
+            </TranscriptMain>
+            <TranscriptSide right separate></TranscriptSide>
+          </>
+        )}
+      </VisibilitySensor>
+    </EditorWrapper>
+  )
 );

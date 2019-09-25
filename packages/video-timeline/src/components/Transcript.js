@@ -71,8 +71,8 @@ class Transcript extends React.Component {
     const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
 
     if (this.props.transcript !== transcript || videoTags !== this.props.videoTags) {
-      this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
       this.generateCSS(videoTags);
+      this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
     }
 
     if (nextProps.currentTime !== this.props.currentTime) {
