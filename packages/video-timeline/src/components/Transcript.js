@@ -699,8 +699,17 @@ class Transcript extends React.Component {
                   div[data-offset-key="${playheadBlockKey}-0-0"] ~ div > .BlockWrapper > div[data-offset-key] > span { color: #696969; }
                   span[data-entity-key="${playheadEntityKey}"] ~ span[data-entity-key] { color: #696969; }
 
+
+                `}
+              </style>
+              <style scoped>
+                {`
                   span[class*='C-']{
                     position: relative;
+                  }
+
+                  .public-DraftEditor-content {
+                    white-space: normal !important;
                   }
                 `}
               </style>
