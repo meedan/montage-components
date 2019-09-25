@@ -692,6 +692,7 @@ class Transcript extends React.Component {
               }}
               onClick={event => this.handleClick(event)}
               onMouseMove={event => this.handleMouseMove(event)}>
+              <style scoped>${css}</style>
               <style scoped>
                 {`
                   section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
@@ -701,19 +702,19 @@ class Transcript extends React.Component {
                   span[class*='C-']{
                     position: relative;
                   }
-
-                  ${css}
                 `}
+              </style>
+              <style scoped>
                 {activeTag
                   ? `
                     span[class*='T-'] {
-                      background-color: transparent;
+                      background-color: transparent !important;
                     }
                     span[class*='C-']:before {
                       transform: scale(1.1);
                     }
                     .${activeTag}.${activeTag} {
-                      background-color: rgba(71, 123, 181, .4);
+                      background-color: rgba(71, 123, 181, .4) !important;
                     }
                   `
                   : ''}
