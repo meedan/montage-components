@@ -15,7 +15,7 @@ import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
 const EMPTY_TRANSLATION = false;
-const OVERLAPS = ['#b5cae1', '#91b0d3', '#6c95c4', '#467ebd', '#1c62b1', '#0250a9'];
+const OVERLAPS = ['#b5cae1', '#91b0d3', '#6c95c4', '#467ebd', '#1c62b1', '#0250a9', 'red', 'red', 'red', 'red', 'red'];
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -64,14 +64,12 @@ class Transcript extends React.Component {
   componentDidMount() {
     const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
     this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
-    this.generateCSS(videoTags);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
 
     if (this.props.transcript !== transcript || videoTags !== this.props.videoTags) {
-      this.generateCSS(videoTags);
       this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
     }
 
@@ -152,15 +150,6 @@ class Transcript extends React.Component {
     return true;
   }
 
-  generateCSS = videoTags => {
-    this.setState({
-      css: Combinatorics.power(videoTags.map(({ id }) => id))
-        .filter(subset => subset.length > 0)
-        .map(subset => `.T-${subset.join('.T-')} { background-color: ${OVERLAPS[subset.length - 1]}; }`)
-        .join('\n'),
-    });
-  };
-
   loadTranscript = (transcript, commentThreads, videoTags, videoPlaces) => {
     const customStyleMap = {
       ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
@@ -175,6 +164,9 @@ class Transcript extends React.Component {
       }));
       return [...acc, ...instances];
     }, []);
+
+    const styleRanges = [];
+    const css = [];
 
     const placesInstances = videoPlaces.reduce((acc, entity) => {
       const instances = entity.instances.map(instance => ({
@@ -290,7 +282,21 @@ class Transcript extends React.Component {
               .filter(r => !!r),
           ];
 
-          // block.entityRanges = [];
+          css.push(
+            [
+              ...new Set(
+                block.inlineStyleRanges.reduce((acc, { offset, length }) => [...acc, offset, offset + length - 1], [])
+              ),
+            ]
+              .sort((a, b) => a - b)
+              .map(t => {
+                const set = block.inlineStyleRanges
+                  .filter(({ offset, length }) => offset <= t && t < offset + length)
+                  .map(({ style }) => `.${style}`);
+                return set.length > 0 ? `${set.join('')} { background-color: ${OVERLAPS[set.length - 1]}; }` : '';
+              })
+              .join('\n')
+          );
           return block;
         });
 
@@ -331,7 +337,7 @@ class Transcript extends React.Component {
       };
     });
 
-    this.setState({ transcript, segments, customStyleMap });
+    this.setState({ transcript, segments, customStyleMap, css: css.join('\n') });
   };
 
   customBlockRenderer = contentBlock => {
@@ -692,7 +698,7 @@ class Transcript extends React.Component {
               }}
               onClick={event => this.handleClick(event)}
               onMouseMove={event => this.handleMouseMove(event)}>
-              <style scoped>${css}</style>
+              <style scoped>{css}</style>
               <style scoped>
                 {`
                   section[data-editor-key="${playheadEditorKey}"] ~ section .BlockWrapper.BlockWrapper > div[data-offset-key] > span { color: #696969 }
