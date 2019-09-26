@@ -165,8 +165,7 @@ class Transcript extends React.Component {
       return [...acc, ...instances];
     }, []);
 
-    const styleRanges = [];
-    const css = [];
+    const css = [videoTags.map(({ id }) => `.T-${id} { background-color: ${OVERLAPS[0]}; }`).join('\n')];
 
     const placesInstances = videoPlaces.reduce((acc, entity) => {
       const instances = entity.instances.map(instance => ({
@@ -293,7 +292,7 @@ class Transcript extends React.Component {
                 const set = block.inlineStyleRanges
                   .filter(({ offset, length }) => offset <= t && t < offset + length)
                   .map(({ style }) => `.${style}`);
-                return set.length > 0 ? `${set.join('')} { background-color: ${OVERLAPS[set.length - 1]}; }` : '';
+                return set.length > 1 ? `${set.join('')} { background-color: ${OVERLAPS[set.length - 1]}; }` : '';
               })
               .join('\n')
           );
