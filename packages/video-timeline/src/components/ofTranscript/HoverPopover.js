@@ -70,9 +70,6 @@ class HoverPopover extends Component {
             </IconButton>
           </Tooltip>
         </Grid>
-        <style scoped>{`
-          #HoverPopover { pointer-events: none }
-        `}</style>
       </Popover>
     );
   }

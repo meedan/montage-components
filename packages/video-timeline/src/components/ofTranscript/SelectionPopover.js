@@ -27,7 +27,7 @@ const styles = theme => ({
     margin: '8px',
   },
   CommentGrid: {
-    margin: '16px',
+    margin: '8px',
   },
 });
 
