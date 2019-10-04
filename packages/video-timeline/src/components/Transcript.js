@@ -711,7 +711,14 @@ class Transcript extends React.Component {
             />
           ) : null}
           {this.state.tagAnchor ? (
-            <HoverPopover isVisible={this.state.tagAnchor} onClose={() => this.setState({ tagAnchor: null })} />
+            <HoverPopover
+              isVisible={this.state.tagAnchor}
+              onClose={() => this.setState({ tagAnchor: null })}
+              placeInstances={this.state.placeInstance}
+              places={this.state.place}
+              tagInstances={this.state.tagInstances}
+              tags={this.state.tags}
+            />
           ) : null}
           {this.state.comment && this.state.commentAnchor ? (
             <CommentPopover
