@@ -306,29 +306,48 @@ class Transcript extends React.Component {
         ),
         { allowUndo: true }
       );
+
+      const blocksB = blocks.map(block => {
+        return {
+          ...block,
+          text: block.data.translation,
+          // entityRanges: [],
+          entityRanges: block.data.translation
+            .split(' ')
+            .map(text => ({
+              start: 0,
+              end: 0,
+              text,
+              offset: 0,
+              length: text.length,
+              // key,
+            }))
+            .reduce((acc, range, index, ranges) => {
+              if (index > 0) range.offset = ranges[index - 1].offset + ranges[index - 1].length + 1;
+              return [...acc, range];
+            }, []),
+          inlineStyleRanges: [],
+        };
+      });
+
+      const editorStateB = EditorState.set(
+        EditorState.createWithContent(
+          convertFromRaw({
+            blocks: blocksB,
+            entityMap: createEntityMap(blocksB),
+          }),
+          generateDecorator()
+        ),
+        { allowUndo: false }
+      );
+
       return {
         start: segmentStart,
         end: segmentEnd,
         editorStateA,
         key: `editor-${blocks[0].key}`,
         // editorStateB: createPreview(editorStateA), // EditorState.createEmpty(),
-        editorStateB: EditorState.set(
-          EditorState.createWithContent(
-            convertFromRaw({
-              blocks: blocks.map(block => {
-                return {
-                  ...block,
-                  text: block.data.translation,
-                  entityRanges: [],
-                  inlineStyleRanges: [],
-                };
-              }),
-              entityMap: createEntityMap(blocks),
-            }),
-            generateDecorator()
-          ),
-          { allowUndo: false }
-        ),
+        editorStateB,
         customStyleMap,
         comments,
         tags: [...new Set(tags.map(({ entity }) => entity))],
