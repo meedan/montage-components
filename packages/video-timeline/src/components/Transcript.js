@@ -8,8 +8,9 @@ import '@montage/ui/assets/fonts/iconfont/style.css';
 
 import BlockWrapper from './ofTranscript/BlockWrapper';
 import CommentPopover from './ofTranscript/CommentPopover';
-import FloatingToolbar from './ofTranscript/FloatingToolbar';
+import HoverPopover from './ofTranscript/HoverPopover';
 import Segment from './ofTranscript/Segment';
+import SelectionPopover from './ofTranscript/SelectionPopover';
 import TranscriptToolbar from './ofTranscript/TranscriptToolbar';
 import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
@@ -436,6 +437,7 @@ class Transcript extends React.Component {
       );
     }
 
+    console.group();
     if (tags.length > 0 || places.length > 0)
       console.log({
         tags,
@@ -444,6 +446,8 @@ class Transcript extends React.Component {
         placeInstances,
         tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
       });
+    console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
+    console.groupEnd();
 
     this.setState({
       tags,
@@ -672,7 +676,7 @@ class Transcript extends React.Component {
             this.scrollingContainer = ref;
           }}>
           {this.state.anchor && this.state.selection ? (
-            <FloatingToolbar
+            <SelectionPopover
               isVisible={this.state.anchor}
               start={this.state.selection.start}
               end={this.state.selection.end}
@@ -682,6 +686,9 @@ class Transcript extends React.Component {
               videoTags={this.props.data.videoTags}
               videoPlaces={this.props.data.videoPlaces}
             />
+          ) : null}
+          {this.state.tagAnchor ? (
+            <HoverPopover isVisible={this.state.tagAnchor} onClose={() => this.setState({ tagAnchor: null })} />
           ) : null}
           {this.state.comment && this.state.commentAnchor ? (
             <CommentPopover
