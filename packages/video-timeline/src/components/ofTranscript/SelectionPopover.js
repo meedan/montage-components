@@ -35,7 +35,7 @@ const styles = theme => ({
 //   return entity[`project_${entityType}`].name;
 // }
 
-class FloatingToolbar extends Component {
+class SelectionPopover extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -108,7 +108,7 @@ class FloatingToolbar extends Component {
     const { classes } = this.props;
     const { isCreating } = this.state;
 
-    // console.group('FloatingToolbar.js');
+    // console.group('SelectionPopover.js');
     // console.log('props:', this.props);
     // console.log('state:', this.state);
     // console.groupEnd();
@@ -228,4 +228,4 @@ class FloatingToolbar extends Component {
 export default connect(
   null,
   { update }
-)(withStyles(styles)(FloatingToolbar));
+)(withStyles(styles)(SelectionPopover));
