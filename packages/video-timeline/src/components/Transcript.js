@@ -542,6 +542,8 @@ class Transcript extends React.Component {
 
         this.setState({
           anchor: startElement,
+          commentAnchor: null,
+          tagAnchor: null,
           selection: { start: t0 / 1e3, end: t1 / 1e3 },
         });
         return;
