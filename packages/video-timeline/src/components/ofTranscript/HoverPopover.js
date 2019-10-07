@@ -33,13 +33,14 @@ class HoverPopover extends Component {
     super(props);
     this.state = {};
   }
+
   render() {
     const { classes } = this.props;
 
-    // console.group('HoverPopover.js');
-    // console.log('props:', this.props);
-    // console.log('state:', this.state);
-    // console.groupEnd();
+    console.group('HoverPopover.js');
+    console.log('props:', this.props);
+    console.log('state:', this.state);
+    console.groupEnd();
 
     return (
       <Popover
@@ -60,12 +61,12 @@ class HoverPopover extends Component {
         }}>
         <Grid className={classes.CommentGrid}>
           <Tooltip title="Copy to Clips">
-            <IconButton onClick={() => console.log('Copy to Clips')}>
+            <IconButton onClick={() => this.props.copyToClips(this.props)}>
               <CutIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton onClick={() => console.log('Delete')}>
+            <IconButton onClick={() => this.props.deleteInstance(this.props)}>
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
