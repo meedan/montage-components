@@ -35,7 +35,7 @@ const convertSpeechmatics = ({ speakers, words, job: metadata }) => {
     words.reduce((acc, word) => {
       if (unicodePunctuation.test(word.name.trim())) {
         const pword = acc.pop();
-        pword.name = pword.name.trimEnd().concat(word.name.trim());
+        pword.name = ("" + pword.name).trimRight().concat(("" + word.name).trim());
         return [...acc, pword];
       }
 

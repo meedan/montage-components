@@ -20,7 +20,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 
-import Player from './components/Player';
+import PlayerContainer from './components/PlayerContainer';
 import Preview from './components/Preview';
 import Timeline from './components/Timeline';
 import Transcript from './components/Transcript';
@@ -249,7 +249,7 @@ class App extends Component {
                         <Grid item sm={8}>
                           <MontagePlayer>
                             <MontagePlayerVideo>
-                              <Player
+                              <PlayerContainer
                                 data={data}
                                 player={player}
                                 onProgress={this.setCurrentTime}

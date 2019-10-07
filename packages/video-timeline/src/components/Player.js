@@ -60,14 +60,14 @@ class Player extends Component {
             preload: true,
           },
         }}
-        url={`https://www.youtube.com/watch?v=${this.props.data.ytVideoData.id}`}
+        url={this.props.url}
         progressInterval={200}
         playbackRate={playbackRate}
         controls
         volume={null}
         muted
         width="100%"
-        height="100%"
+        height="400px"
         playing={playing}
         onPlay={() => play()}
         onPause={() => pause()}

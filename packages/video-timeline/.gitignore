@@ -24,3 +24,12 @@ yarn-debug.log*
 yarn-error.log*
 
 /public/magic
+
+# vim temp files
+.*.sw*
+
+# compiled
+__generated__
+
+# check files
+relay.json
