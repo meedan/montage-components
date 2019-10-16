@@ -15,7 +15,7 @@ process.on('unhandledRejection', err => {
 require('../config/env');
 
 
-// const path = require('path');
+const path = require('path');
 const chalk = require('react-dev-utils/chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
@@ -23,14 +23,14 @@ const configFactory = require('../config/webpack.config');
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-// const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
+const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
-// const useYarn = fs.existsSync(paths.yarnLockFile);
+const useYarn = fs.existsSync(paths.yarnLockFile);
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
@@ -39,12 +39,12 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appLibIndexJs])) { // CRL: Updated with library index file
+if (!checkRequiredFiles([paths.appHtml, paths.appDemoIndexJs])) { // CRL: Updated with demo index file
   process.exit(1);
 }
 
 // Generate configuration
-const config = configFactory('production');
+const config = configFactory('demo'); // CRL: Use demo environment
 
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
@@ -53,14 +53,14 @@ checkBrowsers(paths.appPath, isInteractive)
   .then(() => {
     // First, read the current file sizes in build directory.
     // This lets us display how much they changed later.
-    return measureFileSizesBeforeBuild(paths.appBuild);
+    return measureFileSizesBeforeBuild(paths.appDemoBuild); // CRL: Updated with demo build path
   })
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    fs.emptyDirSync(paths.appDemoBuild); // CRL: Updated with demo build path
     // Merge with the public folder
-    // copyPublicFolder();  // CRL: No need to copy PublicFolder, it's a library after all ;)
+    copyPublicFolder();
     // Start the webpack build
     return build(previousFileSizes);
   })
@@ -87,24 +87,23 @@ checkBrowsers(paths.appPath, isInteractive)
       printFileSizesAfterBuild(
         stats,
         previousFileSizes,
-        paths.appBuild,
+        paths.appDemoBuild, // CRL: Updated with demo build path
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
       console.log();
 
-      // CRL: No need to print HostingInstructions, it's a library after all ;)
-      // const appPackage = require(paths.appPackageJson);
-      // const publicUrl = paths.publicUrl;
-      // const publicPath = config.output.publicPath;
-      // const buildFolder = path.relative(process.cwd(), paths.appBuild);
-      // printHostingInstructions(
-      //   appPackage,
-      //   publicUrl,
-      //   publicPath,
-      //   buildFolder,
-      //   useYarn
-      // );
+      const appPackage = require(paths.appPackageJson);
+      const publicUrl = paths.publicUrl;
+      const publicPath = config.output.publicPath;
+      const buildFolder = path.relative(process.cwd(), paths.appDemoBuild); // CRL: Updated with demo build path
+      printHostingInstructions(
+        appPackage,
+        publicUrl,
+        publicPath,
+        buildFolder,
+        useYarn
+      );
     },
     err => {
       const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
@@ -141,7 +140,7 @@ function build(previousFileSizes) {
     console.log();
   }
 
-  console.log('Creating an optimized production build...');
+  console.log('Creating a build of the demo app...'); // CRL - Updated log message
 
   const compiler = webpack(config);
   return new Promise((resolve, reject) => {
@@ -192,9 +191,9 @@ function build(previousFileSizes) {
   });
 }
 
-// function copyPublicFolder() {
-//   fs.copySync(paths.appPublic, paths.appBuild, {
-//     dereference: true,
-//     filter: file => file !== paths.appHtml,
-//   });
-// }
+function copyPublicFolder() {
+  fs.copySync(paths.appPublic, paths.appDemoBuild, {  // CRL: Updated with demo build path
+    dereference: true,
+    filter: file => file !== paths.appHtml,
+  });
+}
