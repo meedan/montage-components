@@ -476,10 +476,6 @@ class Transcript extends React.Component {
     // console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
     // console.groupEnd();
 
-    console.group('Transcript.js');
-    console.log({ evt });
-    console.groupEnd();
-
     this.setState({
       tags,
       places,
@@ -666,20 +662,26 @@ class Transcript extends React.Component {
     this.toggleTranslation(languageISO);
   };
 
-  deleteInstance = ({ tagInstances, tags }) => {
-    // entityId, instanceId
-    const instanceId = tagInstances[0].id;
-    const entityId = tagInstances[0].video_tag_id;
+  // deleteInstance = ({ tagInstances, tags }) => {
+  //   // entityId, instanceId
+  //   const instanceId = tagInstances[0].id;
+  //   const entityId = tagInstances[0].video_tag_id;
 
-    const entities = produce(this.props.videoTags, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === entityId);
-      const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
-      nextEntities[ti].instances.splice(ii, 1);
-    });
-    this.props.update({ videoTags: entities });
+  //   const entities = produce(this.props.videoTags, nextEntities => {
+  //     const ti = nextEntities.findIndex(t => t.id === entityId);
+  //     const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
+  //     nextEntities[ti].instances.splice(ii, 1);
+  //   });
+  //   this.props.update({ videoTags: entities });
+  // };
+
+  deleteInstance = args => {
+    console.log('deleteInstance', 'TODO: define instance', { args });
   };
 
-  copyToClips = () => {};
+  copyToClips = args => {
+    console.log('copyToClips', 'TODO: define instance', { args });
+  };
 
   render() {
     const {
@@ -737,14 +739,10 @@ class Transcript extends React.Component {
           ) : null}
           {this.state.tagAnchor ? (
             <HoverPopover
+              copyToClips={() => this.copyToClips(this.state.tagAnchor)}
+              deleteInstance={() => this.deleteInstance(this.state.tagAnchor)}
               isVisible={this.state.tagAnchor}
               onClose={() => this.setState({ tagAnchor: null })}
-              placeInstances={this.state.placeInstance}
-              places={this.state.place}
-              tagInstances={this.state.tagInstances}
-              tags={this.state.tags}
-              deleteInstance={this.deleteInstance}
-              copyToClips={this.copyToClips}
             />
           ) : null}
           {this.state.comment && this.state.commentAnchor ? (

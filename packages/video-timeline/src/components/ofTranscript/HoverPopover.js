@@ -36,10 +36,10 @@ class HoverPopover extends Component {
   render() {
     const { classes } = this.props;
 
-    console.group('HoverPopover.js');
-    console.log('props:', this.props);
-    console.log('state:', this.state);
-    console.groupEnd();
+    // console.group('HoverPopover.js');
+    // console.log('props:', this.props);
+    // console.log('state:', this.state);
+    // console.groupEnd();
 
     return (
       <>
