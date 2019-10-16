@@ -1,4 +1,4 @@
-import Combinatorics from 'js-combinatorics';
+// import Combinatorics from 'js-combinatorics';
 import React from 'react';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
