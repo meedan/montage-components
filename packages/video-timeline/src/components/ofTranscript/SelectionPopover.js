@@ -125,9 +125,7 @@ class SelectionPopover extends Component {
         disablePortal
         id={'ToolbarPopover'}
         open={!!this.props.isVisible}
-        placement="top"
-        // onClose={this.props.onClose}
-      >
+        placement="top">
         <ClickAwayListener onClickAway={this.props.onClose}>
           <Paper elevation={3}>
             <Grid className={classes.Grid}>
@@ -159,9 +157,7 @@ class SelectionPopover extends Component {
         disablePortal
         id={'NewEntityPopover'}
         open={!!this.props.isVisible}
-        placement="top"
-        // onClose={this.props.onClose}
-      >
+        placement="top">
         <ClickAwayListener onClickAway={this.props.onClose}>
           <Paper elevation={3}>
             <Grid className={classes.EntityGrid}>
@@ -189,9 +185,7 @@ class SelectionPopover extends Component {
         disablePortal
         id={'NewThreadPopover'}
         open={!!this.props.isVisible}
-        placement="top"
-        // onClose={this.props.onClose}>
-      >
+        placement="top">
         <ClickAwayListener onClickAway={this.props.onClose}>
           <Paper elevation={3}>
             <Grid className={classes.CommentGrid}>

@@ -48,20 +48,7 @@ class HoverPopover extends Component {
           className={classes.Popper}
           open={!!this.props.isVisible}
           anchorEl={this.props.isVisible}
-          placement="top"
-          modifiers={{
-            flip: {
-              enabled: true,
-            },
-            preventOverflow: {
-              enabled: true,
-              boundariesElement: 'scrollParent',
-            },
-            arrow: {
-              enabled: true,
-              element: this.props.isVisible,
-            },
-          }}>
+          placement="top">
           <ClickAwayListener onClickAway={this.props.onClose}>
             <Paper elevation={3}>
               <Grid className={classes.Grid}>
