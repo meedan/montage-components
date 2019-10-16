@@ -1,4 +1,3 @@
-'use strict';
 
 const path = require('path');
 const fs = require('fs');
@@ -70,10 +69,9 @@ module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
   appBuild: resolveApp('build'),
-  appDemoBuild: resolveApp('demo'), // CRL: Added for demo purposes
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/demo/index'), // CRL: Updated for demo purposes
+  appIndexJs: resolveModule(resolveApp, 'src/index'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),
@@ -84,14 +82,6 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
-
-  // CRL: New paths for demo build
-  appDemoIndexJs: resolveModule(resolveApp, 'src/demo/index'),
-  appDemoSrc: resolveApp('src/demo'),
-
-  // CRL: New paths for library
-  appLibIndexJs: resolveModule(resolveApp, 'src/lib/index'),
-  appLibSrc: resolveApp('src/lib'),
 };
 
 

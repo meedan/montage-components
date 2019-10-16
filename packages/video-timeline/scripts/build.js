@@ -1,5 +1,3 @@
-'use strict';
-
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
@@ -15,7 +13,7 @@ process.on('unhandledRejection', err => {
 require('../config/env');
 
 
-// const path = require('path');
+const path = require('path');
 const chalk = require('react-dev-utils/chalk');
 const fs = require('fs-extra');
 const webpack = require('webpack');
@@ -23,14 +21,14 @@ const configFactory = require('../config/webpack.config');
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-// const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
+const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
-// const useYarn = fs.existsSync(paths.yarnLockFile);
+const useYarn = fs.existsSync(paths.yarnLockFile);
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
@@ -39,7 +37,7 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appLibIndexJs])) { // CRL: Updated with library index file
+if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
@@ -58,9 +56,9 @@ checkBrowsers(paths.appPath, isInteractive)
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    // fs.emptyDirSync(paths.appBuild); FIXME
     // Merge with the public folder
-    // copyPublicFolder();  // CRL: No need to copy PublicFolder, it's a library after all ;)
+    copyPublicFolder();
     // Start the webpack build
     return build(previousFileSizes);
   })
@@ -93,31 +91,22 @@ checkBrowsers(paths.appPath, isInteractive)
       );
       console.log();
 
-      // CRL: No need to print HostingInstructions, it's a library after all ;)
-      // const appPackage = require(paths.appPackageJson);
-      // const publicUrl = paths.publicUrl;
-      // const publicPath = config.output.publicPath;
-      // const buildFolder = path.relative(process.cwd(), paths.appBuild);
-      // printHostingInstructions(
-      //   appPackage,
-      //   publicUrl,
-      //   publicPath,
-      //   buildFolder,
-      //   useYarn
-      // );
+      const appPackage = require(paths.appPackageJson);
+      const publicUrl = paths.publicUrl;
+      const publicPath = config.output.publicPath;
+      const buildFolder = path.relative(process.cwd(), paths.appBuild);
+      printHostingInstructions(
+        appPackage,
+        publicUrl,
+        publicPath,
+        buildFolder,
+        useYarn
+      );
     },
     err => {
-      const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
-      if (tscCompileOnError) {
-        console.log(chalk.yellow(
-          'Compiled with the following type errors (you may want to check these before deploying your app):\n'
-        ));
-        printBuildError(err);
-      } else {
-        console.log(chalk.red('Failed to compile.\n'));
-        printBuildError(err);
-        process.exit(1);
-      }
+      console.log(chalk.red('Failed to compile.\n'));
+      printBuildError(err);
+      process.exit(1);
     }
   )
   .catch(err => {
@@ -192,9 +181,9 @@ function build(previousFileSizes) {
   });
 }
 
-// function copyPublicFolder() {
-//   fs.copySync(paths.appPublic, paths.appBuild, {
-//     dereference: true,
-//     filter: file => file !== paths.appHtml,
-//   });
-// }
+function copyPublicFolder() {
+  fs.copySync(paths.appPublic, paths.appBuild, {
+    dereference: true,
+    filter: file => file !== paths.appHtml,
+  });
+}
