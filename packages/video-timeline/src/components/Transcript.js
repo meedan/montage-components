@@ -1,8 +1,12 @@
 // import Combinatorics from 'js-combinatorics';
 import React from 'react';
+import { connect } from 'react-redux';
+import produce from 'immer';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw } from 'draft-js';
+
+import { update } from '../reducers/data';
 
 import '@montage/ui/assets/fonts/iconfont/style.css';
 
@@ -656,6 +660,21 @@ class Transcript extends React.Component {
     this.toggleTranslation(languageISO);
   };
 
+  deleteInstance = ({ tagInstances, tags }) => {
+    // entityId, instanceId
+    const instanceId = tagInstances[0].id;
+    const entityId = tagInstances[0].video_tag_id;
+
+    const entities = produce(this.props.videoTags, nextEntities => {
+      const ti = nextEntities.findIndex(t => t.id === entityId);
+      const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
+      nextEntities[ti].instances.splice(ii, 1);
+    });
+    this.props.update({ videoTags: entities });
+  };
+
+  copyToClips = () => {};
+
   render() {
     const {
       playheadEditorKey,
@@ -718,6 +737,8 @@ class Transcript extends React.Component {
               places={this.state.place}
               tagInstances={this.state.tagInstances}
               tags={this.state.tags}
+              deleteInstance={this.deleteInstance}
+              copyToClips={this.copyToClips}
             />
           ) : null}
           {this.state.comment && this.state.commentAnchor ? (
@@ -801,4 +822,8 @@ class Transcript extends React.Component {
   }
 }
 
-export default Transcript;
+// export default Transcript;
+export default connect(
+  null,
+  { update }
+)(Transcript);
