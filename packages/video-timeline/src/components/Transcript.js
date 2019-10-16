@@ -383,7 +383,9 @@ class Transcript extends React.Component {
     this.setState({ transcriptRefScrollTop: e.target.scrollTop });
   }
 
-  handleMouseMove = ({ nativeEvent: { srcElement, path = [] } }) => {
+  handleMouseMove = evt => {
+    const { srcElement, path = [] } = evt.nativeEvent;
+
     let comment = null;
     let tags = [];
     let places = [];
@@ -462,16 +464,20 @@ class Transcript extends React.Component {
       );
     }
 
-    console.group();
-    if (tags.length > 0 || places.length > 0)
-      console.log({
-        tags,
-        places,
-        tagInstances,
-        placeInstances,
-        tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
-      });
-    console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
+    // console.group();
+    // if (tags.length > 0 || places.length > 0)
+    //   console.log({
+    //     tags,
+    //     places,
+    //     tagInstances,
+    //     placeInstances,
+    //     tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
+    //   });
+    // console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
+    // console.groupEnd();
+
+    console.group('Transcript.js');
+    console.log({ evt });
     console.groupEnd();
 
     this.setState({

@@ -75,6 +75,7 @@ const Element = styled.div`
   border-bottom: 1px solid ${grey[200]};
   flex: 0 0 ${({ pin }) => (pin ? '30px' : '50px')};
   transition: flex-basis 0.25s;
+  z-index: 200;
 `;
 
 const TranscriptFabs = styled.div`

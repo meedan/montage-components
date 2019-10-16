@@ -7,24 +7,23 @@ import { connect } from 'react-redux';
 import { CutIcon } from '@montage/ui/components';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 
 import { update } from '../../reducers/data';
 
 const styles = theme => ({
-  Popover: {
+  Popper: {
     overflow: 'visible',
-    marginTop: '-20px',
+    zIndex: 100,
   },
-  EntityGrid: {
-    margin: '8px',
-  },
-  CommentGrid: {
-    margin: '4px',
+  Grid: {
+    padding: '4px',
   },
 });
 
@@ -43,35 +42,44 @@ class HoverPopover extends Component {
     console.groupEnd();
 
     return (
-      <Popover
-        id={'HoverPopover'}
-        open={!!this.props.isVisible}
-        anchorEl={this.props.isVisible}
-        onClose={this.props.onClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        PaperProps={{
-          className: classes.Popover,
-        }}>
-        <Grid className={classes.CommentGrid}>
-          <Tooltip title="Copy to Clips">
-            <IconButton onClick={() => this.props.copyToClips(this.props)}>
-              <CutIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton onClick={() => this.props.deleteInstance(this.props)}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-      </Popover>
+      <>
+        <Popper
+          id={'HoverPopover'}
+          className={classes.Popper}
+          open={!!this.props.isVisible}
+          anchorEl={this.props.isVisible}
+          placement="top"
+          modifiers={{
+            flip: {
+              enabled: true,
+            },
+            preventOverflow: {
+              enabled: true,
+              boundariesElement: 'scrollParent',
+            },
+            arrow: {
+              enabled: true,
+              element: this.props.isVisible,
+            },
+          }}>
+          <ClickAwayListener onClickAway={this.props.onClose}>
+            <Paper elevation={3}>
+              <Grid className={classes.Grid}>
+                <Tooltip title="Copy to Clips">
+                  <IconButton onClick={() => this.props.copyToClips(this.props)}>
+                    <CutIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton onClick={() => this.props.deleteInstance(this.props)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </Paper>
+          </ClickAwayListener>
+        </Popper>
+      </>
     );
   }
 }
