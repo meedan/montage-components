@@ -112,8 +112,23 @@ module.exports = function(webpackEnv) {
   };
 
   return {
-    externals: {
+    externals: isEnvDevelopment ? {
       angular: 'angular',
+    } : {
+      angular: 'angular',
+      // Don't bundle react or react-dom
+      react: {
+        commonjs: 'react',
+        commonjs2: 'react',
+        amd: 'React',
+        root: 'React',
+      },
+      'react-dom': {
+        commonjs: 'react-dom',
+        commonjs2: 'react-dom',
+        amd: 'ReactDOM',
+        root: 'ReactDOM',
+      },
     },
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
@@ -143,7 +158,7 @@ module.exports = function(webpackEnv) {
       // initialization, it doesn't blow up the WebpackDevServer client, and
       // changing JS code would still trigger a refresh.
     ].filter(Boolean),
-    output: {
+    output: isEnvDevelopment ? {
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
       // Add /* filename */ comments to generated require()s in the output.
@@ -158,6 +173,31 @@ module.exports = function(webpackEnv) {
       // We inferred the "public path" (such as / or /my-project) from homepage.
       // We use "/" in development.
       publicPath: publicPath,
+      // Point sourcemap entries to original disk location (format as URL on Windows)
+      devtoolModuleFilenameTemplate: isEnvProduction
+        ? info => path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
+        : isEnvDevelopment && (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+    } : {
+      // path: path.join(__dirname, './dist'),
+      filename: 'index.js',
+      library: 'videoTimeline',
+      libraryTarget: 'umd',
+      // publicPath: '/dist/',
+      umdNamedDefine: true,
+      // The build folder.
+      path: isEnvProduction ? paths.appBuild : undefined,
+      // Add /* filename */ comments to generated require()s in the output.
+      pathinfo: isEnvDevelopment,
+      // There will be one main bundle, and one file per asynchronous chunk.
+      // In development, it does not produce real files.
+      // filename: isEnvProduction ? 'static/js/[name].js' : isEnvDevelopment && 'static/js/bundle.js',
+      // TODO: remove this when upgrading to webpack 5
+      futureEmitAssets: true,
+      // There are also additional JS chunk files if you use code splitting.
+      chunkFilename: isEnvProduction ? 'static/js/[name].chunk.js' : isEnvDevelopment && 'static/js/[name].chunk.js',
+      // We inferred the "public path" (such as / or /my-project) from homepage.
+      // We use "/" in development.
+      // publicPath: publicPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
         ? info => path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
@@ -255,10 +295,13 @@ module.exports = function(webpackEnv) {
       // `web` extension prefixes have been added for better support
       // for React Native Web.
       extensions: paths.moduleFileExtensions.map(ext => `.${ext}`).filter(ext => useTypeScript || !ext.includes('ts')),
-      alias: {
+      alias: isEnvDevelopment ? {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+      } : {
+        'react': path.resolve(__dirname, '../node_modules/react'),
+        'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding

@@ -1,7 +1,7 @@
 {
   "name": "video-timeline",
-  "version": "0.0.5",
-  "private": true,
+  "version": "0.0.7",
+  "main": "build/index.js",
   "dependencies": {
     "@babel/core": "7.5.5",
     "@babel/node": "^7.6.2",
@@ -68,10 +68,8 @@
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.1",
     "rc-slider": "8.7.0",
-    "react": "16.9.0",
     "react-app-polyfill": "1.0.1",
     "react-dev-utils": "9.0.1",
-    "react-dom": "16.9.0",
     "react-error-boundary": "1.2.5",
     "react-player": "1.11.1",
     "react-redux": "7.1.0",
@@ -206,7 +204,13 @@
       "relay"
     ]
   },
+  "peerDependencies": {
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
+  },
   "devDependencies": {
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
     "@babel/plugin-syntax-throw-expressions": "7.2.0",
     "babel-plugin-relay": "^6.0.0",
     "babel-plugin-styled-components": "1.10.6",
