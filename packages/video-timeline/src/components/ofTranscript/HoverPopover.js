@@ -42,31 +42,30 @@ class HoverPopover extends Component {
     // console.groupEnd();
 
     return (
-      <>
-        <Popper
-          id={'HoverPopover'}
-          className={classes.Popper}
-          open={!!this.props.isVisible}
-          anchorEl={this.props.isVisible}
-          placement="top">
-          <ClickAwayListener onClickAway={this.props.onClose}>
-            <Paper elevation={3}>
-              <Grid className={classes.Grid}>
-                <Tooltip title="Copy to Clips">
-                  <IconButton onClick={() => this.props.copyToClips(this.props)}>
-                    <CutIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton onClick={() => this.props.deleteInstance(this.props)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-            </Paper>
-          </ClickAwayListener>
-        </Popper>
-      </>
+      <Popper
+        anchorEl={this.props.isVisible}
+        disablePortal
+        className={classes.Popper}
+        id={'HoverPopover'}
+        open={!!this.props.isVisible}
+        placement="top">
+        <ClickAwayListener onClickAway={this.props.onClose}>
+          <Paper elevation={3}>
+            <Grid className={classes.Grid}>
+              <Tooltip title="Copy to Clips">
+                <IconButton onClick={() => this.props.copyToClips(this.props)}>
+                  <CutIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton onClick={() => this.props.deleteInstance(this.props)}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          </Paper>
+        </ClickAwayListener>
+      </Popper>
     );
   }
 }

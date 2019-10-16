@@ -737,7 +737,7 @@ class Transcript extends React.Component {
               videoPlaces={this.props.data.videoPlaces}
             />
           ) : null}
-          {this.state.tagAnchor ? (
+          {this.state.tagAnchor && !this.state.selection ? (
             <HoverPopover
               copyToClips={() => this.copyToClips(this.state.tagAnchor)}
               deleteInstance={() => this.deleteInstance(this.state.tagAnchor)}
