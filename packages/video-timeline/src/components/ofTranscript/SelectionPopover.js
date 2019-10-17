@@ -27,7 +27,7 @@ const styles = theme => ({
     padding: '4px',
   },
   EntityGrid: {
-    padding: '8px',
+    // padding: '8px',
   },
   CommentGrid: {
     padding: '8px 12px',
@@ -164,7 +164,7 @@ class SelectionPopover extends Component {
                 // entityId={entity.id}
                 entityName={this.state.newInstanceEntityName}
                 entityType={isCreating}
-                isCreating={true}
+                isCreating={isCreating}
                 // startNewInstance={() => this.startNewInstance(entity.id)}
                 stopNewEntity={() => this.setState({ isCreating: null })}
                 suggestions={isCreating === 'location' ? this.props.projectplaces : this.props.projecttags}

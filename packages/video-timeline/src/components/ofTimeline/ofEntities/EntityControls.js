@@ -50,7 +50,7 @@ const Element = styled.div`
       : ''};
 `;
 
-class NameControls extends Component {
+class EntityControls extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -136,7 +136,17 @@ class NameControls extends Component {
     const read = (
       <Grid alignItems="center" className={classes.Grid} container justify="space-between" wrap="nowrap">
         <Grid item>
-          <Tooltip title={entityName} enterDelay={750}>
+          {entityName ? (
+            <Tooltip title={entityName} enterDelay={750}>
+              <Typography
+                className={classes.Typography}
+                color={this.state.flow === 'reposition' ? 'primary' : 'textSecondary'}
+                noWrap
+                variant="body2">
+                {entityName}
+              </Typography>
+            </Tooltip>
+          ) : (
             <Typography
               className={classes.Typography}
               color={this.state.flow === 'reposition' ? 'primary' : 'textSecondary'}
@@ -144,7 +154,7 @@ class NameControls extends Component {
               variant="body2">
               {entityName}
             </Typography>
-          </Tooltip>
+          )}
         </Grid>
         <Grid item>
           <ElementAdornment onClick={e => e.stopPropagation()}>
@@ -233,7 +243,7 @@ class NameControls extends Component {
   }
 }
 
-NameControls.propTypes = {
+EntityControls.propTypes = {
   classes: object,
   entityId: string,
   entityName: string,
@@ -244,6 +254,6 @@ NameControls.propTypes = {
   suggestions: array,
 };
 
-NameControls.defaultProps = {};
+EntityControls.defaultProps = {};
 
-export default withStyles(styles)(NameControls);
+export default withStyles(styles)(EntityControls);
