@@ -1,7 +1,7 @@
 // import Combinatorics from 'js-combinatorics';
 import React from 'react';
 import { connect } from 'react-redux';
-import produce from 'immer';
+// import produce from 'immer';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw } from 'draft-js';
@@ -384,7 +384,10 @@ class Transcript extends React.Component {
   }
 
   handleMouseMove = evt => {
-    const { srcElement, path = [] } = evt.nativeEvent;
+    const {
+      srcElement,
+      // path = []
+    } = evt.nativeEvent;
 
     let comment = null;
     let tags = [];
