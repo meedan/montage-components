@@ -1,5 +1,3 @@
-/** @format */
-
 import Popover from 'material-ui-popup-state/HoverPopover';
 import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
 import React, { Component } from 'react';

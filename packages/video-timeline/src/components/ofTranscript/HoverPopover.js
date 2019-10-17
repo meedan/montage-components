@@ -1,7 +1,4 @@
-/** @format */
-
 import React, { Component } from 'react';
-// import produce from 'immer';
 import { connect } from 'react-redux';
 
 import { CutIcon } from '@montage/ui/components';
