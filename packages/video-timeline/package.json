@@ -74,6 +74,7 @@
     "react-player": "1.11.1",
     "react-redux": "7.1.0",
     "react-relay": "^6.0.0",
+    "react-relay-local-query": "^1.1.0",
     "react-sticky-el": "1.0.20",
     "react-timecode": "1.1.18",
     "react-visibility-sensor": "5.1.0",
@@ -98,7 +99,8 @@
     "xregexp": "4.2.4"
   },
   "scripts": {
-    "start": "relay-compiler --src ./src --schema relay.json && BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
+    "start0": "relay-compiler --src ./src --schema relay.json && BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
+    "start": "relay-compiler --src ./src --schema ./src/sample.graphql && BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "now-build": "npm run build"
@@ -209,13 +211,13 @@
     "react-dom": "16.9.0"
   },
   "devDependencies": {
-    "react": "16.9.0",
-    "react-dom": "16.9.0",
     "@babel/plugin-syntax-throw-expressions": "7.2.0",
     "babel-plugin-relay": "^6.0.0",
     "babel-plugin-styled-components": "1.10.6",
     "eslint-config-prettier": "6.2.0",
     "eslint-plugin-prettier": "3.1.0",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
   }
 }

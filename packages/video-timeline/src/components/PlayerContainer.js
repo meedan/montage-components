@@ -16,8 +16,7 @@ class PlayerContainer extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-    };
+    this.state = {};
   }
 
   shouldComponentUpdate() {
@@ -33,7 +32,7 @@ class PlayerContainer extends Component {
 
     return (
       <div>
-        <QueryRenderer environment={environment}
+        {/* <QueryRenderer environment={environment}
           query={graphql`
             query PlayerContainerQuery($ids: String!) {
               project_media(ids: $ids) {
@@ -63,7 +62,7 @@ class PlayerContainer extends Component {
               return (<p>Error</p>);
             }
           }}
-        />
+        /> */}
       </div>
     );
   }
