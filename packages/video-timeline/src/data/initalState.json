@@ -452,6 +452,1094 @@
     }
   ],
   "videoTags": [
+
+    {
+      "id": 10001,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 6,
+          "global_tag_id": 10001,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10001,
+          "start_seconds": 4,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10001,
+        "id": 10001,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10001,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10002,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 7,
+          "global_tag_id": 10002,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10002,
+          "start_seconds": 5,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10002,
+        "id": 10002,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Another hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10002,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10003,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 8,
+          "global_tag_id": 10003,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10003,
+          "start_seconds": 6,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10003,
+        "id": 10003,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "And another hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10003,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10004,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 8,
+          "global_tag_id": 10004,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10004,
+          "start_seconds": 6,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10004,
+        "id": 10004,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "And yet another hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10004,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10005,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 8,
+          "global_tag_id": 10005,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10005,
+          "start_seconds": 6,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10005,
+        "id": 10005,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10005,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10006,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 9,
+          "global_tag_id": 10006,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10006,
+          "start_seconds": 7,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10006,
+        "id": 10006,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10006,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10007,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 10,
+          "global_tag_id": 10007,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10007,
+          "start_seconds": 8,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10007,
+        "id": 10007,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+1 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10007,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10008,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 11,
+          "global_tag_id": 10008,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10008,
+          "start_seconds": 9,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10008,
+        "id": 10008,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+2 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10008,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10009,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 12,
+          "global_tag_id": 10009,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10009,
+          "start_seconds": 10,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10009,
+        "id": 10009,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+3 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10009,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10010,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 13,
+          "global_tag_id": 10010,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10010,
+          "start_seconds": 11,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10010,
+        "id": 10010,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+4 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10010,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10011,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 14,
+          "global_tag_id": 10011,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10011,
+          "start_seconds": 12,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10011,
+        "id": 10011,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+5 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10011,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10012,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 15,
+          "global_tag_id": 10012,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10012,
+          "start_seconds": 13,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10012,
+        "id": 10012,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+6 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10012,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10013,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 16,
+          "global_tag_id": 10013,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10013,
+          "start_seconds": 14,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10013,
+        "id": 10013,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+7 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10013,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10014,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 17,
+          "global_tag_id": 10014,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10014,
+          "start_seconds": 15,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10014,
+        "id": 10014,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+8 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10014,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10015,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 18,
+          "global_tag_id": 10015,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10015,
+          "start_seconds": 16,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10015,
+        "id": 10015,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+9 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10015,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10016,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 19,
+          "global_tag_id": 10016,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10016,
+          "start_seconds": 17,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10016,
+        "id": 10016,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+10 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10016,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10017,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 20,
+          "global_tag_id": 10017,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10017,
+          "start_seconds": 18,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10017,
+        "id": 10017,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+11 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10017,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10018,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 21,
+          "global_tag_id": 10018,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10018,
+          "start_seconds": 19,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10018,
+        "id": 10018,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+12 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10018,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10019,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 22,
+          "global_tag_id": 10019,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10019,
+          "start_seconds": 20,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10019,
+        "id": 10019,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+13 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10019,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10020,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 23,
+          "global_tag_id": 10020,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10020,
+          "start_seconds": 21,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10020,
+        "id": 10020,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+14 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10020,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10021,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 24,
+          "global_tag_id": 10021,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10021,
+          "start_seconds": 22,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10021,
+        "id": 10021,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+15 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10021,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10022,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 25,
+          "global_tag_id": 10022,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10022,
+          "start_seconds": 23,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10022,
+        "id": 10022,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+16 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10022,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10023,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 26,
+          "global_tag_id": 10023,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10023,
+          "start_seconds": 24,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10023,
+        "id": 10023,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+17 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10023,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10024,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 27,
+          "global_tag_id": 10024,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10024,
+          "start_seconds": 25,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10024,
+        "id": 10024,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+18 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10024,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10025,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 28,
+          "global_tag_id": 10025,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10025,
+          "start_seconds": 26,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10025,
+        "id": 10025,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+19 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10025,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10026,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 29,
+          "global_tag_id": 10026,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10026,
+          "start_seconds": 27,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10026,
+        "id": 10026,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+20 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10026,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10027,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 30,
+          "global_tag_id": 10027,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10027,
+          "start_seconds": 28,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10027,
+        "id": 10027,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+21 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10027,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10028,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 31,
+          "global_tag_id": 10028,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10028,
+          "start_seconds": 29,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10028,
+        "id": 10028,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+22 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10028,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10029,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 32,
+          "global_tag_id": 10029,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10029,
+          "start_seconds": 30,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10029,
+        "id": 10029,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+23 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10029,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10030,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 33,
+          "global_tag_id": 10030,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10030,
+          "start_seconds": 31,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10030,
+        "id": 10030,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+24 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10030,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+    {
+      "id": 10031,
+      "instances": [
+        {
+          "created": "2019-04-24T15:56:34+00:00",
+          "end_seconds": 34,
+          "global_tag_id": 10031,
+          "id": 24106,
+          "modified": "2019-04-24T15:56:54+00:00",
+          "project_id": 1254,
+          "project_tag_id": 10031,
+          "start_seconds": 32,
+          "video_id": 11503,
+          "video_tag_id": 20677,
+          "youtube_id": "9G8dmsnFjL4",
+          "tag": "[Circular]",
+          "$$hashKey": "object:264"
+        }
+      ],
+      "project_id": 1254,
+      "project_tag": {
+        "created": "2019-04-19T11:11:56+00:00",
+        "global_tag_id": 10031,
+        "id": 10031,
+        "modified": "2019-04-19T11:11:56+00:00",
+        "name": "Nth+25 hardcoded tag",
+        "project_id": 1254,
+        "subTags": [],
+        "video_tag_instance_count": 1
+      },
+      "project_tag_id": 10031,
+      "video_id": 11503,
+      "youtube_id": "9G8dmsnFjL4",
+      "c_video_id": "1254:9G8dmsnFjL4"
+    },
+
+
     {
       "id": 20682,
       "instances": [
@@ -480,7 +1568,7 @@
         "name": "Climate Change",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 4000,
@@ -531,7 +1619,7 @@
         "name": "Commentator",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 3
       },
       "project_tag_id": 3981,
@@ -567,7 +1655,7 @@
         "name": "Economy",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3999,
@@ -603,7 +1691,7 @@
         "name": "Gun Violence",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3995,
@@ -639,7 +1727,7 @@
         "name": "Healthcare",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3998,
@@ -675,7 +1763,7 @@
         "name": "Immigration",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3997,
@@ -711,7 +1799,7 @@
         "name": "Marijuana",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3993,
@@ -762,7 +1850,7 @@
         "name": "Opioid Crisis",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 2
       },
       "project_tag_id": 3994,
@@ -798,7 +1886,7 @@
         "name": "Speaks Spanish",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 3996,
@@ -834,7 +1922,7 @@
         "name": "Voting Rights",
         "project_id": 1254,
         "subTags": [],
-        
+
         "video_tag_instance_count": 1
       },
       "project_tag_id": 4001,

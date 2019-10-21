@@ -128,10 +128,10 @@ class EntityControls extends Component {
 
     const allowNewInstance = this.state.flow !== 'edit' && this.state.flow !== 'processing';
 
-    // console.group('EntityControls');
-    // console.log('state', this.state);
+    console.group('EntityControls');
+    console.log('state', this.state);
     // console.log('props', this.props);
-    // console.groupEnd();
+    console.groupEnd();
 
     const read = (
       <Grid alignItems="center" className={classes.Grid} container justify="space-between" wrap="nowrap">
