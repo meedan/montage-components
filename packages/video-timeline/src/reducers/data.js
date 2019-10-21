@@ -1,24 +1,21 @@
 import { createSlice } from 'redux-starter-kit';
 
-import baseData from '../data/baseData';
-import timelineData from '../data/timelineData';
-import newData from '../data/newData';
+// import baseData from '../data/baseData';
+// import timelineData from '../data/timelineData';
+// import newData from '../data/newData';
 
-import transcripts from '../data/transcripts';
+// import transcripts from '../data/transcripts';
 
-const initialState = window.angular
-  ? {}
-  : {
-      ...baseData, // Base data from Laurian’s account
-      ...timelineData, // Base data from Laurian’s account
-      ...newData, // Add new data missing in the API
-      // project: {
-      //   ...baseData.project,
-      //   projectplaces: [{ id: 2070, name: 'Syria', placeinstance_count: 1 }],
-      //   projectclips: [{ id: 2070, name: 'Shareable', clipinstance_count: 1 }],
-      // },
-      transcripts,
-    };
+import initialState from '../data/initalState.json';
+
+// const initialState = {
+//   ...baseData, // Base data from Laurian’s account
+//   ...timelineData, // Base data from Laurian’s account
+//   ...newData, // Add new data missing in the API
+//   transcripts,
+// };
+
+// console.log(initialState);
 
 const dataSlice = createSlice({
   initialState,
