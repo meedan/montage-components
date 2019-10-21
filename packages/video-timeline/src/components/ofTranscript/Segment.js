@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
@@ -129,113 +129,123 @@ const Legend = ({ comments, tags, places, higlightTag }) => (
   </Sticky>
 );
 
-const previewState = editorState => memoizedCreatePreview(editorState);
+class Segment extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    const {
+      comments,
+      customBlockRenderer,
+      customStyleMap,
+      editable,
+      editorKey,
+      editorStateA,
+      editorStateB,
+      handleChange,
+      higlightTag,
+      languageA = 'en-US',
+      languageB = 'en-US',
+      places,
+      scrollingContainer,
+      search,
+      searchFocused,
+      showTranslation,
+      tags,
+      textDirectionalityA = 'LTR',
+      textDirectionalityB = 'LTR',
+    } = this.props;
 
-export default React.memo(
-  ({
-    comments,
-    customBlockRenderer,
-    customStyleMap,
-    editable,
-    editorKey,
-    editorStateA,
-    editorStateB,
-    handleChange,
-    higlightTag,
-    languageA = 'en-US',
-    languageB = 'en-US',
-    places,
-    scrollingContainer,
-    search,
-    searchFocused,
-    showTranslation,
-    tags,
-    textDirectionalityA = 'LTR',
-    textDirectionalityB = 'LTR',
-  }) => (
-    <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
-      <VisibilitySensor
-        delayedCall={true}
-        intervalCheck={true}
-        intervalDelay={1000}
-        containment={scrollingContainer}
-        scrollCheck={false}
-        scrollDelay={1000}
-        partialVisibility={true}>
-        {({ isVisible }) => (
-          <>
-            <TranscriptSide left separate>
-              {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
-            </TranscriptSide>
-            <TranscriptMain>
-              <TranscriptText lang={languageA} stretch={!showTranslation}>
-                <Editor
-                  editorKey={`A${editorKey}`}
-                  readOnly={!editable || !isVisible}
-                  stripPastedStyles
-                  editorState={
-                    isVisible
-                      ? searchFocused
-                        ? EditorState.set(previewState(editorStateA), {
-                            decorator: generateDecorator(search),
-                          })
-                        : search !== ''
-                        ? EditorState.set(previewState(editorStateA), {
-                            decorator: generateDecorator(search),
-                          })
-                        : editorStateA
-                      : search.length > 2
-                      ? EditorState.set(previewState(editorStateA), {
-                          decorator: generateDecorator(search),
-                        })
-                      : previewState(editorStateA)
-                  }
-                  blockRendererFn={customBlockRenderer}
-                  customStyleMap={customStyleMap}
-                  onChange={editorState => handleChange(editorState, editorKey)}
-                  textDirectionality={textDirectionalityA}
-                  spellCheck={false}
-                  placeholder="Transcribe here…"
-                />
-              </TranscriptText>
-
-              {showTranslation ? (
-                <TranscriptText lang={languageB}>
+    return (
+      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
+        <VisibilitySensor
+          delayedCall={true}
+          intervalCheck={true}
+          intervalDelay={1000}
+          containment={scrollingContainer}
+          scrollCheck={false}
+          scrollDelay={1000}
+          partialVisibility={true}>
+          {({ isVisible }) => (
+            <>
+              <TranscriptSide left separate>
+                {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
+              </TranscriptSide>
+              <TranscriptMain>
+                <TranscriptText lang={languageA} stretch={!showTranslation}>
                   <Editor
-                    editorKey={`B${editorKey}`}
+                    editorKey={`A${editorKey}`}
                     readOnly={!editable || !isVisible}
                     stripPastedStyles
                     editorState={
                       isVisible
                         ? searchFocused
-                          ? EditorState.set(editorStateB, {
+                          ? EditorState.set(previewState(editorStateA), {
                               decorator: generateDecorator(search),
                             })
                           : search !== ''
+                          ? EditorState.set(previewState(editorStateA), {
+                              decorator: generateDecorator(search),
+                            })
+                          : editorStateA
+                        : search.length > 2
+                        ? EditorState.set(previewState(editorStateA), {
+                            decorator: generateDecorator(search),
+                          })
+                        : previewState(editorStateA)
+                    }
+                    blockRendererFn={customBlockRenderer}
+                    customStyleMap={customStyleMap}
+                    onChange={editorState => handleChange(editorState, editorKey)}
+                    textDirectionality={textDirectionalityA}
+                    spellCheck={false}
+                    placeholder="Transcribe here…"
+                  />
+                </TranscriptText>
+
+                {showTranslation ? (
+                  <TranscriptText lang={languageB}>
+                    <Editor
+                      editorKey={`B${editorKey}`}
+                      readOnly={!editable || !isVisible}
+                      stripPastedStyles
+                      editorState={
+                        isVisible
+                          ? searchFocused
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
+                            : search !== ''
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
+                            : editorStateB
+                          : search.length > 2
                           ? EditorState.set(editorStateB, {
                               decorator: generateDecorator(search),
                             })
                           : editorStateB
-                        : search.length > 2
-                        ? EditorState.set(editorStateB, {
-                            decorator: generateDecorator(search),
-                          })
-                        : editorStateB
-                    }
-                    blockRendererFn={customBlockRenderer}
-                    customStyleMap={customStyleMap}
-                    onChange={editorState => handleChange(editorState, editorKey, 'B')}
-                    textDirectionality={textDirectionalityB}
-                    spellCheck={false}
-                    placeholder="Translate here…"
-                  />
-                </TranscriptText>
-              ) : null}
-            </TranscriptMain>
-            <TranscriptSide right separate></TranscriptSide>
-          </>
-        )}
-      </VisibilitySensor>
-    </EditorWrapper>
-  )
-);
+                      }
+                      blockRendererFn={customBlockRenderer}
+                      customStyleMap={customStyleMap}
+                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                      textDirectionality={textDirectionalityB}
+                      spellCheck={false}
+                      placeholder="Translate here…"
+                    />
+                  </TranscriptText>
+                ) : null}
+              </TranscriptMain>
+              <TranscriptSide right separate></TranscriptSide>
+            </>
+          )}
+        </VisibilitySensor>
+      </EditorWrapper>
+    );
+  }
+}
+
+const previewState = editorState => memoizedCreatePreview(editorState);
+
+export default React.memo(Segment);
