@@ -708,7 +708,9 @@ class Transcript extends React.Component {
     // console.groupEnd();
 
     return (
-      <TranscriptRoot>
+      <TranscriptRoot
+        onMouseDown={() => this.setState({ mouseDown: true })}
+        onMouseUp={() => this.setState({ mouseDown: false })}>
         <TranscriptToolbar
           isEditable={this.state.editable}
           isTranslated={this.state.showTranslation}
@@ -740,7 +742,7 @@ class Transcript extends React.Component {
               videoPlaces={this.props.data.videoPlaces}
             />
           ) : null}
-          {this.state.tagAnchor && !this.state.selection ? (
+          {this.state.tagAnchor && !this.state.selection && !this.state.mouseDown ? (
             <HoverPopover
               copyToClips={() => this.copyToClips(this.state.tagAnchor)}
               deleteInstance={() => this.deleteInstance(this.state.tagAnchor)}
