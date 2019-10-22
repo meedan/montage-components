@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { react2angular } from 'react2angular';
+// import { react2angular } from 'react2angular';
 import owtj from 'owtj';
 import { SnackbarProvider } from 'notistack';
 
