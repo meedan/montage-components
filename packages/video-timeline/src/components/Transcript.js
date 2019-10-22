@@ -1,5 +1,5 @@
 // import Combinatorics from 'js-combinatorics';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import produce from 'immer';
 import chunk from 'lodash.chunk';
@@ -38,38 +38,42 @@ const TranscriptChild = styled.div`
   overflow-y: auto;
 `;
 
-class Transcript extends React.Component {
-  state = {
-    transcript: {},
-    segments: [
-      {
-        start: 0,
-        end: 0,
-        editorStateA: EditorState.createEmpty(),
-        key: 'editor-ZERO',
-        editorStateB: EditorState.createEmpty(),
-        customStyleMap: [],
-        comments: [],
-        tags: [],
-        places: [],
-      },
-    ],
-    comment: null,
-    commentAnchor: null,
-    customStyleMap: [],
-    search: '',
-    searchFocused: false,
-    editable: false,
-    // showTranslation: true,
-    selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
-    translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
-    css: '',
-  };
+class Transcript extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transcript: {},
+      segments: [
+        {
+          start: 0,
+          end: 0,
+          editorStateA: EditorState.createEmpty(),
+          key: 'editor-ZERO',
+          editorStateB: EditorState.createEmpty(),
+          customStyleMap: [],
+          comments: [],
+          tags: [],
+          places: [],
+        },
+      ],
+      comment: null,
+      commentAnchor: null,
+      customStyleMap: [],
+      search: '',
+      searchFocused: false,
+      editable: false,
+      // showTranslation: true,
+      selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
+      translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
+      css: '',
+      windowHeight: null,
+    };
+  }
 
-  componentDidMount() {
+  componentDidMount = () => {
     const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
     this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
-  }
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
