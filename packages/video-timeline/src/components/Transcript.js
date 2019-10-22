@@ -20,7 +20,19 @@ import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
 const EMPTY_TRANSLATION = false;
-const OVERLAPS = ['#b5cae1', '#91b0d3', '#6c95c4', '#467ebd', '#1c62b1', '#0250a9', 'red', 'red', 'red', 'red', 'red'];
+const OVERLAPS = [
+  '#d1deed',
+  '#abc1dc',
+  '#8ca8cc',
+  '#7292bd',
+  '#5d7faf',
+  '#4c6ea2',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+];
 
 const TranscriptRoot = styled.div`
   bottom: 0;
