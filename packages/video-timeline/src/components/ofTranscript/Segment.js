@@ -39,7 +39,10 @@ const EditorWrapper = styled.section`
 class Segment extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isVisible: false,
+      delayedIsVisible: false,
+    };
   }
 
   render() {
@@ -65,6 +68,8 @@ class Segment extends Component {
       textDirectionalityB = 'LTR',
     } = this.props;
 
+    const { delayedIsVisible } = this.state;
+
     return (
       <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
         <VisibilitySensor
@@ -74,7 +79,18 @@ class Segment extends Component {
           containment={scrollingContainer}
           scrollCheck={false}
           scrollDelay={1000}
-          partialVisibility={true}>
+          partialVisibility={true}
+          onChange={isVisible => {
+            this.setState({ isVisible });
+            window.setTimeout(() => {
+              window.requestIdleCallback(
+                () => {
+                  this.setState({ delayedIsVisible: isVisible });
+                },
+                { timeout: 1000 }
+              );
+            }, 700);
+          }}>
           {({ isVisible }) => (
             <>
               <TranscriptSide left separate>
@@ -92,7 +108,7 @@ class Segment extends Component {
                     readOnly={!editable || !isVisible}
                     stripPastedStyles
                     editorState={
-                      isVisible
+                      delayedIsVisible
                         ? searchFocused
                           ? EditorState.set(previewState(editorStateA), {
                               decorator: generateDecorator(search),
