@@ -135,132 +135,76 @@
   
   "commentThreads": [
     {
-      "created": "2019-04-24T16:05:35+00:00",
-      "duration": 2645,
       "id": 24108,
-      "modified": "2019-04-24T16:05:35+00:00",
-      "project_id": 1254,
       "start_seconds": 0,
       "text": "START",
       "user": {
-        "email": "laurian@gmail.com",
         "first_name": "Laurian",
         "id": 2591,
         "last_name": "Gridinoc",
         "profile_img_url": "https://lh5.googleusercontent.com/-Fri-UYSxRqc/AAAAAAAAAAI/AAAAAAAABBI/ecSU-3hNAk0/s100/photo.jpg"
       },
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4",
-      "c_timeline_offset": 0,
-      "c_pretty_created_date": "7.05pm Apr 24th",
       "replies": []
     },
     {
-      "created": "2019-04-24T16:09:57+00:00",
-      "duration": 2645,
       "id": 24109,
-      "modified": "2019-04-24T16:09:57+00:00",
-      "project_id": 1254,
       "replies": [
         {
-          "created": "2019-04-25T08:27:36+00:00",
-          "duration": 2645,
           "id": 24118,
-          "modified": "2019-04-25T08:27:37+00:00",
-          "project_id": 1254,
           "start_seconds": 681.622923961853,
           "text": "We need transcript and translation here",
           "thread_id": 24109,
           "user": {
-            "email": "laurian@gmail.com",
             "first_name": "Laurian",
             "id": 2591,
             "last_name": "Gridinoc",
             "profile_img_url": "https://lh5.googleusercontent.com/-Fri-UYSxRqc/AAAAAAAAAAI/AAAAAAAABBI/ecSU-3hNAk0/s100/photo.jpg"
-          },
-          "youtube_id": "9G8dmsnFjL4",
-          "c_pretty_created_date": "11.27am Apr 25th",
-          "thread": "[Circular]"
+          }
         }
       ],
       "start_seconds": 681.622923961853,
       "text": "Speaks Spanish",
       "user": {
-        "email": "mark@hyperaud.io",
         "first_name": "Mark",
-        "google_plus_profile": "https://plus.google.com/109653547337875735502",
         "id": 2376,
         "last_name": "Boas",
         "profile_img_url": "https://lh4.googleusercontent.com/-KAQP-uwuJ-U/AAAAAAAAAAI/AAAAAAAAAA8/m1-ILT1IqWs/s100/photo.jpg"
-      },
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4",
-      "c_timeline_offset": 25.770242871903704,
-      "c_pretty_created_date": "7.09pm Apr 24th"
+      }
     },
     {
-      "created": "2019-04-24T16:14:05+00:00",
-      "duration": 2645,
       "id": 24112,
-      "modified": "2019-04-24T16:14:05+00:00",
-      "project_id": 1254,
       "start_seconds": 761.505806986649,
       "text": "Will make Dreamers US Citizens",
       "user": {
-        "email": "mark@hyperaud.io",
         "first_name": "Mark",
-        "google_plus_profile": "https://plus.google.com/109653547337875735502",
         "id": 2376,
         "last_name": "Boas",
         "profile_img_url": "https://lh4.googleusercontent.com/-KAQP-uwuJ-U/AAAAAAAAAAI/AAAAAAAAAA8/m1-ILT1IqWs/s100/photo.jpg"
       },
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4",
-      "c_timeline_offset": 28.790389678134176,
-      "c_pretty_created_date": "7.14pm Apr 24th",
       "replies": []
     },
     {
-      "created": "2019-04-24T16:25:02+00:00",
-      "duration": 2645,
       "id": 24116,
-      "modified": "2019-04-24T16:25:02+00:00",
-      "project_id": 1254,
       "start_seconds": 1098.09159298093,
       "text": "Gerrymandering.",
       "user": {
-        "email": "mark@hyperaud.io",
         "first_name": "Mark",
-        "google_plus_profile": "https://plus.google.com/109653547337875735502",
         "id": 2376,
         "last_name": "Boas",
         "profile_img_url": "https://lh4.googleusercontent.com/-KAQP-uwuJ-U/AAAAAAAAAAI/AAAAAAAAAA8/m1-ILT1IqWs/s100/photo.jpg"
       },
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4",
-      "c_timeline_offset": 41.515750207218524,
-      "c_pretty_created_date": "7.25pm Apr 24th",
       "replies": []
     },
     {
-      "created": "2019-04-25T08:28:07+00:00",
-      "duration": 2645,
       "id": 24119,
-      "modified": "2019-04-25T08:28:07+00:00",
-      "project_id": 1254,
       "start_seconds": 2644.5438548753,
       "text": "END",
       "user": {
-        "email": "laurian@gmail.com",
         "first_name": "Laurian",
         "id": 2591,
         "last_name": "Gridinoc",
         "profile_img_url": "https://lh5.googleusercontent.com/-Fri-UYSxRqc/AAAAAAAAAAI/AAAAAAAABBI/ecSU-3hNAk0/s100/photo.jpg"
       },
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4",
-      "c_timeline_offset": 99.98275443762948,
-      "c_pretty_created_date": "11.28am Apr 25th",
       "replies": []
     }
   ],
