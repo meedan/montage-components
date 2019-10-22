@@ -79,7 +79,10 @@ class Segment extends Component {
             <>
               <TranscriptSide left separate>
                 {!editable ? (
-                  <Legend {...{ comments, tags, places, higlightTag }} scrollingContainer={scrollingContainer} />
+                  <Legend
+                    {...{ isVisible, comments, tags, places, higlightTag }}
+                    scrollingContainer={scrollingContainer}
+                  />
                 ) : null}
               </TranscriptSide>
               <TranscriptMain>
