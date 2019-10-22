@@ -44,12 +44,16 @@ class Legend extends Component {
     const { scrollingContainer } = this.props;
     if (!scrollingContainer) return null;
     scrollingContainer.addEventListener('scroll', this.recalcHeight);
+    window.addEventListener('resize', this.recalcHeight);
+    document.addEventListener('resize', this.recalcHeight);
     this.recalcHeight();
   };
   componentWillUnmount = () => {
     const { scrollingContainer } = this.props;
     if (!scrollingContainer) return null;
     scrollingContainer.removeEventListener('scroll', this.recalcHeight);
+    window.removeEventListener('resize', this.recalcHeight);
+    document.removeEventListener('resize', this.recalcHeight);
   };
 
   recalcHeight = () => {
