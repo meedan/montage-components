@@ -132,7 +132,6 @@
       }
     ]
   },
-  
   "commentThreads": [
     {
       "id": 24108,
@@ -209,41 +208,18 @@
     }
   ],
   "videoTags": [
-
     {
       "id": 10001,
       "instances": [
         {
-          "created": "2019-04-24T15:56:34+00:00",
           "end_seconds": 6,
-          "global_tag_id": 10001,
           "id": 24106,
-          "modified": "2019-04-24T15:56:54+00:00",
-          "project_id": 1254,
-          "project_tag_id": 10001,
-          "start_seconds": 4,
-          "video_id": 11503,
-          "video_tag_id": 20677,
-          "youtube_id": "9G8dmsnFjL4",
-          "tag": "[Circular]",
-          "$$hashKey": "object:264"
+          "start_seconds": 4
         }
       ],
-      "project_id": 1254,
       "project_tag": {
-        "created": "2019-04-19T11:11:56+00:00",
-        "global_tag_id": 10001,
-        "id": 10001,
-        "modified": "2019-04-19T11:11:56+00:00",
-        "name": "Hardcoded tag",
-        "project_id": 1254,
-        "subTags": [],
-        "video_tag_instance_count": 1
-      },
-      "project_tag_id": 10001,
-      "video_id": 11503,
-      "youtube_id": "9G8dmsnFjL4",
-      "c_video_id": "1254:9G8dmsnFjL4"
+        "name": "Hardcoded tag"
+      }
     },
     {
       "id": 10002,
@@ -1705,8 +1681,46 @@
       }
     ]
   },
-  "videoPlaces": [],
-  "videoClips": [],
+  "videoPlaces": [
+    {
+      "project_location": {
+        "name": "Paris"
+      },
+      "id": 23472492834982372,
+      "lat": 48.85661400000001,
+      "lng": 2.3522219000000177,
+      "type": "marker",
+      "viewport": {
+        "south": 48.75033902000453,
+        "west": 2.0724016968749766,
+        "north": 48.96718146676017,
+        "east": 2.6217181031249766
+      },
+      "zoom": 10,
+      "instances": [
+        {
+          "end_seconds": 120,
+          "id": 3456712306,
+          "start_seconds": 40
+        }
+      ]
+    }
+  ],
+  "videoClips": [
+    {
+      "id": 129001,
+      "instances": [
+        {
+          "end_seconds": 60,
+          "id": 1238806,
+          "start_seconds": 4
+        }
+      ],
+      "project_clip": {
+        "name": "Hardcoded clip"
+      }
+    }
+  ],
   "transcripts": [
     {
       "title": "Road to the White House 2020 Up Close in New Hampshire Beto O'Rourke-9G8dmsnFjL4.m4a",
