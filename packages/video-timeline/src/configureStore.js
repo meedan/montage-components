@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 // import RavenMiddleware from 'redux-raven-middleware';
 import { createLogger } from 'redux-logger';
-import { save, load } from 'redux-localstorage-simple';
+// import { save, load } from 'redux-localstorage-simple';
 
 import rootReducer from './reducers';
 

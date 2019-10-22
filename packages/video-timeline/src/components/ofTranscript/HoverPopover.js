@@ -31,7 +31,11 @@ class HoverPopover extends Component {
   }
 
   render() {
-    const { classes, tagInstances, placeInstances } = this.props;
+    const {
+      classes,
+      // tagInstances,
+      // placeInstances
+    } = this.props;
 
     // console.group('HoverPopover.js');
     // console.log({ tagInstances });
