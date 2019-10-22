@@ -85,7 +85,7 @@ class Segment extends Component {
             window.setTimeout(() => {
               window.requestIdleCallback(
                 () => {
-                  this.setState({ delayedIsVisible: isVisible });
+                  this.setState({ delayedIsVisible: this.state.isVisible });
                 },
                 { timeout: 1000 }
               );
