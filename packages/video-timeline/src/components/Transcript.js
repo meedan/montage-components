@@ -197,7 +197,7 @@ class Transcript extends Component {
     }, []);
 
     const segments = chunk(transcript.segments, 2)
-      .slice(0, 2)
+      // .slice(0, 2)
       .map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
