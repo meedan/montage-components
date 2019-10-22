@@ -75,7 +75,7 @@ if (root) {
   console.log('no react-root, angular?');
 }
 
-console.log(VideoTimeline);
+// console.log(VideoTimeline);
 
 window.VT = VideoTimeline;
 export default VideoTimeline;
