@@ -1,138 +1,24 @@
 {
   "gdVideoData": {
-    "channel_id": "UC8kJAX_zxlDctZpgJxdA-Fw",
-    "channel_name": "Dodge Landesman",
-    "created": "2019-04-24T09:50:57+00:00",
-    "duplicate_count": 0,
-    "duration": 2645,
-    "favourited": false,
     "id": 11503,
-    "location_overridden": false,
-    "missing_from_youtube": false,
-    "modified": "2019-04-24T09:50:57+00:00",
-    "name": "Road to the White House 2020 Up Close in New Hampshire Beto O'Rourke",
-    "notes": "Former Congressman Beto O'Rourke was at Conseulo's Taqueria, in Manchester, New Hampshire",
-    "precise_location": true,
-    "pretty_created": "Apr 24, 2019",
-    "pretty_duration": "44:05",
-    "pretty_publish_date": "Mar 22, 2019",
-    "project_id": 1254,
-    "publish_date": "2019-03-22T19:14:14+00:00",
-    "recorded_date_overridden": false,
-    "tag_count": 10,
-    "watch_count": 2,
-    "watched": true,
-    "youtube_id": "9G8dmsnFjL4",
-    "c_id": "1254:9G8dmsnFjL4",
-    "c_thumbnail_url": "//i3.ytimg.com/vi/9G8dmsnFjL4/default.jpg",
-    "c_theatre_url": "/project/1254/video/9G8dmsnFjL4"
+    "recorded_date_overridden": false
   },
   "ytVideoData": {
-    "kind": "youtube#video",
-    "etag": "\"XpPGQXPnxQJhLgs6enD_n8JR4Qk/a9cadfLPmuzDWtCb-d_Wumf0UeY\"",
     "id": "9G8dmsnFjL4",
     "snippet": {
       "publishedAt": "2019-03-22T19:14:14.000Z",
-      "channelId": "UC8kJAX_zxlDctZpgJxdA-Fw",
       "title": "Road to the White House 2020 Up Close in New Hampshire Beto O'Rourke",
       "description": "Former Congressman Beto O'Rourke was at Conseulo's Taqueria, in Manchester, New Hampshire",
-      "thumbnails": {
-        "default": {
-          "url": "https://i.ytimg.com/vi/9G8dmsnFjL4/default.jpg",
-          "width": 120,
-          "height": 90
-        },
-        "medium": {
-          "url": "https://i.ytimg.com/vi/9G8dmsnFjL4/mqdefault.jpg",
-          "width": 320,
-          "height": 180
-        },
-        "high": {
-          "url": "https://i.ytimg.com/vi/9G8dmsnFjL4/hqdefault.jpg",
-          "width": 480,
-          "height": 360
-        }
-      },
-      "channelTitle": "Dodge Landesman",
-      "tags": [
-        "Beto O'Rourke",
-        "Betomania",
-        "Beto",
-        "Beto O'Rourke 2020",
-        "Beto O'Rourke for President",
-        "President 2020",
-        "2020 New Hampshire Primary",
-        "2020 Democratic Presidential Primary",
-        "Immigration",
-        "Criminal Justice",
-        "Mexico-USA",
-        "New Hampshire",
-        "Manchester",
-        "New Hampshire Democratic Primary",
-        "2020 Primary",
-        "2020 Election",
-        "trump",
-        "Trump Re-Election",
-        "Democrats",
-        "Democrat Primary",
-        "2020 Democrats",
-        "2020 Democrat Primary"
-      ],
-      "categoryId": "1",
-      "liveBroadcastContent": "none",
-      "localized": {
-        "title": "Road to the White House 2020 Up Close in New Hampshire Beto O'Rourke",
-        "description": "Former Congressman Beto O'Rourke was at Conseulo's Taqueria, in Manchester, New Hampshire"
-      },
-      "defaultAudioLanguage": "en-US"
+      "channelTitle": "Dodge Landesman"
     },
     "statistics": {
-      "viewCount": "49",
-      "likeCount": "0",
-      "dislikeCount": "0",
-      "favoriteCount": "0",
-      "commentCount": "1"
+      "viewCount": "49"
     }
   },
-  "nextUrl": "/project/1254/video/rfq0Yw2sMq0?orderBy=-created",
+  "nextUrl": null,
   "prevUrl": null,
   "nextVideo": null,
-  "project": {
-    "admin_ids": [
-      2376
-    ],
-    "assigned_user_ids": [
-      75,
-      2376,
-      2466,
-      2468,
-      2591
-    ],
-    "created": "2019-04-19T10:52:52+00:00",
-    "current_user_info": {
-      "created": "2019-04-19T13:52:20+00:00",
-      "id": 1906,
-      "is_admin": false,
-      "is_assigned": true,
-      "is_owner": false,
-      "is_pending": false,
-      "last_updates_viewed": "2019-04-24T15:03:13+00:00",
-      "modified": "2019-04-24T15:03:13+00:00"
-    },
-    "description": "Test Channel for US 2020 Elections",
-    "id": 1254,
-    "image_url": "//lh3.googleusercontent.com/UGBFADRJvGGgDq25ErSVrV24FYAd8uTKyNKErGPC-iiotvvIjJl1HruFW1V1cC7KpPrXJ7ee1G05hwYOLJjcYsdFtF8Nsw",
-    "modified": "2019-04-19T10:53:50+00:00",
-    "name": "US2020",
-    "owner": {
-      "email": "mark@hyperaud.io",
-      "first_name": "Mark",
-      "id": 2376,
-      "last_name": "Boas",
-      "profile_img_url": "https://lh4.googleusercontent.com/-KAQP-uwuJ-U/AAAAAAAAAAI/AAAAAAAAAA8/m1-ILT1IqWs/s100/photo.jpg"
-    },
-    "privacy_project": 1,
-    "privacy_tags": 1,
+  "project": {    
     "projecttags": [
       {
         "id": 3958,
@@ -244,82 +130,9 @@
         "name": "Voting Rights",
         "taginstance_count": 1
       }
-    ],
-    "video_count": 4,
-    "video_tag_instance_count": 24,
-    "videos": [
-      {
-        "channel_id": "UC8kJAX_zxlDctZpgJxdA-Fw",
-        "channel_name": "Dodge Landesman",
-        "created": "2019-04-24T09:50:57+00:00",
-        "duplicate_count": 0,
-        "duration": 2645,
-        "favourited": false,
-        "id": 11503,
-        "location_overridden": false,
-        "missing_from_youtube": false,
-        "modified": "2019-04-24T09:50:57+00:00",
-        "name": "Road to the White House 2020 Up Close in New Hampshire Beto O'Rourke",
-        "notes": "Former Congressman Beto O'Rourke was at Conseulo's Taqueria, in Manchester, New Hampshire",
-        "precise_location": true,
-        "pretty_created": "Apr 24, 2019",
-        "pretty_duration": "44:05",
-        "pretty_publish_date": "Mar 22, 2019",
-        "project_id": 1254,
-        "publish_date": "2019-03-22T19:14:14+00:00",
-        "recorded_date_overridden": false,
-        "tag_count": 10,
-        "watch_count": 2,
-        "watched": true,
-        "youtube_id": "9G8dmsnFjL4",
-        "c_id": "1254:9G8dmsnFjL4",
-        "c_thumbnail_url": "//i3.ytimg.com/vi/9G8dmsnFjL4/default.jpg",
-        "c_theatre_url": "/project/1254/video/9G8dmsnFjL4"
-      }
     ]
   },
-  "videoCollection": {
-    "cacheKey": "archived=true&archived_at=!null&project_id=1254",
-    "filters": {
-      "project_id": 1254,
-      "archived_at": "!null",
-      "archived": true
-    },
-    "items": [
-      {
-        "archived_at": "2019-04-19T10:58:51+00:00",
-        "channel_id": "UCqnbDFdCpuN8CMEg0VuEBqA",
-        "channel_name": "The New York Times",
-        "created": "2019-04-19T10:56:46+00:00",
-        "duplicate_count": 0,
-        "duration": 5608,
-        "favourited": false,
-        "id": 11498,
-        "location_overridden": false,
-        "missing_from_youtube": false,
-        "modified": "2019-04-19T10:58:18+00:00",
-        "name": "Second Presidential Debate | Election 2016 | The New York Times",
-        "notes": "Hillary Clinton and Donald J. Trump square off for the second time during a debate held at Washington University in St. Louis.\n\nSubscribe to the Times Video newsletter for free and get a handpicked selection of the best videos from The New York Times every week: http://bit.ly/timesvideonewsletter\n\nSubscribe on YouTube: http://bit.ly/U8Ys7n\n\nWatch more videos at: http://nytimes.com/video\n\n---------------------------------------------------------------\n\nWant more from The New York Times?\n\nTwitter: https://twitter.com/nytvideo\n\nInstagram: http://instagram.com/nytvideo\n\nFacebook: https://www.facebook.com/nytvideo\n\nGoogle+: https://plus.google.com/+nytimes\n\nWhether it's reporting on conflicts abroad and political divisions at home, or covering the latest style trends and scientific developments, New York Times video journalists provide a revealing and unforgettable view of the world. It's all the news that's fit to watch. On YouTube.\n\nSecond Presidential Debate | Election 2016 | The New York Times\nhttp://www.youtube.com/user/TheNewYorkTimes",
-        "order": 0,
-        "precise_location": true,
-        "pretty_created": "Apr 19, 2019",
-        "pretty_duration": "1:33:28",
-        "pretty_publish_date": "Oct 10, 2016",
-        "project_id": 1254,
-        "publish_date": "2016-10-10T02:56:26+00:00",
-        "recorded_date_overridden": false,
-        "tag_count": 0,
-        "watch_count": 1,
-        "watched": false,
-        "youtube_id": "rfq0Yw2sMq0",
-        "c_id": "1254:rfq0Yw2sMq0",
-        "c_thumbnail_url": "//i3.ytimg.com/vi/rfq0Yw2sMq0/default.jpg",
-        "c_theatre_url": "/project/1254/video/rfq0Yw2sMq0"
-      }
-    ],
-    "isBusy": false,
-    "pristine": false
-  },
+  
   "commentThreads": [
     {
       "created": "2019-04-24T16:05:35+00:00",
@@ -1931,18 +1744,6 @@
       "c_video_id": "1254:9G8dmsnFjL4"
     }
   ],
-  "videoBackupSettings": {
-    "backupServiceIds": [
-      "archiveIs"
-    ],
-    "backupServices": [
-      {
-        "id": "archiveIs",
-        "name": "Archive.Is",
-        "isActive": false
-      }
-    ]
-  },
   "videoBackups": {
     "backupIds": [
       11503
