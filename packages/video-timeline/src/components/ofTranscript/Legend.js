@@ -100,7 +100,8 @@ class Legend extends Component {
               <LegendItem
                 key={`T-${entity.id}`}
                 onMouseOver={() => higlightTag(`T-${entity.id}`)}
-                onMouseOut={() => higlightTag(null)}>
+                onMouseOut={() => higlightTag(null)}
+                onClick={() => this.props.scrollIntoView(entity.id)}>
                 <Typography
                   color="textSecondary"
                   noWrap

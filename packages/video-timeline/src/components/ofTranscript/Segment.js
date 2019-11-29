@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
@@ -43,7 +43,13 @@ class Segment extends Component {
       isVisible: false,
       delayedIsVisible: false,
     };
+    this.segmentRef = createRef();
   }
+
+  scrollIntoView = entityId => {
+    const target = this.segmentRef.current.querySelectorAll(`.T-${entityId}`)[0];
+    target.scrollIntoView({ behavior: 'smooth' });
+  };
 
   render() {
     const {
@@ -71,7 +77,11 @@ class Segment extends Component {
     const { delayedIsVisible } = this.state;
 
     return (
-      <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
+      <EditorWrapper
+        key={`segment-${editorKey}`}
+        data-editor-key={editorKey}
+        className="sticky-boundary-el"
+        ref={this.segmentRef}>
         <VisibilitySensor
           delayedCall={true}
           intervalCheck={true}
@@ -98,6 +108,7 @@ class Segment extends Component {
                   <Legend
                     {...{ isVisible, comments, tags, places, higlightTag }}
                     scrollingContainer={scrollingContainer}
+                    scrollIntoView={entityId => this.scrollIntoView(entityId)}
                   />
                 ) : null}
               </TranscriptSide>
