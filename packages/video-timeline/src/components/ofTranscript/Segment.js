@@ -1,20 +1,14 @@
-import React from 'react';
+import React, { Component, createRef } from 'react';
 import { Editor, EditorState } from 'draft-js';
 import VisibilitySensor from 'react-visibility-sensor';
 import styled from 'styled-components';
-import Sticky from 'react-sticky-el';
 
 import { generateDecorator, memoizedCreatePreview } from './transcriptUtils';
-
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import LabelIcon from '@material-ui/icons/Label';
-import CommentIcon from '@material-ui/icons/Comment';
-import LocationIcon from '@material-ui/icons/LocationOn';
 
 import TranscriptSide from './TranscriptSide';
 import TranscriptMain from './TranscriptMain';
 import TranscriptText from './TranscriptText';
+import Legend from './Legend';
 
 const EditorWrapper = styled.section`
   user-select: auto;
@@ -42,200 +36,156 @@ const EditorWrapper = styled.section`
   }
 `;
 
-const LegendContainer = styled.div`
-  margin-top: 10px;
-  padding-left: 24px;
-  position: relative;
-  user-select: none;
-  height: 100%;
-`;
-const LegendItem = styled.div`
-  &:hover * {
-    color: #2f80ed;
-    text-decoration: underline;
+class Segment extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isVisible: false,
+      delayedIsVisible: false,
+    };
+    this.segmentRef = createRef();
   }
-`;
-const LegendLabel = styled.div`
-  position: absolute;
-  left: 0;
-`;
 
-const Legend = ({ comments, tags, places, higlightTag }) => (
-  <Sticky boundaryElement=".sticky-boundary-el" scrollElement=".sticky-scroll-area" hideOnBoundaryHit={false}>
-    {comments.length > 0 ? (
-      <LegendContainer>
-        <LegendLabel>
-          <Tooltip title="Comments">
-            <CommentIcon fontSize="small" color="disabled" size="" style={{ height: '0.85em' }}></CommentIcon>
-          </Tooltip>
-        </LegendLabel>
-        <LegendItem onMouseOver={() => higlightTag('C-*')} onMouseOut={() => higlightTag(null)}>
-          <Typography color="textSecondary" noWrap style={{ display: 'block', width: '120px' }} variant="caption">
-            {comments.length} comment thread{comments.length > 1 ? 's' : ''}
-          </Typography>
-        </LegendItem>
-      </LegendContainer>
-    ) : null}
+  scrollIntoView = entityId => {
+    const target = this.segmentRef.current.querySelectorAll(`.T-${entityId}`)[0];
+    target.scrollIntoView({ behavior: 'smooth' });
+  };
 
-    {tags.length > 0 ? (
-      <LegendContainer>
-        <LegendLabel>
-          <Tooltip title="Tags">
-            <LabelIcon fontSize="small" color="disabled" size=""></LabelIcon>
-          </Tooltip>
-        </LegendLabel>
-        {tags.map(entity => (
-          <LegendItem
-            key={`T-${entity.id}`}
-            onMouseOver={() => higlightTag(`T-${entity.id}`)}
-            onMouseOut={() => higlightTag(null)}>
-            <Typography
-              color="textSecondary"
-              noWrap
-              style={{ display: 'block', width: '120px' }}
-              title={entity.project_tag.name}
-              variant="caption">
-              {entity.project_tag.name}
-            </Typography>
-          </LegendItem>
-        ))}
-      </LegendContainer>
-    ) : null}
+  render() {
+    const {
+      comments,
+      customBlockRenderer,
+      customStyleMap,
+      editable,
+      editorKey,
+      editorStateA,
+      editorStateB,
+      handleChange,
+      higlightTag,
+      languageA = 'en-US',
+      languageB = 'en-US',
+      places,
+      scrollingContainer,
+      search,
+      searchFocused,
+      showTranslation,
+      tags,
+      textDirectionalityA = 'LTR',
+      textDirectionalityB = 'LTR',
+    } = this.props;
 
-    {places.length > 0 ? (
-      <LegendContainer>
-        <LegendLabel>
-          <Tooltip title="Locations">
-            <LocationIcon fontSize="small" color="disabled" size=""></LocationIcon>
-          </Tooltip>
-        </LegendLabel>
-        {places.map(entity => (
-          <div
-            key={`G-${entity.id}`}
-            onMouseOver={() => higlightTag(`G-${entity.id}`)}
-            onMouseOut={() => higlightTag(null)}>
-            <Typography
-              color="textSecondary"
-              noWrap
-              style={{ display: 'block', width: '120px' }}
-              title={entity.project_location.name}
-              variant="caption">
-              {entity.project_location.name}
-            </Typography>
-          </div>
-        ))}
-      </LegendContainer>
-    ) : null}
-  </Sticky>
-);
+    const { delayedIsVisible } = this.state;
 
-const previewState = editorState => memoizedCreatePreview(editorState);
-
-export default React.memo(
-  ({
-    comments,
-    customBlockRenderer,
-    customStyleMap,
-    editable,
-    editorKey,
-    editorStateA,
-    editorStateB,
-    handleChange,
-    higlightTag,
-    languageA = 'en-US',
-    languageB = 'en-US',
-    places,
-    scrollingContainer,
-    search,
-    searchFocused,
-    showTranslation,
-    tags,
-    textDirectionalityA = 'LTR',
-    textDirectionalityB = 'LTR',
-  }) => (
-    <EditorWrapper key={`segment-${editorKey}`} data-editor-key={editorKey} className="sticky-boundary-el">
-      <VisibilitySensor
-        delayedCall={true}
-        intervalCheck={true}
-        intervalDelay={1000}
-        containment={scrollingContainer}
-        scrollCheck={false}
-        scrollDelay={1000}
-        partialVisibility={true}>
-        {({ isVisible }) => (
-          <>
-            <TranscriptSide left separate>
-              {!editable ? <Legend {...{ comments, tags, places, higlightTag }} /> : null}
-            </TranscriptSide>
-            <TranscriptMain>
-              <TranscriptText lang={languageA} stretch={!showTranslation}>
-                <Editor
-                  editorKey={`A${editorKey}`}
-                  readOnly={!editable || !isVisible}
-                  stripPastedStyles
-                  editorState={
-                    isVisible
-                      ? searchFocused
-                        ? EditorState.set(previewState(editorStateA), {
-                            decorator: generateDecorator(search),
-                          })
-                        : search !== ''
-                        ? EditorState.set(previewState(editorStateA), {
-                            decorator: generateDecorator(search),
-                          })
-                        : editorStateA
-                      : search.length > 2
-                      ? EditorState.set(previewState(editorStateA), {
-                          decorator: generateDecorator(search),
-                        })
-                      : previewState(editorStateA)
-                  }
-                  blockRendererFn={customBlockRenderer}
-                  customStyleMap={customStyleMap}
-                  onChange={editorState => handleChange(editorState, editorKey)}
-                  textDirectionality={textDirectionalityA}
-                  spellCheck={false}
-                  placeholder="Transcribe here…"
-                />
-              </TranscriptText>
-
-              {showTranslation ? (
-                <TranscriptText lang={languageB}>
+    return (
+      <EditorWrapper
+        key={`segment-${editorKey}`}
+        data-editor-key={editorKey}
+        className="sticky-boundary-el"
+        ref={this.segmentRef}>
+        <VisibilitySensor
+          delayedCall={true}
+          intervalCheck={true}
+          intervalDelay={1000}
+          containment={scrollingContainer}
+          scrollCheck={false}
+          scrollDelay={1000}
+          partialVisibility={true}
+          onChange={isVisible => {
+            this.setState({ isVisible });
+            window.setTimeout(() => {
+              window.requestIdleCallback(
+                () => {
+                  this.setState({ delayedIsVisible: this.state.isVisible });
+                },
+                { timeout: 1000 }
+              );
+            }, 700);
+          }}>
+          {({ isVisible }) => (
+            <>
+              <TranscriptSide left separate>
+                {!editable ? (
+                  <Legend
+                    {...{ isVisible, comments, tags, places, higlightTag }}
+                    scrollingContainer={scrollingContainer}
+                    scrollIntoView={entityId => this.scrollIntoView(entityId)}
+                  />
+                ) : null}
+              </TranscriptSide>
+              <TranscriptMain>
+                <TranscriptText lang={languageA} stretch={!showTranslation}>
                   <Editor
-                    editorKey={`B${editorKey}`}
+                    editorKey={`A${editorKey}`}
                     readOnly={!editable || !isVisible}
                     stripPastedStyles
                     editorState={
-                      isVisible
+                      delayedIsVisible
                         ? searchFocused
-                          ? EditorState.set(editorStateB, {
+                          ? EditorState.set(previewState(editorStateA), {
                               decorator: generateDecorator(search),
                             })
                           : search !== ''
+                          ? EditorState.set(previewState(editorStateA), {
+                              decorator: generateDecorator(search),
+                            })
+                          : editorStateA
+                        : search.length > 2
+                        ? EditorState.set(previewState(editorStateA), {
+                            decorator: generateDecorator(search),
+                          })
+                        : previewState(editorStateA)
+                    }
+                    blockRendererFn={customBlockRenderer}
+                    customStyleMap={customStyleMap}
+                    onChange={editorState => handleChange(editorState, editorKey)}
+                    textDirectionality={textDirectionalityA}
+                    spellCheck={false}
+                    placeholder="Transcribe here…"
+                  />
+                </TranscriptText>
+
+                {showTranslation ? (
+                  <TranscriptText lang={languageB}>
+                    <Editor
+                      editorKey={`B${editorKey}`}
+                      readOnly={!editable || !isVisible}
+                      stripPastedStyles
+                      editorState={
+                        isVisible
+                          ? searchFocused
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
+                            : search !== ''
+                            ? EditorState.set(editorStateB, {
+                                decorator: generateDecorator(search),
+                              })
+                            : editorStateB
+                          : search.length > 2
                           ? EditorState.set(editorStateB, {
                               decorator: generateDecorator(search),
                             })
                           : editorStateB
-                        : search.length > 2
-                        ? EditorState.set(editorStateB, {
-                            decorator: generateDecorator(search),
-                          })
-                        : editorStateB
-                    }
-                    blockRendererFn={customBlockRenderer}
-                    customStyleMap={customStyleMap}
-                    onChange={editorState => handleChange(editorState, editorKey, 'B')}
-                    textDirectionality={textDirectionalityB}
-                    spellCheck={false}
-                    placeholder="Translate here…"
-                  />
-                </TranscriptText>
-              ) : null}
-            </TranscriptMain>
-            <TranscriptSide right separate></TranscriptSide>
-          </>
-        )}
-      </VisibilitySensor>
-    </EditorWrapper>
-  )
-);
+                      }
+                      blockRendererFn={customBlockRenderer}
+                      customStyleMap={customStyleMap}
+                      onChange={editorState => handleChange(editorState, editorKey, 'B')}
+                      textDirectionality={textDirectionalityB}
+                      spellCheck={false}
+                      placeholder="Translate here…"
+                    />
+                  </TranscriptText>
+                ) : null}
+              </TranscriptMain>
+              <TranscriptSide right separate></TranscriptSide>
+            </>
+          )}
+        </VisibilitySensor>
+      </EditorWrapper>
+    );
+  }
+}
+
+const previewState = editorState => memoizedCreatePreview(editorState);
+
+export default React.memo(Segment);

@@ -1,11 +1,16 @@
-/** @format */
-
 import React, { useState } from 'react';
 import { func } from 'prop-types';
 
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+
+const styles = {
+  Grid: {
+    width: '200px',
+  },
+};
 
 function CommentForm(props) {
   const { isCreating, isEditing, value } = props;
@@ -18,7 +23,7 @@ function CommentForm(props) {
   };
 
   return (
-    <Grid container direction="column" spacing={1} wrap="nowrap">
+    <Grid container direction="column" spacing={1} wrap="nowrap" className={props.classes.Grid}>
       <Grid item>
         <TextField
           autoFocus
@@ -65,7 +70,7 @@ function CommentForm(props) {
   );
 }
 
-export default CommentForm;
+export default withStyles(styles)(CommentForm);
 
 CommentForm.propTypes = {
   onCancel: func.isRequired,

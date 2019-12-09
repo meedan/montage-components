@@ -1,8 +1,12 @@
-import Combinatorics from 'js-combinatorics';
-import React from 'react';
+// import Combinatorics from 'js-combinatorics';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+// import produce from 'immer';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw } from 'draft-js';
+
+import { update } from '../reducers/data';
 
 import '@montage/ui/assets/fonts/iconfont/style.css';
 
@@ -16,7 +20,19 @@ import TranscriptWrapper from './ofTranscript/TranscriptWrapper';
 import { createEntityMap, generateDecorator, memoizedGetBlockTimings } from './ofTranscript/transcriptUtils';
 
 const EMPTY_TRANSLATION = false;
-const OVERLAPS = ['#b5cae1', '#91b0d3', '#6c95c4', '#467ebd', '#1c62b1', '#0250a9', 'red', 'red', 'red', 'red', 'red'];
+const OVERLAPS = [
+  '#d1deed',
+  '#abc1dc',
+  '#8ca8cc',
+  '#7292bd',
+  '#5d7faf',
+  '#4c6ea2',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+  '#3e5f96',
+];
 
 const TranscriptRoot = styled.div`
   bottom: 0;
@@ -34,38 +50,42 @@ const TranscriptChild = styled.div`
   overflow-y: auto;
 `;
 
-class Transcript extends React.Component {
-  state = {
-    transcript: {},
-    segments: [
-      {
-        start: 0,
-        end: 0,
-        editorStateA: EditorState.createEmpty(),
-        key: 'editor-ZERO',
-        editorStateB: EditorState.createEmpty(),
-        customStyleMap: [],
-        comments: [],
-        tags: [],
-        places: [],
-      },
-    ],
-    comment: null,
-    commentAnchor: null,
-    customStyleMap: [],
-    search: '',
-    searchFocused: false,
-    editable: false,
-    // showTranslation: true,
-    selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
-    translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
-    css: '',
-  };
+class Transcript extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transcript: {},
+      segments: [
+        {
+          start: 0,
+          end: 0,
+          editorStateA: EditorState.createEmpty(),
+          key: 'editor-ZERO',
+          editorStateB: EditorState.createEmpty(),
+          customStyleMap: [],
+          comments: [],
+          tags: [],
+          places: [],
+        },
+      ],
+      comment: null,
+      commentAnchor: null,
+      customStyleMap: [],
+      search: '',
+      searchFocused: false,
+      editable: false,
+      // showTranslation: true,
+      selectedTranslation: EMPTY_TRANSLATION ? null : 'it',
+      translations: EMPTY_TRANSLATION ? null : ['it', 'pl'],
+      css: '',
+      windowHeight: null,
+    };
+  }
 
-  componentDidMount() {
+  componentDidMount = () => {
     const { transcript, commentThreads, videoTags, videoPlaces } = this.props;
     this.loadTranscript(transcript, commentThreads, videoTags, videoPlaces);
-  }
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     const { transcript, commentThreads, videoTags, videoPlaces } = nextProps;
@@ -177,7 +197,7 @@ class Transcript extends React.Component {
     }, []);
 
     const segments = chunk(transcript.segments, 2)
-      .slice(0, 2)
+      // .slice(0, 2)
       .map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
@@ -379,7 +399,12 @@ class Transcript extends React.Component {
     this.setState({ transcriptRefScrollTop: e.target.scrollTop });
   }
 
-  handleMouseMove = ({ nativeEvent: { srcElement, path = [] } }) => {
+  handleMouseMove = evt => {
+    const {
+      srcElement,
+      // path = []
+    } = evt.nativeEvent;
+
     let comment = null;
     let tags = [];
     let places = [];
@@ -458,17 +483,17 @@ class Transcript extends React.Component {
       );
     }
 
-    console.group();
-    if (tags.length > 0 || places.length > 0)
-      console.log({
-        tags,
-        places,
-        tagInstances,
-        placeInstances,
-        tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
-      });
-    console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
-    console.groupEnd();
+    // console.group();
+    // if (tags.length > 0 || places.length > 0)
+    //   console.log({
+    //     tags,
+    //     places,
+    //     tagInstances,
+    //     placeInstances,
+    //     tagAnchor: tags.length > 0 || places.length > 0 ? srcElement : null,
+    //   });
+    // console.log(tags.length > 0 || places.length > 0 ? srcElement : null);
+    // console.groupEnd();
 
     this.setState({
       tags,
@@ -656,6 +681,27 @@ class Transcript extends React.Component {
     this.toggleTranslation(languageISO);
   };
 
+  // deleteInstance = ({ tagInstances, tags }) => {
+  //   // entityId, instanceId
+  //   const instanceId = tagInstances[0].id;
+  //   const entityId = tagInstances[0].video_tag_id;
+
+  //   const entities = produce(this.props.videoTags, nextEntities => {
+  //     const ti = nextEntities.findIndex(t => t.id === entityId);
+  //     const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
+  //     nextEntities[ti].instances.splice(ii, 1);
+  //   });
+  //   this.props.update({ videoTags: entities });
+  // };
+
+  deleteInstance = args => {
+    console.log('deleteInstance', 'TODO: define instance', { args });
+  };
+
+  copyToClips = args => {
+    console.log('copyToClips', 'TODO: define instance', { args });
+  };
+
   render() {
     const {
       playheadEditorKey,
@@ -678,7 +724,9 @@ class Transcript extends React.Component {
     // console.groupEnd();
 
     return (
-      <TranscriptRoot>
+      <TranscriptRoot
+        onMouseDown={() => this.setState({ mouseDown: true })}
+        onMouseUp={() => this.setState({ mouseDown: false })}>
         <TranscriptToolbar
           isEditable={this.state.editable}
           isTranslated={this.state.showTranslation}
@@ -710,8 +758,10 @@ class Transcript extends React.Component {
               videoPlaces={this.props.data.videoPlaces}
             />
           ) : null}
-          {this.state.tagAnchor ? (
+          {this.state.tagAnchor && !this.state.selection && !this.state.mouseDown ? (
             <HoverPopover
+              copyToClips={() => this.copyToClips(this.state.tagAnchor)}
+              deleteInstance={() => this.deleteInstance(this.state.tagAnchor)}
               isVisible={this.state.tagAnchor}
               onClose={() => this.setState({ tagAnchor: null })}
               placeInstances={this.state.placeInstance}
@@ -801,4 +851,8 @@ class Transcript extends React.Component {
   }
 }
 
-export default Transcript;
+// export default Transcript;
+export default connect(
+  null,
+  { update }
+)(Transcript);
