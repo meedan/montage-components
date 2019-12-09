@@ -1,12 +1,8 @@
 // import Combinatorics from 'js-combinatorics';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-// import produce from 'immer';
 import chunk from 'lodash.chunk';
 import styled from 'styled-components';
 import { EditorState, convertFromRaw } from 'draft-js';
-
-import { update } from '../reducers/data';
 
 import '@montage/ui/assets/fonts/iconfont/style.css';
 
@@ -752,10 +748,10 @@ class Transcript extends Component {
               start={this.state.selection.start}
               end={this.state.selection.end}
               onClose={() => this.setState({ anchor: null, selection: null })}
-              projectplaces={this.props.data.project.projectplaces}
-              projecttags={this.props.data.project.projecttags}
-              videoTags={this.props.data.videoTags}
-              videoPlaces={this.props.data.videoPlaces}
+              projectplaces={[]}
+              projecttags={[]}
+              videoTags={this.props.videoTags}
+              videoPlaces={this.props.videoPlaces}
             />
           ) : null}
           {this.state.tagAnchor && !this.state.selection && !this.state.mouseDown ? (
@@ -852,7 +848,4 @@ class Transcript extends Component {
 }
 
 // export default Transcript;
-export default connect(
-  null,
-  { update }
-)(Transcript);
+export default Transcript;

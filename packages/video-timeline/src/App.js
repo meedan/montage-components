@@ -26,6 +26,8 @@ import Timeline from './components/Timeline';
 import Transcript from './components/Transcript';
 import Transport from './components/Transport';
 
+import transcripts from './data/transcripts';
+
 const TheatreToggle = styled.div`
   position: absolute;
   right: 8px;
@@ -238,16 +240,15 @@ class App extends Component {
                 </ErrorBoundary>
               ) : (
                 <ErrorBoundary>
-                  {/* <Transcript
-                  commentThreads={data.commentThreads}
-                  currentTime={currentTime}
-                  data={data}
-                  scrollingContainer={this.scrollingContainer}
-                  seekTo={this.seekTo}
-                  transcript={data.transcripts[0]}
-                  videoPlaces={data.videoPlaces}
-                  videoTags={data.videoTags}
-                /> */}
+                  <Transcript
+                    commentThreads={[]}
+                    currentTime={currentTime}
+                    scrollingContainer={this.scrollingContainer}
+                    seekTo={this.seekTo}
+                    transcript={transcripts[0]}
+                    videoPlaces={[]}
+                    videoTags={[]}
+                  />
                 </ErrorBoundary>
               )}
             </BottomWrapper>
