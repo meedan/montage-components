@@ -1,8 +1,6 @@
 /** @format */
 
 import React, { Component } from 'react';
-import produce from 'immer';
-import { connect } from 'react-redux';
 
 import { CutIcon } from '@montage/ui/components';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -12,8 +10,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
-
-import { update } from '../../reducers/data';
 
 const styles = theme => ({
   Popover: {
@@ -75,7 +71,4 @@ class HoverPopover extends Component {
   }
 }
 
-export default connect(
-  null,
-  { update }
-)(withStyles(styles)(HoverPopover));
+export default withStyles(styles)(HoverPopover);

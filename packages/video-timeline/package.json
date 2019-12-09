@@ -67,6 +67,7 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.1",
+    "qs": "^6.9.1",
     "rc-slider": "8.7.0",
     "react-app-polyfill": "1.0.1",
     "react-dev-utils": "9.0.1",
@@ -99,11 +100,11 @@
     "xregexp": "4.2.4"
   },
   "scripts": {
-    "start0": "relay-compiler --src ./src --schema relay.json && BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
-    "start": "relay-compiler --src ./src --schema ./src/sample.graphql && BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
+    "start-nodemon": "relay-compiler --src ./src --schema relay.graphql && PORT=3001 BABEL_ENV=development nodemon --exec babel-node scripts/start.js",
+    "start": "relay-compiler --src ./src --schema relay.graphql && PORT=3001 BABEL_ENV=development babel-node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "now-build": "npm run build"
+    "get-schema-graphql": "npx get-graphql-schema http://localhost:3000/api/graphql -h 'X-CHECK-TOKEN=dev' > relay.graphql"
   },
   "eslintConfig": {
     "extends": "react-app",

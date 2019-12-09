@@ -31,3 +31,6 @@ __generated__
 
 # check files
 relay.json
+relay.graphql
+schema.json
+schema.graphql

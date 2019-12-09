@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import produce from 'immer';
-import { connect } from 'react-redux';
 
 import EntityControls from '../ofTimeline/ofEntities/EntityControls';
 import CommentForm from '../ofTimeline/ofComments/CommentForm';
@@ -15,8 +14,6 @@ import PlaceIcon from '@material-ui/icons/Place';
 import Popover from '@material-ui/core/Popover';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
-
-import { update } from '../../reducers/data';
 
 const styles = theme => ({
   Popover: {
@@ -225,7 +222,4 @@ class SelectionPopover extends Component {
   }
 }
 
-export default connect(
-  null,
-  { update }
-)(withStyles(styles)(SelectionPopover));
+export default withStyles(styles)(SelectionPopover);

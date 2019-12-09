@@ -1,53 +1,25 @@
 import React, { Component } from 'react';
 import { withTheme } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
-
-import { play, pause, duration, timeupdate, update } from '../reducers/player';
 
 class Player extends Component {
   ref = player => {
     this.player = player;
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.player.seekTo !== prevProps.player.seekTo) {
-      if (this.props.player.seekTo !== null) {
-        this.internalPlayer.seekTo(
-          this.props.player.seekTo,
-          true /* this.props.player.seekAhead */
-        );
-      }
-    }
-  }
-
   handleOnReady = () => {
     const { update } = this.props;
 
     this.internalPlayer = this.player.getInternalPlayer();
-    window.internalPlayer = this.internalPlayer;
+    window.internalPlayer = this.internalPlayer; // FIXME
 
     update({ playbackRates: this.internalPlayer.getAvailablePlaybackRates() });
-
-    this.internalPlayer.addEventListener('onStateChange', ({ data: status }) =>
-      update({ status })
-    );
-
-    this.internalPlayer.addEventListener(
-      'onPlaybackRateChange',
-      ({ data: playbackRate }) => update({ playbackRate })
-    );
-  };
-
-  handleOnProgress = ({ playedSeconds }) => {
-    const roundedSeconds = playedSeconds; // Math.round(playedSeconds * 1e3) / 1e3;
-    // this.props.timeupdate(roundedSeconds);
-    this.props.onProgress(roundedSeconds);
+    this.internalPlayer.addEventListener('onStateChange', ({ data: status }) => update({ status }));
+    this.internalPlayer.addEventListener('onPlaybackRateChange', ({ data: playbackRate }) => update({ playbackRate }));
   };
 
   render() {
-    const { player, play, pause, duration } = this.props;
-    const { playing, playbackRate } = player;
+    const { update, playing, playbackRate } = this.props;
 
     return (
       <ReactPlayer
@@ -69,11 +41,11 @@ class Player extends Component {
         width="100%"
         height="400px"
         playing={playing}
-        onPlay={() => play()}
-        onPause={() => pause()}
-        onEnded={() => pause()}
-        onDuration={d => duration(d)}
-        onProgress={this.handleOnProgress}
+        onPlay={() => update({ playing: true })}
+        onPause={() => update({ playing: false })}
+        onEnded={() => update({ playing: true })}
+        onDuration={duration => update({ duration })}
+        onProgress={({ playedSeconds: currentTime }) => update({ currentTime })}
         onReady={this.handleOnReady}
         onStart={e => console.info('onStart', e)}
         onSeek={e => console.info('onSeek', e)}
@@ -83,7 +55,4 @@ class Player extends Component {
   }
 }
 
-export default connect(
-  null,
-  { play, pause, duration, timeupdate, update }
-)(withTheme(Player));
+export default withTheme(Player);

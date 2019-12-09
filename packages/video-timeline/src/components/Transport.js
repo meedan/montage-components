@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { withTheme } from '@material-ui/core/styles';
 import FastForwardIcon from '@material-ui/icons/FastForward';
@@ -12,16 +11,12 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { play, pause } from '../reducers/player';
-
 const PlaybackControls = styled.div`
   text-align: center;
 `;
 
 const Transport = props => {
-  const { player, play, pause, seekTo, frameRate = 30, currentTime } = props;
-
-  const { playing } = player;
+  const { update, playing, seekTo, frameRate = 30, currentTime } = props;
 
   if (playing)
     return (
@@ -36,7 +31,7 @@ const Transport = props => {
             <SkipPreviousIcon />
           </IconButton>
         </Tooltip>
-        <IconButton color="inherit" key="playPause" onClick={() => pause({ transport: 'transport' })}>
+        <IconButton color="inherit" key="playPause" onClick={() => update({ playing: false, transport: 'transport' })}>
           <PauseIcon />
         </IconButton>
         <Tooltip disableFocusListener title="Jump forward 1 second">
@@ -62,12 +57,11 @@ const Transport = props => {
               seekTo: currentTime - 1 / frameRate,
               transport: 'transport',
             })
-          }
-        >
+          }>
           <SkipPreviousIcon />
         </IconButton>
       </Tooltip>
-      <IconButton key="playPause" color="inherit" onClick={() => play({ transport: 'transport' })}>
+      <IconButton key="playPause" color="inherit" onClick={() => update({ playing: true, transport: 'transport' })}>
         <PlayArrowIcon />
       </IconButton>
       <Tooltip disableFocusListener title="Jump forward 1 frame">
@@ -78,8 +72,7 @@ const Transport = props => {
               seekTo: currentTime + 1 / frameRate,
               transport: 'transport',
             })
-          }
-        >
+          }>
           <SkipNextIcon />
         </IconButton>
       </Tooltip>
@@ -87,7 +80,4 @@ const Transport = props => {
   );
 };
 
-export default connect(
-  null,
-  { play, pause }
-)(withTheme(Transport));
+export default withTheme(Transport);

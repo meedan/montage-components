@@ -1,7 +1,5 @@
 import 'rc-slider/assets/index.css';
 import React, { Component } from 'react';
-import produce from 'immer';
-import { connect } from 'react-redux';
 
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,17 +12,17 @@ import EntityControls from './ofEntities/EntityControls';
 import TableBlock from './TableBlock';
 import TableSection from './TableSection';
 
-import { play, pause, seekTo } from '../../reducers/player';
-import { update } from '../../reducers/data';
-
-// const FPS = 30;
+const INSTANCE_DEFAULT_DURATION = 30;
 
 function getName(entity, entityType) {
-  return entity[`project_${entityType}`].name;
+  // return entity[`project_${entityType}`].name;
+  return entity['project_tag'].name;
 }
 
 class Entities extends Component {
-  state = {};
+  state = {
+    isCreating: {},
+  };
 
   static getDerivedStateFromProps(props, state) {
     const { duration, skip, entityType, transport } = props;
@@ -96,205 +94,153 @@ class Entities extends Component {
   }
 
   handlePlay = () => {
-    console.log(this.props.entityType);
+    const { segments } = this.state;
+    const { seekTo, update, entityType } = this.props;
 
-    const start = this.state.segments && this.state.segments.length > 0 ? this.state.segments[0][1] : 0;
-    this.props.seekTo({ seekTo: start, transport: this.props.entityType });
-    this.props.play({ transport: this.props.entityType });
+    const start = segments && segments.length > 0 ? segments[0][1] : 0;
+    seekTo({ seekTo: start, transport: entityType });
+    update({ playing: true, transport: entityType });
   };
 
   handlePause = () => {
-    this.props.pause({ transport: this.props.entityType });
+    const { update, entityType } = this.props;
+    update({ playing: false, transport: entityType });
   };
 
-  startNewInstance = id => {
-    const { currentTime } = this.props;
+  startNewInstance = entityId => {
+    const { createTag, entities, currentTime, entityType } = this.props;
+    const entity = entities.find(({ id }) => id === entityId);
 
-    const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === id);
-      const t = nextEntities[ti];
+    const start_seconds = currentTime;
+    let instance = entity.instances.find(i => i.start_seconds <= start_seconds && start_seconds < i.end_seconds);
 
-      const i = t.instances.find(i => i.start_seconds <= currentTime && currentTime < i.end_seconds);
-      if (i) {
-        console.log('cannot make overlapping instances', currentTime, i.start_seconds, i.end_seconds);
-      } else {
-        t.instances.push({
-          id: Date.now(),
-          start_seconds: currentTime,
-          end_seconds: currentTime + 30,
-        });
-      }
-    });
+    if (instance) {
+      console.log('cannot make overlapping instances');
+    } else {
+      instance = entity.instances.find(
+        i => start_seconds <= i.start_seconds && i.start_seconds < start_seconds + INSTANCE_DEFAULT_DURATION
+      );
+      const end_seconds = instance ? instance.start_seconds : start_seconds + INSTANCE_DEFAULT_DURATION;
 
-    this.props.update({ [this.props.entitiesyKey]: entities });
+      createTag(getName(entity, entityType), `t=${start_seconds},${end_seconds}`);
+    }
   };
 
   startNewEntity = () => {
-    const { currentTime, entityType } = this.props;
-    const id = Date.now();
-
-    const entityName = (function() {
-      if (entityType === 'tag') {
-        return { project_tag: { name: '' } };
-      } else if (entityType === 'location') {
-        return { project_location: { name: '' } };
-      } else if (entityType === 'clip') {
-        return { project_clip: { name: '' } };
-      }
-      return null;
-    })();
-
-    const entities = produce(this.props.entities, nextEntities => {
-      nextEntities.splice(0, 0, {
-        ...entityName,
-        id,
-        isCreating: true,
-        instances: [
-          {
-            id: Date.now(),
-            start_seconds: currentTime,
-            end_seconds: currentTime + 30,
+    const { createTag, currentTime, entityType } = this.props;
+    createTag(
+      `Tag ${Date.now()}`,
+      `t=${currentTime},${currentTime + 30}&type=${entityType}`,
+      (
+        {
+          createTag: {
+            tagEdge: {
+              node: {
+                tag_text_object: { id },
+              },
+            },
           },
-        ],
-      });
-    });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
+        },
+        errors
+      ) => {
+        this.setState({ isCreating: { [id]: true } });
+      }
+    );
   };
 
-  stopNewEntity = () => {
-    const entities = produce(this.props.entities, nextEntities => {
-      nextEntities.splice(0, 1);
-    });
+  stopNewEntity = () => this.setState({ isCreating: {} });
 
-    this.props.update({ [this.props.entitiesyKey]: entities });
-  };
+  checkInstance = instanceId => console.log('checkInstance', instanceId);
 
-  checkInstance = instanceId => {
-    console.log('checkInstance', instanceId);
-  };
-
-  deleteEntity = id => {
-    const entities = produce(this.props.entities, nextEntities => {
-      const i = nextEntities.findIndex(t => t.id === id);
-      nextEntities.splice(i, 1);
-    });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
+  deleteEntity = entityId => {
+    const { destroy, entities } = this.props;
+    // delete all instances but not the tag-text
+    entities
+      .filter(({ id }) => id === entityId)
+      .forEach(({ instances = [] }) => instances.forEach(({ id }) => destroy(id)));
   };
 
   updateEntity = (id, name, payload) => {
     console.log(id, name, payload);
-    const { entityType } = this.props;
 
-    const entities = produce(this.props.entities, nextEntities => {
-      const i = nextEntities.findIndex(t => t.id === id);
-      nextEntities[i][`project_${entityType}`].name = name;
-      if (payload)
-        nextEntities[i][`project_${entityType}`] = {
-          ...nextEntities[i][`project_${entityType}`],
-          ...payload,
-        };
-
-      nextEntities[i][`project_${entityType}`].name = name;
-      delete nextEntities[i].isCreating;
-    });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
+    const { rename } = this.props;
+    if (!payload) rename(id, name);
+    // payload? check geotags???
   };
 
-  deleteInstance = (entityId, instanceId) => {
-    const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === entityId);
-      const ii = nextEntities[ti].instances.findIndex(i => i.id === instanceId);
+  deleteInstance = (entityId, instanceId) => this.props.destroy(instanceId);
 
-      nextEntities[ti].instances.splice(ii, 1);
-    });
-
-    this.props.update({ [this.props.entitiesyKey]: entities });
-  };
-
+  // TODO
   duplicateAsClip = (entityId, instanceId) => {
-    const { entities, clips, entityType } = this.props;
-    const entity = entities.find(entity => entity.id === entityId);
-    const instance = entity.instances.find(instance => instance.id === instanceId);
-
-    console.log(entity, instance);
-
-    const videoClips = produce(clips, nextClips => {
-      let clip = nextClips.find(c => c.project_clip.name === getName(entity, entityType));
-
-      if (!clip) {
-        clip = {
-          id: Date.now(),
-          isCreating: false,
-          instances: [
-            {
-              id: Date.now(),
-              start_seconds: instance.start_seconds,
-              end_seconds: instance.end_seconds,
-            },
-          ],
-          project_clip: {
-            name: getName(entity, entityType),
-          },
-        };
-
-        console.log('new clip', clip);
-
-        nextClips.splice(0, 0, clip);
-      } else {
-        console.log('existing clip', clip);
-        const j = {
-          id: Date.now(),
-          start_seconds: instance.start_seconds,
-          end_seconds: instance.end_seconds,
-        };
-
-        const overlappingInstance = clip.instances.find(
-          i =>
-            (j.start_seconds <= i.start_seconds && i.start_seconds <= j.end_seconds) ||
-            (j.start_seconds <= i.end_seconds && i.end_seconds <= j.end_seconds) ||
-            (i.start_seconds <= j.start_seconds && j.start_seconds <= i.end_seconds) ||
-            (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
-        );
-
-        if (overlappingInstance) {
-          overlappingInstance.start_seconds = Math.min(overlappingInstance.start_seconds, j.start_seconds);
-          overlappingInstance.end_seconds = Math.max(overlappingInstance.end_seconds, j.end_seconds);
-        } else {
-          clip.instances.push(j);
-        }
-      }
-    });
-
-    this.props.update({ videoClips });
+    // const { entities, clips, entityType } = this.props;
+    // const entity = entities.find(entity => entity.id === entityId);
+    // const instance = entity.instances.find(instance => instance.id === instanceId);
+    // console.log(entity, instance);
+    // const videoClips = produce(clips, nextClips => {
+    //   let clip = nextClips.find(c => c.project_clip.name === getName(entity, entityType));
+    //   if (!clip) {
+    //     clip = {
+    //       id: Date.now(),
+    //       isCreating: false,
+    //       instances: [
+    //         {
+    //           id: Date.now(),
+    //           start_seconds: instance.start_seconds,
+    //           end_seconds: instance.end_seconds,
+    //         },
+    //       ],
+    //       project_clip: {
+    //         name: getName(entity, entityType),
+    //       },
+    //     };
+    //     console.log('new clip', clip);
+    //     nextClips.splice(0, 0, clip);
+    //   } else {
+    //     console.log('existing clip', clip);
+    //     const j = {
+    //       id: Date.now(),
+    //       start_seconds: instance.start_seconds,
+    //       end_seconds: instance.end_seconds,
+    //     };
+    //     const overlappingInstance = clip.instances.find(
+    //       i =>
+    //         (j.start_seconds <= i.start_seconds && i.start_seconds <= j.end_seconds) ||
+    //         (j.start_seconds <= i.end_seconds && i.end_seconds <= j.end_seconds) ||
+    //         (i.start_seconds <= j.start_seconds && j.start_seconds <= i.end_seconds) ||
+    //         (i.start_seconds <= j.end_seconds && j.end_seconds <= i.end_seconds)
+    //     );
+    //     if (overlappingInstance) {
+    //       overlappingInstance.start_seconds = Math.min(overlappingInstance.start_seconds, j.start_seconds);
+    //       overlappingInstance.end_seconds = Math.max(overlappingInstance.end_seconds, j.end_seconds);
+    //     } else {
+    //       clip.instances.push(j);
+    //     }
+    //   }
+    // });
+    // this.props.update({ videoClips });
   };
 
   extendInstance = (entityId, instanceId) => {
-    const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === entityId);
-      const i = nextEntities[ti].instances.find(i => i.id === instanceId);
-      i.start_seconds = 0;
-      i.end_seconds = this.props.duration;
-      nextEntities[ti].instances = [i];
-    });
-    this.props.update({ [this.props.entitiesyKey]: entities });
+    const { retime, entities, duration, entityType } = this.props;
+    const entity = entities.find(({ id }) => id === entityId);
+    const index = entity.instances.findIndex(({ id }) => id === instanceId);
+    let start_seconds = 0;
+    let end_seconds = duration;
+
+    if (index > 0) start_seconds = entity.instances[index - 1].end_seconds;
+    if (index < entity.instances.length - 1) end_seconds = entity.instances[index + 1].start_seconds;
+
+    retime(instanceId, `t=${start_seconds},${end_seconds}&type=${entityType}`);
   };
 
   updateInstance = (entityId, instanceId, { start_seconds, end_seconds }) => {
-    console.log((entityId, instanceId, { start_seconds, end_seconds }));
-    const entities = produce(this.props.entities, nextEntities => {
-      const ti = nextEntities.findIndex(t => t.id === entityId);
-      const i = nextEntities[ti].instances.find(i => i.id === instanceId);
-      i.start_seconds = start_seconds;
-      i.end_seconds = end_seconds;
-    });
-    this.props.update({ [this.props.entitiesyKey]: entities });
+    const { retime, entityType } = this.props;
+    retime(instanceId, `t=${start_seconds},${end_seconds}&type=${entityType}`);
   };
 
   render() {
-    const { entities, duration, suggestions, entityType, transport } = this.props;
+    const { isCreating } = this.state;
+    const { entities = [], duration, suggestions, entityType, transport } = this.props;
     const { playlist } = transport === entityType;
 
     return (
@@ -315,59 +261,57 @@ class Entities extends Component {
             </Tooltip>
           </>
         }>
-        {entities
-          ? entities.map((entity, i) => {
-              const { instances } = entity;
+        {entities.map((entity, i) => {
+          const { instances = [] } = entity;
 
-              const arr = [];
+          const arr = [];
 
-              Array.from(instances)
-                .sort((p, q) => p.start_seconds - q.start_seconds)
-                .map(instance => {
-                  arr.push(instance.start_seconds);
-                  arr.push(instance.end_seconds);
-                  return null;
-                });
+          Array.from(instances)
+            .sort((p, q) => p.start_seconds - q.start_seconds)
+            .map(instance => {
+              arr.push(instance.start_seconds);
+              arr.push(instance.end_seconds);
+              return null;
+            });
 
-              arr.sort((p, q) => p - q);
+          arr.sort((p, q) => p - q);
 
-              return (
-                <TableBlock
-                  key={entity.id}
-                  plain={i < entities.length - 1}
-                  leftColContent={
-                    <EntityControls
-                      deleteEntity={() => this.deleteEntity(entity.id)}
-                      entityId={entity.id}
-                      entityName={getName(entity, entityType)}
-                      entityType={entityType}
-                      isCreating={entity.isCreating}
-                      startNewInstance={() => this.startNewInstance(entity.id)}
-                      stopNewEntity={this.stopNewEntity}
-                      suggestions={suggestions}
-                      updateEntity={(name, payload) => this.updateEntity(entity.id, name, payload)}
-                    />
-                  }
-                  rightColContent={
-                    <RangeSlider
-                      clipInstance={
-                        entityType !== 'clip' ? instanceId => this.duplicateAsClip(entity.id, instanceId) : null
-                      }
-                      checkInstance={entityType === 'clip' ? instanceId => this.checkInstance(instanceId) : null}
-                      extendInstance={instanceId => this.extendInstance(entity.id, instanceId)}
-                      duration={duration}
-                      instances={instances}
-                      updateInstance={(instanceId, payload) => this.updateInstance(entity.id, instanceId, payload)}
-                      deleteInstance={instanceId => this.deleteInstance(entity.id, instanceId)}
-                      onDrag={newTime => this.props.onChange(newTime)}
-                      onDragEnd={newTime => this.props.onAfterChange(newTime)}
-                      onDragStart={newTime => this.props.onBeforeChange(newTime)}
-                    />
-                  }
+          return (
+            <TableBlock
+              key={entity.id}
+              plain={i < entities.length - 1}
+              leftColContent={
+                <EntityControls
+                  deleteEntity={() => this.deleteEntity(entity.id)}
+                  entityId={entity.id}
+                  entityName={getName(entity, entityType)}
+                  entityType={entityType}
+                  isCreating={isCreating[entity.id]}
+                  startNewInstance={() => this.startNewInstance(entity.id)}
+                  stopNewEntity={this.stopNewEntity}
+                  suggestions={suggestions}
+                  updateEntity={(name, payload) => this.updateEntity(entity.id, name, payload)}
                 />
-              );
-            })
-          : null}
+              }
+              rightColContent={
+                <RangeSlider
+                  clipInstance={
+                    entityType !== 'clip' ? instanceId => this.duplicateAsClip(entity.id, instanceId) : null
+                  }
+                  checkInstance={entityType === 'clip' ? instanceId => this.checkInstance(instanceId) : null}
+                  extendInstance={instanceId => this.extendInstance(entity.id, instanceId)}
+                  duration={duration}
+                  instances={instances}
+                  updateInstance={(instanceId, payload) => this.updateInstance(entity.id, instanceId, payload)}
+                  deleteInstance={instanceId => this.deleteInstance(entity.id, instanceId)}
+                  onDrag={newTime => this.props.onChange(newTime)}
+                  onDragEnd={newTime => this.props.onAfterChange(newTime)}
+                  onDragStart={newTime => this.props.onBeforeChange(newTime)}
+                />
+              }
+            />
+          );
+        })}
       </TableSection>
     );
   }
@@ -398,7 +342,4 @@ const recomputeSegments = (entities, duration) => {
   return segments;
 };
 
-export default connect(
-  null,
-  { play, pause, seekTo, update }
-)(Entities);
+export default Entities;

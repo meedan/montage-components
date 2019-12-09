@@ -21,9 +21,9 @@ const transformTimings = array =>
     const start = parseFloat(time) * 1e3;
     const end = start + 1e3 * parseFloat(duration);
 
-    delete(element.time);
-    delete(element.duration);
-    delete(element.confidence);
+    delete element.time;
+    delete element.duration;
+    delete element.confidence;
 
     return { ...element, start, end };
   });
@@ -35,7 +35,7 @@ const convertSpeechmatics = ({ speakers, words, job: metadata }) => {
     words.reduce((acc, word) => {
       if (unicodePunctuation.test(word.name.trim())) {
         const pword = acc.pop();
-        pword.name = ("" + pword.name).trimRight().concat(("" + word.name).trim());
+        pword.name = ('' + pword.name).trimRight().concat(('' + word.name).trim());
         return [...acc, pword];
       }
 
@@ -48,13 +48,7 @@ const convertSpeechmatics = ({ speakers, words, job: metadata }) => {
     language: metadata.lang,
     segments: transformTimings(speakers).map(({ start, end, name }) => {
       const words = fixedWords
-        .filter(
-          word =>
-            start <= word.start &&
-            word.start < end &&
-            start < word.end &&
-            word.end <= end
-        )
+        .filter(word => start <= word.start && word.start < end && start < word.end && word.end <= end)
         .map(({ start, end, name }) => ({
           id: generateID(),
           start,
@@ -85,10 +79,8 @@ const convertSpeechmatics = ({ speakers, words, job: metadata }) => {
 };
 
 const transcript = convertSpeechmatics(sm);
-transcript.segments.forEach((segment, i) => segment.translation = translation[i].text);
-const transcripts = [
-  transcript,
-];
+transcript.segments.forEach((segment, i) => (segment.translation = translation[i].text));
+const transcripts = [transcript];
 
-console.log(transcripts);
+// console.log(transcripts);
 export default transcripts;
