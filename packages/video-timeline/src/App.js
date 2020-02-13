@@ -5,7 +5,7 @@ import ErrorBoundary from 'react-error-boundary';
 import styled from 'styled-components';
 import { withSnackbar } from 'notistack';
 
-import { ThemeProvider, VideoMeta } from '@montage/ui';
+import { ThemeProvider } from '@montage/ui';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -23,7 +23,7 @@ import PlayerContainer from './components/PlayerContainer';
 import VideoMetaContainer from './components/VideoMetaContainer';
 // import Preview from './components/Preview';
 import Timeline from './components/Timeline';
-import Transcript from './components/Transcript';
+import TranscriptContainer from './components/ofTranscript/TranscriptContainer';
 import Transport from './components/Transport';
 
 import transcripts from './data/transcripts';
@@ -240,14 +240,12 @@ class App extends Component {
                 </ErrorBoundary>
               ) : (
                 <ErrorBoundary>
-                  <Transcript
-                    commentThreads={[]}
+                  <TranscriptContainer
+                    ids={ids}
                     currentTime={currentTime}
                     scrollingContainer={this.scrollingContainer}
                     seekTo={this.seekTo}
                     transcript={transcripts[0]}
-                    videoPlaces={[]}
-                    videoTags={[]}
                   />
                 </ErrorBoundary>
               )}

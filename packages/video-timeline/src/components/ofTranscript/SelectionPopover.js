@@ -82,7 +82,8 @@ class SelectionPopover extends Component {
         this.setState({ newInstanceId, newInstanceEntityName: entity });
       });
 
-      this.props.update({ [entitiesyKey]: entities });
+      // this.props.update({ [entitiesyKey]: entities });
+      console.log('TODO');
     } else {
       const entities = produce(currentEntitites, nextEntities => {
         nextEntities.splice(0, 0, {
@@ -100,7 +101,8 @@ class SelectionPopover extends Component {
 
       this.setState({ newInstanceId, newInstanceEntityName: name });
 
-      this.props.update({ [entitiesyKey]: entities });
+      // this.props.update({ [entitiesyKey]: entities });
+      console.log('TODO');
     }
   };
 

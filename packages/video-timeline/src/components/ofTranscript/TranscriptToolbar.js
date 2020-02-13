@@ -20,7 +20,6 @@ import blue from '@material-ui/core/colors/blue';
 import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 
-import TranscriptContainer from './TranscriptContainer';
 import TranscriptMain from './TranscriptMain';
 import TranscriptSide from './TranscriptSide';
 import TranscriptText from './TranscriptText';
@@ -76,6 +75,15 @@ const Element = styled.div`
   flex: 0 0 ${({ pin }) => (pin ? '30px' : '50px')};
   transition: flex-basis 0.25s;
   z-index: 200;
+`;
+
+const TranscriptContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1500px;
 `;
 
 const TranscriptFabs = styled.div`

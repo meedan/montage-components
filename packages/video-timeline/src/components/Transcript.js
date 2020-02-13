@@ -170,7 +170,7 @@ class Transcript extends Component {
   loadTranscript = (transcript, commentThreads, videoTags, videoPlaces) => {
     const customStyleMap = {
       ...commentThreads.reduce((acc, { id }) => ({ ...acc, [`C-${id}`]: { className: `C-${id}` } }), []),
-      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id}`]: { className: `T-${id}` } }), []),
+      ...videoTags.reduce((acc, { id }) => ({ ...acc, [`T-${id.trim().replace(/==/, '')}`]: { className: `T-${id.trim().replace(/==/, '')}` } }), []),
       ...videoPlaces.reduce((acc, { id }) => ({ ...acc, [`G-${id}`]: { className: `G-${id}` } }), []),
     };
 
@@ -182,7 +182,9 @@ class Transcript extends Component {
       return [...acc, ...instances];
     }, []);
 
-    const css = [videoTags.map(({ id }) => `.T-${id} { background-color: ${OVERLAPS[0]}; }`).join('\n')];
+    console.log({ tagInstances });
+
+    const css = [videoTags.map(({ id }) => `.T-${id.trim().replace(/==/, '')} { background-color: ${OVERLAPS[0]}; }`).join('\n')];
 
     const placesInstances = videoPlaces.reduce((acc, entity) => {
       const instances = entity.instances.map(instance => ({
@@ -193,7 +195,7 @@ class Transcript extends Component {
     }, []);
 
     const segments = chunk(transcript.segments, 2)
-      // .slice(0, 2)
+      .slice(0, 2) // DEBUG
       .map(segment => {
         const segmentStart = segment[0].start;
         const segmentEnd = segment[segment.length - 1].end;
@@ -256,7 +258,7 @@ class Transcript extends Component {
                   return {
                     offset: first.offset,
                     length: last.offset - first.offset + last.length,
-                    style: `T-${entity.id}`,
+                    style: `T-${entity.id}`.trim().replace(/==/, ''),
                   };
                 })
                 .filter(r => !!r),
@@ -396,6 +398,7 @@ class Transcript extends Component {
   }
 
   handleMouseMove = evt => {
+    return;
     const {
       srcElement,
       // path = []

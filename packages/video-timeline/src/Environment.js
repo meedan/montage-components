@@ -8,6 +8,13 @@ const config = {
   checkApiUrl: 'http://localhost:3000',
 };
 
+// const config = {
+//   // token: 'dev',
+//   token: 'eyJwcm92aWRlciI6ImNoZWNrZGVzayIsImlkIjoiIiwidG9rZW4iOiJmVktz++nMnlGcyIsInNlY3JldCI6Imd1VmVYcnpCIn0=++n',
+//   teamSlug: window.location.search.split(/[=&]/)[5],
+//   checkApiUrl: 'https://qa-check-api.checkmedia.org',
+// };
+
 function createFetchQuery() {
   return function fetchQuery(operation, variables, cacheConfig, uploadables) {
     let body = JSON.stringify({

@@ -210,9 +210,9 @@ class EntitiesContainer extends Component {
                   update={update}
                   rename={rename}
                   retime={retime}
-                  destroy={tag => destroy(tag, ids.split(',').pop())}
+                  destroy={tag => destroy(tag, ids.split(',')[0])}
                   createTag={(tag, fragment, callback) =>
-                    createTag(tag, fragment, ids.split(',').pop(), retry, callback)
+                    createTag(tag, fragment, ids.split(',')[0], retry, callback)
                   }
                 />
                 <Entities
@@ -233,8 +233,8 @@ class EntitiesContainer extends Component {
                   update={update}
                   rename={rename}
                   retime={retime}
-                  destroy={tag => destroy(tag, ids.split(',').pop())}
-                  createTag={(tag, fragment) => createTag(tag, fragment, ids.split(',').pop(), retry)}
+                  destroy={tag => destroy(tag, ids.split(',')[0])}
+                  createTag={(tag, fragment) => createTag(tag, fragment, ids.split(',')[0], retry)}
                 />
                 <Entities
                   title="Places"
@@ -254,8 +254,8 @@ class EntitiesContainer extends Component {
                   update={update}
                   rename={rename}
                   retime={retime}
-                  destroy={tag => destroy(tag, ids.split(',').pop())}
-                  createTag={(tag, fragment) => createTag(tag, fragment, ids.split(',').pop(), retry)}
+                  destroy={tag => destroy(tag, ids.split(',')[0])}
+                  createTag={(tag, fragment) => createTag(tag, fragment, ids.split(',')[0], retry)}
                 />
               </>
             );
